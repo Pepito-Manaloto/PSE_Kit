@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">PSE Planner</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="refresh_button">Refresh</string>
+    <string name="search_button">Search</string>
+
+    <!-- Navigation Menu Strings -->
+    <string name="nav_home">Home</string>
+    <string name="nav_ticker">Ticker</string>
+    <string name="nav_calculator">Calculator</string>
+    <string name="nav_settings">Settings</string>
+</resources>
