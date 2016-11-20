@@ -2,18 +2,20 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/action_search"
+        android:id="@+id/menu_search"
         android:title="@string/search_button"
         android:icon="@android:drawable/ic_menu_search"
         android:orderInCategory="1"
-        app:showAsAction="ifRoom"
+        app:showAsAction="ifRoom|collapseActionView"
+        app:actionViewClass="android.support.v7.widget.SearchView"
         />
 
     <item
-        android:id="@+id/action_refresh"
+        android:id="@+id/menu_refresh"
         android:title="@string/refresh_button"
-        android:icon="@android:drawable/ic_dialog_alert"
+        android:icon="@drawable/ic_menu_refresh"
         android:orderInCategory="2"
+
         app:showAsAction="ifRoom"
         />
 </menu>
