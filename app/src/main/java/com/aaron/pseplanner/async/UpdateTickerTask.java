@@ -10,7 +10,6 @@ import com.aaron.pseplanner.activity.MainFragmentActivity;
 /**
  * Created by Aaron on 11/20/2016.
  */
-
 public class UpdateTickerTask extends AsyncTask<Void, Void, String>
 {
     private MainFragmentActivity callerActivity;

@@ -38,10 +38,13 @@ import java.lang.reflect.Field;
 public abstract class MainFragmentActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
 {
     public static final String LOG_MARKER = "MainFragmentActivity";
+
+    private DrawerLayout drawer;
     private Menu toolbarMenu;
     private Toolbar toolbar;
 
     /**
+     * Initializes the navigation drawer.
      * Adds the single fragment, returned from the abstract method createFragment(), into the fragment container.
      *
      * @param savedInstanceState this Bundle is unused in this method.
@@ -55,10 +58,10 @@ public abstract class MainFragmentActivity extends AppCompatActivity implements 
         this.toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(this.toolbar);
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, this.toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.removeDrawerListener(toggle);
-        drawer.addDrawerListener(toggle);
+        this.drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, this.drawer, this.toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        this.drawer.removeDrawerListener(toggle);
+        this.drawer.addDrawerListener(toggle);
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
@@ -74,6 +77,9 @@ public abstract class MainFragmentActivity extends AppCompatActivity implements 
         }
     }
 
+    /**
+     * Initializes the toolbar(search bar and refresh button).
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
@@ -86,8 +92,7 @@ public abstract class MainFragmentActivity extends AppCompatActivity implements 
     }
 
     /**
-     * This method is called when a user selects an item in the menu bar. Opens
-     * the fragment of selected item.
+     * This method is called when a user selects an item in the menu bar.
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
@@ -110,20 +115,26 @@ public abstract class MainFragmentActivity extends AppCompatActivity implements 
         }
     }
 
+    /**
+     * Closes the navigation drawer if it is open.
+     */
     @Override
     public void onBackPressed()
     {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if(drawer.isDrawerOpen(GravityCompat.START))
+        if(this.drawer.isDrawerOpen(GravityCompat.START))
         {
-            drawer.closeDrawer(GravityCompat.START);
-        }
-        else
+            this.drawer.closeDrawer(GravityCompat.START);
+        }else
         {
             super.onBackPressed();
         }
     }
 
+    /**
+     * Sets the action of each option in the navigation drawer.
+     *
+     * @param item the selected drawer option
+     */
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item)
     {
@@ -160,11 +171,13 @@ public abstract class MainFragmentActivity extends AppCompatActivity implements 
             }
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
+        this.drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
+    /**
+     * Stops the rotating animation of the refresh menu.
+     */
     public void stopRefreshAnimation()
     {
         // Get our refresh item from the menu
@@ -183,6 +196,9 @@ public abstract class MainFragmentActivity extends AppCompatActivity implements 
         fm.beginTransaction().replace(R.id.fragment_container, newFragment).commit();
     }
 
+    /**
+     * Inflates the toolbar menu in the view.
+     */
     protected void inflateToolbarMenuItems()
     {
         if(this.toolbarMenu != null && this.toolbarMenu.size() <= 0)
@@ -191,6 +207,9 @@ public abstract class MainFragmentActivity extends AppCompatActivity implements 
         }
     }
 
+    /**
+     * Removes the toolbar menu in the view.
+     */
     protected void removeToolbarMenuItems()
     {
         if(this.toolbarMenu != null && this.toolbarMenu.size() > 0)
@@ -199,6 +218,9 @@ public abstract class MainFragmentActivity extends AppCompatActivity implements 
         }
     }
 
+    /**
+     * Initializes the search bar.
+     */
     protected void initializeSearchBar(Menu menu)
     {
         MenuItem myActionMenuItem = menu.findItem(R.id.menu_search);
@@ -237,6 +259,11 @@ public abstract class MainFragmentActivity extends AppCompatActivity implements 
         }
     }
 
+    /**
+     * Executes the UpdateTicker async task. Starts the refresh button animation then retrieves data from PSE.
+     *
+     * @param item the refresh button menu item
+     */
     protected void executeRefreshTicker(MenuItem item)
     {
         // Do animation start

@@ -4,8 +4,12 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
+    <string name="cancel_button">Cancel</string>
+
+    <!-- Toolbar -->
     <string name="refresh_button">Refresh</string>
     <string name="search_button">Search</string>
+    <string name="search_hint">Stock Symbol</string>
 
     <!-- Navigation Menu Strings -->
     <string name="nav_home">Home</string>
@@ -13,5 +17,19 @@
     <string name="nav_calculator">Calculator</string>
     <string name="nav_settings">Settings</string>
 
-    <string name="search_hint">Stock Symbol</string>
+    <!-- Settings -->
+    <string name="settings_auto_refresh">Auto Refresh</string>
+    <string name="interval_dialog_title">Interval</string>
+    <string name="settings_refresh_interval">Refresh Interval In Seconds </string>
+    <string name="settings_notify_targe_price">Notify On Target Price</string>
+    <string name="settings_notify_stop_loss">Notify On Stop Loss</string>
+    <string name="settings_notify_time_stop">Notify On Time Stop</string>
+
+    <string-array name="refresh_intervals">
+        <item>10</item>
+        <item>15</item>
+        <item>20</item>
+        <item>30</item>
+        <item>60</item>
+    </string-array>
 </resources>

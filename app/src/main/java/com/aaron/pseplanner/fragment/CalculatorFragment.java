@@ -23,6 +23,7 @@ public class CalculatorFragment extends Fragment
     {
         View view = inflater.inflate(R.layout.fragment_calculator, parent, false);
 
+
         return view;
     }
 }

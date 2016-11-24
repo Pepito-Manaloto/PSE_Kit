@@ -26,4 +26,26 @@
         <item name="overlapAnchor">false</item>
         <item name="android:dropDownVerticalOffset">-4.0dip</item>
     </style>
+
+    <style name="Divider">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:layout_marginTop">20dp</item>
+        <item name="android:layout_marginLeft">7dp</item>
+        <item name="android:layout_marginRight">7dp</item>
+        <item name="android:background">@color/sysLightGray</item>
+    </style>
+
+    <style name="SettingsCheckbox">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingTop">20dp</item>
+        <item name="android:paddingLeft">15dp</item>
+        <item name="android:paddingRight">25dp</item>
+        <item name="android:paddingStart">15dp</item>
+        <item name="android:paddingEnd">25dp</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:button">@null</item>
+        <item name="android:drawableRight">?android:attr/listChoiceIndicatorMultiple</item>
+    </style>
 </resources>
