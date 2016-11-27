@@ -63,4 +63,10 @@
 
     <View style="@style/Divider"/>
 
+    <CheckBox
+        android:id="@+id/checkbox_notify_with_sound_effect"
+        style="@style/SettingsCheckbox"
+        android:text="@string/settings_notify_with_sound_effect" />
+
+    <View style="@style/Divider"/>
 </LinearLayout>

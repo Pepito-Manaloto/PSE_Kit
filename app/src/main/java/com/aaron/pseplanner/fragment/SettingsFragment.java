@@ -7,6 +7,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.view.ContextThemeWrapper;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -72,7 +74,8 @@ public class SettingsFragment extends Fragment
         final Resources resources = getResources();
         final CharSequence[] items = resources.getTextArray(R.array.refresh_intervals);
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        ContextThemeWrapper contextThemeWrapper = new ContextThemeWrapper(activity, R.style.AlertDialogTheme);
+        AlertDialog.Builder builder = new AlertDialog.Builder(contextThemeWrapper);
         builder.setTitle(resources.getString(R.string.interval_dialog_title));
 
         builder.setItems(items, new DialogInterface.OnClickListener()
@@ -86,6 +89,7 @@ public class SettingsFragment extends Fragment
                 intervalDialog.dismiss();
             }
         });
+
 
         this.intervalDialog = builder.create();
         this.intervalDialog.show();

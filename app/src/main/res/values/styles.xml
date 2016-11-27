@@ -27,6 +27,12 @@
         <item name="android:dropDownVerticalOffset">-4.0dip</item>
     </style>
 
+    <style name="AlertDialogTheme" parent="android:Theme.Holo.Dialog">
+        <item name="android:textSize">18sp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+
     <style name="Divider">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">1dp</item>
@@ -34,6 +40,14 @@
         <item name="android:layout_marginLeft">7dp</item>
         <item name="android:layout_marginRight">7dp</item>
         <item name="android:background">@color/sysLightGray</item>
+    </style>
+
+    <style name="Divider2">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:layout_marginTop">3dp</item>
+        <item name="android:layout_marginBottom">13dp</item>
+        <item name="android:background">@color/black</item>
     </style>
 
     <style name="SettingsCheckbox">
@@ -47,5 +61,22 @@
         <item name="android:textSize">20sp</item>
         <item name="android:button">@null</item>
         <item name="android:drawableRight">?android:attr/listChoiceIndicatorMultiple</item>
+    </style>
+
+    <style name="Calculator">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginBottom">10dp</item>
+        <item name="android:layout_marginLeft">10dp</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="Calculator.EditText" parent="Calculator">
+        <item name="android:background">@drawable/edit_text_style</item>
+        <item name="android:paddingLeft">5dp</item>
+        <item name="android:paddingStart">5dp</item>
+        <item name="android:paddingTop">3dp</item>
+        <item name="android:paddingBottom">3dp</item>
     </style>
 </resources>
