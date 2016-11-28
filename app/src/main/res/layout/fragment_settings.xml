@@ -1,72 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
 
-    <CheckBox
-        android:id="@+id/checkbox_auto_refresh"
-        style="@style/SettingsCheckbox"
-        android:text="@string/settings_auto_refresh" />
-
-    <View style="@style/Divider"/>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <LinearLayout
-        android:id="@+id/layout_refresh_interval"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="20dp"
-        android:paddingLeft="15dp"
-        android:paddingRight="30dp"
-        android:paddingStart="15dp"
-        android:paddingEnd="30dp"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
-        <TextView
-            android:id="@android:id/empty"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:textSize="20sp"
-            android:textColor="@color/black"
-            android:text="@string/settings_refresh_interval" />
+        <CheckBox
+            android:id="@+id/checkbox_auto_refresh"
+            style="@style/SettingsCheckbox"
+            android:text="@string/settings_auto_refresh"/>
 
-        <TextView
-            android:id="@+id/textview_refresh_interval"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="end"
-            android:textSize="20sp"
-            android:textColor="@color/black" />
+        <View style="@style/Divider"/>
+
+        <LinearLayout
+            android:id="@+id/layout_refresh_interval"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingEnd="30dp"
+            android:paddingLeft="15dp"
+            android:paddingRight="30dp"
+            android:paddingStart="15dp"
+            android:paddingTop="20dp">
+
+            <TextView
+                android:id="@android:id/empty"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="@string/settings_refresh_interval"
+                android:textColor="@color/black"
+                android:textSize="20sp"/>
+
+            <TextView
+                android:id="@+id/textview_refresh_interval"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:textColor="@color/black"
+                android:textSize="20sp"/>
+        </LinearLayout>
+
+        <View style="@style/Divider"/>
+
+        <CheckBox
+            android:id="@+id/checkbox_notify_stop_loss"
+            style="@style/SettingsCheckbox"
+            android:text="@string/settings_notify_stop_loss"/>
+
+        <View style="@style/Divider"/>
+
+        <CheckBox
+            android:id="@+id/checkbox_notify_target_price"
+            style="@style/SettingsCheckbox"
+            android:text="@string/settings_notify_targe_price"/>
+
+        <View style="@style/Divider"/>
+
+        <CheckBox
+            android:id="@+id/checkbox_notify_time_stop"
+            style="@style/SettingsCheckbox"
+            android:text="@string/settings_notify_time_stop"/>
+
+        <View style="@style/Divider"/>
+
+        <CheckBox
+            android:id="@+id/checkbox_notify_with_sound_effect"
+            style="@style/SettingsCheckbox"
+            android:text="@string/settings_notify_with_sound_effect"/>
+
+        <View style="@style/Divider"/>
     </LinearLayout>
 
-    <View style="@style/Divider"/>
-
-    <CheckBox
-        android:id="@+id/checkbox_notify_stop_loss"
-        style="@style/SettingsCheckbox"
-        android:text="@string/settings_notify_stop_loss" />
-
-    <View style="@style/Divider"/>
-
-    <CheckBox
-        android:id="@+id/checkbox_notify_target_price"
-        style="@style/SettingsCheckbox"
-        android:text="@string/settings_notify_targe_price" />
-
-    <View style="@style/Divider"/>
-
-    <CheckBox
-        android:id="@+id/checkbox_notify_time_stop"
-        style="@style/SettingsCheckbox"
-        android:text="@string/settings_notify_time_stop" />
-
-    <View style="@style/Divider"/>
-
-    <CheckBox
-        android:id="@+id/checkbox_notify_with_sound_effect"
-        style="@style/SettingsCheckbox"
-        android:text="@string/settings_notify_with_sound_effect" />
-
-    <View style="@style/Divider"/>
-</LinearLayout>
+</ScrollView>
