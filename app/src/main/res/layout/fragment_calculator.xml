@@ -6,7 +6,9 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:focusableInTouchMode="true">
 
         <View
             android:id="@+id/top_margin"
@@ -79,7 +81,7 @@
             android:layout_marginStart="55dp"
             android:layout_toEndOf="@id/label_average_price"
             android:layout_toRightOf="@id/label_average_price"
-            android:text="0000"/>
+            android:text="0"/>
 
         <View
             android:id="@+id/calc_divider3"
@@ -100,7 +102,7 @@
             android:layout_marginStart="6dp"
             android:layout_toEndOf="@id/label_break_even_price"
             android:layout_toRightOf="@id/label_break_even_price"
-            android:text="0000"/>
+            android:text="0"/>
 
         <View
             android:id="@+id/calc_divider4"
@@ -121,7 +123,7 @@
             android:layout_marginStart="16dp"
             android:layout_toEndOf="@id/label_buy_gross_amount"
             android:layout_toRightOf="@id/label_buy_gross_amount"
-            android:text="0000"/>
+            android:text="0"/>
 
         <View
             android:id="@+id/calc_divider5"
@@ -143,8 +145,15 @@
             android:layout_marginStart="35dp"
             android:layout_toEndOf="@id/label_buy_net_amount"
             android:layout_toRightOf="@id/label_buy_net_amount"
-            android:text="0000"/>
-        <!-- dropdown -->
+            android:text="0"/>
+
+        <ImageView
+            android:id="@+id/imageview_buy_net_amount"
+            style="@style/Calculator_ImageView"
+            android:layout_below="@id/calc_divider5"
+            android:layout_alignTop="@id/calc_divider5"
+            android:layout_toRightOf="@+id/textview_buy_net_amount"
+            android:layout_toEndOf="@+id/textview_buy_net_amount"/>
 
         <View
             android:id="@+id/calc_divider6"
@@ -190,7 +199,7 @@
             android:layout_marginStart="17dp"
             android:layout_toEndOf="@id/label_sell_gross_amount"
             android:layout_toRightOf="@id/label_sell_gross_amount"
-            android:text="0000"/>
+            android:text="0"/>
 
         <View
             android:id="@+id/calc_divider8"
@@ -211,8 +220,15 @@
             android:layout_marginStart="36dp"
             android:layout_toEndOf="@id/label_sell_net_amount"
             android:layout_toRightOf="@id/label_sell_net_amount"
-            android:text="0000"/>
-        <!-- dropdown -->
+            android:text="0"/>
+
+        <ImageView
+            android:id="@+id/imageview_sell_net_amount"
+            style="@style/Calculator_ImageView"
+            android:layout_below="@id/calc_divider8"
+            android:layout_alignTop="@id/calc_divider8"
+            android:layout_toRightOf="@+id/textview_sell_net_amount"
+            android:layout_toEndOf="@+id/textview_sell_net_amount"/>
 
         <View
             android:id="@+id/calc_divider9"
@@ -233,7 +249,7 @@
             android:layout_marginStart="16dp"
             android:layout_toEndOf="@id/label_gain_loss_amount"
             android:layout_toRightOf="@id/label_gain_loss_amount"
-            android:text="0000"/>
+            android:text="0"/>
 
         <View
             android:id="@+id/calc_divider10"
@@ -254,7 +270,7 @@
             android:layout_marginStart="66dp"
             android:layout_toEndOf="@id/label_gain_loss_percent"
             android:layout_toRightOf="@id/label_gain_loss_percent"
-            android:text="0000%"/>
+            android:text="0%"/>
 
         <View
             android:id="@android:id/empty"
