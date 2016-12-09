@@ -42,6 +42,14 @@
     <!-- ImageView Content Description -->
     <string name="collapse_arrow">collapse</string>
     <string name="expand_arrow">expand</string>
+    <string name="add_button">add</string>
+    <string name="check_button">check</string>
+
+    <!-- Ticker -->
+    <string name="ticker_stock">Stock</string>
+    <string name="ticker_price">Price</string>
+    <string name="ticker_change">Change</string>
+    <string name="ticker_percent_change">% Change</string>
 
     <string-array name="refresh_intervals">
         <item>10</item>

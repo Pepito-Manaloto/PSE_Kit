@@ -33,7 +33,7 @@ public class EditTextOnFocusChangeHideKeyboard implements View.OnFocusChangeList
     /**
      * Hides the keyboard from the view.
      */
-    public void hideKeyboard(View view)
+    private void hideKeyboard(View view)
     {
         InputMethodManager inputMethodManager = (InputMethodManager) this.context.getSystemService(Activity.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);

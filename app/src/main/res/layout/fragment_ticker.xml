@@ -1,19 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
               android:layout_width="match_parent"
-              android:layout_height="match_parent">
+              android:layout_height="match_parent"
+              android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/textview_last_updated"
+        style="@style/LastModified_TextView"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/textview_ticker_stock_header"
+            style="@style/TickerRow.TickerHeader_TextView"
+            android:text="@string/ticker_stock"
+            />
+
+        <TextView
+            android:id="@+id/textview_ticker_price_header"
+            style="@style/TickerRow.TickerHeader_TextView"
+            android:text="@string/ticker_price"
+            />
+
+        <TextView
+            android:id="@+id/textview_ticker_change_header"
+            style="@style/TickerRow.TickerHeader_TextView"
+            android:text="@string/ticker_change"
+            />
+
+        <TextView
+            android:id="@+id/textview_ticker_percent_change_header"
+            style="@style/TickerRow.TickerHeader_TextView"
+            android:text="@string/ticker_percent_change"
+            />
+
+        <TextView
+            android:id="@+id/textview_ticker_icon"
+            style="@style/TickerRow.TickerHeader_TextView"
+            />
+    </LinearLayout>
+
+    <View
+        style="@style/Divider2"
+        android:layout_margin="0dp"/>
 
     <ListView
         android:id="@android:id/list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fastScrollEnabled="true" />
-
-    <TextView
-        android:id="@android:id/empty"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center_horizontal|center_vertical"
-        android:text="TEST TEST TEST TICKER" />
+        android:fastScrollEnabled="true"/>
 </LinearLayout>
