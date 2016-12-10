@@ -33,11 +33,21 @@
     <string name="calculator_price_to_break_even">Price To Break-Even : </string>
     <string name="calculator_buy_gross_amount">Buy Gross Amount : </string>
     <string name="calculator_buy_net_amount">Buy Net Amount : </string>
+    <string name="calculator_additional_fees">Additional Fees : </string>
+    <string name="calculator_deductions">Deductions : </string>
+    <string name="calculator_brokers_commission">Broker\'s Commission : </string>
+    <string name="calculator_clearing_fee">Clearing Fee : </string>
+    <string name="calculator_transaction_fee">Transaction Fee : </string>
+    <string name="calculator_sales_tax">Sales Tax : </string>
+    <string name="calculator_total">Total : </string>
     <string name="calculator_sell_price">Sell Price : </string>
     <string name="calculator_sell_gross_amount">Sell Gross Amount : </string>
     <string name="calculator_sell_net_amount">Sell Net Amount : </string>
     <string name="calculator_gain_loss_amount">Gain/Loss Amount : </string>
     <string name="calculator_gain_loss_percent">Gain/Loss % : </string>
+
+    <string name="default_value">0</string>
+    <string name="default_value_percent">0%</string>
 
     <!-- ImageView Content Description -->
     <string name="collapse_arrow">collapse</string>

@@ -35,7 +35,7 @@
             android:layout_toRightOf="@id/label_buy_price"
             android:width="90dp"
             android:inputType="numberDecimal"
-            android:maxLength="8"/>
+            android:maxLength="@integer/calculator_buy_price_max_length"/>
 
         <View
             android:id="@+id/calc_divider1"
@@ -58,9 +58,9 @@
             android:layout_marginStart="110dp"
             android:layout_toEndOf="@id/label_shares"
             android:layout_toRightOf="@id/label_shares"
-            android:width="160dp"
+            android:width="150dp"
             android:inputType="number"
-            android:maxLength="15"/>
+            android:maxLength="@integer/calculator_shares_max_length"/>
 
         <View
             android:id="@+id/calc_divider2"
@@ -81,7 +81,7 @@
             android:layout_marginStart="55dp"
             android:layout_toEndOf="@id/label_average_price"
             android:layout_toRightOf="@id/label_average_price"
-            android:text="0"/>
+            android:text="@string/default_value"/>
 
         <View
             android:id="@+id/calc_divider3"
@@ -102,7 +102,7 @@
             android:layout_marginStart="6dp"
             android:layout_toEndOf="@id/label_break_even_price"
             android:layout_toRightOf="@id/label_break_even_price"
-            android:text="0"/>
+            android:text="@string/default_value"/>
 
         <View
             android:id="@+id/calc_divider4"
@@ -123,7 +123,7 @@
             android:layout_marginStart="16dp"
             android:layout_toEndOf="@id/label_buy_gross_amount"
             android:layout_toRightOf="@id/label_buy_gross_amount"
-            android:text="0"/>
+            android:text="@string/default_value"/>
 
         <View
             android:id="@+id/calc_divider5"
@@ -145,7 +145,7 @@
             android:layout_marginStart="35dp"
             android:layout_toEndOf="@id/label_buy_net_amount"
             android:layout_toRightOf="@id/label_buy_net_amount"
-            android:text="0"/>
+            android:text="@string/default_value"/>
 
         <ImageView
             android:id="@+id/imageview_buy_net_amount"
@@ -155,10 +155,89 @@
             android:layout_toRightOf="@+id/textview_buy_net_amount"
             android:layout_toEndOf="@+id/textview_buy_net_amount"/>
 
+<!-- ======================================================== -->
+        <TextView
+            android:id="@+id/label_addt_brokers_commission"
+            style="@style/CalculatorSub"
+            android:layout_below="@id/label_buy_net_amount"
+            android:layout_marginBottom="5dp"
+            android:visibility="invisible"
+            android:text="@string/calculator_brokers_commission"/>
+
+        <TextView
+            android:id="@+id/textview_addt_brokers_commission"
+            style="@style/CalculatorSub"
+            android:layout_below="@id/label_buy_net_amount"
+            android:layout_marginLeft="17dp"
+            android:layout_marginStart="17dp"
+            android:layout_toEndOf="@id/label_addt_brokers_commission"
+            android:layout_toRightOf="@id/label_addt_brokers_commission"
+            android:visibility="invisible"
+            android:text="@string/default_value"/>
+
+        <TextView
+            android:id="@+id/label_addt_clearing_fee"
+            style="@style/CalculatorSub"
+            android:layout_below="@id/label_addt_brokers_commission"
+            android:layout_marginBottom="5dp"
+            android:visibility="invisible"
+            android:text="@string/calculator_clearing_fee"/>
+
+        <TextView
+            android:id="@+id/textview_addt_clearing_fee"
+            style="@style/CalculatorSub"
+            android:layout_below="@id/label_addt_brokers_commission"
+            android:layout_marginLeft="75dp"
+            android:layout_marginStart="75dp"
+            android:layout_toEndOf="@id/label_addt_clearing_fee"
+            android:layout_toRightOf="@id/label_addt_clearing_fee"
+            android:visibility="invisible"
+            android:text="@string/default_value"/>
+
+        <TextView
+            android:id="@+id/label_addt_transaction_fee"
+            style="@style/CalculatorSub"
+            android:layout_below="@id/label_addt_clearing_fee"
+            android:layout_marginBottom="5dp"
+            android:visibility="invisible"
+            android:text="@string/calculator_transaction_fee"/>
+
+        <TextView
+            android:id="@+id/textview_addt_transaction_fee"
+            style="@style/CalculatorSub"
+            android:layout_below="@id/label_addt_clearing_fee"
+            android:layout_marginLeft="51dp"
+            android:layout_marginStart="51dp"
+            android:layout_toEndOf="@id/label_addt_transaction_fee"
+            android:layout_toRightOf="@id/label_addt_transaction_fee"
+            android:visibility="invisible"
+            android:text="@string/default_value"/>
+
+        <TextView
+            android:id="@+id/label_addt_total"
+            style="@style/CalculatorSub"
+            android:layout_below="@id/label_addt_transaction_fee"
+            android:layout_marginBottom="5dp"
+            android:visibility="invisible"
+            android:text="@string/calculator_total"/>
+
+        <TextView
+            android:id="@+id/textview_addt_total"
+            style="@style/CalculatorSub"
+            android:layout_below="@id/label_addt_transaction_fee"
+            android:layout_marginLeft="126dp"
+            android:layout_marginStart="126dp"
+            android:layout_toEndOf="@id/label_addt_total"
+            android:layout_toRightOf="@id/label_addt_total"
+            android:visibility="invisible"
+            android:text="@string/default_value"/>
+
+<!-- ======================================================== -->
+
         <View
             android:id="@+id/calc_divider6"
             style="@style/Divider2"
-            android:layout_below="@id/label_buy_net_amount"/>
+            android:layout_below="@id/label_addt_total"/>
 
         <TextView
             android:id="@+id/label_sell_price"
@@ -178,7 +257,7 @@
             android:layout_toRightOf="@id/label_sell_price"
             android:width="90dp"
             android:inputType="numberDecimal"
-            android:maxLength="8"/>
+            android:maxLength="@integer/calculator_sell_price_max_length"/>
 
         <View
             android:id="@+id/calc_divider7"
@@ -199,7 +278,7 @@
             android:layout_marginStart="17dp"
             android:layout_toEndOf="@id/label_sell_gross_amount"
             android:layout_toRightOf="@id/label_sell_gross_amount"
-            android:text="0"/>
+            android:text="@string/default_value"/>
 
         <View
             android:id="@+id/calc_divider8"
@@ -216,11 +295,11 @@
             android:id="@+id/textview_sell_net_amount"
             style="@style/Calculator"
             android:layout_below="@id/calc_divider8"
-            android:layout_marginLeft="36dp"
-            android:layout_marginStart="36dp"
+            android:layout_marginLeft="37dp"
+            android:layout_marginStart="37dp"
             android:layout_toEndOf="@id/label_sell_net_amount"
             android:layout_toRightOf="@id/label_sell_net_amount"
-            android:text="0"/>
+            android:text="@string/default_value"/>
 
         <ImageView
             android:id="@+id/imageview_sell_net_amount"
@@ -230,10 +309,108 @@
             android:layout_toRightOf="@+id/textview_sell_net_amount"
             android:layout_toEndOf="@+id/textview_sell_net_amount"/>
 
+<!-- ======================================================== -->
+        <TextView
+            android:id="@+id/label_deduct_brokers_commission"
+            style="@style/CalculatorSub"
+            android:layout_below="@id/label_sell_net_amount"
+            android:layout_marginBottom="5dp"
+            android:visibility="invisible"
+            android:text="@string/calculator_brokers_commission"/>
+
+        <TextView
+            android:id="@+id/textview_deduct_brokers_commission"
+            style="@style/CalculatorSub"
+            android:layout_below="@id/label_sell_net_amount"
+            android:layout_marginLeft="17dp"
+            android:layout_marginStart="17dp"
+            android:layout_toEndOf="@id/label_deduct_brokers_commission"
+            android:layout_toRightOf="@id/label_deduct_brokers_commission"
+            android:visibility="invisible"
+            android:text="@string/default_value"/>
+
+        <TextView
+            android:id="@+id/label_deduct_clearing_fee"
+            style="@style/CalculatorSub"
+            android:layout_below="@id/label_deduct_brokers_commission"
+            android:layout_marginBottom="5dp"
+            android:visibility="invisible"
+            android:text="@string/calculator_clearing_fee"/>
+
+        <TextView
+            android:id="@+id/textview_deduct_clearing_fee"
+            style="@style/CalculatorSub"
+            android:layout_below="@id/label_deduct_brokers_commission"
+            android:layout_marginLeft="75dp"
+            android:layout_marginStart="75dp"
+            android:layout_toEndOf="@id/label_deduct_clearing_fee"
+            android:layout_toRightOf="@id/label_deduct_clearing_fee"
+            android:visibility="invisible"
+            android:text="@string/default_value"/>
+
+        <TextView
+            android:id="@+id/label_deduct_transaction_fee"
+            style="@style/CalculatorSub"
+            android:layout_below="@id/label_deduct_clearing_fee"
+            android:layout_marginBottom="5dp"
+            android:visibility="invisible"
+            android:text="@string/calculator_transaction_fee"/>
+
+        <TextView
+            android:id="@+id/textview_deduct_transaction_fee"
+            style="@style/CalculatorSub"
+            android:layout_below="@id/label_deduct_clearing_fee"
+            android:layout_marginLeft="51dp"
+            android:layout_marginStart="51dp"
+            android:layout_toEndOf="@id/label_deduct_transaction_fee"
+            android:layout_toRightOf="@id/label_deduct_transaction_fee"
+            android:visibility="invisible"
+            android:text="@string/default_value"/>
+
+        <TextView
+            android:id="@+id/label_deduct_sales_tax"
+            style="@style/CalculatorSub"
+            android:layout_below="@id/label_deduct_transaction_fee"
+            android:layout_marginBottom="5dp"
+            android:visibility="invisible"
+            android:text="@string/calculator_total"/>
+
+        <TextView
+            android:id="@+id/textview_deduct_sales_tax"
+            style="@style/CalculatorSub"
+            android:layout_below="@id/label_deduct_transaction_fee"
+            android:layout_marginLeft="126dp"
+            android:layout_marginStart="126dp"
+            android:layout_toEndOf="@id/label_deduct_sales_tax"
+            android:layout_toRightOf="@id/label_deduct_sales_tax"
+            android:visibility="invisible"
+            android:text="@string/default_value"/>
+
+        <TextView
+            android:id="@+id/label_deduct_total"
+            style="@style/CalculatorSub"
+            android:layout_below="@id/label_deduct_sales_tax"
+            android:layout_marginBottom="5dp"
+            android:visibility="invisible"
+            android:text="@string/calculator_total"/>
+
+        <TextView
+            android:id="@+id/textview_deduct_total"
+            style="@style/CalculatorSub"
+            android:layout_below="@id/label_deduct_sales_tax"
+            android:layout_marginLeft="126dp"
+            android:layout_marginStart="126dp"
+            android:layout_toEndOf="@id/label_deduct_total"
+            android:layout_toRightOf="@id/label_deduct_total"
+            android:visibility="invisible"
+            android:text="@string/default_value"/>
+
+<!-- ======================================================== -->
+
         <View
             android:id="@+id/calc_divider9"
             style="@style/Divider2"
-            android:layout_below="@id/label_sell_net_amount"/>
+            android:layout_below="@id/label_deduct_total"/>
 
         <TextView
             android:id="@+id/label_gain_loss_amount"
@@ -249,7 +426,7 @@
             android:layout_marginStart="16dp"
             android:layout_toEndOf="@id/label_gain_loss_amount"
             android:layout_toRightOf="@id/label_gain_loss_amount"
-            android:text="0"/>
+            android:text="@string/default_value"/>
 
         <View
             android:id="@+id/calc_divider10"
@@ -270,7 +447,7 @@
             android:layout_marginStart="66dp"
             android:layout_toEndOf="@id/label_gain_loss_percent"
             android:layout_toRightOf="@id/label_gain_loss_percent"
-            android:text="0%"/>
+            android:text="@string/default_value_percent"/>
 
         <View
             android:id="@android:id/empty"

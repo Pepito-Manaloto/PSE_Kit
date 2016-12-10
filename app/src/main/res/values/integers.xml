@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="calculator_buy_price_max_length" type="integer">8</item>
+    <item name="calculator_shares_max_length" type="integer">15</item>
+    <item name="calculator_sell_price_max_length" type="integer">8</item>
+</resources>

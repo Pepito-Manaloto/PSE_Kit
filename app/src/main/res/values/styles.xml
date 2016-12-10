@@ -68,7 +68,18 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginBottom">10dp</item>
         <item name="android:layout_marginLeft">10dp</item>
+        <item name="android:layout_marginStart">10dp</item>
         <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="CalculatorSub">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginBottom">10dp</item>
+        <item name="android:layout_marginLeft">20dp</item>
+        <item name="android:layout_marginStart">20dp</item>
+        <item name="android:textSize">15sp</item>
         <item name="android:textColor">@color/black</item>
     </style>
 

@@ -37,7 +37,7 @@ import java.lang.reflect.Field;
  */
 public abstract class MainFragmentActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
 {
-    public static final String LOG_MARKER = "MainFragmentActivity";
+    public static final String LOG_MARKER = MainFragmentActivity.class.getSimpleName();
 
     private DrawerLayout drawer;
     private Menu toolbarMenu;
