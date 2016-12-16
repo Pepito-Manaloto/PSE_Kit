@@ -155,7 +155,7 @@
             android:layout_toRightOf="@+id/textview_buy_net_amount"
             android:layout_toEndOf="@+id/textview_buy_net_amount"/>
 
-<!-- ======================================================== -->
+<!-- =======================START================================= -->
         <TextView
             android:id="@+id/label_addt_brokers_commission"
             style="@style/CalculatorSub"
@@ -232,12 +232,12 @@
             android:visibility="invisible"
             android:text="@string/default_value"/>
 
-<!-- ======================================================== -->
+<!-- =======================END================================= -->
 
         <View
             android:id="@+id/calc_divider6"
             style="@style/Divider2"
-            android:layout_below="@id/label_addt_total"/>
+            android:layout_below="@id/label_buy_net_amount"/>
 
         <TextView
             android:id="@+id/label_sell_price"
@@ -309,7 +309,7 @@
             android:layout_toRightOf="@+id/textview_sell_net_amount"
             android:layout_toEndOf="@+id/textview_sell_net_amount"/>
 
-<!-- ======================================================== -->
+<!-- ========================START=============================== -->
         <TextView
             android:id="@+id/label_deduct_brokers_commission"
             style="@style/CalculatorSub"
@@ -373,7 +373,7 @@
             android:layout_below="@id/label_deduct_transaction_fee"
             android:layout_marginBottom="5dp"
             android:visibility="invisible"
-            android:text="@string/calculator_total"/>
+            android:text="@string/calculator_sales_tax"/>
 
         <TextView
             android:id="@+id/textview_deduct_sales_tax"
@@ -405,7 +405,7 @@
             android:visibility="invisible"
             android:text="@string/default_value"/>
 
-<!-- ======================================================== -->
+<!-- ========================END================================ -->
 
         <View
             android:id="@+id/calc_divider9"

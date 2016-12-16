@@ -63,7 +63,7 @@ public class TickerAdapter extends ArrayAdapter<Ticker>
         }
 
         Ticker ticker = getItem(position);
-        holder.setTickerView(ticker, this.activity, new ListRowOnTouchChangeActivity(this.activity, /*TODO: CreateTradePlanActivity.class*/ null, ticker));
+        holder.setTickerView(ticker, this.activity, new ListRowOnTouchChangeActivity(this.activity, /*TODO: CreateTradePlanActivity.class*/ null, ticker, holder.layout));
 
         return convertView;
     }

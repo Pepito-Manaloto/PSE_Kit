@@ -2,10 +2,12 @@ package com.aaron.pseplanner.listener;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.aaron.pseplanner.R;
 import com.aaron.pseplanner.bean.Ticker;
 
 /**
@@ -18,20 +20,32 @@ public class ListRowOnTouchChangeActivity implements View.OnTouchListener
     private Activity activity;
     private Class<? extends Activity> activityClass;
     private Ticker ticker;
-
+    private View view;
+    private int highlightedColor;
 
     /**
      * Default constructor.
      *
-     * @param activity the current activity
+     * @param activity      the current activity
      * @param activityClass the activity class to transition to
-     * @param ticker the selected ticker
+     * @param ticker        the selected ticker
+     * @param view          the view of the listener
      */
-    public ListRowOnTouchChangeActivity(final Activity activity, final Class<? extends Activity> activityClass, final Ticker ticker)
+    public ListRowOnTouchChangeActivity(final Activity activity, final Class<? extends Activity> activityClass, final Ticker ticker, final View view)
     {
         this.activity = activity;
         this.activityClass = activityClass;
         this.ticker = ticker;
+        this.view = view;
+
+        if(android.os.Build.VERSION.SDK_INT >= 23)
+        {
+            this.highlightedColor = activity.getColor(R.color.lightSkyBlue);
+        }
+        else
+        {
+            this.highlightedColor = activity.getResources().getColor(R.color.lightSkyBlue);
+        }
     }
 
     /**
@@ -45,15 +59,18 @@ public class ListRowOnTouchChangeActivity implements View.OnTouchListener
         {
             case MotionEvent.ACTION_DOWN:
             {
+                this.view.setBackgroundColor(this.highlightedColor);
                 this.historicX = event.getX();
                 break;
             }
             case MotionEvent.ACTION_UP:
             {
+                this.view.setBackgroundColor(Color.WHITE);
                 boolean touchMovedLessThan10Pixels = Math.abs(this.historicX - event.getX()) < 15;
 
                 if(touchMovedLessThan10Pixels)
                 {
+
                     // TODO: start activity
                 }
 
@@ -64,6 +81,7 @@ public class ListRowOnTouchChangeActivity implements View.OnTouchListener
             }
             default:
             {
+                this.view.setBackgroundColor(Color.WHITE);
                 return false;
             }
         }
