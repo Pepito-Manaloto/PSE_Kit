@@ -101,7 +101,6 @@ public class CalculatorFragment extends Fragment
         additionalFeesTextView.add((TextView) view.findViewById(R.id.textview_addt_total));
         buyNetImageView.setOnClickListener(new ImageViewOnClickCollapseExpand(this.getActivity(), buyNetImageView, additionalFeesTextView));
 
-
         List<TextView> deductionsTextView = new ArrayList<>();
         deductionsTextView.add((TextView) view.findViewById(R.id.label_deduct_brokers_commission));
         deductionsTextView.add((TextView) view.findViewById(R.id.textview_deduct_brokers_commission));
