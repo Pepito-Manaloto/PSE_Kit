@@ -17,6 +17,7 @@ import com.aaron.pseplanner.R;
 import com.aaron.pseplanner.listener.EditTextOnFocusChangeHideKeyboard;
 import com.aaron.pseplanner.listener.EditTextTextChangeAddComma;
 import com.aaron.pseplanner.listener.ImageViewOnClickCollapseExpand;
+import com.aaron.pseplanner.service.implementation.CalculatorServiceImpl;
 
 import org.apache.commons.lang3.reflect.FieldUtils;
 
@@ -52,8 +53,6 @@ public class CalculatorFragment extends Fragment
         this.sellPriceEditText = (EditText) view.findViewById(R.id.edittext_sell_price);
         this.setEditTextOnFocusChangeListener(this.buyPriceEditText, this.sharesEditText, this.sellPriceEditText);
         this.setEditTextTextChangeListener(this.buyPriceEditText, this.sharesEditText, this.sellPriceEditText);
-
-
 
         this.buyNetAmountImageView = (ImageView) view.findViewById(R.id.imageview_buy_net_amount);
         this.sellNetAmountImageView = (ImageView) view.findViewById(R.id.imageview_sell_net_amount);

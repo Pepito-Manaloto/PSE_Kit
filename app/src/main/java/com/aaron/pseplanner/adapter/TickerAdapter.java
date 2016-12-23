@@ -7,14 +7,14 @@ import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.aaron.pseplanner.R;
 import com.aaron.pseplanner.bean.Ticker;
 import com.aaron.pseplanner.listener.ListRowOnTouchChangeActivity;
-import com.aaron.pseplanner.util.StockUtils;
+import com.aaron.pseplanner.service.implementation.StockServiceImpl;
+import com.aaron.pseplanner.service.StockService;
 
 import java.util.List;
 
@@ -26,6 +26,7 @@ public class TickerAdapter extends ArrayAdapter<Ticker>
 {
     private Activity activity;
     private List<Ticker> tickerList;
+    private StockService stockService;
 
     public TickerAdapter(Activity activity, List<Ticker> tickerList)
     {
@@ -33,6 +34,7 @@ public class TickerAdapter extends ArrayAdapter<Ticker>
 
         this.activity = activity;
         this.tickerList = tickerList;
+        this.stockService = new StockServiceImpl();
     }
 
     /**
@@ -63,7 +65,7 @@ public class TickerAdapter extends ArrayAdapter<Ticker>
         }
 
         Ticker ticker = getItem(position);
-        holder.setTickerView(ticker, this.activity, new ListRowOnTouchChangeActivity(this.activity, /*TODO: CreateTradePlanActivity.class*/ null, ticker, holder.layout));
+        holder.setTickerView(ticker, this.stockService, this.activity, new ListRowOnTouchChangeActivity(this.activity, /*TODO: CreateTradePlanActivity.class*/ null, ticker, holder.layout));
 
         return convertView;
     }
@@ -76,13 +78,14 @@ public class TickerAdapter extends ArrayAdapter<Ticker>
         TextView percentChange;
         LinearLayout layout;
 
-        void setTickerView(Ticker ticker, Activity activity, View.OnTouchListener listener)
+        void setTickerView(Ticker ticker, StockService service, Activity activity, View.OnTouchListener listener)
         {
             layout.setOnTouchListener(listener);
-            stock.setText(ticker.getStock());
-            price.setText(StockUtils.format(ticker.getPrice()));
-            change.setText(StockUtils.format(ticker.getChange()));
-            percentChange.setText(StockUtils.formatWithPercent(ticker.getPercentChange()));
+            stock.setText(ticker.getSymbol());
+            price.setText(service.formatStockPrice(ticker.getCurrentPrice()));
+            change.setText(service.formatStockPrice(ticker.getChange()));
+            String percentChangeText = service.formatStockPrice(ticker.getPercentChange()) + "%";
+            percentChange.setText(percentChangeText);
 
             if(ticker.getChange() > 0)
             {

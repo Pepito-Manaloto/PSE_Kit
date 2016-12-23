@@ -1,4 +1,6 @@
-package com.aaron.pseplanner.util;
+package com.aaron.pseplanner.service.implementation;
+
+import com.aaron.pseplanner.service.StockService;
 
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
@@ -7,9 +9,10 @@ import java.text.DecimalFormat;
  * Created by aaron.asuncion on 12/8/2016.
  */
 
-public class StockUtils
+public class StockServiceImpl implements StockService
 {
-    public static String format(double number)
+    @Override
+    public String formatStockPrice(double number)
     {
         if(number == 0)
         {
@@ -18,14 +21,11 @@ public class StockUtils
 
         String priceStr;
 
+        //TODO: determine the decimal format to use depending on the given number
+
         DecimalFormat df = new DecimalFormat("#.####");
         df.setRoundingMode(RoundingMode.FLOOR);
 
         return df.format(number);
-    }
-
-    public static String formatWithPercent(double number)
-    {
-        return format(number) + "%";
     }
 }
