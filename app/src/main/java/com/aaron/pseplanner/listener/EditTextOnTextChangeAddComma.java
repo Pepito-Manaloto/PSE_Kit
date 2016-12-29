@@ -5,6 +5,8 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.widget.EditText;
 
+import com.aaron.pseplanner.constant.Constants;
+
 import org.apache.commons.lang3.StringUtils;
 
 import java.text.DecimalFormat;
@@ -12,17 +14,17 @@ import java.text.DecimalFormat;
 /**
  * Created by Aaron on 12/3/2016.
  */
-public class EditTextTextChangeAddComma implements TextWatcher
+public class EditTextOnTextChangeAddComma implements TextWatcher
 {
     private EditText editText;
     private final DecimalFormat formatter;
     private int max;
     private String oldInput;
 
-    public EditTextTextChangeAddComma(EditText editText, int maxIntegerDigits)
+    public EditTextOnTextChangeAddComma(EditText editText, int maxIntegerDigits)
     {
         this.editText = editText;
-        this.formatter = new DecimalFormat("#,###.####");
+        this.formatter = new DecimalFormat(Constants.PRICE_FORMAT);
 
         // Divide by three because there would be a comma for every 3 digits
         this.max = maxIntegerDigits - ((maxIntegerDigits / 3) - (maxIntegerDigits % 3 == 0 ? 1 : 0));
@@ -86,9 +88,21 @@ public class EditTextTextChangeAddComma implements TextWatcher
             }
         }
 
+        this.afterAddingComma();
+
         this.editText.addTextChangedListener(this);
     }
 
+    /**
+     * This method is called after formatting the input in the edit text. To be implemented by subclass.
+     */
+    protected void afterAddingComma()
+    {
+    }
+
+    /**
+     * Check if the number of digits in the given whole number input exceeds the maximum.
+     */
     private boolean exceedsMaxLength(String input)
     {
         int wholeNumberCount;
@@ -101,9 +115,13 @@ public class EditTextTextChangeAddComma implements TextWatcher
         {
             wholeNumberCount = input.length();
         }
+
         return wholeNumberCount > this.max;
     }
 
+    /**
+     * Formats the given input/number in "#,###.####" format.
+     */
     private String formatNumber(String input)
     {
         String formattedInput;

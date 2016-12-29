@@ -190,6 +190,7 @@ public class CalculatorServiceImpl implements CalculatorService
      * @param grossAmount the stock trade's gross amount
      * @return double
      */
+    @Override
     public double getStockbrokersCommission(double grossAmount)
     {
         double commission = grossAmount * STOCK_BROKERS_COMMISSION;
@@ -202,6 +203,7 @@ public class CalculatorServiceImpl implements CalculatorService
      * @param stockbrokersCommission the stock trade's commission
      * @return double
      */
+    @Override
     public double getVatOfCommission(double stockbrokersCommission)
     {
         return stockbrokersCommission * VAT;
@@ -213,6 +215,7 @@ public class CalculatorServiceImpl implements CalculatorService
      * @param grossAmount the stock trade's gross amount
      * @return double
      */
+    @Override
     public double getClearingFee(double grossAmount)
     {
         return grossAmount * CLEARING_FEE;
@@ -224,6 +227,7 @@ public class CalculatorServiceImpl implements CalculatorService
      * @param grossAmount the stock trade's gross amount
      * @return double
      */
+    @Override
     public double getTransactionFee(double grossAmount)
     {
         return grossAmount * PSE_TRANSACTION_FEE;
@@ -235,6 +239,7 @@ public class CalculatorServiceImpl implements CalculatorService
      * @param grossAmount the stock trade's gross amount
      * @return double
      */
+    @Override
     public double getSalesTax(double grossAmount)
     {
         return grossAmount * SALES_TAX;

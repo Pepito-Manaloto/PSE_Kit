@@ -15,6 +15,11 @@ public interface CalculatorService
     double getPriceToBreakEven(double buyPrice);
     double getSellGrossAmount(double sellPrice, long shares);
     double getSellNetAmount(double sellPrice, long shares);
+    double getStockbrokersCommission(double grossAmount);
+    double getVatOfCommission(double stockbrokersCommission);
+    double getClearingFee(double grossAmount);
+    double getTransactionFee(double grossAmount);
+    double getSalesTax(double grossAmount);
     double getGainLossAmount(double buyPrice, long shares, double sellPrice);
     double getPercentGainLoss(double buyPrice, long shares, double sellPrice);
     double getRiskRewardRatio(double entryPrice, double targetPrice, double cutlossPrice);

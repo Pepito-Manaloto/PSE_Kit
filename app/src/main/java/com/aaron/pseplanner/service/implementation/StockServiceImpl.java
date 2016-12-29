@@ -1,5 +1,7 @@
 package com.aaron.pseplanner.service.implementation;
 
+import com.aaron.pseplanner.bean.BoardLot;
+import com.aaron.pseplanner.constant.Constants;
 import com.aaron.pseplanner.service.StockService;
 
 import java.math.RoundingMode;
@@ -19,11 +21,7 @@ public class StockServiceImpl implements StockService
             return "0";
         }
 
-        String priceStr;
-
-        //TODO: determine the decimal format to use depending on the given number
-
-        DecimalFormat df = new DecimalFormat("#.####");
+        DecimalFormat df = new DecimalFormat(Constants.PRICE_FORMAT);
         df.setRoundingMode(RoundingMode.FLOOR);
 
         return df.format(number);
