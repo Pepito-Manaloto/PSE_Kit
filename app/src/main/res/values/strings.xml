@@ -62,7 +62,6 @@
     <string name="ticker_percent_change">% Change</string>
 
     <string-array name="refresh_intervals">
-        <item>10</item>
         <item>15</item>
         <item>20</item>
         <item>30</item>
