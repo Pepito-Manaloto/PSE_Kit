@@ -20,8 +20,8 @@ import java.util.List;
 
 /**
  * Created by aaron.asuncion on 12/8/2016.
+ * Contains all tickers, and is
  */
-
 public class TickerAdapter extends ArrayAdapter<Ticker>
 {
     private Activity activity;

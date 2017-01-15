@@ -10,9 +10,11 @@ import java.text.DecimalFormat;
 /**
  * Created by aaron.asuncion on 12/8/2016.
  */
-
 public class StockServiceImpl implements StockService
 {
+    /**
+     * Formats the given number, adding commas and rounding down to 4 decimal places.
+     */
     @Override
     public String formatStockPrice(double number)
     {

@@ -5,8 +5,8 @@ import android.widget.AbsListView;
 
 /**
  * Created by aaron.asuncion on 12/9/2016.
+ * Show/hides the fast scroll of a ListView depending on the user's gesture.
  */
-
 public class OnScrollShowHideFastScroll implements AbsListView.OnScrollListener
 {
     private static final int DELAY = 1000;

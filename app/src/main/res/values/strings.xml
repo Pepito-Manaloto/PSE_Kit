@@ -36,6 +36,7 @@
     <string name="calculator_additional_fees">Additional Fees : </string>
     <string name="calculator_deductions">Deductions : </string>
     <string name="calculator_brokers_commission">Broker\'s Commission : </string>
+    <string name="calculator_brokers_commission_vat">Broker\'s Commission Vat : </string>
     <string name="calculator_clearing_fee">Clearing Fee : </string>
     <string name="calculator_transaction_fee">Transaction Fee : </string>
     <string name="calculator_sales_tax">Sales Tax : </string>
@@ -50,7 +51,7 @@
     <string name="default_value_percent">0%</string>
 
     <!-- ImageView Content Description -->
-    <string name="collapse_arrow">collapse</string>
+    <string name="hide_arrow">hide</string>
     <string name="expand_arrow">expand</string>
     <string name="add_button">add</string>
     <string name="check_button">check</string>

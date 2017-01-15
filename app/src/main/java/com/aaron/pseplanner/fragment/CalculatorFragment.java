@@ -13,22 +13,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.aaron.pseplanner.R;
-import com.aaron.pseplanner.bean.BoardLot;
 import com.aaron.pseplanner.listener.CalculatorOnTextChangeListener;
 import com.aaron.pseplanner.listener.EditTextOnFocusChangeHideKeyboard;
-import com.aaron.pseplanner.listener.EditTextOnTextChangeAddComma;
-import com.aaron.pseplanner.listener.ImageViewOnClickCollapseExpand;
+import com.aaron.pseplanner.listener.ImageViewOnClickHideExpand;
 import com.aaron.pseplanner.service.CalculatorService;
 import com.aaron.pseplanner.service.StockService;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
-import org.w3c.dom.Text;
 
 import java.text.NumberFormat;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
 /**
@@ -51,6 +46,7 @@ public class CalculatorFragment extends Fragment
     private TextView buyGrossAmountText;
     private TextView buyNetAmountText;
     private TextView additionalBrokersCommissionText;
+    private TextView additionalVatOfCommissionText;
     private TextView additionalClearingFeeText;
     private TextView additionalTransactionFeeText;
     private TextView additionalTotal;
@@ -78,8 +74,9 @@ public class CalculatorFragment extends Fragment
         this.buyGrossAmountText = (TextView) view.findViewById(R.id.textview_buy_gross_amount);
         this.buyNetAmountText = (TextView) view.findViewById(R.id.textview_buy_net_amount);
         this.additionalBrokersCommissionText = (TextView) view.findViewById(R.id.textview_addt_brokers_commission);
-        this.additionalClearingFeeText = (TextView) view.findViewById(R.id.label_addt_clearing_fee);
-        this.additionalTransactionFeeText = (TextView) view.findViewById(R.id.label_addt_transaction_fee);
+        this.additionalVatOfCommissionText = (TextView) view.findViewById(R.id.textview_addt_brokers_commission_vat);
+        this.additionalClearingFeeText = (TextView) view.findViewById(R.id.textview_addt_clearing_fee);
+        this.additionalTransactionFeeText = (TextView) view.findViewById(R.id.textview_addt_transaction_fee);
         this.additionalTotal = (TextView) view.findViewById(R.id.textview_addt_total);
         this.sellGrossAmountText = (TextView) view.findViewById(R.id.textview_sell_gross_amount);
         this.sellNetAmountText = (TextView) view.findViewById(R.id.textview_sell_net_amount);
@@ -99,7 +96,7 @@ public class CalculatorFragment extends Fragment
 
         this.buyNetAmountImageView = (ImageView) view.findViewById(R.id.imageview_buy_net_amount);
         this.sellNetAmountImageView = (ImageView) view.findViewById(R.id.imageview_sell_net_amount);
-        this.setImageViewOnClickListener(view, this.buyNetAmountImageView, this.sellNetAmountImageView);
+        this.setImageViewOnClickListener(this.buyNetAmountImageView, view.findViewById(R.id.additional_fees_layout), this.sellNetAmountImageView, view.findViewById(R.id.deduction_fees_layout));
 
         return view;
     }
@@ -156,7 +153,7 @@ public class CalculatorFragment extends Fragment
                         buyNetAmountText.setText(stockService.formatStockPrice(buyNetAmount));
 
                         additionalBrokersCommissionText.setText(stockService.formatStockPrice(stockBrokersCommission));
-                        //additionalVatOfCommissionText.setText(stockService.formatStockPrice(vatOfCommission));
+                        additionalVatOfCommissionText.setText(stockService.formatStockPrice(vatOfCommission));
                         additionalClearingFeeText.setText(stockService.formatStockPrice(clearingFee));
                         additionalTransactionFeeText.setText(stockService.formatStockPrice(transactionFee));
                         additionalTotal.setText(stockService.formatStockPrice(total));
@@ -202,31 +199,10 @@ public class CalculatorFragment extends Fragment
     /**
      * Sets the on click listener for image views. Will toggle update the image on click.
      */
-    private void setImageViewOnClickListener(View view, ImageView buyNetImageView, ImageView sellNetImageView)
+    private void setImageViewOnClickListener(ImageView buyNetImageView, View additionalLayoutContainer, ImageView sellNetImageView, View deductionsLayoutContainer)
     {
-        List<TextView> additionalFeesTextView = new ArrayList<>();
-        additionalFeesTextView.add((TextView) view.findViewById(R.id.label_addt_brokers_commission));
-        additionalFeesTextView.add((TextView) view.findViewById(R.id.textview_addt_brokers_commission));
-        additionalFeesTextView.add((TextView) view.findViewById(R.id.label_addt_clearing_fee));
-        additionalFeesTextView.add((TextView) view.findViewById(R.id.textview_addt_clearing_fee));
-        additionalFeesTextView.add((TextView) view.findViewById(R.id.label_addt_transaction_fee));
-        additionalFeesTextView.add((TextView) view.findViewById(R.id.textview_addt_transaction_fee));
-        additionalFeesTextView.add((TextView) view.findViewById(R.id.label_addt_total));
-        additionalFeesTextView.add((TextView) view.findViewById(R.id.textview_addt_total));
-        buyNetImageView.setOnClickListener(new ImageViewOnClickCollapseExpand(this.getActivity(), buyNetImageView, additionalFeesTextView));
-
-        List<TextView> deductionsTextView = new ArrayList<>();
-        deductionsTextView.add((TextView) view.findViewById(R.id.label_deduct_brokers_commission));
-        deductionsTextView.add((TextView) view.findViewById(R.id.textview_deduct_brokers_commission));
-        deductionsTextView.add((TextView) view.findViewById(R.id.label_deduct_clearing_fee));
-        deductionsTextView.add((TextView) view.findViewById(R.id.textview_deduct_clearing_fee));
-        deductionsTextView.add((TextView) view.findViewById(R.id.label_deduct_transaction_fee));
-        deductionsTextView.add((TextView) view.findViewById(R.id.textview_deduct_transaction_fee));
-        deductionsTextView.add((TextView) view.findViewById(R.id.label_deduct_sales_tax));
-        deductionsTextView.add((TextView) view.findViewById(R.id.textview_deduct_sales_tax));
-        deductionsTextView.add((TextView) view.findViewById(R.id.label_deduct_total));
-        deductionsTextView.add((TextView) view.findViewById(R.id.textview_deduct_total));
-        sellNetImageView.setOnClickListener(new ImageViewOnClickCollapseExpand(this.getActivity(), sellNetImageView, deductionsTextView));
+        buyNetImageView.setOnClickListener(new ImageViewOnClickHideExpand(this.getActivity(), buyNetImageView, additionalLayoutContainer));
+        sellNetImageView.setOnClickListener(new ImageViewOnClickHideExpand(this.getActivity(), sellNetImageView, deductionsLayoutContainer));
     }
 
     /**

@@ -5,8 +5,8 @@ import android.os.Parcelable;
 
 /**
  * Created by aaron.asuncion on 12/8/2016.
+ * Represents a PSE stock.
  */
-
 public class Ticker implements Parcelable
 {
     private String symbol;

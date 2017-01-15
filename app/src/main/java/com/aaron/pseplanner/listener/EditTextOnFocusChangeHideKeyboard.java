@@ -7,8 +7,8 @@ import android.view.inputmethod.InputMethodManager;
 
 /**
  * Created by Aaron on 11/30/2016.
+ * Hides the keyboard upon losing focus on the view.
  */
-
 public class EditTextOnFocusChangeHideKeyboard implements View.OnFocusChangeListener
 {
     private Context context;

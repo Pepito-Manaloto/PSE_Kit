@@ -2,8 +2,10 @@ package com.aaron.pseplanner.bean;
 
 /**
  * Created by aaron.asuncion on 12/29/2016.
+ * Current boardlot of PSE.
+ *
+ * @see <a href="https://www.colfinancial.com/ape/Final2/home/online_trading.asp">https://www.colfinancial.com/ape/Final2/home/online_trading.asp</a>
  */
-
 public enum BoardLot
 {
     ONE_HUNDREDTH_OF_A_CENT(0.0001, 0.0099, 1_000_000, 0.0001),
@@ -40,14 +42,13 @@ public enum BoardLot
      * Check if the number of price has a correct number of shares with regards to the board lot.
      * Note: This does not take into consideration odd lot or shares that are bought in different board lots.
      *
-     * @param price the stock price
+     * @param price  the stock price
      * @param shares the total shares
-     *
      * @return true if the price and shares are correct with regards to the board lot
      */
     public static boolean isValidBoardLot(double price, double shares)
     {
-        for(BoardLot bl: BoardLot.values())
+        for(BoardLot bl : BoardLot.values())
         {
             if(bl.priceWithinRange(price))
             {
@@ -58,6 +59,12 @@ public enum BoardLot
         return false;
     }
 
+    /**
+     * Checks if the given price is within the range of this boardlot.
+     *
+     * @param price the price to check
+     * @return true if within range, else false
+     */
     public boolean priceWithinRange(double price)
     {
         return price >= getLowerRange() && price <= getUpperRange();

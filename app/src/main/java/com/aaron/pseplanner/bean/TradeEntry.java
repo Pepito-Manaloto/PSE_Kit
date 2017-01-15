@@ -5,8 +5,8 @@ import android.os.Parcelable;
 
 /**
  * Created by aaron.asuncion on 12/20/2016.
+ * Represents a trade(buy).
  */
-
 public class TradeEntry implements Parcelable
 {
     private String symbol;

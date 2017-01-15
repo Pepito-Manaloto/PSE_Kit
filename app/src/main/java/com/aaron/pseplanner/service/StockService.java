@@ -6,6 +6,9 @@ package com.aaron.pseplanner.service;
 
 public interface StockService
 {
+    /**
+     * Formats the given number.
+     */
     String formatStockPrice(double number);
 
 }

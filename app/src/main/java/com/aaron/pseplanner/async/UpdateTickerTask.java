@@ -9,6 +9,7 @@ import com.aaron.pseplanner.activity.MainFragmentActivity;
 
 /**
  * Created by Aaron on 11/20/2016.
+ * Retrieves the current value of all stocks traded in the PSE.
  */
 public class UpdateTickerTask extends AsyncTask<Void, Void, String>
 {

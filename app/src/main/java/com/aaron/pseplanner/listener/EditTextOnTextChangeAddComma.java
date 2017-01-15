@@ -13,6 +13,7 @@ import java.text.DecimalFormat;
 
 /**
  * Created by Aaron on 12/3/2016.
+ * Adds commas on the inputted number in the EditText.
  */
 public class EditTextOnTextChangeAddComma implements TextWatcher
 {

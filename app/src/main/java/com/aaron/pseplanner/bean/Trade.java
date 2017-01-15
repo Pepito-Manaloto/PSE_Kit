@@ -8,8 +8,8 @@ import java.util.List;
 
 /**
  * Created by aaron.asuncion on 12/20/2016.
+ * Represents a trading plan.
  */
-
 public class Trade implements Parcelable
 {
     private Date dateEntry;
