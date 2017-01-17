@@ -1,9 +1,7 @@
 package com.aaron.pseplanner.fragment;
 
-import android.app.Fragment;
-import android.app.ListFragment;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,7 +37,7 @@ public class TickerFragment extends ListFragment
         // TODO: retrieve and parse data from PSE
         this.tickerList = new ArrayList<>();
 
-        for(int i=0; i<15; i++)
+        for(int i = 0; i < 15; i++)
         {
             this.tickerList.add(new Ticker("CPG", 110.56, 0, 0));
             this.tickerList.add(new Ticker("CYBR", 2330.55, -0.01, -1.1));

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <GridLayout
+        style="@style/GridLayoutLabelValue">
+
+        <TextView
+            android:id="@+id/label_high"
+            style="@style/Calculator"
+            android:layout_marginBottom="14dp"
+            android:text="@string/midpoint_high"/>
+
+        <EditText
+            android:id="@+id/edittext_high"
+            style="@style/Calculator.EditText"
+            android:width="90dp"
+            android:inputType="numberDecimal"
+            android:maxLength="@integer/calculator_buy_price_max_length"/>
+
+        <View
+            style="@style/Divider2"
+            android:layout_columnSpan="2"
+            />
+
+        <TextView
+            android:id="@+id/label_low"
+            style="@style/Calculator"
+            android:layout_marginBottom="14dp"
+            android:text="@string/midpoint_low"/>
+
+        <EditText
+            android:id="@+id/edittext_low"
+            style="@style/Calculator.EditText"
+            android:width="90dp"
+            android:inputType="numberDecimal"
+            android:maxLength="@integer/calculator_buy_price_max_length"/>
+
+        <View
+            style="@style/Divider2"
+            android:layout_columnSpan="2"
+            />
+
+        <TextView
+            android:id="@+id/label_midpoint"
+            style="@style/Calculator"
+            android:text="@string/midpoint_midpoint"/>
+
+        <TextView
+            android:id="@+id/textview_midpoint"
+            style="@style/Calculator"
+            android:text="@string/default_value"/>
+
+        <View
+            style="@style/Divider2"
+            android:layout_columnSpan="2"
+            />
+    </GridLayout>
+
+</ScrollView>

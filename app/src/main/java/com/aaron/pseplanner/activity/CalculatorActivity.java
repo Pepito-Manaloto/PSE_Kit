@@ -1,8 +1,9 @@
 package com.aaron.pseplanner.activity;
 
-import android.app.Fragment;
 
-import com.aaron.pseplanner.fragment.CalculatorFragment;
+import android.support.v4.app.Fragment;
+
+import com.aaron.pseplanner.fragment.CalculatorTabsFragment;
 
 @Deprecated
 public class CalculatorActivity extends MainFragmentActivity
@@ -10,6 +11,6 @@ public class CalculatorActivity extends MainFragmentActivity
     @Override
     protected Fragment createFragment()
     {
-        return new CalculatorFragment();
+        return new CalculatorTabsFragment();
     }
 }

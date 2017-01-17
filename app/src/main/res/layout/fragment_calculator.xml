@@ -1,18 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scrollview"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true">
 
         <GridLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:clickable="true"
-            android:columnCount="3"
-            android:focusableInTouchMode="true"
-            android:orientation="horizontal">
+            style="@style/GridLayoutLabelValue"
+            android:columnCount="3">
 
             <TextView
                 android:id="@+id/label_buy_price"
@@ -116,12 +112,8 @@
 
             <GridLayout
                 android:id="@+id/additional_fees_layout"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_columnSpan="3"
-                android:columnCount="2"
-                android:orientation="horizontal"
-                android:visibility="gone">
+                style="@style/GridLayoutLabelValue.Expandable"
+                android:layout_columnSpan="3">
                 <!-- =======================START================================= -->
 
                 <TextView
@@ -234,12 +226,8 @@
 
             <GridLayout
                 android:id="@+id/deduction_fees_layout"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_columnSpan="3"
-                android:columnCount="2"
-                android:orientation="horizontal"
-                android:visibility="gone">
+                style="@style/GridLayoutLabelValue.Expandable"
+                android:layout_columnSpan="3">
                 <!-- =======================START================================= -->
                 <TextView
                     android:id="@+id/label_deduct_brokers_commission"

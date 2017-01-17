@@ -1,12 +1,12 @@
 package com.aaron.pseplanner.activity;
 
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.app.SearchManager;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -25,7 +25,7 @@ import android.widget.TextView;
 
 import com.aaron.pseplanner.R;
 import com.aaron.pseplanner.async.UpdateTickerTask;
-import com.aaron.pseplanner.fragment.CalculatorFragment;
+import com.aaron.pseplanner.fragment.CalculatorTabsFragment;
 import com.aaron.pseplanner.fragment.HomeFragment;
 import com.aaron.pseplanner.fragment.SettingsFragment;
 import com.aaron.pseplanner.fragment.TickerFragment;
@@ -67,7 +67,7 @@ public abstract class MainFragmentActivity extends AppCompatActivity implements 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        FragmentManager fm = getFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
         Fragment fragment = fm.findFragmentById(R.id.fragment_container);
 
         if(fragment == null)
@@ -157,7 +157,7 @@ public abstract class MainFragmentActivity extends AppCompatActivity implements 
             }
             case R.id.nav_calculator:
             {
-                updateFragmentContainer(new CalculatorFragment());
+                updateFragmentContainer(new CalculatorTabsFragment());
                 this.removeToolbarMenuItems();
                 this.toolbar.setTitle(R.string.nav_calculator);
                 break;
@@ -190,9 +190,14 @@ public abstract class MainFragmentActivity extends AppCompatActivity implements 
         }
     }
 
+    /**
+     * Replaces the current fragment inside the drawer layout.
+     *
+     * @param newFragment the new fragment to show
+     */
     protected void updateFragmentContainer(Fragment newFragment)
     {
-        FragmentManager fm = getFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
         fm.beginTransaction().replace(R.id.fragment_container, newFragment).commit();
     }
 

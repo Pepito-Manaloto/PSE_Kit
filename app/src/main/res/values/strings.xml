@@ -50,6 +50,18 @@
     <string name="default_value">0</string>
     <string name="default_value_percent">0%</string>
 
+    <!-- Dividend -->
+    <string name="dividend_price">Price : </string>
+    <string name="dividend_cash">Cash Dividend : </string>
+    <string name="dividend_yield">Yield : </string>
+    <string name="dividend_yield_percent">Yield % : </string>
+    <string name="dividend_total_amount">Total Amount : </string>
+
+    <!-- Midpoint -->
+    <string name="midpoint_high">High : </string>
+    <string name="midpoint_low">Low : </string>
+    <string name="midpoint_midpoint">Midpoint : </string>
+
     <!-- ImageView Content Description -->
     <string name="hide_arrow">hide</string>
     <string name="expand_arrow">expand</string>

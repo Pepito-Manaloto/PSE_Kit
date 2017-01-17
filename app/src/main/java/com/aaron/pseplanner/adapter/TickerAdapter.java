@@ -20,7 +20,7 @@ import java.util.List;
 
 /**
  * Created by aaron.asuncion on 12/8/2016.
- * Contains all tickers, and is
+ * Contains all tickers, and is responsible for converting Ticker bean to a UI row in the ListView.
  */
 public class TickerAdapter extends ArrayAdapter<Ticker>
 {
