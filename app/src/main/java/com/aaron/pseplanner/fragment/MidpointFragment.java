@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.aaron.pseplanner.R;
 
@@ -51,8 +52,7 @@ public class MidpointFragment extends AbstractCalculatorFragment
     public void onDestroyView()
     {
         super.onDestroyView();
-        this.highEditText.setText("");
-        this.lowEditText.setText("");
+        this.resetEditTexts();
     }
 
     @Override
@@ -76,7 +76,8 @@ public class MidpointFragment extends AbstractCalculatorFragment
                 }
                 else
                 {
-                    // TODO: error
+                    Toast.makeText(getContext(), R.string.midpoint_invalid_input, Toast.LENGTH_LONG).show();
+                    this.resetEditTexts();
                 }
             }
             catch(ParseException ex)
@@ -88,5 +89,11 @@ public class MidpointFragment extends AbstractCalculatorFragment
         {
             this.midpointTextView.setText(R.string.default_value);
         }
+    }
+
+    private void resetEditTexts()
+    {
+        this.highEditText.setText("");
+        this.lowEditText.setText("");
     }
 }

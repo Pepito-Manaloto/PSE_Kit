@@ -74,6 +74,10 @@
     <string name="ticker_change">Change</string>
     <string name="ticker_percent_change">% Change</string>
 
+    <!-- Error Messages -->
+    <string name="midpoint_invalid_input">High value should not be less than low value.</string>
+    <string name="boardlot_invalid">Warning: The price and shares is not a valid boardlot.</string>
+
     <string-array name="refresh_intervals">
         <item>15</item>
         <item>20</item>

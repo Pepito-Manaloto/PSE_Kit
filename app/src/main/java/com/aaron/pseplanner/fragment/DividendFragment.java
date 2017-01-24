@@ -7,8 +7,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.aaron.pseplanner.R;
+import com.aaron.pseplanner.bean.BoardLot;
 
 import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Text;
@@ -58,9 +60,7 @@ public class DividendFragment extends AbstractCalculatorFragment
     public void onDestroyView()
     {
         super.onDestroyView();
-        this.priceEditText.setText("");
-        this.sharesEditText.setText("");
-        this.dividendEditText.setText("");
+        this.resetEditTexts();
     }
 
     /**
@@ -82,7 +82,10 @@ public class DividendFragment extends AbstractCalculatorFragment
                 long shares = formatter.parse(sharesStr).longValue();
                 double cashDividend = formatter.parse(cashDividendStr).doubleValue();
 
-                // TODO: validate boardlot, else error
+                if(!BoardLot.isValidBoardLot(price, shares))
+                {
+                    Toast.makeText(getContext(), R.string.boardlot_invalid, Toast.LENGTH_SHORT).show();
+                }
 
                 double yield = calculatorService.getDividendYield(shares, cashDividend);
                 double percentYield = calculatorService.getPercentDividendYield(price, shares, cashDividend);
@@ -110,5 +113,12 @@ public class DividendFragment extends AbstractCalculatorFragment
             this.formatService.formatTextColor(defaultValue, yieldTextView);
             this.formatService.formatTextColor(defaultValue, percentYieldTextView);
         }
+    }
+
+    private void resetEditTexts()
+    {
+        this.priceEditText.setText("");
+        this.sharesEditText.setText("");
+        this.dividendEditText.setText("");
     }
 }

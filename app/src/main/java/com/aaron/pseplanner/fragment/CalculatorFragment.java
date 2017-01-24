@@ -9,8 +9,10 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.aaron.pseplanner.R;
+import com.aaron.pseplanner.bean.BoardLot;
 import com.aaron.pseplanner.listener.ImageViewOnClickHideExpand;
 
 import org.apache.commons.lang3.StringUtils;
@@ -135,6 +137,11 @@ public class CalculatorFragment extends AbstractCalculatorFragment
                     formatter = NumberFormat.getInstance(Locale.US);
                     buyPrice = formatter.parse(buyPriceStr).doubleValue();
                     shares = formatter.parse(sharesStr).longValue();
+
+                    if(!BoardLot.isValidBoardLot(buyPrice, shares))
+                    {
+                        Toast.makeText(getContext(), R.string.boardlot_invalid, Toast.LENGTH_SHORT).show();
+                    }
 
                     calculateAndUpdateViewOnBuy(buyPrice, shares);
 
