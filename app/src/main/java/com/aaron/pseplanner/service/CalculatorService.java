@@ -59,7 +59,7 @@ public interface CalculatorService
      * @param shares    the number of shares to sell
      * @return double
      */
-    double getSellNetAmount(double sellPrice, long shares);
+    double getSellNetAmount(double buyPrice, double sellPrice, long shares);
 
 
     /**

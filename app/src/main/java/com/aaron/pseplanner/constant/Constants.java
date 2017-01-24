@@ -6,5 +6,6 @@ package com.aaron.pseplanner.constant;
  */
 public class Constants
 {
-    public static final String PRICE_FORMAT = "#,###.####";
+    public static final String STOCK_PRICE_FORMAT = "#,###.####";
+    public static final String PRICE_FORMAT = "#,###.##";
 }

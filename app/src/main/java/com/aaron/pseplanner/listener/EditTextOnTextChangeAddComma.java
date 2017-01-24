@@ -14,6 +14,7 @@ import java.text.DecimalFormat;
 /**
  * Created by Aaron on 12/3/2016.
  * Adds commas on the inputted number in the EditText.
+ * Can be decorated by providing a TextWatcher, which will be called first before this class.
  */
 public class EditTextOnTextChangeAddComma implements TextWatcher
 {
@@ -21,20 +22,37 @@ public class EditTextOnTextChangeAddComma implements TextWatcher
     private final DecimalFormat formatter;
     private int max;
     private String oldInput;
+    private TextWatcher textWatcher;
 
     public EditTextOnTextChangeAddComma(EditText editText, int maxIntegerDigits)
     {
         this.editText = editText;
-        this.formatter = new DecimalFormat(Constants.PRICE_FORMAT);
+        this.formatter = new DecimalFormat(Constants.STOCK_PRICE_FORMAT);
 
         // Divide by three because there would be a comma for every 3 digits
         this.max = maxIntegerDigits - ((maxIntegerDigits / 3) - (maxIntegerDigits % 3 == 0 ? 1 : 0));
         this.formatter.setMaximumIntegerDigits(this.max);
     }
 
+    public EditTextOnTextChangeAddComma(EditText editText, int maxIntegerDigits, TextWatcher textWatcher)
+    {
+        this.editText = editText;
+        this.formatter = new DecimalFormat(Constants.STOCK_PRICE_FORMAT);
+
+        // Divide by three because there would be a comma for every 3 digits
+        this.max = maxIntegerDigits - ((maxIntegerDigits / 3) - (maxIntegerDigits % 3 == 0 ? 1 : 0));
+        this.formatter.setMaximumIntegerDigits(this.max);
+        this.textWatcher = textWatcher;
+    }
+
     @Override
     public void beforeTextChanged(CharSequence s, int start, int count, int after)
     {
+        if(textWatcher != null)
+        {
+            textWatcher.beforeTextChanged(s, start, count, after);
+        }
+
         if(exceedsMaxLength(s.toString()))
         {
             oldInput = s.toString();
@@ -48,6 +66,11 @@ public class EditTextOnTextChangeAddComma implements TextWatcher
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count)
     {
+        if(textWatcher != null)
+        {
+            textWatcher.onTextChanged(s, start, before, count);
+        }
+
         /** No implementation. */
     }
 
@@ -57,7 +80,11 @@ public class EditTextOnTextChangeAddComma implements TextWatcher
     @Override
     public void afterTextChanged(Editable view)
     {
-        this.editText.removeTextChangedListener(this);
+        if(textWatcher != null)
+        {
+            textWatcher.afterTextChanged(view);
+        }
+
         String input = view.toString();
 
         if(StringUtils.isNotBlank(input))
@@ -88,17 +115,6 @@ public class EditTextOnTextChangeAddComma implements TextWatcher
                 this.editText.setSelection(cursorPosition);
             }
         }
-
-        this.afterAddingComma();
-
-        this.editText.addTextChangedListener(this);
-    }
-
-    /**
-     * This method is called after formatting the input in the edit text. To be implemented by subclass.
-     */
-    protected void afterAddingComma()
-    {
     }
 
     /**
@@ -125,16 +141,14 @@ public class EditTextOnTextChangeAddComma implements TextWatcher
      */
     private String formatNumber(String input)
     {
-        String formattedInput;
+        String formattedInput = input;
         try
         {
-            double number = Double.parseDouble(input);
-            formattedInput = this.formatter.format(number);
-
-            // append '.' to be able to continue adding decimal places
-            if(input.endsWith("."))
+            // stop formatting if period or 0 decimal value is inputted.
+            if(!input.matches("\\d+\\.0*"))
             {
-                formattedInput += ".";
+                double number = Double.parseDouble(input);
+                formattedInput = this.formatter.format(number);
             }
         }
         catch(NumberFormatException e)
