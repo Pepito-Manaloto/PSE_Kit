@@ -16,11 +16,13 @@
     <TextView
         android:id="@+id/ticker_price_row"
         style="@style/TickerRow.TickerRow_TextView"
+        android:layout_weight="1.2"
         android:textColor="@color/orange"/>
 
     <TextView
         android:id="@+id/ticker_change_row"
         style="@style/TickerRow.TickerRow_TextView"
+        android:layout_weight="1.2"
         android:textColor="@color/orange"/>
 
     <TextView
@@ -30,5 +32,6 @@
 
     <ImageView
         android:id="@+id/ticker_icon_row"
-        style="@style/TickerRow.TickerRow_ImageView"/>
+        style="@style/TickerRow.TickerRow_ImageView"
+        android:layout_weight="0.2"/>
 </LinearLayout>

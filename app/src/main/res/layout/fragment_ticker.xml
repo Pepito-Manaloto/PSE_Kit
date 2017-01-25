@@ -19,29 +19,34 @@
             android:id="@+id/textview_ticker_stock_header"
             style="@style/TickerRow.TickerHeader_TextView"
             android:text="@string/ticker_stock"
+            android:layout_weight="0.8"
             />
 
         <TextView
             android:id="@+id/textview_ticker_price_header"
             style="@style/TickerRow.TickerHeader_TextView"
             android:text="@string/ticker_price"
+            android:layout_weight="0.95"
             />
 
         <TextView
             android:id="@+id/textview_ticker_change_header"
             style="@style/TickerRow.TickerHeader_TextView"
             android:text="@string/ticker_change"
+            android:layout_weight="0.95"
             />
 
         <TextView
             android:id="@+id/textview_ticker_percent_change_header"
             style="@style/TickerRow.TickerHeader_TextView"
             android:text="@string/ticker_percent_change"
+            android:layout_weight="0.9"
             />
 
         <TextView
             android:id="@+id/textview_ticker_icon"
             style="@style/TickerRow.TickerHeader_TextView"
+            android:layout_weight="0.5"
             />
     </LinearLayout>
 
