@@ -23,10 +23,11 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:paddingEnd="30dp"
-            android:paddingLeft="15dp"
             android:paddingRight="30dp"
+            android:paddingLeft="15dp"
             android:paddingStart="15dp"
-            android:paddingTop="20dp">
+            android:paddingTop="20dp"
+            android:paddingBottom="20dp">
 
             <TextView
                 android:id="@android:id/empty"
