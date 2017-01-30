@@ -138,11 +138,6 @@ public class CalculatorFragment extends AbstractCalculatorFragment
                     buyPrice = formatter.parse(buyPriceStr).doubleValue();
                     shares = formatter.parse(sharesStr).longValue();
 
-                    if(!BoardLot.isValidBoardLot(buyPrice, shares))
-                    {
-                        Toast.makeText(getContext(), R.string.boardlot_invalid, Toast.LENGTH_SHORT).show();
-                    }
-
                     calculateAndUpdateViewOnBuy(buyPrice, shares);
 
                     // Set previous value to be compared on the next text change, to skip calculation if both are unchanged.
