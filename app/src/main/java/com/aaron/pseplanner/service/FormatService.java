@@ -19,6 +19,11 @@ public interface FormatService
     String formatPrice(double number);
 
     /**
+     * Formats the percent.
+     */
+    String formatPercent(double number);
+
+    /**
      * Formats the textview.
      */
     void formatTextColor(double price, TextView text);

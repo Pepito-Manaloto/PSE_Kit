@@ -62,7 +62,7 @@ public class CalculatorServiceImpl implements CalculatorService
     @Override
     public double getPriceToBreakEven(double buyPrice)
     {
-        double buyPriceWithFees = buyPrice * TOTAL_SELL_FEE;
+        double buyPriceWithFees = buyPrice * TOTAL_BUY_SELL_FEE;
         return buyPrice + buyPriceWithFees;
     }
 
@@ -87,12 +87,11 @@ public class CalculatorServiceImpl implements CalculatorService
      * @return double
      */
     @Override
-    public double getSellNetAmount(double buyPrice, double sellPrice, long shares)
+    public double getSellNetAmount(double sellPrice, long shares)
     {
-        double buyGrossAmount = getBuyGrossAmount(buyPrice, shares);
         double sellGrossAmount = getSellGrossAmount(sellPrice, shares);
 
-        return sellGrossAmount - (buyGrossAmount * TOTAL_SELL_FEE);
+        return sellGrossAmount - (sellGrossAmount * TOTAL_SELL_FEE);
     }
 
     /**
@@ -107,7 +106,7 @@ public class CalculatorServiceImpl implements CalculatorService
     public double getGainLossAmount(double buyPrice, long shares, double sellPrice)
     {
         double buyNetAmount = getBuyNetAmount(buyPrice, shares);
-        double sellNetAmount = getSellNetAmount(buyPrice, sellPrice, shares);
+        double sellNetAmount = getSellNetAmount(sellPrice, shares);
 
         return sellNetAmount - buyNetAmount;
     }
@@ -124,7 +123,7 @@ public class CalculatorServiceImpl implements CalculatorService
     public double getPercentGainLoss(double buyPrice, long shares, double sellPrice)
     {
         double gainLossAmount = getGainLossAmount(buyPrice, shares, sellPrice);
-        double sellNetAmount = getSellNetAmount(buyPrice, sellPrice, shares);
+        double sellNetAmount = getSellNetAmount(sellPrice, shares);
 
         return 100 * (gainLossAmount / sellNetAmount);
     }
@@ -271,8 +270,11 @@ public class CalculatorServiceImpl implements CalculatorService
         // 0.295%
         public static final double TOTAL_BUY_FEE = STOCK_BROKERS_COMMISSION + (STOCK_BROKERS_COMMISSION * VAT) + CLEARING_FEE + PSE_TRANSACTION_FEE;
 
-        // 1.09%
+        // 0.795%
         public static final double TOTAL_SELL_FEE = TOTAL_BUY_FEE + SALES_TAX;
+
+        // 1.09%
+        public static final double TOTAL_BUY_SELL_FEE = TOTAL_BUY_FEE + TOTAL_SELL_FEE;
 
         public static final int MINIMUM_COMMISSION = 20;
     }

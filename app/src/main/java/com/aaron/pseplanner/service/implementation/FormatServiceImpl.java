@@ -37,16 +37,25 @@ public class FormatServiceImpl implements FormatService
     @Override
     public String formatStockPrice(double number)
     {
-        return format(number, Constants.STOCK_PRICE_FORMAT);
+        return format(number, Constants.STOCK_PRICE_FORMAT, RoundingMode.DOWN);
     }
 
     /**
-     * Formats the given number, adding commas and rounding down to 2 decimal places.
+     * Formats the given number, adding commas and rounding up to 2 decimal places.
      */
     @Override
     public String formatPrice(double number)
     {
-        return format(number, Constants.PRICE_FORMAT);
+        return format(number, Constants.PRICE_FORMAT, RoundingMode.UP);
+    }
+
+    /**
+     * Formats the given number, adding percent and rounding up to 2 decimal places.
+     */
+    @Override
+    public String formatPercent(double number)
+    {
+        return format(number, Constants.PRICE_FORMAT, RoundingMode.UP) + "%";
     }
 
     /**
@@ -72,7 +81,7 @@ public class FormatServiceImpl implements FormatService
     /**
      * Formats the given number with the given format.
      */
-    protected String format(double number, String format)
+    protected String format(double number, String format, RoundingMode mode)
     {
         if(number == 0)
         {
@@ -80,7 +89,7 @@ public class FormatServiceImpl implements FormatService
         }
 
         DecimalFormat df = new DecimalFormat(format);
-        df.setRoundingMode(RoundingMode.DOWN);
+        df.setRoundingMode(mode);
 
         return df.format(number);
     }

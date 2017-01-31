@@ -226,10 +226,10 @@ public class CalculatorFragment extends AbstractCalculatorFragment
     private void calculateAndUpdateViewOnSell(double buyPrice, double sellPrice, long shares)
     {
         double sellGrossAmount = calculatorService.getSellGrossAmount(sellPrice, shares);
-        double sellNetAmount = calculatorService.getSellNetAmount(buyPrice, sellPrice, shares);
+        double sellNetAmount = calculatorService.getSellNetAmount(sellPrice, shares);
 
-        sellGrossAmountText.setText(formatService.formatStockPrice(sellGrossAmount));
-        sellNetAmountText.setText(formatService.formatStockPrice(sellNetAmount));
+        sellGrossAmountText.setText(formatService.formatPrice(sellGrossAmount));
+        sellNetAmountText.setText(formatService.formatPrice(sellNetAmount));
 
         double stockBrokersCommission = calculatorService.getStockbrokersCommission(sellGrossAmount);
         double vatOfCommission = calculatorService.getVatOfCommission(stockBrokersCommission);
@@ -249,7 +249,7 @@ public class CalculatorFragment extends AbstractCalculatorFragment
         double percentGainLoss = calculatorService.getPercentGainLoss(buyPrice, shares, sellPrice);
 
         gainLossAmountText.setText(formatService.formatPrice(gainLossAmount));
-        gainLossPercentText.setText(formatService.formatPrice(percentGainLoss));
+        gainLossPercentText.setText(formatService.formatPercent(percentGainLoss));
         formatService.formatTextColor(gainLossAmount, gainLossAmountText);
         formatService.formatTextColor(percentGainLoss, gainLossPercentText);
     }
