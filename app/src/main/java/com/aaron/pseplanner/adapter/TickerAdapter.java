@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.aaron.pseplanner.R;
+import com.aaron.pseplanner.activity.CreateTradePlanActivity;
 import com.aaron.pseplanner.bean.Ticker;
 import com.aaron.pseplanner.listener.ListRowOnTouchChangeActivity;
 import com.aaron.pseplanner.service.implementation.FormatServiceImpl;
@@ -65,11 +66,14 @@ public class TickerAdapter extends ArrayAdapter<Ticker>
         }
 
         Ticker ticker = getItem(position);
-        holder.setTickerView(ticker, this.formatService, this.activity, new ListRowOnTouchChangeActivity(this.activity, /*TODO: CreateTradePlanActivity.class*/ null, ticker, holder.layout));
+        holder.setTickerView(ticker, this.formatService, new ListRowOnTouchChangeActivity(this.activity, CreateTradePlanActivity.class, ticker, holder.layout));
 
         return convertView;
     }
 
+    /**
+     * Holds the references of all the views in a list row, to improve performance by preventing repeated call of findViewById().
+     */
     private static class ViewHolder
     {
         TextView stock;
@@ -78,7 +82,7 @@ public class TickerAdapter extends ArrayAdapter<Ticker>
         TextView percentChange;
         LinearLayout layout;
 
-        void setTickerView(Ticker ticker, FormatService service, Activity activity, View.OnTouchListener listener)
+        void setTickerView(Ticker ticker, FormatService service, View.OnTouchListener listener)
         {
             layout.setOnTouchListener(listener);
             stock.setText(ticker.getSymbol());

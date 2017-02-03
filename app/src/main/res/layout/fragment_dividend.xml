@@ -6,20 +6,17 @@
     android:fillViewport="true">
 
     <GridLayout
-        style="@style/GridLayoutLabelValue">
+        style="@style/GridLayoutLabelValuePair">
 
         <TextView
             android:id="@+id/label_price"
-            style="@style/Calculator"
+            style="@style/TextViewLabel"
             android:layout_marginBottom="14dp"
             android:text="@string/dividend_price"/>
 
         <EditText
             android:id="@+id/edittext_price"
-            style="@style/Calculator.EditText"
-            android:width="90dp"
-            android:inputType="numberDecimal"
-            android:maxLength="@integer/calculator_buy_price_max_length"/>
+            style="@style/TextViewLabel.EditText.Price"/>
 
         <View
             style="@style/Divider2"
@@ -28,16 +25,13 @@
 
         <TextView
             android:id="@+id/label_shares"
-            style="@style/Calculator"
+            style="@style/TextViewLabel"
             android:layout_marginBottom="14dp"
             android:text="@string/calculator_shares"/>
 
         <EditText
             android:id="@+id/edittext_shares"
-            style="@style/Calculator.EditText"
-            android:width="150dp"
-            android:inputType="number"
-            android:maxLength="@integer/calculator_shares_max_length"/>
+            style="@style/TextViewLabel.EditText.Shares"/>
 
         <View
             style="@style/Divider2"
@@ -46,16 +40,16 @@
 
         <TextView
             android:id="@+id/label_cash_dividend"
-            style="@style/Calculator"
+            style="@style/TextViewLabel"
             android:layout_marginBottom="14dp"
             android:text="@string/dividend_cash"/>
 
         <EditText
             android:id="@+id/edittext_cash_dividend"
-            style="@style/Calculator.EditText"
-            android:width="90dp"
+            style="@style/TextViewLabel.EditText"
+            android:width="65dp"
             android:inputType="numberDecimal"
-            android:maxLength="@integer/calculator_buy_price_max_length"/>
+            android:maxLength="@integer/dividend_cash_max_length"/>
 
         <View
             style="@style/Divider2"
@@ -64,12 +58,12 @@
 
         <TextView
             android:id="@+id/label_yield"
-            style="@style/Calculator"
+            style="@style/TextViewLabel"
             android:text="@string/dividend_yield"/>
 
         <TextView
             android:id="@+id/textview_yield"
-            style="@style/Calculator"
+            style="@style/TextViewLabel"
             android:text="@string/default_value"/>
 
         <View
@@ -79,12 +73,12 @@
 
         <TextView
             android:id="@+id/label_yield_percent"
-            style="@style/Calculator"
+            style="@style/TextViewLabel"
             android:text="@string/dividend_yield_percent"/>
 
         <TextView
             android:id="@+id/textview_dividend_percent"
-            style="@style/Calculator"
+            style="@style/TextViewLabel"
             android:text="@string/default_value_percent"/>
 
         <View
@@ -94,12 +88,12 @@
 
         <TextView
             android:id="@+id/label_total_amount"
-            style="@style/Calculator"
+            style="@style/TextViewLabel"
             android:text="@string/dividend_total_amount"/>
 
         <TextView
             android:id="@+id/textview_total_amount"
-            style="@style/Calculator"
+            style="@style/TextViewLabel"
             android:text="@string/default_value"/>
 
         <View

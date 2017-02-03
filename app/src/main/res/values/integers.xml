@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <item name="calculator_buy_price_max_length" type="integer">8</item>
     <item name="dividend_cash_max_length" type="integer">5</item>
-    <item name="calculator_shares_max_length" type="integer">15</item>
-    <item name="calculator_sell_price_max_length" type="integer">8</item>
+    <item name="percent_max_length" type="integer">6</item>
+    <item name="price_max_length" type="integer">8</item>
+    <item name="date_max_length" type="integer">10</item>
+    <item name="shares_max_length" type="integer">15</item>
 </resources>

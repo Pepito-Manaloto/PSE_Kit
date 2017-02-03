@@ -28,7 +28,7 @@
         <item name="android:dropDownVerticalOffset">-4.0dip</item>
     </style>
 
-    <style name="AlertDialogTheme" parent="android:Theme.Holo.Dialog">
+    <style name="AlertDialogTheme" parent="android:Theme.Holo.Light.Dialog">
         <item name="android:textSize">18sp</item>
         <item name="android:gravity">center</item>
         <item name="android:textAlignment">center</item>
@@ -61,7 +61,7 @@
         <item name="android:background">@drawable/border_divider</item>
     </style>
 
-    <style name="GridLayoutLabelValue">
+    <style name="GridLayoutLabelValuePair">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:columnCount">2</item>
@@ -70,7 +70,7 @@
         <item name="android:focusableInTouchMode">true</item>
     </style>
 
-    <style name="GridLayoutLabelValue.Expandable" parent="GridLayoutLabelValue">
+    <style name="GridLayoutLabelValue.Expandable" parent="GridLayoutLabelValuePair">
         <item name="android:layout_marginTop">0dp</item>
         <item name="android:visibility">gone</item>
     </style>
@@ -89,7 +89,7 @@
         <item name="android:drawableRight">?android:attr/listChoiceIndicatorMultiple</item>
     </style>
 
-    <style name="Calculator">
+    <style name="TextViewLabel">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginBottom">10dp</item>
@@ -99,30 +99,59 @@
         <item name="android:textColor">@color/black</item>
     </style>
 
-    <style name="CalculatorSub">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginBottom">10dp</item>
+    <style name="TextViewLabel.SubLabel" parent="TextViewLabel">
         <item name="android:layout_marginLeft">20dp</item>
         <item name="android:layout_marginStart">20dp</item>
         <item name="android:textSize">15sp</item>
-        <item name="android:textColor">@color/black</item>
     </style>
 
-    <style name="Calculator.EditText" parent="Calculator">
+    <style name="TextViewLabel.EditText" parent="TextViewLabel">
         <item name="android:background">@drawable/edit_text_style</item>
-        <item name="android:paddingLeft">5dp</item>
-        <item name="android:paddingStart">5dp</item>
         <item name="android:paddingTop">3dp</item>
         <item name="android:paddingBottom">3dp</item>
+        <item name="android:paddingStart">7dp</item>
+        <item name="android:paddingLeft">7dp</item>
     </style>
 
-    <style name="Calculator_ImageView">
+    <style name="TextViewLabel.EditText.Price" parent="TextViewLabel.EditText">
+        <item name="android:width">80dp</item>
+        <item name="android:inputType">numberDecimal</item>
+        <item name="android:maxLength">@integer/price_max_length</item>
+    </style>
+
+    <style name="TextViewLabel.EditText.Date" parent="TextViewLabel.EditText">
+        <item name="android:width">105dp</item>
+        <item name="android:cursorVisible">false</item>
+        <item name="android:inputType">date</item>
+        <item name="android:maxLength">@integer/date_max_length</item>
+    </style>
+
+    <style name="TextViewLabel.EditText.Shares" parent="TextViewLabel.EditText">
+        <item name="android:width">135dp</item>
+        <item name="android:inputType">number</item>
+        <item name="android:maxLength">@integer/shares_max_length</item>
+    </style>
+
+    <style name="ImageViewExpandable">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:contentDescription">@string/hide_arrow</item>
+        <item name="android:focusable">true</item>
+        <item name="android:clickable">true</item>
         <item name="android:src">@mipmap/hide_arrow</item>
         <item name="android:layout_marginTop">-10dp</item>
+    </style>
+
+    <style name="ImageViewRemove">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:contentDescription">@string/remove_button</item>
+        <item name="android:focusable">true</item>
+        <item name="android:clickable">true</item>
+        <item name="android:src">@mipmap/remove_button</item>
+        <item name="android:paddingLeft">10dp</item>
+        <item name="android:paddingStart">10dp</item>
+        <item name="android:layout_marginTop">-15dp</item>
     </style>
 
     <style name="TickerRow">

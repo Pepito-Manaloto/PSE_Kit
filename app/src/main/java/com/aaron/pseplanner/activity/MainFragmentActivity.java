@@ -34,6 +34,7 @@ import java.lang.reflect.Field;
 
 /**
  * Abstract super class that creates a single fragment in the fragment container.
+ * Contains Navigation items in a Drawer
  */
 public abstract class MainFragmentActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
 {
@@ -124,7 +125,8 @@ public abstract class MainFragmentActivity extends AppCompatActivity implements 
         if(this.drawer.isDrawerOpen(GravityCompat.START))
         {
             this.drawer.closeDrawer(GravityCompat.START);
-        }else
+        }
+        else
         {
             super.onBackPressed();
         }

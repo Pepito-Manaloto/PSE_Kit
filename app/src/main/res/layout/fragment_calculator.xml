@@ -4,25 +4,23 @@
     android:id="@+id/scrollview"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:focusable="false"
     android:fillViewport="true">
 
         <GridLayout
-            style="@style/GridLayoutLabelValue"
+            style="@style/GridLayoutLabelValuePair"
             android:columnCount="3">
 
             <TextView
                 android:id="@+id/label_buy_price"
-                style="@style/Calculator"
+                style="@style/TextViewLabel"
                 android:layout_marginBottom="14dp"
                 android:text="@string/calculator_buy_price"/>
 
             <EditText
                 android:id="@+id/edittext_buy_price"
-                style="@style/Calculator.EditText"
-                android:layout_columnSpan="2"
-                android:width="90dp"
-                android:inputType="numberDecimal"
-                android:maxLength="@integer/calculator_buy_price_max_length"/>
+                style="@style/TextViewLabel.EditText.Price"
+                android:layout_columnSpan="2"/>
 
             <View
                 style="@style/Divider2"
@@ -31,17 +29,14 @@
 
             <TextView
                 android:id="@+id/label_shares"
-                style="@style/Calculator"
+                style="@style/TextViewLabel"
                 android:layout_marginBottom="14dp"
                 android:text="@string/calculator_shares"/>
 
             <EditText
                 android:id="@+id/edittext_shares"
-                style="@style/Calculator.EditText"
-                android:layout_columnSpan="2"
-                android:width="150dp"
-                android:inputType="number"
-                android:maxLength="@integer/calculator_shares_max_length"/>
+                style="@style/TextViewLabel.EditText.Shares"
+                android:layout_columnSpan="2"/>
 
             <View
                 style="@style/Divider2"
@@ -50,12 +45,12 @@
 
             <TextView
                 android:id="@+id/label_average_price"
-                style="@style/Calculator"
+                style="@style/TextViewLabel"
                 android:text="@string/calculator_average_price"/>
 
             <TextView
                 android:id="@+id/textview_average_price"
-                style="@style/Calculator"
+                style="@style/TextViewLabel"
                 android:layout_columnSpan="2"
                 android:text="@string/default_value"/>
 
@@ -66,12 +61,12 @@
 
             <TextView
                 android:id="@+id/label_break_even_price"
-                style="@style/Calculator"
+                style="@style/TextViewLabel"
                 android:text="@string/calculator_price_to_break_even"/>
 
             <TextView
                 android:id="@+id/textview_break_even_price"
-                style="@style/Calculator"
+                style="@style/TextViewLabel"
                 android:layout_columnSpan="2"
                 android:text="@string/default_value"/>
 
@@ -82,12 +77,12 @@
 
             <TextView
                 android:id="@+id/label_buy_gross_amount"
-                style="@style/Calculator"
+                style="@style/TextViewLabel"
                 android:text="@string/calculator_buy_gross_amount"/>
 
             <TextView
                 android:id="@+id/textview_buy_gross_amount"
-                style="@style/Calculator"
+                style="@style/TextViewLabel"
                 android:layout_columnSpan="2"
                 android:text="@string/default_value"/>
 
@@ -98,17 +93,17 @@
 
             <TextView
                 android:id="@+id/label_buy_net_amount"
-                style="@style/Calculator"
+                style="@style/TextViewLabel"
                 android:text="@string/calculator_buy_net_amount"/>
 
             <TextView
                 android:id="@+id/textview_buy_net_amount"
-                style="@style/Calculator"
+                style="@style/TextViewLabel"
                 android:text="@string/default_value"/>
 
             <ImageView
                 android:id="@+id/imageview_buy_net_amount"
-                style="@style/Calculator_ImageView"/>
+                style="@style/ImageViewExpandable"/>
 
             <GridLayout
                 android:id="@+id/additional_fees_layout"
@@ -118,54 +113,54 @@
 
                 <TextView
                     android:id="@+id/label_addt_brokers_commission"
-                    style="@style/CalculatorSub"
+                    style="@style/TextViewLabel.SubLabel"
                     android:text="@string/calculator_brokers_commission"
                     />
 
                 <TextView
                     android:id="@+id/textview_addt_brokers_commission"
-                    style="@style/CalculatorSub"
+                    style="@style/TextViewLabel.SubLabel"
                     android:text="@string/default_value"/>
 
                 <TextView
                     android:id="@+id/label_addt_brokers_commission_vat"
-                    style="@style/CalculatorSub"
+                    style="@style/TextViewLabel.SubLabel"
                     android:text="@string/calculator_brokers_commission_vat"
                     />
 
                 <TextView
                     android:id="@+id/textview_addt_brokers_commission_vat"
-                    style="@style/CalculatorSub"
+                    style="@style/TextViewLabel.SubLabel"
                     android:text="@string/default_value"/>
 
                 <TextView
                     android:id="@+id/label_addt_clearing_fee"
-                    style="@style/CalculatorSub"
+                    style="@style/TextViewLabel.SubLabel"
                     android:text="@string/calculator_clearing_fee"/>
 
                 <TextView
                     android:id="@+id/textview_addt_clearing_fee"
-                    style="@style/CalculatorSub"
+                    style="@style/TextViewLabel.SubLabel"
                     android:text="@string/default_value"/>
 
                 <TextView
                     android:id="@+id/label_addt_transaction_fee"
-                    style="@style/CalculatorSub"
+                    style="@style/TextViewLabel.SubLabel"
                     android:text="@string/calculator_transaction_fee"/>
 
                 <TextView
                     android:id="@+id/textview_addt_transaction_fee"
-                    style="@style/CalculatorSub"
+                    style="@style/TextViewLabel.SubLabel"
                     android:text="@string/default_value"/>
 
                 <TextView
                     android:id="@+id/label_addt_total"
-                    style="@style/CalculatorSub"
+                    style="@style/TextViewLabel.SubLabel"
                     android:text="@string/calculator_total"/>
 
                 <TextView
                     android:id="@+id/textview_addt_total"
-                    style="@style/CalculatorSub"
+                    style="@style/TextViewLabel.SubLabel"
                     android:text="@string/default_value"/>
                 <!-- =======================END================================= -->
             </GridLayout>
@@ -177,17 +172,14 @@
 
             <TextView
                 android:id="@+id/label_sell_price"
-                style="@style/Calculator"
+                style="@style/TextViewLabel"
                 android:layout_marginBottom="14dp"
                 android:text="@string/calculator_sell_price"/>
 
             <EditText
                 android:id="@+id/edittext_sell_price"
-                style="@style/Calculator.EditText"
-                android:layout_columnSpan="2"
-                android:width="90dp"
-                android:inputType="numberDecimal"
-                android:maxLength="@integer/calculator_sell_price_max_length"/>
+                style="@style/TextViewLabel.EditText.Price"
+                android:layout_columnSpan="2"/>
 
             <View
                 style="@style/Divider2"
@@ -196,12 +188,12 @@
 
             <TextView
                 android:id="@+id/label_sell_gross_amount"
-                style="@style/Calculator"
+                style="@style/TextViewLabel"
                 android:text="@string/calculator_sell_gross_amount"/>
 
             <TextView
                 android:id="@+id/textview_sell_gross_amount"
-                style="@style/Calculator"
+                style="@style/TextViewLabel"
                 android:layout_columnSpan="2"
                 android:text="@string/default_value"/>
 
@@ -212,17 +204,17 @@
 
             <TextView
                 android:id="@+id/label_sell_net_amount"
-                style="@style/Calculator"
+                style="@style/TextViewLabel"
                 android:text="@string/calculator_sell_net_amount"/>
 
             <TextView
                 android:id="@+id/textview_sell_net_amount"
-                style="@style/Calculator"
+                style="@style/TextViewLabel"
                 android:text="@string/default_value"/>
 
             <ImageView
                 android:id="@+id/imageview_sell_net_amount"
-                style="@style/Calculator_ImageView"/>
+                style="@style/ImageViewExpandable"/>
 
             <GridLayout
                 android:id="@+id/deduction_fees_layout"
@@ -231,62 +223,62 @@
                 <!-- =======================START================================= -->
                 <TextView
                     android:id="@+id/label_deduct_brokers_commission"
-                    style="@style/CalculatorSub"
+                    style="@style/TextViewLabel.SubLabel"
                     android:text="@string/calculator_brokers_commission"/>
 
                 <TextView
                     android:id="@+id/textview_deduct_brokers_commission"
-                    style="@style/CalculatorSub"
+                    style="@style/TextViewLabel.SubLabel"
                     android:text="@string/default_value"/>
 
                 <TextView
                     android:id="@+id/label_deduct_brokers_commission_vat"
-                    style="@style/CalculatorSub"
+                    style="@style/TextViewLabel.SubLabel"
                     android:text="@string/calculator_brokers_commission_vat"/>
 
                 <TextView
                     android:id="@+id/textview_deduct_brokers_commission_vat"
-                    style="@style/CalculatorSub"
+                    style="@style/TextViewLabel.SubLabel"
                     android:text="@string/default_value"/>
 
                 <TextView
                     android:id="@+id/label_deduct_clearing_fee"
-                    style="@style/CalculatorSub"
+                    style="@style/TextViewLabel.SubLabel"
                     android:text="@string/calculator_clearing_fee"/>
 
                 <TextView
                     android:id="@+id/textview_deduct_clearing_fee"
-                    style="@style/CalculatorSub"
+                    style="@style/TextViewLabel.SubLabel"
                     android:text="@string/default_value"/>
 
                 <TextView
                     android:id="@+id/label_deduct_transaction_fee"
-                    style="@style/CalculatorSub"
+                    style="@style/TextViewLabel.SubLabel"
                     android:text="@string/calculator_transaction_fee"/>
 
                 <TextView
                     android:id="@+id/textview_deduct_transaction_fee"
-                    style="@style/CalculatorSub"
+                    style="@style/TextViewLabel.SubLabel"
                     android:text="@string/default_value"/>
 
                 <TextView
                     android:id="@+id/label_deduct_sales_tax"
-                    style="@style/CalculatorSub"
+                    style="@style/TextViewLabel.SubLabel"
                     android:text="@string/calculator_sales_tax"/>
 
                 <TextView
                     android:id="@+id/textview_deduct_sales_tax"
-                    style="@style/CalculatorSub"
+                    style="@style/TextViewLabel.SubLabel"
                     android:text="@string/default_value"/>
 
                 <TextView
                     android:id="@+id/label_deduct_total"
-                    style="@style/CalculatorSub"
+                    style="@style/TextViewLabel.SubLabel"
                     android:text="@string/calculator_total"/>
 
                 <TextView
                     android:id="@+id/textview_deduct_total"
-                    style="@style/CalculatorSub"
+                    style="@style/TextViewLabel.SubLabel"
                     android:text="@string/default_value"/>
                 <!-- ========================END================================ -->
             </GridLayout>
@@ -298,12 +290,12 @@
 
             <TextView
                 android:id="@+id/label_gain_loss_amount"
-                style="@style/Calculator"
+                style="@style/TextViewLabel"
                 android:text="@string/calculator_gain_loss_amount"/>
 
             <TextView
                 android:id="@+id/textview_gain_loss_amount"
-                style="@style/Calculator"
+                style="@style/TextViewLabel"
                 android:layout_columnSpan="2"
                 android:text="@string/default_value"/>
 
@@ -314,12 +306,12 @@
 
             <TextView
                 android:id="@+id/label_gain_loss_percent"
-                style="@style/Calculator"
+                style="@style/TextViewLabel"
                 android:text="@string/calculator_gain_loss_percent"/>
 
             <TextView
                 android:id="@+id/textview_gain_loss_percent"
-                style="@style/Calculator"
+                style="@style/TextViewLabel"
                 android:text="@string/default_value_percent"/>
 
             <View

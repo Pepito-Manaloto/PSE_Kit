@@ -11,10 +11,15 @@ import com.aaron.pseplanner.R;
 import com.aaron.pseplanner.adapter.TickerAdapter;
 import com.aaron.pseplanner.bean.Ticker;
 import com.aaron.pseplanner.listener.OnScrollShowHideFastScroll;
+import com.aaron.pseplanner.service.PSEClientService;
+import com.aaron.pseplanner.service.implementation.PSEClientServiceImpl;
+
+import org.apache.commons.lang3.time.FastDateFormat;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 /**
  * Created by aaron.asuncion on 11/18/2016.
@@ -24,6 +29,8 @@ public class TickerFragment extends ListFragment
 {
     public static final String CLASS_NAME = TickerFragment.class.getSimpleName();
     private List<Ticker> tickerList;
+    private PSEClientService client;
+
 
     /**
      * Initializes non-fragment user interface.
@@ -33,6 +40,8 @@ public class TickerFragment extends ListFragment
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+
+        this.client = new PSEClientServiceImpl();
 
         // TODO: retrieve and parse data from PSE
         this.tickerList = new ArrayList<>();
@@ -56,9 +65,7 @@ public class TickerFragment extends ListFragment
         View view = inflater.inflate(R.layout.fragment_ticker, parent, false);
 
         TextView lastUpdated = (TextView) view.findViewById(R.id.textview_last_updated);
-        // TODO: Get last updated date
-        Date date = new Date();
-        lastUpdated.setText("Last Updated: " + date.toString());
+        lastUpdated.setText(getActivity().getString(R.string.last_updated, client.getLastUpdated()));
 
         return view;
     }

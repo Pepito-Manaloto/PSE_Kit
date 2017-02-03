@@ -9,10 +9,8 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.aaron.pseplanner.R;
-import com.aaron.pseplanner.bean.BoardLot;
 import com.aaron.pseplanner.listener.ImageViewOnClickHideExpand;
 
 import org.apache.commons.lang3.StringUtils;

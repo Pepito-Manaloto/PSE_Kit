@@ -4,6 +4,7 @@
 
     <application
         android:allowBackup="true"
+        android:fullBackupContent="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
@@ -18,14 +19,9 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".activity.TickerActivity"
-                  android:theme="@style/AppTheme.NoActionBar">
-        </activity>
-        <activity android:name=".activity.CalculatorActivity"
-                  android:theme="@style/AppTheme.NoActionBar">
-        </activity>
-        <activity android:name=".activity.SettingsActivity"
-                  android:theme="@style/AppTheme.NoActionBar">
+        <activity android:name=".activity.CreateTradePlanActivity"
+                  android:theme="@style/AppTheme.NoActionBar"
+                  android:parentActivityName=".activity.HomeActivity">
         </activity>
     </application>
 

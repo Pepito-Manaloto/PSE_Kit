@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GridLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/GridLayoutLabelValuePair"
+    android:layout_marginBottom="10dp"
+    android:layout_marginLeft="20dp"
+    android:layout_marginStart="20dp">
+
+    <TextView
+        android:id="@+id/label_tranche"
+        style="@style/TextViewLabel"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginStart="20dp"
+        android:text="@string/create_trade_plan_tranche"/>
+
+    <ImageView
+        android:id="@+id/imageview_remove_tranche"
+        android:layout_marginTop="3dp"
+        android:layout_marginBottom="5dp"
+        style="@style/ImageViewRemove"/>
+
+    <TextView
+        android:id="@+id/label_entry_price"
+        style="@style/TextViewLabel.SubLabel"
+        android:layout_marginLeft="40dp"
+        android:layout_marginStart="40dp"
+        android:text="@string/create_trade_plan_price"/>
+
+    <EditText
+        android:id="@+id/edittext_entry_price"
+        style="@style/TextViewLabel.EditText"
+        android:width="90dp"
+        android:inputType="numberDecimal"
+        android:maxLength="@integer/dividend_cash_max_length"/>
+
+    <TextView
+        android:id="@+id/label_weight"
+        style="@style/TextViewLabel.SubLabel"
+        android:layout_marginLeft="40dp"
+        android:layout_marginStart="40dp"
+        android:text="@string/create_trade_plan_weight"/>
+
+    <EditText
+        android:id="@+id/edittext_tranche_weight"
+        style="@style/TextViewLabel.EditText"
+        android:width="70dp"
+        android:inputType="numberDecimal"
+        android:maxLength="@integer/price_max_length"/>
+
+    <View
+        style="@style/Divider"
+        android:layout_columnSpan="2"
+        />
+</GridLayout>

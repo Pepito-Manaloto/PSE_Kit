@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scrollview"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:focusable="false"
+    android:fillViewport="true">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true"
+        android:orientation="vertical">
+
+        <include layout="@layout/toolbar_main"/>
+
+        <GridLayout
+            style="@style/GridLayoutLabelValuePair"
+            android:layout_marginBottom="15dp"
+            android:layout_marginTop="?attr/actionBarSize">
+
+            <TextView
+                android:id="@+id/label_stock"
+                style="@style/TextViewLabel"
+                android:layout_marginTop="10dp"
+                android:text="@string/create_trade_plan_stock"/>
+
+            <TextView
+                android:id="@+id/textview_stock"
+                style="@style/TextViewLabel"
+                android:layout_marginTop="10dp"
+                android:text="@android:string/unknownName"
+                android:textStyle="bold"/>
+
+            <View
+                style="@style/Divider"
+                android:layout_columnSpan="2"
+                android:layout_marginBottom="10dp"
+                />
+
+            <TextView
+                android:id="@+id/label_shares"
+                style="@style/TextViewLabel"
+                android:layout_marginBottom="14dp"
+                android:text="@string/create_trade_plan_shares"/>
+
+            <EditText
+                android:id="@+id/edittext_shares"
+                style="@style/TextViewLabel.EditText.Shares"/>
+
+            <View
+                style="@style/Divider2"
+                android:layout_columnSpan="2"
+                />
+
+            <TextView
+                android:id="@+id/label_entry"
+                style="@style/TextViewLabel"
+                android:layout_marginBottom="0dp"
+                android:layout_columnSpan="2"
+                android:text="@string/create_trade_plan_entry"/>
+
+            <LinearLayout
+                android:id="@+id/entry_tranches_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_columnSpan="2"
+                android:orientation="vertical">
+
+                <!-- Tranches are inserted dynamically in the code using the plus button -->
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/button_add_tranche"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_columnSpan="2"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginStart="20dp"
+                android:drawableLeft="@mipmap/add_button"
+                android:drawablePadding="10dp"
+                android:drawableStart="@mipmap/add_button"
+                android:paddingEnd="20dp"
+                android:paddingRight="20dp"
+                android:layout_gravity="center_horizontal"
+                android:text="@string/create_trade_plan_add_tranche"
+                android:textSize="18sp"/>
+
+            <View
+                style="@style/Divider2"
+                android:layout_columnSpan="2"
+                />
+
+            <TextView
+                android:id="@+id/label_entry_date"
+                style="@style/TextViewLabel"
+                android:layout_marginBottom="14dp"
+                android:text="@string/create_trade_plan_entry_date"/>
+
+            <EditText
+                android:id="@+id/edittext_entry_date"
+                style="@style/TextViewLabel.EditText.Date"/>
+
+            <View
+                style="@style/Divider2"
+                android:layout_columnSpan="2"
+                />
+
+            <TextView
+                android:id="@+id/label_stop_date"
+                style="@style/TextViewLabel"
+                android:layout_marginBottom="14dp"
+                android:text="@string/create_trade_plan_stop_date"/>
+
+            <EditText
+                android:id="@+id/edittext_stop_date"
+                style="@style/TextViewLabel.EditText.Date"/>
+
+            <View
+                style="@style/Divider2"
+                android:layout_columnSpan="2"
+                />
+
+            <TextView
+                android:id="@+id/label_stop_loss"
+                style="@style/TextViewLabel"
+                android:layout_marginBottom="14dp"
+                android:text="@string/create_trade_plan_stop_loss"/>
+
+            <EditText
+                android:id="@+id/edittext_stop_loss"
+                style="@style/TextViewLabel.EditText.Price"/>
+
+            <View
+                style="@style/Divider2"
+                android:layout_columnSpan="2"
+                />
+
+            <TextView
+                android:id="@+id/label_target"
+                style="@style/TextViewLabel"
+                android:layout_marginBottom="14dp"
+                android:text="@string/create_trade_plan_target"/>
+
+            <EditText
+                android:id="@+id/edittext_target"
+                style="@style/TextViewLabel.EditText.Price"/>
+
+            <View
+                style="@style/Divider2"
+                android:layout_columnSpan="2"
+                />
+
+            <TextView
+                android:id="@+id/label_capital"
+                style="@style/TextViewLabel"
+                android:layout_marginBottom="14dp"
+                android:text="@string/create_trade_plan_capital"/>
+
+            <EditText
+                android:id="@+id/edittext_capital"
+                style="@style/TextViewLabel.EditText.Shares"/>
+
+            <Button
+                android:id="@+id/button_add_trade_plan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_columnSpan="2"
+                android:layout_gravity="center_horizontal"
+                android:padding="20dp"
+                android:text="@string/create_trade_plan_add_trade_plan"
+                android:textSize="18sp"
+                />
+        </GridLayout>
+
+    </RelativeLayout>
+
+</ScrollView>
+

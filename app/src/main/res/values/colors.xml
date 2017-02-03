@@ -5,7 +5,7 @@
     <color name="colorAccent">#FF4081</color>
 
     <color name="white">#FFFFFF</color>
-    <color name="black">#000000</color>
+    <color name="black">#f7000000</color>
     <color name="blue">#FF33B5E5</color>
     <color name="sysLightGray">#FFCCCCCC</color>
     <color name="orange">#FFA500</color>

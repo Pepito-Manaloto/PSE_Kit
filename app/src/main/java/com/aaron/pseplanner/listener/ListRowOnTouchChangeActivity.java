@@ -9,6 +9,8 @@ import android.view.View;
 
 import com.aaron.pseplanner.R;
 import com.aaron.pseplanner.bean.Ticker;
+import com.aaron.pseplanner.constant.DataKey;
+import com.aaron.pseplanner.constant.IntentRequestCode;
 
 /**
  * Created by aaron.asuncion on 12/9/2016.
@@ -50,7 +52,7 @@ public class ListRowOnTouchChangeActivity implements View.OnTouchListener
 
     /**
      * If the touch moves MORE than 15 pixels horizontally then the gesture will be treated as a scrolling event,
-     * else it will be treated as selecting the row which will start RecipeActivity.
+     * else it will be treated as selecting the row which will start CreateTradePlanActivity.
      */
     @Override
     public boolean onTouch(View v, MotionEvent event)
@@ -58,6 +60,7 @@ public class ListRowOnTouchChangeActivity implements View.OnTouchListener
         switch(event.getAction())
         {
             case MotionEvent.ACTION_DOWN:
+            case MotionEvent.ACTION_MOVE:
             {
                 this.view.setBackgroundColor(this.highlightedColor);
                 this.historicX = event.getX();
@@ -70,12 +73,13 @@ public class ListRowOnTouchChangeActivity implements View.OnTouchListener
 
                 if(touchMovedLessThan10Pixels)
                 {
-
-                    // TODO: start activity
+                    Intent intent = new Intent(this.activity, this.activityClass);
+                    intent.putExtra(DataKey.EXTRA_TICKER.toString(), ticker);
+                    this.activity.startActivityForResult(intent, IntentRequestCode.CREATE_TRADE_PLAN.code());
                 }
 
                 // Removes compiler warning
-                v.performClick();
+                //v.performClick();
 
                 break;
             }

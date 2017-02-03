@@ -18,6 +18,7 @@ import com.aaron.pseplanner.listener.EditTextOnTextChangeCalculate;
 import com.aaron.pseplanner.listener.EditTextOnTextChangeWrapper;
 import com.aaron.pseplanner.service.CalculatorService;
 import com.aaron.pseplanner.service.FormatService;
+import com.aaron.pseplanner.service.ViewUtils;
 import com.aaron.pseplanner.service.implementation.CalculatorServiceImpl;
 import com.aaron.pseplanner.service.implementation.FormatServiceImpl;
 
@@ -29,7 +30,7 @@ import org.apache.commons.lang3.reflect.FieldUtils;
 
 public abstract class AbstractCalculatorFragment extends Fragment implements InputCalculatorService
 {
-    public static final String LOG_MARKER = AbstractCalculatorFragment.class.getSimpleName();
+    public static final String CLASS_NAME = AbstractCalculatorFragment.class.getSimpleName();
 
     protected CalculatorService calculatorService;
     protected FormatService formatService;
@@ -68,37 +69,7 @@ public abstract class AbstractCalculatorFragment extends Fragment implements Inp
         {
             editText.addTextChangedListener(new EditTextOnTextChangeWrapper(editText,
                     new EditTextOnTextChangeCalculate(this,
-                            new EditTextOnTextChangeAddComma(editText, getEditTextMaxLength(editText.getFilters())))));
+                            new EditTextOnTextChangeAddComma(editText, ViewUtils.getEditTextMaxLength(editText.getFilters(), CLASS_NAME)))));
         }
-    }
-
-    /**
-     * Retrieves the edit text's android:maxLength.
-     */
-    private int getEditTextMaxLength(InputFilter[] filters)
-    {
-        for(InputFilter filter : filters)
-        {
-            if(filter instanceof InputFilter.LengthFilter)
-            {
-                if(android.os.Build.VERSION.SDK_INT >= 21)
-                {
-                    return ((InputFilter.LengthFilter) filter).getMax();
-                }
-                else
-                {
-                    try
-                    {
-                        return (int) FieldUtils.readField(filter, "mMax", true);
-                    }
-                    catch(IllegalAccessException e)
-                    {
-                        Log.e(LOG_MARKER, "Error retrieving EditText's maxLength.", e);
-                    }
-                }
-            }
-        }
-
-        return 0;
     }
 }
