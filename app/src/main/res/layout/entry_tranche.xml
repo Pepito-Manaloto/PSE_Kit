@@ -29,10 +29,7 @@
 
     <EditText
         android:id="@+id/edittext_entry_price"
-        style="@style/TextViewLabel.EditText"
-        android:width="90dp"
-        android:inputType="numberDecimal"
-        android:maxLength="@integer/dividend_cash_max_length"/>
+        style="@style/TextViewLabel.EditText.Price"/>
 
     <TextView
         android:id="@+id/label_weight"
@@ -43,10 +40,7 @@
 
     <EditText
         android:id="@+id/edittext_tranche_weight"
-        style="@style/TextViewLabel.EditText"
-        android:width="70dp"
-        android:inputType="numberDecimal"
-        android:maxLength="@integer/price_max_length"/>
+        style="@style/TextViewLabel.EditText.Percent"/>
 
     <View
         style="@style/Divider"

@@ -77,7 +77,6 @@ public class MidpointFragment extends AbstractCalculatorFragment
                 else
                 {
                     Toast.makeText(getContext(), R.string.midpoint_invalid_input, Toast.LENGTH_LONG).show();
-                    this.resetEditTexts();
                 }
             }
             catch(ParseException ex)

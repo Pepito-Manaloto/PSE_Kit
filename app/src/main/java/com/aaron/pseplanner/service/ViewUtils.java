@@ -50,4 +50,28 @@ public final class ViewUtils
 
         return 0;
     }
+
+    /**
+     * Returns the ordinal number of the given number. Starts with 0, which means 0 is equal to 1. e.g. 0 - 1st, 1 - 2nd, 2 - 3rd, 3 - 4th, 4 - 5th, and so on.
+     *
+     * @param num the non-negative input number
+     * @throws IllegalArgumentException if the
+     * @return the ordinal number
+     */
+    public static String getOrdinalNumber(int num)
+    {
+        if(num < 0)
+        {
+            throw new IllegalArgumentException("Number cannot be less than zero.");
+        }
+
+        switch(num)
+        {
+            case 0: return "1st";
+            case 1: return "2nd";
+            case 2: return "3rd";
+            // Increment by one, because we start at 0.
+            default: return ++num + "th";
+        }
+    }
 }

@@ -49,6 +49,7 @@
 
     <string name="default_value">0</string>
     <string name="default_value_percent">0%</string>
+    <string name="one_hundred_percent">100%</string>
 
     <!-- Dividend -->
     <string name="dividend_price">Price : </string>

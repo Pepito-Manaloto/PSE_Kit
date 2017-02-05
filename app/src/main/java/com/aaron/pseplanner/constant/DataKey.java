@@ -6,5 +6,7 @@ package com.aaron.pseplanner.constant;
  */
 public enum DataKey
 {
+    EXTRA_ID,
     EXTRA_TICKER,
+    EXTRA_DATE,
 }

@@ -113,6 +113,18 @@
         <item name="android:paddingLeft">7dp</item>
     </style>
 
+    <style name="TextViewLabel.EditText.CashDividend" parent="TextViewLabel.EditText">
+        <item name="android:width">60dp</item>
+        <item name="android:inputType">numberDecimal</item>
+        <item name="android:maxLength">@integer/dividend_cash_max_length</item>
+    </style>
+
+    <style name="TextViewLabel.EditText.Percent" parent="TextViewLabel.EditText">
+        <item name="android:width">70dp</item>
+        <item name="android:inputType">numberDecimal</item>
+        <item name="android:maxLength">@integer/percent_max_length</item>
+    </style>
+
     <style name="TextViewLabel.EditText.Price" parent="TextViewLabel.EditText">
         <item name="android:width">80dp</item>
         <item name="android:inputType">numberDecimal</item>
@@ -121,6 +133,7 @@
 
     <style name="TextViewLabel.EditText.Date" parent="TextViewLabel.EditText">
         <item name="android:width">105dp</item>
+        <item name="android:focusable">false</item>
         <item name="android:cursorVisible">false</item>
         <item name="android:inputType">date</item>
         <item name="android:maxLength">@integer/date_max_length</item>

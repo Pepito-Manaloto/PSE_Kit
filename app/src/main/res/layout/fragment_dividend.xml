@@ -46,10 +46,7 @@
 
         <EditText
             android:id="@+id/edittext_cash_dividend"
-            style="@style/TextViewLabel.EditText"
-            android:width="65dp"
-            android:inputType="numberDecimal"
-            android:maxLength="@integer/dividend_cash_max_length"/>
+            style="@style/TextViewLabel.EditText.CashDividend"/>
 
         <View
             style="@style/Divider2"
