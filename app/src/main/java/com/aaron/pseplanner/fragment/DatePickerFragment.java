@@ -28,7 +28,7 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
 {
     public static final String CLASS_NAME = DatePickerFragment.class.getSimpleName();
     private static final String DATE_PATTERN = "MM-dd-yyyy";
-    private static final FastDateFormat DATE_FORMATTER = FastDateFormat.getInstance(DATE_PATTERN);
+    public static final FastDateFormat DATE_FORMATTER = FastDateFormat.getInstance(DATE_PATTERN);
 
     private EditText editText;
 

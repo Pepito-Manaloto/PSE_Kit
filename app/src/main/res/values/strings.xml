@@ -49,7 +49,7 @@
 
     <string name="default_value">0</string>
     <string name="default_value_percent">0%</string>
-    <string name="one_hundred_percent">100%</string>
+    <string name="one_hundred_value">100</string>
 
     <!-- Dividend -->
     <string name="dividend_price">Price : </string>
@@ -91,12 +91,15 @@
     <string name="create_trade_plan_capital">Capital : </string>
     <string name="create_trade_plan_add_tranche">Add Tranche</string>
     <string name="create_trade_plan_add_trade_plan">Add Trade Plan</string>
+    <string name="create_trade_plan_prompt">Risk-Reward is just %1$.2f\nAre you sure of this trade?</string>
 
+    <string name="input_blank">Please input %1$s</string>
     <string name="last_updated">Last Updated: %1$s</string>
 
     <!-- Error Messages -->
-    <string name="midpoint_invalid_input">High value should not be less than low value.</string>
-    <string name="boardlot_invalid">Warning: The price and shares is not a valid boardlot.</string>
+    <string name="midpoint_invalid_input">High value should not be less than low value</string>
+    <string name="boardlot_invalid">The price and shares is not a valid boardlot</string>
+    <string name="tranche_weight_invalid">The tranche weight should equal to 100%</string>
 
     <string-array name="refresh_intervals">
         <item>15</item>

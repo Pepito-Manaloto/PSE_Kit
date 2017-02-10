@@ -114,13 +114,13 @@
     </style>
 
     <style name="TextViewLabel.EditText.CashDividend" parent="TextViewLabel.EditText">
-        <item name="android:width">60dp</item>
+        <item name="android:width">75dp</item>
         <item name="android:inputType">numberDecimal</item>
         <item name="android:maxLength">@integer/dividend_cash_max_length</item>
     </style>
 
     <style name="TextViewLabel.EditText.Percent" parent="TextViewLabel.EditText">
-        <item name="android:width">70dp</item>
+        <item name="android:width">65dp</item>
         <item name="android:inputType">numberDecimal</item>
         <item name="android:maxLength">@integer/percent_max_length</item>
     </style>
