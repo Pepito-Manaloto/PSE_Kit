@@ -1,7 +1,9 @@
 package com.aaron.pseplanner.activity;
 
+import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -25,6 +27,9 @@ import android.widget.TextView;
 
 import com.aaron.pseplanner.R;
 import com.aaron.pseplanner.async.UpdateTickerTask;
+import com.aaron.pseplanner.bean.Ticker;
+import com.aaron.pseplanner.constant.DataKey;
+import com.aaron.pseplanner.constant.IntentRequestCode;
 import com.aaron.pseplanner.fragment.CalculatorTabsFragment;
 import com.aaron.pseplanner.fragment.HomeFragment;
 import com.aaron.pseplanner.fragment.SettingsFragment;
@@ -32,13 +37,15 @@ import com.aaron.pseplanner.fragment.TickerFragment;
 
 import java.lang.reflect.Field;
 
+import static com.aaron.pseplanner.constant.Constants.LOG_TAG;
+
 /**
  * Abstract super class that creates a single fragment in the fragment container.
  * Contains Navigation items in a Drawer
  */
 public abstract class MainFragmentActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
 {
-    public static final String LOG_MARKER = MainFragmentActivity.class.getSimpleName();
+    public static final String CLASS_NAME = MainFragmentActivity.class.getSimpleName();
 
     private DrawerLayout drawer;
     private Menu toolbarMenu;
@@ -75,6 +82,27 @@ public abstract class MainFragmentActivity extends AppCompatActivity implements 
         {
             fragment = this.createFragment();
             fm.beginTransaction().add(R.id.fragment_container, fragment).commit();
+        }
+    }
+
+
+    /**
+     * Receives the result data from the previous fragment. Updates the
+     * application's state depending on the data received.
+     */
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        if(resultCode != Activity.RESULT_OK)
+        {
+            return;
+        }
+
+        if(IntentRequestCode.CREATE_TRADE_PLAN.code() == requestCode && data.hasExtra(DataKey.EXTRA_TICKER.toString()))
+        {
+            Ticker addedTicker = data.getParcelableExtra(DataKey.EXTRA_TICKER.toString());
+
+            //TODO: do something
         }
     }
 
@@ -241,14 +269,14 @@ public abstract class MainFragmentActivity extends AppCompatActivity implements 
             @Override
             public boolean onQueryTextSubmit(String query)
             {
-                Log.d(LOG_MARKER, "onQueryTextSubmit: " + query);
+                Log.d(LOG_TAG, CLASS_NAME + ": onQueryTextSubmit. " + query);
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String s)
             {
-                Log.d(LOG_MARKER, "onQueryTextChange: " + s);
+                Log.d(LOG_TAG, CLASS_NAME + ": onQueryTextChange. " + s);
                 return false;
             }
         });
@@ -262,7 +290,7 @@ public abstract class MainFragmentActivity extends AppCompatActivity implements 
         }
         catch(Exception e)
         {
-            Log.e(LOG_MARKER, "Error setting custom search cursor.", e);
+            Log.e(LOG_TAG, CLASS_NAME + ": Error setting custom search cursor.", e);
         }
     }
 

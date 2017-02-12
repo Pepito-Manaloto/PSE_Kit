@@ -14,12 +14,8 @@ import com.aaron.pseplanner.listener.OnScrollShowHideFastScroll;
 import com.aaron.pseplanner.service.PSEClientService;
 import com.aaron.pseplanner.service.implementation.PSEClientServiceImpl;
 
-import org.apache.commons.lang3.time.FastDateFormat;
-
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.TimeZone;
 
 /**
  * Created by aaron.asuncion on 11/18/2016.
@@ -30,8 +26,7 @@ public class TickerFragment extends ListFragment
     public static final String CLASS_NAME = TickerFragment.class.getSimpleName();
     private List<Ticker> tickerList;
     private PSEClientService client;
-
-
+    
     /**
      * Initializes non-fragment user interface.
      */

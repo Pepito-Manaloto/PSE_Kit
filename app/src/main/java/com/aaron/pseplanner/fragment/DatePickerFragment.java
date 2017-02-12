@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.util.Log;
+import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
 
@@ -95,5 +96,12 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
 
         String selectedDate = DATE_FORMATTER.format(calendar);
         this.editText.setText(selectedDate);
+
+        // Clear focus, because Date EditText is not focusable it is awkward for the focus to be on a different View
+        View focusedView = getActivity().getCurrentFocus();
+        if(focusedView != null)
+        {
+            focusedView.clearFocus();
+        }
     }
 }
