@@ -11,6 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.aaron.pseplanner.R;
+import com.aaron.pseplanner.service.LogManager;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -24,7 +25,7 @@ import java.util.Locale;
 
 public class MidpointFragment extends AbstractCalculatorFragment
 {
-    public static final String LOG_MARKER = MidpointFragment.class.getSimpleName();
+    public static final String CLASS_NAME = MidpointFragment.class.getSimpleName();
     private EditText highEditText;
     private EditText lowEditText;
 
@@ -55,6 +56,9 @@ public class MidpointFragment extends AbstractCalculatorFragment
         this.resetEditTexts();
     }
 
+    /**
+     * Updates the values in the calculator fragment if high and low values are inputted.
+     */
     @Override
     public void calculate()
     {
@@ -81,7 +85,7 @@ public class MidpointFragment extends AbstractCalculatorFragment
             }
             catch(ParseException ex)
             {
-                Log.e(LOG_MARKER, "Error parsing input numbers.", ex);
+                LogManager.error(CLASS_NAME, "calculate", "Error parsing input numbers.", ex);
             }
         }
         else
@@ -94,5 +98,11 @@ public class MidpointFragment extends AbstractCalculatorFragment
     {
         this.highEditText.setText("");
         this.lowEditText.setText("");
+    }
+
+    @Override
+    protected String getClassName()
+    {
+        return CLASS_NAME;
     }
 }

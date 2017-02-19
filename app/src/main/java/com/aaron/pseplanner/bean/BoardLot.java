@@ -28,7 +28,6 @@ public enum BoardLot
     private double upperRange;
     private int minimumShares;
     private double priceFluctuation;
-    private String format;
 
     BoardLot(double lowerRange, double upperRange, int minimumShares, double priceFluctuation)
     {

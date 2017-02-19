@@ -2,6 +2,8 @@ package com.aaron.pseplanner.service;
 
 import android.widget.TextView;
 
+import org.apache.commons.lang3.time.FastDateFormat;
+
 import java.util.Date;
 
 /**
@@ -10,6 +12,13 @@ import java.util.Date;
 
 public interface FormatService
 {
+    String DATE_PATTERN = "MMMM dd, yyyy";
+    FastDateFormat DATE_FORMATTER = FastDateFormat.getInstance(DATE_PATTERN);
+
+    String STOCK_PRICE_FORMAT = "#,###.####";
+    String PRICE_FORMAT = "#,###.##";
+    String SHARES_FORMAT = "#,###";
+
     /**
      * Formats the stock price.
      */
@@ -34,11 +43,6 @@ public interface FormatService
      * Formats the textview.
      */
     void formatTextColor(double price, TextView text);
-
-    /**
-     * Append a number sign(+/-).
-     */
-    String addNumberSign(double number, String text);
 
     /**
      * Formats the Date object.

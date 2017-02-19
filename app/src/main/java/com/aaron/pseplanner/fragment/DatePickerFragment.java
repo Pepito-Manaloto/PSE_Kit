@@ -5,21 +5,18 @@ import android.app.Dialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
-import android.util.Log;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
 
-import com.aaron.pseplanner.R;
 import com.aaron.pseplanner.constant.DataKey;
+import com.aaron.pseplanner.service.LogManager;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.FastDateFormat;
 
 import java.text.ParseException;
 import java.util.Calendar;
-
-import static com.aaron.pseplanner.constant.Constants.LOG_TAG;
 
 /**
  * Created by aaron.asuncion on 2/3/2017.
@@ -73,7 +70,7 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
         }
         catch(ParseException e)
         {
-            Log.e(LOG_TAG, CLASS_NAME + ": onCreateDialog. Error parsing date, will use current date instead.", e);
+            LogManager.error(CLASS_NAME, "onCreateDialog", "Error parsing date, will use current date instead.", e);
         }
 
         int year = calendar.get(Calendar.YEAR);

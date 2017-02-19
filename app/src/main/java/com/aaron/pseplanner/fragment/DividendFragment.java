@@ -1,7 +1,6 @@
 package com.aaron.pseplanner.fragment;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,9 +10,9 @@ import android.widget.Toast;
 
 import com.aaron.pseplanner.R;
 import com.aaron.pseplanner.bean.BoardLot;
+import com.aaron.pseplanner.service.LogManager;
 
 import org.apache.commons.lang3.StringUtils;
-import org.w3c.dom.Text;
 
 import java.text.NumberFormat;
 import java.text.ParseException;
@@ -25,7 +24,7 @@ import java.util.Locale;
 
 public class DividendFragment extends AbstractCalculatorFragment
 {
-    public static final String LOG_MARKER = DividendFragment.class.getSimpleName();
+    public static final String CLASS_NAME = DividendFragment.class.getSimpleName();
 
     private EditText priceEditText;
     private EditText sharesEditText;
@@ -64,7 +63,7 @@ public class DividendFragment extends AbstractCalculatorFragment
     }
 
     /**
-     * Updates the values in the dividend fragment if price price, shares, and cash dividend values are inputted.
+     * Updates the values in the dividend fragment if the price, shares, and cash dividend values are inputted.
      */
     @Override
     public void calculate()
@@ -100,7 +99,7 @@ public class DividendFragment extends AbstractCalculatorFragment
             }
             catch(ParseException ex)
             {
-                Log.e(LOG_MARKER, "Error parsing input numbers.", ex);
+                LogManager.error(CLASS_NAME, "calculate", "Error parsing input numbers.", ex);
             }
         }
         else
@@ -120,5 +119,11 @@ public class DividendFragment extends AbstractCalculatorFragment
         this.priceEditText.setText("");
         this.sharesEditText.setText("");
         this.dividendEditText.setText("");
+    }
+
+    @Override
+    protected String getClassName()
+    {
+        return CLASS_NAME;
     }
 }

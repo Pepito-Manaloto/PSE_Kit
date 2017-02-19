@@ -23,8 +23,6 @@ import com.aaron.pseplanner.service.implementation.FormatServiceImpl;
 
 public abstract class AbstractCalculatorFragment extends Fragment implements InputCalculatorService
 {
-    public static final String CLASS_NAME = AbstractCalculatorFragment.class.getSimpleName();
-
     protected CalculatorService calculatorService;
     protected FormatService formatService;
 
@@ -62,7 +60,9 @@ public abstract class AbstractCalculatorFragment extends Fragment implements Inp
         {
             editText.addTextChangedListener(new EditTextOnTextChangeWrapper(editText,
                     new EditTextOnTextChangeCalculate(this,
-                            new EditTextOnTextChangeAddComma(editText, ViewUtils.getEditTextMaxLength(editText.getFilters(), CLASS_NAME)))));
+                            new EditTextOnTextChangeAddComma(editText, ViewUtils.getEditTextMaxLength(editText.getFilters(), getClassName())))));
         }
     }
+
+    protected abstract String getClassName();
 }

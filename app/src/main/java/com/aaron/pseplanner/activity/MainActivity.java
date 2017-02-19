@@ -15,7 +15,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -34,10 +33,9 @@ import com.aaron.pseplanner.fragment.CalculatorTabsFragment;
 import com.aaron.pseplanner.fragment.TradePlanListFragment;
 import com.aaron.pseplanner.fragment.SettingsFragment;
 import com.aaron.pseplanner.fragment.TickerListFragment;
+import com.aaron.pseplanner.service.LogManager;
 
 import java.lang.reflect.Field;
-
-import static com.aaron.pseplanner.constant.Constants.LOG_TAG;
 
 /**
  * The main activity, contains Navigation items in a Drawer. Contains fragments: trade plan list, calculator, ticker, and settings.
@@ -96,6 +94,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         {
             return;
         }
+
+        LogManager.debug(CLASS_NAME, "onActivityResult", "requestCode=" + requestCode + " resultCode=" + resultCode);
 
         if(IntentRequestCode.CREATE_TRADE_PLAN.code() == requestCode && data.hasExtra(DataKey.EXTRA_TICKER.toString()))
         {
@@ -268,14 +268,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public boolean onQueryTextSubmit(String query)
             {
-                Log.d(LOG_TAG, CLASS_NAME + ": onQueryTextSubmit. " + query);
+                LogManager.debug(CLASS_NAME, "onQueryTextSubmit", query);
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String s)
             {
-                Log.d(LOG_TAG, CLASS_NAME + ": onQueryTextChange. " + s);
+                LogManager.debug(CLASS_NAME, "onQueryTextChange", s);
                 return false;
             }
         });
@@ -289,7 +289,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         catch(Exception e)
         {
-            Log.e(LOG_TAG, CLASS_NAME + ": Error setting custom search cursor.", e);
+            LogManager.error(CLASS_NAME, "initializeSearchBar", "Error setting custom search cursor.", e);
         }
     }
 

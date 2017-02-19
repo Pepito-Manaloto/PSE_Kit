@@ -9,7 +9,6 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.util.Pair;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -31,6 +30,7 @@ import com.aaron.pseplanner.listener.EditTextOnFocusChangeHideKeyboard;
 import com.aaron.pseplanner.listener.EditTextOnTextChangeAddComma;
 import com.aaron.pseplanner.listener.EditTextOnTextChangeWrapper;
 import com.aaron.pseplanner.service.CalculatorService;
+import com.aaron.pseplanner.service.LogManager;
 import com.aaron.pseplanner.service.ViewUtils;
 import com.aaron.pseplanner.service.implementation.CalculatorServiceImpl;
 
@@ -40,8 +40,6 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
-import static com.aaron.pseplanner.constant.Constants.LOG_TAG;
 
 /**
  * Create Trade Plan Activity. Does not contain navigation views or menu items.
@@ -79,7 +77,7 @@ public class CreateTradePlanActivity extends AppCompatActivity
             this.selectedStock = getIntent().getParcelableExtra(DataKey.EXTRA_TICKER.toString());
         }
 
-        Log.d(LOG_TAG, CLASS_NAME + ": onCreate." + selectedStock);
+        LogManager.debug(CLASS_NAME, "onCreate", this.selectedStock == null ? null : this.selectedStock.toString());
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(R.string.title_create_trade_plan);
@@ -239,7 +237,7 @@ public class CreateTradePlanActivity extends AppCompatActivity
             }
             catch(ParseException e)
             {
-                Log.d(LOG_TAG, CLASS_NAME + ": validateTradePlanInput. Failed checking entry and stop date.", e);
+                LogManager.error(CLASS_NAME, "validateTradePlanInput", "Failed checking entry and stop date.", e);
             }
 
             // Check if stop loss is greater than average price
@@ -384,7 +382,7 @@ public class CreateTradePlanActivity extends AppCompatActivity
 
         outState.putParcelable(DataKey.EXTRA_TICKER.toString(), this.selectedStock);
 
-        Log.d(LOG_TAG, CLASS_NAME + ": onSaveInstanceState");
+        LogManager.debug(CLASS_NAME, "onSaveInstanceState", "");
     }
 
     /**

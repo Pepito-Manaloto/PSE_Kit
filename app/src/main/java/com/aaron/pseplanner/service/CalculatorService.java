@@ -9,6 +9,32 @@ import com.aaron.pseplanner.bean.Trade;
 
 public interface CalculatorService
 {
+    // 0.25%
+    double STOCK_BROKERS_COMMISSION = 0.0025;
+
+    // 12%
+    double VAT = 0.12;
+
+    // 0.01
+    double CLEARING_FEE = 0.0001;
+
+    // 0.005%
+    double PSE_TRANSACTION_FEE = 0.00005;
+
+    // 0.5%
+    double SALES_TAX = 0.005;
+
+    // 0.295%
+    double TOTAL_BUY_FEE = STOCK_BROKERS_COMMISSION + (STOCK_BROKERS_COMMISSION * VAT) + CLEARING_FEE + PSE_TRANSACTION_FEE;
+
+    // 0.795%
+    double TOTAL_SELL_FEE = TOTAL_BUY_FEE + SALES_TAX;
+
+    // 1.09%
+    double TOTAL_BUY_SELL_FEE = TOTAL_BUY_FEE + TOTAL_SELL_FEE;
+
+    int MINIMUM_COMMISSION = 20;
+
     /**
      * Gets the buy gross amount of a stock trade.
      *

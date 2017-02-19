@@ -15,14 +15,15 @@ import com.aaron.pseplanner.constant.DataKey;
 import com.aaron.pseplanner.constant.IntentRequestCode;
 import com.aaron.pseplanner.listener.ListRowOnTouchChangeActivity;
 import com.aaron.pseplanner.service.FormatService;
+import com.aaron.pseplanner.service.ViewUtils;
 import com.aaron.pseplanner.service.implementation.FormatServiceImpl;
 
 import java.util.List;
 
 /**
  * Created by Aaron on 2/17/2017.
+ * Contains all trade plans, and is responsible for converting Trade bean to a UI row in the ListView.
  */
-
 public class TradePlanAdapter extends ArrayAdapter<Trade>
 {
     private Activity activity;
@@ -97,8 +98,8 @@ public class TradePlanAdapter extends ArrayAdapter<Trade>
             stock.setText(trade.getSymbol());
             currentPrice.setText(service.formatStockPrice(trade.getCurrentPrice()));
             averagePrice.setText(service.formatStockPrice(trade.getAveragePrice()));
-            String gainLossValue = service.addNumberSign(trade.getGainLoss(), service.formatPrice(trade.getGainLoss()));
-            String gainLossPercentValue = service.addNumberSign(trade.getGainLossPercent(), service.formatPercent(trade.getGainLossPercent()));
+            String gainLossValue = ViewUtils.addPositiveSign(trade.getGainLoss(), service.formatPrice(trade.getGainLoss()));
+            String gainLossPercentValue = ViewUtils.addPositiveSign(trade.getGainLossPercent(), service.formatPercent(trade.getGainLossPercent()));
             gainLoss.setText(String.format("%s (%s)", gainLossValue, gainLossPercentValue));
             shares.setText(service.formatShares(trade.getTotalShares()));
             stopLoss.setText(service.formatPrice(trade.getStopLoss()));

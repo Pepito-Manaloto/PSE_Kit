@@ -1,9 +1,6 @@
 package com.aaron.pseplanner.service;
 
-import static com.aaron.pseplanner.constant.Constants.LOG_TAG;
-
 import android.text.InputFilter;
-import android.util.Log;
 
 import org.apache.commons.lang3.reflect.FieldUtils;
 
@@ -34,7 +31,8 @@ public final class ViewUtils
                 if(android.os.Build.VERSION.SDK_INT >= 21)
                 {
                     return ((InputFilter.LengthFilter) filter).getMax();
-                }else
+                }
+                else
                 {
                     try
                     {
@@ -42,7 +40,7 @@ public final class ViewUtils
                     }
                     catch(IllegalAccessException e)
                     {
-                        Log.e(LOG_TAG, callerClass + ": getEditTextMaxLength. Error retrieving EditText's maxLength.", e);
+                        LogManager.error(callerClass, "getEditTextMaxLength", "Error retrieving EditText's maxLength.", e);
                     }
                 }
             }
@@ -55,8 +53,8 @@ public final class ViewUtils
      * Returns the ordinal number of the given number. Starts with 0, which means 0 is equal to 1. e.g. 0 - 1st, 1 - 2nd, 2 - 3rd, 3 - 4th, 4 - 5th, and so on.
      *
      * @param num the non-negative input number
-     * @throws IllegalArgumentException if the
      * @return the ordinal number
+     * @throws IllegalArgumentException if the
      */
     public static String getOrdinalNumber(int num)
     {
@@ -67,11 +65,32 @@ public final class ViewUtils
 
         switch(num)
         {
-            case 0: return "1st";
-            case 1: return "2nd";
-            case 2: return "3rd";
+            case 0:
+                return "1st";
+            case 1:
+                return "2nd";
+            case 2:
+                return "3rd";
             // Increment by one, because we start at 0.
-            default: return ++num + "th";
+            default:
+                return ++num + "th";
         }
+    }
+
+    /**
+     * Adds '+' if the number is positive.
+     *
+     * @param number the number to check
+     * @param text   the text to append the sign
+     * @return text with number sign appended
+     */
+    public static String addPositiveSign(double number, String text)
+    {
+        if(number > 0)
+        {
+            text = "+" + text;
+        }
+
+        return text;
     }
 }

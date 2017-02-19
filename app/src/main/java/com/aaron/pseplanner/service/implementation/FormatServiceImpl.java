@@ -21,8 +21,6 @@ import java.util.Date;
 public class FormatServiceImpl implements FormatService
 {
     private static int GREEN;
-    private static final String DATE_PATTERN = "MMMM dd, yyyy";
-    private static final FastDateFormat DATE_FORMATTER = FastDateFormat.getInstance(DATE_PATTERN);
 
     public FormatServiceImpl(Activity activity)
     {
@@ -42,7 +40,7 @@ public class FormatServiceImpl implements FormatService
     @Override
     public String formatStockPrice(double number)
     {
-        return format(number, Constants.STOCK_PRICE_FORMAT, RoundingMode.DOWN);
+        return format(number, STOCK_PRICE_FORMAT, RoundingMode.DOWN);
     }
 
     /**
@@ -51,7 +49,7 @@ public class FormatServiceImpl implements FormatService
     @Override
     public String formatPrice(double number)
     {
-        return format(number, Constants.PRICE_FORMAT, RoundingMode.UP);
+        return format(number, PRICE_FORMAT, RoundingMode.UP);
     }
 
     /**
@@ -60,7 +58,7 @@ public class FormatServiceImpl implements FormatService
     @Override
     public String formatPercent(double number)
     {
-        return format(number, Constants.PRICE_FORMAT, RoundingMode.UP) + "%";
+        return format(number, PRICE_FORMAT, RoundingMode.UP) + "%";
     }
 
     /**
@@ -69,7 +67,7 @@ public class FormatServiceImpl implements FormatService
     @Override
     public String formatShares(long number)
     {
-        return format(number, Constants.SHARES_FORMAT, RoundingMode.DOWN);
+        return format(number, SHARES_FORMAT, RoundingMode.DOWN);
     }
 
     /**
@@ -90,29 +88,6 @@ public class FormatServiceImpl implements FormatService
         {
             text.setTextColor(Color.BLACK);
         }
-    }
-
-    /**
-     * Adds '+' if the number is position, else add '-'.
-     *
-     * @param number the number to check
-     * @param text   the text to append the sign
-     * @return text with number sign appended
-     */
-    @Override
-    public String addNumberSign(double number, String text)
-    {
-        if(number > 0)
-        {
-            text = "+" + text;
-        }
-//        else if(number < 0)
-//        {
-//            text = "-" + text;
-//        }
-        // else do nothing
-
-        return text;
     }
 
     /**

@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.aaron.pseplanner.R;
 import com.aaron.pseplanner.listener.ImageViewOnClickHideExpand;
+import com.aaron.pseplanner.service.LogManager;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -25,7 +26,7 @@ import java.util.Locale;
 
 public class CalculatorFragment extends AbstractCalculatorFragment
 {
-    public static final String LOG_MARKER = CalculatorFragment.class.getSimpleName();
+    public static final String CLASS_NAME = CalculatorFragment.class.getSimpleName();
 
     private EditText buyPriceEditText;
     private EditText sharesEditText;
@@ -65,7 +66,6 @@ public class CalculatorFragment extends AbstractCalculatorFragment
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState)
     {
         View view = inflateFragment(R.layout.fragment_calculator, inflater, parent);
-        final Resources resource = getResources();
 
         this.averagePriceText = (TextView) view.findViewById(R.id.textview_average_price);
         this.priceToBreakEvenText = (TextView) view.findViewById(R.id.textview_break_even_price);
@@ -180,7 +180,7 @@ public class CalculatorFragment extends AbstractCalculatorFragment
             }
             catch(ParseException ex)
             {
-                Log.e(LOG_MARKER, "Error parsing input numbers.", ex);
+                LogManager.error(CLASS_NAME, "calculate", "Error parsing input numbers.", ex);
             }
         }
         else
@@ -298,5 +298,11 @@ public class CalculatorFragment extends AbstractCalculatorFragment
     {
         buyNetImageView.setOnClickListener(new ImageViewOnClickHideExpand(this.getActivity(), buyNetImageView, additionalLayoutContainer));
         sellNetImageView.setOnClickListener(new ImageViewOnClickHideExpand(this.getActivity(), sellNetImageView, deductionsLayoutContainer));
+    }
+
+    @Override
+    protected String getClassName()
+    {
+        return CLASS_NAME;
     }
 }

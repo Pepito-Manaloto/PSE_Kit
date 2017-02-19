@@ -11,6 +11,8 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.text.DecimalFormat;
 
+import static com.aaron.pseplanner.service.implementation.FormatServiceImpl.STOCK_PRICE_FORMAT;
+
 /**
  * Created by Aaron on 12/3/2016.
  * Adds commas on the inputted number in the EditText.
@@ -27,7 +29,7 @@ public class EditTextOnTextChangeAddComma implements TextWatcher
     public EditTextOnTextChangeAddComma(EditText editText, int maxIntegerDigits)
     {
         this.editText = editText;
-        this.formatter = new DecimalFormat(Constants.STOCK_PRICE_FORMAT);
+        this.formatter = new DecimalFormat(STOCK_PRICE_FORMAT);
 
         // Divide by three because there would be a comma for every 3 digits
         this.max = maxIntegerDigits - ((maxIntegerDigits / 3) - (maxIntegerDigits % 3 == 0 ? 1 : 0));
@@ -37,7 +39,7 @@ public class EditTextOnTextChangeAddComma implements TextWatcher
     public EditTextOnTextChangeAddComma(EditText editText, int maxIntegerDigits, TextWatcher textWatcher)
     {
         this.editText = editText;
-        this.formatter = new DecimalFormat(Constants.STOCK_PRICE_FORMAT);
+        this.formatter = new DecimalFormat(STOCK_PRICE_FORMAT);
 
         // Divide by three because there would be a comma for every 3 digits
         this.max = maxIntegerDigits - ((maxIntegerDigits / 3) - (maxIntegerDigits % 3 == 0 ? 1 : 0));
@@ -109,7 +111,7 @@ public class EditTextOnTextChangeAddComma implements TextWatcher
                 // place the cursor at the end of text
                 this.editText.setSelection(editTextLength);
             }
-            else // TODO: Some scenarios not covered
+            else // TODO: Some scenarios not covered, like what?
             {
                 // retain cursor position, if this is not present the cursor will move to 0th position
                 this.editText.setSelection(cursorPosition);

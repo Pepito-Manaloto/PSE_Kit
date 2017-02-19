@@ -1,9 +1,5 @@
 package com.aaron.pseplanner.service.implementation;
 
-import android.util.Log;
-
-import static com.aaron.pseplanner.service.implementation.CalculatorServiceImpl.Constants.*;
-
 import com.aaron.pseplanner.service.CalculatorService;
 
 /**
@@ -245,37 +241,5 @@ public class CalculatorServiceImpl implements CalculatorService
     public double getSalesTax(double grossAmount)
     {
         return grossAmount * SALES_TAX;
-    }
-
-    /**
-     * Computational constants used by this CalculatorService implementation.
-     */
-    public static final class Constants
-    {
-        // 0.25%
-        public static final double STOCK_BROKERS_COMMISSION = 0.0025;
-
-        // 12%
-        public static final double VAT = 0.12;
-
-        // 0.01
-        public static final double CLEARING_FEE = 0.0001;
-
-        // 0.005%
-        public static final double PSE_TRANSACTION_FEE = 0.00005;
-
-        // 0.5%
-        public static final double SALES_TAX = 0.005;
-
-        // 0.295%
-        public static final double TOTAL_BUY_FEE = STOCK_BROKERS_COMMISSION + (STOCK_BROKERS_COMMISSION * VAT) + CLEARING_FEE + PSE_TRANSACTION_FEE;
-
-        // 0.795%
-        public static final double TOTAL_SELL_FEE = TOTAL_BUY_FEE + SALES_TAX;
-
-        // 1.09%
-        public static final double TOTAL_BUY_SELL_FEE = TOTAL_BUY_FEE + TOTAL_SELL_FEE;
-
-        public static final int MINIMUM_COMMISSION = 20;
     }
 }
