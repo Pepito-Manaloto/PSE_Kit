@@ -82,7 +82,7 @@ public class CreateTradePlanActivity extends AppCompatActivity
         Log.d(LOG_TAG, CLASS_NAME + ": onCreate." + selectedStock);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle(R.string.create_trade_plan_title);
+        toolbar.setTitle(R.string.title_create_trade_plan);
         setSupportActionBar(toolbar);
 
         ActionBar actionBar = getSupportActionBar();
@@ -417,7 +417,7 @@ public class CreateTradePlanActivity extends AppCompatActivity
         final int numOfEntryTranche = entryTranchesLayout.getChildCount();
         entryTrancheContainer.setTag(numOfEntryTranche);
         TextView labelTranche = (TextView) entryTrancheContainer.findViewById(R.id.label_tranche);
-        labelTranche.setText(getString(R.string.create_trade_plan_tranche, ViewUtils.getOrdinalNumber(numOfEntryTranche)));
+        labelTranche.setText(getString(R.string.label_tranche, ViewUtils.getOrdinalNumber(numOfEntryTranche)));
 
         ImageView removeTranche = (ImageView) entryTrancheContainer.findViewById(R.id.imageview_remove_tranche);
         removeTranche.setOnClickListener(new View.OnClickListener()
@@ -441,7 +441,7 @@ public class CreateTradePlanActivity extends AppCompatActivity
                     nextEntryTrancheContainer.setTag(i);
                     TextView labelTranche = (TextView) nextEntryTrancheContainer.findViewById(R.id.label_tranche);
 
-                    labelTranche.setText(getString(R.string.create_trade_plan_tranche, ViewUtils.getOrdinalNumber(i)));
+                    labelTranche.setText(getString(R.string.label_tranche, ViewUtils.getOrdinalNumber(i)));
                     // TODO: update tranche weight?
                 }
             }

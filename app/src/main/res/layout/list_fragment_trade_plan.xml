@@ -4,16 +4,18 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent">
 
+    <TextView
+        android:id="@+id/textview_last_updated"
+        style="@style/LastModified_TextView"
+        />
+
+    <View
+        style="@style/Divider2"
+        android:layout_margin="0dp"/>
+
     <ListView
         android:id="@android:id/list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fastScrollEnabled="true" />
-
-    <TextView
-        android:id="@android:id/empty"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center_horizontal|center_vertical"
-        android:text="TEST TEST TEST BODY" />
 </LinearLayout>

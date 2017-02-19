@@ -1,11 +1,9 @@
 package com.aaron.pseplanner.async;
 
-import android.app.Activity;
-import android.content.Context;
 import android.os.AsyncTask;
 import android.widget.Toast;
 
-import com.aaron.pseplanner.activity.MainFragmentActivity;
+import com.aaron.pseplanner.activity.MainActivity;
 
 /**
  * Created by Aaron on 11/20/2016.
@@ -13,9 +11,9 @@ import com.aaron.pseplanner.activity.MainFragmentActivity;
  */
 public class UpdateTickerTask extends AsyncTask<Void, Void, String>
 {
-    private MainFragmentActivity callerActivity;
+    private MainActivity callerActivity;
 
-    public UpdateTickerTask(MainFragmentActivity callerActivity)
+    public UpdateTickerTask(MainActivity callerActivity)
     {
         this.callerActivity = callerActivity;
     }

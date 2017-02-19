@@ -6,13 +6,16 @@
 
     <string name="cancel_button">Cancel</string>
 
+    <string name="title_create_trade_plan">Create Trade Plan</string>
+    <string name="title_trade_plan">Trade Plan</string>
+
     <!-- Toolbar -->
     <string name="refresh_button">Refresh</string>
     <string name="search_button">Search</string>
     <string name="search_hint">Stock Symbol</string>
 
     <!-- Navigation Menu Strings -->
-    <string name="nav_home">Home</string>
+    <string name="nav_trade_plan">Trade Plan</string>
     <string name="nav_ticker">Ticker</string>
     <string name="nav_calculator">Calculator</string>
     <string name="nav_settings">Settings</string>
@@ -26,42 +29,52 @@
     <string name="settings_notify_time_stop">Notify On Time Stop</string>
     <string name="settings_notify_with_sound_effect">Notfiy With Sound Effect</string>
 
-    <!-- Calculator -->
-    <string name="calculator_buy_price">Buy Price : </string>
-    <string name="calculator_shares">Shares : </string>
-    <string name="calculator_average_price">Average Price : </string>
-    <string name="calculator_price_to_break_even">Price To Break-Even : </string>
-    <string name="calculator_buy_gross_amount">Buy Gross Amount : </string>
-    <string name="calculator_buy_net_amount">Buy Net Amount : </string>
-    <string name="calculator_additional_fees">Additional Fees : </string>
-    <string name="calculator_deductions">Deductions : </string>
-    <string name="calculator_brokers_commission">Broker\'s Commission : </string>
-    <string name="calculator_brokers_commission_vat">Broker\'s Commission Vat : </string>
-    <string name="calculator_clearing_fee">Clearing Fee : </string>
-    <string name="calculator_transaction_fee">Transaction Fee : </string>
-    <string name="calculator_sales_tax">Sales Tax : </string>
-    <string name="calculator_total">Total : </string>
-    <string name="calculator_sell_price">Sell Price : </string>
-    <string name="calculator_sell_gross_amount">Sell Gross Amount : </string>
-    <string name="calculator_sell_net_amount">Sell Net Amount : </string>
-    <string name="calculator_gain_loss_amount">Gain/Loss Amount : </string>
-    <string name="calculator_gain_loss_percent">Gain/Loss % : </string>
+    <!-- Labels -->
+    <string name="label_buy_price">Buy Price : </string>
+    <string name="label_shares">Shares : </string>
+    <string name="label_price_to_break_even">Price To Break-Even : </string>
+    <string name="label_buy_gross_amount">Buy Gross Amount : </string>
+    <string name="label_buy_net_amount">Buy Net Amount : </string>
+    <string name="label_additional_fees">Additional Fees : </string>
+    <string name="label_deductions">Deductions : </string>
+    <string name="label_brokers_commission">Broker\'s Commission : </string>
+    <string name="label_brokers_commission_vat">Broker\'s Commission Vat : </string>
+    <string name="label_clearing_fee">Clearing Fee : </string>
+    <string name="label_transaction_fee">Transaction Fee : </string>
+    <string name="label_sales_tax">Sales Tax : </string>
+    <string name="label_total">Total : </string>
+    <string name="label_sell_price">Sell Price : </string>
+    <string name="label_sell_gross_amount">Sell Gross Amount : </string>
+    <string name="label_sell_net_amount">Sell Net Amount : </string>
+    <string name="label_gain_loss_amount">Gain/Loss Amount : </string>
+    <string name="label_gain_loss_percent">Gain/Loss % : </string>
+    <string name="label_price">Price : </string>
+    <string name="label_cash_dividend">Cash Dividend : </string>
+    <string name="label_yield">Yield : </string>
+    <string name="label_yield_percent">Yield % : </string>
+    <string name="label_total_amount">Total Amount : </string>
+    <string name="label_high">High : </string>
+    <string name="label_low">Low : </string>
+    <string name="label_midpoint">Midpoint : </string>
+    <string name="label_stock">Stock : </string>
+    <string name="label_entry">Entry : </string>
+    <string name="label_tranche">%1$s Tranche : </string>
+    <string name="label_weight">% Weight : </string>
+    <string name="label_entry_date">Entry Date : </string>
+    <string name="label_stop_date">Stop Date : </string>
+    <string name="label_stop_loss">Stop Loss : </string>
+    <string name="label_target">Target : </string>
+    <string name="label_capital">Capital : </string>
+    <string name="label_current_price">Current Price : </string>
+    <string name="label_average_price">Average Price : </string>
+    <string name="label_gain_loss">Gain/Loss : </string>
+    <string name="label_date_bought">Date Bought : </string>
+    <string name="label_holding_period">Holding Period : </string>
 
+    <!-- Values -->
     <string name="default_value">0</string>
     <string name="default_value_percent">0%</string>
     <string name="one_hundred_value">100</string>
-
-    <!-- Dividend -->
-    <string name="dividend_price">Price : </string>
-    <string name="dividend_cash">Cash Dividend : </string>
-    <string name="dividend_yield">Yield : </string>
-    <string name="dividend_yield_percent">Yield % : </string>
-    <string name="dividend_total_amount">Total Amount : </string>
-
-    <!-- Midpoint -->
-    <string name="midpoint_high">High : </string>
-    <string name="midpoint_low">Low : </string>
-    <string name="midpoint_midpoint">Midpoint : </string>
 
     <!-- ImageView Content Description -->
     <string name="hide_arrow">hide</string>
@@ -70,27 +83,16 @@
     <string name="remove_button">remove</string>
     <string name="check_button">check</string>
 
-    <!-- Ticker -->
+    <!-- Ticker Header -->
     <string name="ticker_stock">Stock</string>
     <string name="ticker_price">Price</string>
     <string name="ticker_change">Change</string>
     <string name="ticker_percent_change">% Change</string>
 
-    <!-- Create Trade Plan -->
-    <string name="create_trade_plan_title">Create Trade Plan</string>
-    <string name="create_trade_plan_stock">Stock : </string>
-    <string name="create_trade_plan_shares">Shares : </string>
-    <string name="create_trade_plan_entry">Entry : </string>
-    <string name="create_trade_plan_tranche">%1$s Tranche : </string>
-    <string name="create_trade_plan_price">Price : </string>
-    <string name="create_trade_plan_weight">% Weight : </string>
-    <string name="create_trade_plan_entry_date">Date Entry : </string>
-    <string name="create_trade_plan_stop_date">Stop Date : </string>
-    <string name="create_trade_plan_stop_loss">Stop Loss : </string>
-    <string name="create_trade_plan_target">Target : </string>
-    <string name="create_trade_plan_capital">Capital : </string>
-    <string name="create_trade_plan_add_tranche">Add Tranche</string>
-    <string name="create_trade_plan_add_trade_plan">Add Trade Plan</string>
+    <!-- Button -->
+    <string name="button_add_tranche">Add Tranche</string>
+    <string name="button_add_trade_plan">Add Trade Plan</string>
+
     <string name="create_trade_plan_prompt">Risk-Reward is just %1$.2f\nAre you sure of this trade?</string>
 
     <string name="input_blank">Please input %1$s</string>
@@ -104,7 +106,6 @@
     <string name="stoploss_invalid">Stop Loss cannot be greater than or equal the average price %1$.2f</string>
     <string name="target_invalid">Target price cannot be less than or equal the average price %1$.2f</string>
     <string name="entry_greater_than_stop_date">Entry date must not be greater than or equal to stop date</string>
-
 
     <string-array name="refresh_intervals">
         <item>15</item>

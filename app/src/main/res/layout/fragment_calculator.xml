@@ -15,7 +15,7 @@
                 android:id="@+id/label_buy_price"
                 style="@style/TextViewLabel"
                 android:layout_marginBottom="14dp"
-                android:text="@string/calculator_buy_price"/>
+                android:text="@string/label_buy_price"/>
 
             <EditText
                 android:id="@+id/edittext_buy_price"
@@ -31,7 +31,7 @@
                 android:id="@+id/label_shares"
                 style="@style/TextViewLabel"
                 android:layout_marginBottom="14dp"
-                android:text="@string/calculator_shares"/>
+                android:text="@string/label_shares"/>
 
             <EditText
                 android:id="@+id/edittext_shares"
@@ -46,7 +46,7 @@
             <TextView
                 android:id="@+id/label_average_price"
                 style="@style/TextViewLabel"
-                android:text="@string/calculator_average_price"/>
+                android:text="@string/label_average_price"/>
 
             <TextView
                 android:id="@+id/textview_average_price"
@@ -62,7 +62,7 @@
             <TextView
                 android:id="@+id/label_break_even_price"
                 style="@style/TextViewLabel"
-                android:text="@string/calculator_price_to_break_even"/>
+                android:text="@string/label_price_to_break_even"/>
 
             <TextView
                 android:id="@+id/textview_break_even_price"
@@ -78,7 +78,7 @@
             <TextView
                 android:id="@+id/label_buy_gross_amount"
                 style="@style/TextViewLabel"
-                android:text="@string/calculator_buy_gross_amount"/>
+                android:text="@string/label_buy_gross_amount"/>
 
             <TextView
                 android:id="@+id/textview_buy_gross_amount"
@@ -94,7 +94,7 @@
             <TextView
                 android:id="@+id/label_buy_net_amount"
                 style="@style/TextViewLabel"
-                android:text="@string/calculator_buy_net_amount"/>
+                android:text="@string/label_buy_net_amount"/>
 
             <TextView
                 android:id="@+id/textview_buy_net_amount"
@@ -114,7 +114,7 @@
                 <TextView
                     android:id="@+id/label_addt_brokers_commission"
                     style="@style/TextViewLabel.SubLabel"
-                    android:text="@string/calculator_brokers_commission"
+                    android:text="@string/label_brokers_commission"
                     />
 
                 <TextView
@@ -125,7 +125,7 @@
                 <TextView
                     android:id="@+id/label_addt_brokers_commission_vat"
                     style="@style/TextViewLabel.SubLabel"
-                    android:text="@string/calculator_brokers_commission_vat"
+                    android:text="@string/label_brokers_commission_vat"
                     />
 
                 <TextView
@@ -136,7 +136,7 @@
                 <TextView
                     android:id="@+id/label_addt_clearing_fee"
                     style="@style/TextViewLabel.SubLabel"
-                    android:text="@string/calculator_clearing_fee"/>
+                    android:text="@string/label_clearing_fee"/>
 
                 <TextView
                     android:id="@+id/textview_addt_clearing_fee"
@@ -146,7 +146,7 @@
                 <TextView
                     android:id="@+id/label_addt_transaction_fee"
                     style="@style/TextViewLabel.SubLabel"
-                    android:text="@string/calculator_transaction_fee"/>
+                    android:text="@string/label_transaction_fee"/>
 
                 <TextView
                     android:id="@+id/textview_addt_transaction_fee"
@@ -156,7 +156,7 @@
                 <TextView
                     android:id="@+id/label_addt_total"
                     style="@style/TextViewLabel.SubLabel"
-                    android:text="@string/calculator_total"/>
+                    android:text="@string/label_total"/>
 
                 <TextView
                     android:id="@+id/textview_addt_total"
@@ -174,7 +174,7 @@
                 android:id="@+id/label_sell_price"
                 style="@style/TextViewLabel"
                 android:layout_marginBottom="14dp"
-                android:text="@string/calculator_sell_price"/>
+                android:text="@string/label_sell_price"/>
 
             <EditText
                 android:id="@+id/edittext_sell_price"
@@ -189,7 +189,7 @@
             <TextView
                 android:id="@+id/label_sell_gross_amount"
                 style="@style/TextViewLabel"
-                android:text="@string/calculator_sell_gross_amount"/>
+                android:text="@string/label_sell_gross_amount"/>
 
             <TextView
                 android:id="@+id/textview_sell_gross_amount"
@@ -205,7 +205,7 @@
             <TextView
                 android:id="@+id/label_sell_net_amount"
                 style="@style/TextViewLabel"
-                android:text="@string/calculator_sell_net_amount"/>
+                android:text="@string/label_sell_net_amount"/>
 
             <TextView
                 android:id="@+id/textview_sell_net_amount"
@@ -224,7 +224,7 @@
                 <TextView
                     android:id="@+id/label_deduct_brokers_commission"
                     style="@style/TextViewLabel.SubLabel"
-                    android:text="@string/calculator_brokers_commission"/>
+                    android:text="@string/label_brokers_commission"/>
 
                 <TextView
                     android:id="@+id/textview_deduct_brokers_commission"
@@ -234,7 +234,7 @@
                 <TextView
                     android:id="@+id/label_deduct_brokers_commission_vat"
                     style="@style/TextViewLabel.SubLabel"
-                    android:text="@string/calculator_brokers_commission_vat"/>
+                    android:text="@string/label_brokers_commission_vat"/>
 
                 <TextView
                     android:id="@+id/textview_deduct_brokers_commission_vat"
@@ -244,7 +244,7 @@
                 <TextView
                     android:id="@+id/label_deduct_clearing_fee"
                     style="@style/TextViewLabel.SubLabel"
-                    android:text="@string/calculator_clearing_fee"/>
+                    android:text="@string/label_clearing_fee"/>
 
                 <TextView
                     android:id="@+id/textview_deduct_clearing_fee"
@@ -254,7 +254,7 @@
                 <TextView
                     android:id="@+id/label_deduct_transaction_fee"
                     style="@style/TextViewLabel.SubLabel"
-                    android:text="@string/calculator_transaction_fee"/>
+                    android:text="@string/label_transaction_fee"/>
 
                 <TextView
                     android:id="@+id/textview_deduct_transaction_fee"
@@ -264,7 +264,7 @@
                 <TextView
                     android:id="@+id/label_deduct_sales_tax"
                     style="@style/TextViewLabel.SubLabel"
-                    android:text="@string/calculator_sales_tax"/>
+                    android:text="@string/label_sales_tax"/>
 
                 <TextView
                     android:id="@+id/textview_deduct_sales_tax"
@@ -274,7 +274,7 @@
                 <TextView
                     android:id="@+id/label_deduct_total"
                     style="@style/TextViewLabel.SubLabel"
-                    android:text="@string/calculator_total"/>
+                    android:text="@string/label_total"/>
 
                 <TextView
                     android:id="@+id/textview_deduct_total"
@@ -291,7 +291,7 @@
             <TextView
                 android:id="@+id/label_gain_loss_amount"
                 style="@style/TextViewLabel"
-                android:text="@string/calculator_gain_loss_amount"/>
+                android:text="@string/label_gain_loss_amount"/>
 
             <TextView
                 android:id="@+id/textview_gain_loss_amount"
@@ -307,7 +307,7 @@
             <TextView
                 android:id="@+id/label_gain_loss_percent"
                 style="@style/TextViewLabel"
-                android:text="@string/calculator_gain_loss_percent"/>
+                android:text="@string/label_gain_loss_percent"/>
 
             <TextView
                 android:id="@+id/textview_gain_loss_percent"

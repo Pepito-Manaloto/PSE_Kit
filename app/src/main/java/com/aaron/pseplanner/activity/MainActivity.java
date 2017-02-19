@@ -31,21 +31,20 @@ import com.aaron.pseplanner.bean.Ticker;
 import com.aaron.pseplanner.constant.DataKey;
 import com.aaron.pseplanner.constant.IntentRequestCode;
 import com.aaron.pseplanner.fragment.CalculatorTabsFragment;
-import com.aaron.pseplanner.fragment.HomeFragment;
+import com.aaron.pseplanner.fragment.TradePlanListFragment;
 import com.aaron.pseplanner.fragment.SettingsFragment;
-import com.aaron.pseplanner.fragment.TickerFragment;
+import com.aaron.pseplanner.fragment.TickerListFragment;
 
 import java.lang.reflect.Field;
 
 import static com.aaron.pseplanner.constant.Constants.LOG_TAG;
 
 /**
- * Abstract super class that creates a single fragment in the fragment container.
- * Contains Navigation items in a Drawer
+ * The main activity, contains Navigation items in a Drawer. Contains fragments: trade plan list, calculator, ticker, and settings.
  */
-public abstract class MainFragmentActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
 {
-    public static final String CLASS_NAME = MainFragmentActivity.class.getSimpleName();
+    public static final String CLASS_NAME = MainActivity.class.getSimpleName();
 
     private DrawerLayout drawer;
     private Menu toolbarMenu;
@@ -53,7 +52,7 @@ public abstract class MainFragmentActivity extends AppCompatActivity implements 
 
     /**
      * Initializes the navigation drawer.
-     * Adds the single fragment, returned from the abstract method createFragment(), into the fragment container.
+     * Adds the current fragment in the fragment_container, uses TradePlanList as default fragment to inflate.
      *
      * @param savedInstanceState this Bundle is unused in this method.
      */
@@ -80,7 +79,7 @@ public abstract class MainFragmentActivity extends AppCompatActivity implements 
 
         if(fragment == null)
         {
-            fragment = this.createFragment();
+            fragment = new TradePlanListFragment();
             fm.beginTransaction().add(R.id.fragment_container, fragment).commit();
         }
     }
@@ -171,16 +170,16 @@ public abstract class MainFragmentActivity extends AppCompatActivity implements 
         // Handle navigation view item clicks here.
         switch(item.getItemId())
         {
-            case R.id.nav_home:
+            case R.id.nav_trade_plan:
             {
-                updateFragmentContainer(new HomeFragment());
+                updateFragmentContainer(new TradePlanListFragment());
                 this.inflateToolbarMenuItems();
-                this.toolbar.setTitle(R.string.nav_home);
+                this.toolbar.setTitle(R.string.app_name);
                 break;
             }
             case R.id.nav_ticker:
             {
-                updateFragmentContainer(new TickerFragment());
+                updateFragmentContainer(new TickerListFragment());
                 this.inflateToolbarMenuItems();
                 this.toolbar.setTitle(R.string.nav_ticker);
                 break;
@@ -313,11 +312,4 @@ public abstract class MainFragmentActivity extends AppCompatActivity implements 
         UpdateTickerTask tickerUpdater = new UpdateTickerTask(this);
         tickerUpdater.execute();
     }
-
-    /**
-     * To be implemented by an activity that has a single fragment. Returns a fragment that will be added to the fragment container.
-     *
-     * @return the fragment that will be added to the fragment container of the implementing Activity class
-     */
-    protected abstract Fragment createFragment();
 }

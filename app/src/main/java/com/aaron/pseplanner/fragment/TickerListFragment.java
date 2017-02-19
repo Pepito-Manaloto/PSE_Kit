@@ -1,16 +1,15 @@
 package com.aaron.pseplanner.fragment;
 
 import android.os.Bundle;
-import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.aaron.pseplanner.R;
 import com.aaron.pseplanner.adapter.TickerAdapter;
 import com.aaron.pseplanner.bean.Ticker;
-import com.aaron.pseplanner.listener.OnScrollShowHideFastScroll;
 import com.aaron.pseplanner.service.PSEClientService;
 import com.aaron.pseplanner.service.implementation.PSEClientServiceImpl;
 
@@ -21,12 +20,12 @@ import java.util.List;
  * Created by aaron.asuncion on 11/18/2016.
  */
 
-public class TickerFragment extends ListFragment
+public class TickerListFragment extends AbstractListFragment
 {
-    public static final String CLASS_NAME = TickerFragment.class.getSimpleName();
+    public static final String CLASS_NAME = TickerListFragment.class.getSimpleName();
     private List<Ticker> tickerList;
     private PSEClientService client;
-    
+
     /**
      * Initializes non-fragment user interface.
      */
@@ -57,7 +56,7 @@ public class TickerFragment extends ListFragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.fragment_ticker, parent, false);
+        View view = inflater.inflate(R.layout.list_fragment_ticker, parent, false);
 
         TextView lastUpdated = (TextView) view.findViewById(R.id.textview_last_updated);
         lastUpdated.setText(getActivity().getString(R.string.last_updated, client.getLastUpdated()));
@@ -65,32 +64,10 @@ public class TickerFragment extends ListFragment
         return view;
     }
 
-    /**
-     * Called after onCreateView(), sets the action listeners of the UI.
-     */
+
     @Override
-    public void onActivityCreated(Bundle savedInstanceState)
+    protected ArrayAdapter getArrayAdapter()
     {
-        super.onActivityCreated(savedInstanceState);
-
-        getListView().setOnScrollListener(new OnScrollShowHideFastScroll());
-    }
-
-    /**
-     * Updates the list view on UI thread.
-     *
-     * @param list the new list
-     */
-    private void updateListOnUiThread(final List<Ticker> list)
-    {
-        this.getActivity().runOnUiThread(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                TickerAdapter tickerAdapter = new TickerAdapter(getActivity(), list);
-                setListAdapter(tickerAdapter);
-            }
-        });
+        return new TickerAdapter(getActivity(), tickerList);
     }
 }

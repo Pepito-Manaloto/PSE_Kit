@@ -12,7 +12,7 @@
             android:id="@+id/label_price"
             style="@style/TextViewLabel"
             android:layout_marginBottom="14dp"
-            android:text="@string/dividend_price"/>
+            android:text="@string/label_price"/>
 
         <EditText
             android:id="@+id/edittext_price"
@@ -27,7 +27,7 @@
             android:id="@+id/label_shares"
             style="@style/TextViewLabel"
             android:layout_marginBottom="14dp"
-            android:text="@string/calculator_shares"/>
+            android:text="@string/label_shares"/>
 
         <EditText
             android:id="@+id/edittext_shares"
@@ -42,7 +42,7 @@
             android:id="@+id/label_cash_dividend"
             style="@style/TextViewLabel"
             android:layout_marginBottom="14dp"
-            android:text="@string/dividend_cash"/>
+            android:text="@string/label_cash_dividend"/>
 
         <EditText
             android:id="@+id/edittext_cash_dividend"
@@ -56,7 +56,7 @@
         <TextView
             android:id="@+id/label_yield"
             style="@style/TextViewLabel"
-            android:text="@string/dividend_yield"/>
+            android:text="@string/label_yield"/>
 
         <TextView
             android:id="@+id/textview_yield"
@@ -71,7 +71,7 @@
         <TextView
             android:id="@+id/label_yield_percent"
             style="@style/TextViewLabel"
-            android:text="@string/dividend_yield_percent"/>
+            android:text="@string/label_yield_percent"/>
 
         <TextView
             android:id="@+id/textview_dividend_percent"
@@ -86,7 +86,7 @@
         <TextView
             android:id="@+id/label_total_amount"
             style="@style/TextViewLabel"
-            android:text="@string/dividend_total_amount"/>
+            android:text="@string/label_total_amount"/>
 
         <TextView
             android:id="@+id/textview_total_amount"

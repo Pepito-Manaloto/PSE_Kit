@@ -1,17 +1,12 @@
 package com.aaron.pseplanner.fragment;
 
-import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.text.InputFilter;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.TextView;
 
-import com.aaron.pseplanner.R;
-import com.aaron.pseplanner.fragment.service.InputCalculatorService;
+import com.aaron.pseplanner.service.InputCalculatorService;
 import com.aaron.pseplanner.listener.EditTextOnFocusChangeHideKeyboard;
 import com.aaron.pseplanner.listener.EditTextOnTextChangeAddComma;
 import com.aaron.pseplanner.listener.EditTextOnTextChangeCalculate;
@@ -21,8 +16,6 @@ import com.aaron.pseplanner.service.FormatService;
 import com.aaron.pseplanner.service.ViewUtils;
 import com.aaron.pseplanner.service.implementation.CalculatorServiceImpl;
 import com.aaron.pseplanner.service.implementation.FormatServiceImpl;
-
-import org.apache.commons.lang3.reflect.FieldUtils;
 
 /**
  * Created by aaron.asuncion on 1/24/2017.

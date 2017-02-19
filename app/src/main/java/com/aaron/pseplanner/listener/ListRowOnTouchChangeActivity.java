@@ -3,7 +3,9 @@ package com.aaron.pseplanner.listener;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Parcelable;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -21,23 +23,28 @@ public class ListRowOnTouchChangeActivity implements View.OnTouchListener
     private float historicX;
     private Activity activity;
     private Class<? extends Activity> activityClass;
-    private Ticker ticker;
+    private DataKey key;
+    private Parcelable parcelableData;
+    private IntentRequestCode requestCode;
     private View view;
     private int highlightedColor;
 
     /**
      * Default constructor.
      *
-     * @param activity      the current activity
-     * @param activityClass the activity class to transition to
-     * @param ticker        the selected ticker
-     * @param view          the view of the listener
+     * @param activity       the current activity
+     * @param activityClass  the activity class to transition to
+     * @param parcelableData the data that will be passed to the new activity
+     * @param requestCode    the request code of the new activity
+     * @param view           the view of the listener
      */
-    public ListRowOnTouchChangeActivity(final Activity activity, final Class<? extends Activity> activityClass, final Ticker ticker, final View view)
+    public ListRowOnTouchChangeActivity(final Activity activity, final Class<? extends Activity> activityClass, final DataKey key, final Parcelable parcelableData, final IntentRequestCode requestCode, final View view)
     {
         this.activity = activity;
         this.activityClass = activityClass;
-        this.ticker = ticker;
+        this.key = key;
+        this.parcelableData = parcelableData;
+        this.requestCode = requestCode;
         this.view = view;
 
         if(android.os.Build.VERSION.SDK_INT >= 23)
@@ -60,7 +67,6 @@ public class ListRowOnTouchChangeActivity implements View.OnTouchListener
         switch(event.getAction())
         {
             case MotionEvent.ACTION_DOWN:
-            case MotionEvent.ACTION_MOVE:
             {
                 this.view.setBackgroundColor(this.highlightedColor);
                 this.historicX = event.getX();
@@ -69,13 +75,13 @@ public class ListRowOnTouchChangeActivity implements View.OnTouchListener
             case MotionEvent.ACTION_UP:
             {
                 this.view.setBackgroundColor(Color.WHITE);
-                boolean touchMovedLessThan10Pixels = Math.abs(this.historicX - event.getX()) < 15;
+                boolean touchMovedLessThan15Pixels = Math.abs(this.historicX - event.getX()) < 15;
 
-                if(touchMovedLessThan10Pixels)
+                if(touchMovedLessThan15Pixels)
                 {
                     Intent intent = new Intent(this.activity, this.activityClass);
-                    intent.putExtra(DataKey.EXTRA_TICKER.toString(), ticker);
-                    this.activity.startActivityForResult(intent, IntentRequestCode.CREATE_TRADE_PLAN.code());
+                    intent.putExtra(this.key.toString(), parcelableData);
+                    this.activity.startActivityForResult(intent, this.requestCode.code());
                 }
 
                 // Removes compiler warning
@@ -92,5 +98,4 @@ public class ListRowOnTouchChangeActivity implements View.OnTouchListener
 
         return true;
     }
-
 }

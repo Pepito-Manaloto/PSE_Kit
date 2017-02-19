@@ -13,6 +13,8 @@ import android.widget.TextView;
 import com.aaron.pseplanner.R;
 import com.aaron.pseplanner.activity.CreateTradePlanActivity;
 import com.aaron.pseplanner.bean.Ticker;
+import com.aaron.pseplanner.constant.DataKey;
+import com.aaron.pseplanner.constant.IntentRequestCode;
 import com.aaron.pseplanner.listener.ListRowOnTouchChangeActivity;
 import com.aaron.pseplanner.service.implementation.FormatServiceImpl;
 import com.aaron.pseplanner.service.FormatService;
@@ -26,7 +28,6 @@ import java.util.List;
 public class TickerAdapter extends ArrayAdapter<Ticker>
 {
     private Activity activity;
-    private List<Ticker> tickerList;
     private FormatService formatService;
 
     public TickerAdapter(Activity activity, List<Ticker> tickerList)
@@ -34,7 +35,6 @@ public class TickerAdapter extends ArrayAdapter<Ticker>
         super(activity, 0, tickerList);
 
         this.activity = activity;
-        this.tickerList = tickerList;
         this.formatService = new FormatServiceImpl(activity);
     }
 
@@ -66,7 +66,7 @@ public class TickerAdapter extends ArrayAdapter<Ticker>
         }
 
         Ticker ticker = getItem(position);
-        holder.setTickerView(ticker, this.formatService, new ListRowOnTouchChangeActivity(this.activity, CreateTradePlanActivity.class, ticker, holder.layout));
+        holder.setTickerView(ticker, this.formatService, new ListRowOnTouchChangeActivity(this.activity, CreateTradePlanActivity.class, DataKey.EXTRA_TICKER, ticker, IntentRequestCode.CREATE_TRADE_PLAN, holder.layout));
 
         return convertView;
     }

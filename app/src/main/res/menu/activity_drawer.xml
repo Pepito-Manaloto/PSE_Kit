@@ -3,8 +3,8 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_home"
-            android:title="@string/nav_home" />
+            android:id="@+id/nav_trade_plan"
+            android:title="@string/nav_trade_plan" />
         <item
             android:id="@+id/nav_ticker"
             android:title="@string/nav_ticker"/>

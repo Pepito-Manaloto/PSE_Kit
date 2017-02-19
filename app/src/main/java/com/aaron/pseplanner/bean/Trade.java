@@ -12,8 +12,8 @@ import java.util.List;
  */
 public class Trade implements Parcelable
 {
-    private Date dateEntry;
-    private Date dateHeld;
+    private Date entryDate;
+    private int holdingPeriod;
     private String symbol;
     private double currentPrice;
     private double averagePrice;
@@ -21,25 +21,27 @@ public class Trade implements Parcelable
     private double totalAmount;
     private double priceToBreakEven;
     private double targetPrice;
+    private double gainLoss;
+    private double gainLossPercent;
     private long gainToTarget;
+    private double lossToStopLoss;
     private double stopLoss;
-    private long lossToStopLoss;
-    private Date timeStop;
+    private Date stopDate;
     private int daysToTimeStop;
     private double riskReward;
     private long capital;
-    private int percentCapital;
+    private double percentCapital;
     private List<TradeEntry> tradeEntries;
 
     public Trade()
     {
     }
 
-    public Trade(long lossToStopLoss, Date dateEntry, Date dateHeld, String symbol, double currentPrice, double averagePrice, long totalShares, double totalAmount, double priceToBreakEven, double targetPrice, long gainToTarget, double stopLoss, Date timeStop, int daysToTimeStop, double riskReward, long capital, int percentCapital, List<TradeEntry> tradeEntries)
+    public Trade(double lossToStopLoss, Date entryDate, int holdingPeriod, String symbol, double currentPrice, double averagePrice, long totalShares, double totalAmount, double priceToBreakEven, double targetPrice, double gainLoss, double gainLossPercent, long gainToTarget, double stopLoss, Date stopDate, int daysToTimeStop, double riskReward, long capital, double percentCapital, List<TradeEntry> tradeEntries)
     {
         this.lossToStopLoss = lossToStopLoss;
-        this.dateEntry = dateEntry;
-        this.dateHeld = dateHeld;
+        this.entryDate = entryDate;
+        this.holdingPeriod = holdingPeriod;
         this.symbol = symbol;
         this.currentPrice = currentPrice;
         this.averagePrice = averagePrice;
@@ -47,9 +49,11 @@ public class Trade implements Parcelable
         this.totalAmount = totalAmount;
         this.priceToBreakEven = priceToBreakEven;
         this.targetPrice = targetPrice;
+        this.gainLoss = gainLoss;
+        this.gainLossPercent = gainLossPercent;
         this.gainToTarget = gainToTarget;
         this.stopLoss = stopLoss;
-        this.timeStop = timeStop;
+        this.stopDate = stopDate;
         this.daysToTimeStop = daysToTimeStop;
         this.riskReward = riskReward;
         this.capital = capital;
@@ -74,11 +78,11 @@ public class Trade implements Parcelable
 
         return Double.compare(trade.currentPrice, currentPrice) == 0 && Double.compare(trade.averagePrice, averagePrice) == 0 &&
                 totalShares == trade.totalShares && totalAmount == trade.totalAmount && Double.compare(trade.priceToBreakEven, priceToBreakEven) == 0 &&
-                Double.compare(trade.targetPrice, targetPrice) == 0 && gainToTarget == trade.gainToTarget &&
-                Double.compare(trade.stopLoss, stopLoss) == 0 && lossToStopLoss == trade.lossToStopLoss && daysToTimeStop == trade.daysToTimeStop &&
-                Double.compare(trade.riskReward, riskReward) == 0 && capital == trade.capital && percentCapital == trade.percentCapital &&
-                dateEntry.equals(trade.dateEntry) && dateHeld.equals(trade.dateHeld) && symbol.equals(trade.symbol) && timeStop.equals(trade.timeStop) &&
-                tradeEntries.equals(trade.tradeEntries);
+                Double.compare(trade.targetPrice, targetPrice) == 0 && gainLoss == trade.gainLoss && gainLossPercent == trade.gainLossPercent &&
+                gainToTarget == trade.gainToTarget && Double.compare(trade.stopLoss, stopLoss) == 0 && lossToStopLoss == trade.lossToStopLoss &&
+                daysToTimeStop == trade.daysToTimeStop && Double.compare(trade.riskReward, riskReward) == 0 && capital == trade.capital &&
+                percentCapital == trade.percentCapital && entryDate.equals(trade.entryDate) && holdingPeriod == trade.holdingPeriod && symbol.equals(trade.symbol) &&
+                stopDate.equals(trade.stopDate) && tradeEntries.equals(trade.tradeEntries);
     }
 
     @Override
@@ -86,8 +90,8 @@ public class Trade implements Parcelable
     {
         int result;
         long temp;
-        result = dateEntry.hashCode();
-        result = 31 * result + dateHeld.hashCode();
+        result = entryDate.hashCode();
+        result = 31 * result + holdingPeriod;
         result = 31 * result + symbol.hashCode();
         temp = Double.doubleToLongBits(currentPrice);
         result = 31 * result + (int) (temp ^ (temp >>> 32));
@@ -100,16 +104,22 @@ public class Trade implements Parcelable
         result = 31 * result + (int) (temp ^ (temp >>> 32));
         temp = Double.doubleToLongBits(targetPrice);
         result = 31 * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(gainLoss);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(gainLossPercent);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
         result = 31 * result + (int) (gainToTarget ^ (gainToTarget >>> 32));
+        temp = Double.doubleToLongBits(lossToStopLoss);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
         temp = Double.doubleToLongBits(stopLoss);
         result = 31 * result + (int) (temp ^ (temp >>> 32));
-        result = 31 * result + (int) (lossToStopLoss ^ (lossToStopLoss >>> 32));
-        result = 31 * result + timeStop.hashCode();
+        result = 31 * result + stopDate.hashCode();
         result = 31 * result + daysToTimeStop;
         temp = Double.doubleToLongBits(riskReward);
         result = 31 * result + (int) (temp ^ (temp >>> 32));
         result = 31 * result + (int) (capital ^ (capital >>> 32));
-        result = 31 * result + percentCapital;
+        temp = Double.doubleToLongBits(percentCapital);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
         result = 31 * result + tradeEntries.hashCode();
         return result;
     }
@@ -118,8 +128,8 @@ public class Trade implements Parcelable
     public String toString()
     {
         return "Trade{" +
-                "dateEntry=" + dateEntry +
-                ", dateHeld=" + dateHeld +
+                "entryDate=" + entryDate +
+                ", holdingPeriod=" + holdingPeriod +
                 ", symbol='" + symbol + '\'' +
                 ", currentPrice=" + currentPrice +
                 ", averagePrice=" + averagePrice +
@@ -127,10 +137,12 @@ public class Trade implements Parcelable
                 ", totalAmount=" + totalAmount +
                 ", priceToBreakEven=" + priceToBreakEven +
                 ", targetPrice=" + targetPrice +
+                ", gainLoss=" + gainLoss +
+                ", gainLossPercent=" + gainLossPercent +
                 ", gainToTarget=" + gainToTarget +
                 ", stopLoss=" + stopLoss +
                 ", lossToStopLoss=" + lossToStopLoss +
-                ", timeStop=" + timeStop +
+                ", stopDate=" + stopDate +
                 ", daysToTimeStop=" + daysToTimeStop +
                 ", riskReward=" + riskReward +
                 ", capital=" + capital +
@@ -139,24 +151,24 @@ public class Trade implements Parcelable
                 '}';
     }
 
-    public Date getDateEntry()
+    public Date getEntryDate()
     {
-        return dateEntry;
+        return entryDate;
     }
 
-    public void setDateEntry(Date dateEntry)
+    public void setEntryDate(Date entryDate)
     {
-        this.dateEntry = dateEntry;
+        this.entryDate = entryDate;
     }
 
-    public Date getDateHeld()
+    public int getHoldingPeriod()
     {
-        return dateHeld;
+        return holdingPeriod;
     }
 
-    public void setDateHeld(Date dateHeld)
+    public void setHoldingPeriod(int holdingPeriod)
     {
-        this.dateHeld = dateHeld;
+        this.holdingPeriod = holdingPeriod;
     }
 
     public String getSymbol()
@@ -229,6 +241,26 @@ public class Trade implements Parcelable
         this.targetPrice = targetPrice;
     }
 
+    public double getGainLossPercent()
+    {
+        return gainLossPercent;
+    }
+
+    public void setGainLossPercent(double gainLossPercent)
+    {
+        this.gainLossPercent = gainLossPercent;
+    }
+
+    public double getGainLoss()
+    {
+        return gainLoss;
+    }
+
+    public void setGainLoss(double gainLoss)
+    {
+        this.gainLoss = gainLoss;
+    }
+
     public long getGainToTarget()
     {
         return gainToTarget;
@@ -249,24 +281,24 @@ public class Trade implements Parcelable
         this.stopLoss = stopLoss;
     }
 
-    public long getLossToStopLoss()
+    public double getLossToStopLoss()
     {
         return lossToStopLoss;
     }
 
-    public void setLossToStopLoss(long lossToStopLoss)
+    public void setLossToStopLoss(double lossToStopLoss)
     {
         this.lossToStopLoss = lossToStopLoss;
     }
 
-    public Date getTimeStop()
+    public Date getStopDate()
     {
-        return timeStop;
+        return stopDate;
     }
 
-    public void setTimeStop(Date timeStop)
+    public void setStopDate(Date stopDate)
     {
-        this.timeStop = timeStop;
+        this.stopDate = stopDate;
     }
 
     public int getDaysToTimeStop()
@@ -299,12 +331,12 @@ public class Trade implements Parcelable
         this.capital = capital;
     }
 
-    public int getPercentCapital()
+    public double getPercentCapital()
     {
         return percentCapital;
     }
 
-    public void setPercentCapital(int percentCapital)
+    public void setPercentCapital(double percentCapital)
     {
         this.percentCapital = percentCapital;
     }
@@ -319,17 +351,23 @@ public class Trade implements Parcelable
         this.tradeEntries = tradeEntries;
     }
 
+    /**
+     * Describe the kinds of special objects contained in this Parcelable instance's marshaled representation.
+     */
     @Override
     public int describeContents()
     {
         return 0;
     }
 
+    /**
+     * Flatten this Trade object in to a Parcel.
+     */
     @Override
     public void writeToParcel(Parcel dest, int flags)
     {
-        dest.writeLong(this.dateEntry != null ? this.dateEntry.getTime() : -1);
-        dest.writeLong(this.dateHeld != null ? this.dateHeld.getTime() : -1);
+        dest.writeLong(this.entryDate != null ? this.entryDate.getTime() : -1);
+        dest.writeInt(this.holdingPeriod);
         dest.writeString(this.symbol);
         dest.writeDouble(this.currentPrice);
         dest.writeDouble(this.averagePrice);
@@ -337,23 +375,28 @@ public class Trade implements Parcelable
         dest.writeDouble(this.totalAmount);
         dest.writeDouble(this.priceToBreakEven);
         dest.writeDouble(this.targetPrice);
+        dest.writeDouble(this.gainLoss);
+        dest.writeDouble(this.gainLossPercent);
         dest.writeLong(this.gainToTarget);
         dest.writeDouble(this.stopLoss);
-        dest.writeLong(this.lossToStopLoss);
-        dest.writeLong(this.timeStop != null ? this.timeStop.getTime() : -1);
+        dest.writeDouble(this.lossToStopLoss);
+        dest.writeLong(this.stopDate != null ? this.stopDate.getTime() : -1);
         dest.writeInt(this.daysToTimeStop);
         dest.writeDouble(this.riskReward);
         dest.writeLong(this.capital);
-        dest.writeInt(this.percentCapital);
+        dest.writeDouble(this.percentCapital);
         dest.writeTypedList(this.tradeEntries);
     }
 
-    protected Trade(Parcel in)
+    /**
+     * Constructor that will be called in creating the parcel.
+     * Note: Reading the parcel should be the same order as writing the parcel!
+     */
+    private Trade(Parcel in)
     {
-        long tmpDateEntry = in.readLong();
-        this.dateEntry = tmpDateEntry == -1 ? null : new Date(tmpDateEntry);
-        long tmpDateHeld = in.readLong();
-        this.dateHeld = tmpDateHeld == -1 ? null : new Date(tmpDateHeld);
+        long tmpEntryDate = in.readLong();
+        this.entryDate = tmpEntryDate == -1 ? null : new Date(tmpEntryDate);
+        this.holdingPeriod = in.readInt();
         this.symbol = in.readString();
         this.currentPrice = in.readDouble();
         this.averagePrice = in.readDouble();
@@ -361,18 +404,23 @@ public class Trade implements Parcelable
         this.totalAmount = in.readDouble();
         this.priceToBreakEven = in.readDouble();
         this.targetPrice = in.readDouble();
+        this.gainLoss = in.readDouble();
+        this.gainLossPercent = in.readDouble();
         this.gainToTarget = in.readLong();
         this.stopLoss = in.readDouble();
-        this.lossToStopLoss = in.readLong();
-        long tmpTimeStop = in.readLong();
-        this.timeStop = tmpTimeStop == -1 ? null : new Date(tmpTimeStop);
+        this.lossToStopLoss = in.readDouble();
+        long tmpStopDate = in.readLong();
+        this.stopDate = tmpStopDate == -1 ? null : new Date(tmpStopDate);
         this.daysToTimeStop = in.readInt();
         this.riskReward = in.readDouble();
         this.capital = in.readLong();
-        this.percentCapital = in.readInt();
+        this.percentCapital = in.readDouble();
         this.tradeEntries = in.createTypedArrayList(TradeEntry.CREATOR);
     }
 
+    /**
+     * Generates instances of your Parcelable class from a Parcel.
+     */
     public static final Parcelable.Creator<Trade> CREATOR = new Parcelable.Creator<Trade>()
     {
         @Override

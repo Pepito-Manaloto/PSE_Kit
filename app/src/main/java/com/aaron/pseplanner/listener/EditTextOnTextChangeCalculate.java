@@ -3,7 +3,7 @@ package com.aaron.pseplanner.listener;
 import android.text.Editable;
 import android.text.TextWatcher;
 
-import com.aaron.pseplanner.fragment.service.InputCalculatorService;
+import com.aaron.pseplanner.service.InputCalculatorService;
 
 /**
  * Created by aaron.asuncion on 12/29/2016.

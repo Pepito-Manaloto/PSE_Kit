@@ -12,7 +12,7 @@
             android:id="@+id/label_high"
             style="@style/TextViewLabel"
             android:layout_marginBottom="14dp"
-            android:text="@string/midpoint_high"/>
+            android:text="@string/label_high"/>
 
         <EditText
             android:id="@+id/edittext_high"
@@ -27,7 +27,7 @@
             android:id="@+id/label_low"
             style="@style/TextViewLabel"
             android:layout_marginBottom="14dp"
-            android:text="@string/midpoint_low"/>
+            android:text="@string/label_low"/>
 
         <EditText
             android:id="@+id/edittext_low"
@@ -41,7 +41,7 @@
         <TextView
             android:id="@+id/label_midpoint"
             style="@style/TextViewLabel"
-            android:text="@string/midpoint_midpoint"/>
+            android:text="@string/label_midpoint"/>
 
         <TextView
             android:id="@+id/textview_midpoint"

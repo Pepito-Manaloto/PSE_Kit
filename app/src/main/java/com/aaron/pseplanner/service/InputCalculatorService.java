@@ -1,4 +1,4 @@
-package com.aaron.pseplanner.fragment.service;
+package com.aaron.pseplanner.service;
 
 /**
  * Created by aaron.asuncion on 1/23/2017.

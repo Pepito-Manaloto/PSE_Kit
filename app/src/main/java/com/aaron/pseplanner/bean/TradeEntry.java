@@ -108,12 +108,18 @@ public class TradeEntry implements Parcelable
         this.shares = shares;
     }
 
+    /**
+     * Describe the kinds of special objects contained in this Parcelable instance's marshaled representation.
+     */
     @Override
     public int describeContents()
     {
         return 0;
     }
 
+    /**
+     * Flatten this TradeEntry object in to a Parcel.
+     */
     @Override
     public void writeToParcel(Parcel dest, int flags)
     {
@@ -123,7 +129,10 @@ public class TradeEntry implements Parcelable
         dest.writeInt(this.percentWeight);
     }
 
-    protected TradeEntry(Parcel in)
+    /**
+     * Constructor that will be called in creating the parcel.
+     */
+    private TradeEntry(Parcel in)
     {
         this.symbol = in.readString();
         this.entryPrice = in.readDouble();
@@ -131,6 +140,9 @@ public class TradeEntry implements Parcelable
         this.percentWeight = in.readInt();
     }
 
+    /**
+     * Generates instances of your Parcelable class from a Parcel.
+     */
     public static final Parcelable.Creator<TradeEntry> CREATOR = new Parcelable.Creator<TradeEntry>()
     {
         @Override

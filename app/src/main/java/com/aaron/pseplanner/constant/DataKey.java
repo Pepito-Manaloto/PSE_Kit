@@ -8,5 +8,6 @@ public enum DataKey
 {
     EXTRA_ID,
     EXTRA_TICKER,
+    EXTRA_TRADE,
     EXTRA_DATE,
 }
