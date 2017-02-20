@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scrollview"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:focusable="false">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true"
+        android:orientation="vertical">
+
+        <include layout="@layout/toolbar_main"/>
+
+        <GridLayout
+            style="@style/GridLayoutLabelValuePair"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="?attr/actionBarSize"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/textview_stock"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_margin="10dp"
+                android:text="@android:string/unknownName"
+                android:textColor="@color/black"
+                android:textSize="25sp"
+                android:textStyle="bold"/>
+
+            <GridLayout
+                style="@style/GridLayoutLabelValuePair">
+
+                <TextView
+                    style="@style/TextViewLabel"
+                    android:text="@string/label_entry_date"
+                    />
+
+                <TextView
+                    android:id="@+id/textview_entry_date"
+                    style="@style/TextViewLabel"
+                    />
+
+                <TextView
+                    style="@style/TextViewLabel"
+                    android:text="@string/label_holding_period"
+                    />
+
+                <TextView
+                    android:id="@+id/textview_holding_period"
+                    style="@style/TextViewLabel"
+                    />
+            </GridLayout>
+
+            <TextView
+                style="@style/TextViewLabel"
+                android:text="@string/label_current_price"
+                />
+
+            <TextView
+                android:id="@+id/textview_current_price"
+                style="@style/TextViewLabel"
+                />
+
+            <TextView
+                style="@style/TextViewLabel"
+                android:text="@string/label_total_shares"
+                />
+
+            <TextView
+                android:id="@+id/textview_total_shares"
+                style="@style/TextViewLabel"
+                />
+
+            <TextView
+                style="@style/TextViewLabel"
+                android:text="@string/label_average_price"
+                />
+
+            <TextView
+                android:id="@+id/textview_average_price"
+                style="@style/TextViewLabel"
+                />
+
+            <TextView
+                style="@style/TextViewLabel"
+                android:text="@string/label_total_amount"
+                />
+
+            <TextView
+                android:id="@+id/textview_total_amount"
+                style="@style/TextViewLabel"
+                />
+
+            <TextView
+                style="@style/TextViewLabel"
+                android:text="@string/label_entry"
+                />
+
+            <ImageView
+                android:id="@+id/imageview_entry"
+                style="@style/ImageViewExpandable"/>
+
+            <LinearLayout
+                android:id="@+id/entry_tranches_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_columnSpan="2"
+                android:orientation="vertical">
+
+                <!-- Tranches are inserted dynamically in the code, refer to entry_tranche.xml -->
+            </LinearLayout>
+ 
+            <!-- continue with textviews -->
+
+        </GridLayout>
+
+    </RelativeLayout>
+</ScrollView>

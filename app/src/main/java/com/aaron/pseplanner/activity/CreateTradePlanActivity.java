@@ -160,7 +160,7 @@ public class CreateTradePlanActivity extends AppCompatActivity
     {
         // Create initial tranche
         LayoutInflater inflater = LayoutInflater.from(CreateTradePlanActivity.this);
-        View inflatedLayout = inflater.inflate(R.layout.entry_tranche, null, false);
+        View inflatedLayout = inflater.inflate(R.layout.create_entry_tranche, null, false);
         setEntryTrancheViewsProperties(entryTranchesLayout, inflatedLayout);
     }
 
@@ -404,7 +404,7 @@ public class CreateTradePlanActivity extends AppCompatActivity
     }
 
     /**
-     * Sets the entry tranche properties and listeners. See entry_tranche.xml for the views to set.
+     * Sets the entry tranche properties and listeners. See create_entry_tranche.xmlche.xml for the views to set.
      *
      * @param entryTranchesLayout   the container/layout of the list of entryTrancheContainers
      * @param entryTrancheContainer the container/layout of the views to set

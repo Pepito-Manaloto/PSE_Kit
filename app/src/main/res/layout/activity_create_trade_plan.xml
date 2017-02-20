@@ -68,7 +68,7 @@
                 android:layout_columnSpan="2"
                 android:orientation="vertical">
 
-                <!-- Tranches are inserted dynamically in the code using the plus button -->
+                <!-- Tranches are inserted dynamically in the code using the plus button, refer to create_entry_tranche.xml -->
             </LinearLayout>
 
             <Button
