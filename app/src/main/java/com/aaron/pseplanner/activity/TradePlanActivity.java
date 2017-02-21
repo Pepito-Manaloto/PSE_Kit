@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -18,6 +19,7 @@ import com.aaron.pseplanner.R;
 import com.aaron.pseplanner.bean.Trade;
 import com.aaron.pseplanner.bean.TradeEntry;
 import com.aaron.pseplanner.constant.DataKey;
+import com.aaron.pseplanner.listener.ImageViewOnClickHideExpand;
 import com.aaron.pseplanner.service.FormatService;
 import com.aaron.pseplanner.service.LogManager;
 import com.aaron.pseplanner.service.ViewUtils;
@@ -77,7 +79,8 @@ public class TradePlanActivity extends AppCompatActivity
         entryDate.setText(this.formatService.formatDate(this.selectedStock.getEntryDate()));
 
         TextView holdingPeriod = (TextView) findViewById(R.id.textview_holding_period);
-        holdingPeriod.setText(String.valueOf(this.selectedStock.getHoldingPeriod()));
+        String holdingPeriodLabel = this.selectedStock.getHoldingPeriod() > 1 ? "days" : "day";
+        holdingPeriod.setText(String.format("%s %s", this.selectedStock.getHoldingPeriod(), holdingPeriodLabel));
 
         TextView currentPrice = (TextView) findViewById(R.id.textview_current_price);
         currentPrice.setText(this.formatService.formatStockPrice(this.selectedStock.getCurrentPrice()));
@@ -97,7 +100,10 @@ public class TradePlanActivity extends AppCompatActivity
         gainLoss.setText(String.format("%s (%s)", gainLossValue, gainLossPercentValue));
         this.formatService.formatTextColor(this.selectedStock.getGainLoss(), gainLoss);
 
-        this.setTranchesValues();
+        LinearLayout entryTranchesContainer = (LinearLayout) findViewById(R.id.entry_tranches_container);
+        ImageView trancheImageView = (ImageView) findViewById(R.id.imageview_entry);
+        trancheImageView.setOnClickListener(new ImageViewOnClickHideExpand(this, trancheImageView, entryTranchesContainer));
+        this.setTranchesValues(entryTranchesContainer);
 
         TextView priceToBreakEven = (TextView) findViewById(R.id.textview_price_to_break_even);
         priceToBreakEven.setText(this.formatService.formatStockPrice(this.selectedStock.getPriceToBreakEven()));
@@ -136,18 +142,16 @@ public class TradePlanActivity extends AppCompatActivity
     /**
      * Sets each entry tranche to the view.
      */
-    private void setTranchesValues()
+    private void setTranchesValues(LinearLayout entryTranchesContainer)
     {
-        LinearLayout entryTranchesContainer = (LinearLayout) findViewById(R.id.entry_tranches_container);
-
         List<TradeEntry> tradeEntries = this.selectedStock.getTradeEntries();
         LayoutInflater inflater = LayoutInflater.from(this);
-        int entryTranchNum = 0;
+        int entryTrancheNum = 0;
         for(TradeEntry entry : tradeEntries)
         {
             View entryTrancheLayout = inflater.inflate(R.layout.entry_tranche, null, false);
             TextView labelTranche = (TextView) entryTrancheLayout.findViewById(R.id.label_tranche);
-            labelTranche.setText(getString(R.string.label_tranche, ViewUtils.getOrdinalNumber(entryTranchNum)));
+            labelTranche.setText(getString(R.string.label_tranche, ViewUtils.getOrdinalNumber(entryTrancheNum)));
 
             TextView entryPrice = (TextView) entryTrancheLayout.findViewById(R.id.textview_entry_price);
             entryPrice.setText(this.formatService.formatStockPrice(entry.getEntryPrice()));
@@ -156,10 +160,23 @@ public class TradePlanActivity extends AppCompatActivity
             TextView weight = (TextView) entryTrancheLayout.findViewById(R.id.textview_tranche_weight);
             weight.setText(this.formatService.formatPercent(entry.getPercentWeight()));
 
-            entryTranchNum++;
+            entryTrancheNum++;
 
             entryTranchesContainer.addView(entryTrancheLayout);
         }
+    }
+
+    /**
+     * Saves current state in memory, when this activity is temporarily destroyed.
+     */
+    @Override
+    public void onSaveInstanceState(Bundle outState)
+    {
+        super.onSaveInstanceState(outState);
+
+        outState.putParcelable(DataKey.EXTRA_TRADE.toString(), this.selectedStock);
+
+        LogManager.debug(CLASS_NAME, "onSaveInstanceState", "");
     }
 
     /**
@@ -190,10 +207,12 @@ public class TradePlanActivity extends AppCompatActivity
             case R.id.menu_update:
             {
                 // TODO: go to update trade plan activity
+                return true;
             }
             case R.id.menu_delete:
             {
                 createAndShowAlertDialog(this.selectedStock.getSymbol());
+                return true;
             }
             default:
             {

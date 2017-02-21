@@ -1,24 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/scrollview"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:focusable="false"
-    android:fillViewport="true">
+    android:layout_height="wrap_content"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
 
-    <RelativeLayout
+    <include layout="@layout/toolbar_main"/>
+
+    <ScrollView
+        android:id="@+id/scrollview"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fitsSystemWindows="true"
-        android:orientation="vertical">
-
-        <include layout="@layout/toolbar_main"/>
+        android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize"
+        android:fillViewport="true"
+        android:focusable="false">
 
         <GridLayout
             style="@style/GridLayoutLabelValuePair"
             android:layout_marginBottom="15dp"
-            android:layout_marginTop="?attr/actionBarSize">
+            >
 
             <TextView
                 android:id="@+id/label_stock"
@@ -57,8 +58,8 @@
             <TextView
                 android:id="@+id/label_entry"
                 style="@style/TextViewLabel"
-                android:layout_marginBottom="0dp"
                 android:layout_columnSpan="2"
+                android:layout_marginBottom="0dp"
                 android:text="@string/label_entry"/>
 
             <LinearLayout
@@ -76,6 +77,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_columnSpan="2"
+                android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="10dp"
                 android:layout_marginLeft="20dp"
                 android:layout_marginStart="20dp"
@@ -84,7 +86,6 @@
                 android:drawableStart="@mipmap/add_button"
                 android:paddingEnd="20dp"
                 android:paddingRight="20dp"
-                android:layout_gravity="center_horizontal"
                 android:text="@string/button_add_tranche"
                 android:textSize="18sp"/>
 
@@ -175,7 +176,8 @@
                 />
         </GridLayout>
 
-    </RelativeLayout>
+    </ScrollView>
+</RelativeLayout>
 
-</ScrollView>
+
 

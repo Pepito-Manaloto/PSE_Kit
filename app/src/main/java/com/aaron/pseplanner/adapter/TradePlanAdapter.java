@@ -105,7 +105,8 @@ public class TradePlanAdapter extends ArrayAdapter<Trade>
             stopLoss.setText(service.formatPrice(trade.getStopLoss()));
             entryDate.setText(service.formatDate(trade.getEntryDate()));
             stopDate.setText(service.formatDate(trade.getStopDate()));
-            holdingPeriod.setText(String.valueOf(trade.getHoldingPeriod()));
+            String holdingPeriodLabel = trade.getHoldingPeriod() > 1 ? "days" : "day";
+            holdingPeriod.setText(String.format("%s %s", trade.getHoldingPeriod(), holdingPeriodLabel));
 
             service.formatTextColor(trade.getGainLoss(), gainLoss);
         }

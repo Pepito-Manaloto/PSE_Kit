@@ -94,36 +94,42 @@
 
             <TextView
                 style="@style/TextViewLabel"
+                android:layout_marginBottom="5dp"
                 android:text="@string/label_entry_date"
                 android:textSize="15sp"/>
 
             <TextView
                 android:id="@+id/textview_entry_date"
                 style="@style/TextViewLabel"
+                android:layout_marginBottom="5dp"
                 android:layout_marginLeft="20dp"
                 android:layout_marginStart="20dp"
                 android:textSize="15sp"/>
 
             <TextView
                 style="@style/TextViewLabel"
+                android:layout_marginBottom="5dp"
                 android:text="@string/label_stop_date"
                 android:textSize="15sp"/>
 
             <TextView
                 android:id="@+id/textview_stop_date"
                 style="@style/TextViewLabel"
+                android:layout_marginBottom="5dp"
                 android:layout_marginLeft="20dp"
                 android:layout_marginStart="20dp"
                 android:textSize="15sp"/>
 
             <TextView
                 style="@style/TextViewLabel"
+                android:layout_marginBottom="5dp"
                 android:text="@string/label_holding_period"
                 android:textSize="15sp"/>
 
             <TextView
                 android:id="@+id/textview_holding_period"
                 style="@style/TextViewLabel"
+                android:layout_marginBottom="5dp"
                 android:layout_marginLeft="20dp"
                 android:layout_marginStart="20dp"
                 android:textSize="15sp"/>

@@ -18,12 +18,12 @@ public class TradeEntry implements Parcelable
     {
     }
 
-    public TradeEntry(double percentWeight, String symbol, double entryPrice, long shares)
+    public TradeEntry(String symbol, double entryPrice, long shares, double percentWeight)
     {
-        this.percentWeight = percentWeight;
         this.symbol = symbol;
         this.entryPrice = entryPrice;
         this.shares = shares;
+        this.percentWeight = percentWeight;
     }
 
     @Override

@@ -37,12 +37,13 @@ public class Trade implements Parcelable
     {
     }
 
-    public Trade(double lossToStopLoss, Date entryDate, int holdingPeriod, String symbol, double currentPrice, double averagePrice, long totalShares, double totalAmount, double priceToBreakEven, double targetPrice, double gainLoss, double gainLossPercent, long gainToTarget, double stopLoss, Date stopDate, int daysToStopDate, double riskReward, long capital, double percentCapital, List<TradeEntry> tradeEntries)
+    public Trade(String symbol, Date entryDate, int holdingPeriod, double currentPrice, double averagePrice, long totalShares, double totalAmount, double priceToBreakEven, double targetPrice, double gainLoss, double gainLossPercent, long gainToTarget, double stopLoss, double lossToStopLoss, Date stopDate, int daysToStopDate, double riskReward, long capital, double percentCapital, List<TradeEntry> tradeEntries)
     {
+        this.symbol = symbol;
         this.lossToStopLoss = lossToStopLoss;
         this.entryDate = entryDate;
         this.holdingPeriod = holdingPeriod;
-        this.symbol = symbol;
+
         this.currentPrice = currentPrice;
         this.averagePrice = averagePrice;
         this.totalShares = totalShares;
