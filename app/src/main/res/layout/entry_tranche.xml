@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GridLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/GridLayoutLabelValuePair"
+    android:layout_marginBottom="10dp"
+    android:layout_marginLeft="20dp"
+    android:layout_marginStart="20dp">
+
+    <TextView
+        android:id="@+id/label_tranche"
+        style="@style/TextViewLabel"
+        android:layout_columnSpan="2"
+        android:layout_marginLeft="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="15dp"
+        android:text="@string/label_tranche"/>
+
+    <TextView
+        android:id="@+id/label_entry_price"
+        style="@style/TextViewLabel.SubLabel"
+        android:layout_marginLeft="40dp"
+        android:layout_marginStart="40dp"
+        android:text="@string/label_price"/>
+
+    <TextView
+        android:id="@+id/textview_entry_price"
+        style="@style/TextViewLabel.SubLabel"/>
+
+    <TextView
+        android:id="@+id/label_shares"
+        style="@style/TextViewLabel.SubLabel"
+        android:layout_marginLeft="40dp"
+        android:layout_marginStart="40dp"
+        android:text="@string/label_shares"/>
+
+    <TextView
+        android:id="@+id/textview_shares"
+        style="@style/TextViewLabel.SubLabel"/>
+
+    <TextView
+        android:id="@+id/label_weight"
+        style="@style/TextViewLabel.SubLabel"
+        android:layout_marginLeft="40dp"
+        android:layout_marginStart="40dp"
+        android:text="@string/label_weight"/>
+
+    <TextView
+        android:id="@+id/textview_tranche_weight"
+        style="@style/TextViewLabel.SubLabel"/>
+
+    <View
+        style="@style/Divider"
+        android:layout_columnSpan="2"
+        />
+</GridLayout>

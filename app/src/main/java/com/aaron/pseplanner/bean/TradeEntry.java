@@ -12,13 +12,13 @@ public class TradeEntry implements Parcelable
     private String symbol;
     private double entryPrice;
     private long shares;
-    private int percentWeight;
+    private double percentWeight;
 
     public TradeEntry()
     {
     }
 
-    public TradeEntry(int percentWeight, String symbol, double entryPrice, long shares)
+    public TradeEntry(double percentWeight, String symbol, double entryPrice, long shares)
     {
         this.percentWeight = percentWeight;
         this.symbol = symbol;
@@ -53,7 +53,8 @@ public class TradeEntry implements Parcelable
         temp = Double.doubleToLongBits(entryPrice);
         result = 31 * result + (int) (temp ^ (temp >>> 32));
         result = 31 * result + (int) (shares ^ (shares >>> 32));
-        result = 31 * result + percentWeight;
+        temp = Double.doubleToLongBits(percentWeight);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
         return result;
     }
 
@@ -68,12 +69,12 @@ public class TradeEntry implements Parcelable
                 '}';
     }
 
-    public int getPercentWeight()
+    public double getPercentWeight()
     {
         return percentWeight;
     }
 
-    public void setPercentWeight(int percentWeight)
+    public void setPercentWeight(double percentWeight)
     {
         this.percentWeight = percentWeight;
     }
@@ -126,7 +127,7 @@ public class TradeEntry implements Parcelable
         dest.writeString(this.symbol);
         dest.writeDouble(this.entryPrice);
         dest.writeLong(this.shares);
-        dest.writeInt(this.percentWeight);
+        dest.writeDouble(this.percentWeight);
     }
 
     /**
@@ -137,7 +138,7 @@ public class TradeEntry implements Parcelable
         this.symbol = in.readString();
         this.entryPrice = in.readDouble();
         this.shares = in.readLong();
-        this.percentWeight = in.readInt();
+        this.percentWeight = in.readDouble();
     }
 
     /**

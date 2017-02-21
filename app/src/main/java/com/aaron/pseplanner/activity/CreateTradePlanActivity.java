@@ -104,8 +104,9 @@ public class CreateTradePlanActivity extends AppCompatActivity
         stopDateEditText = (EditText) findViewById(R.id.edittext_stop_date);
         setDateEditTextOnClickListener(entryDateEditText, stopDateEditText);
 
+        final LayoutInflater inflater = LayoutInflater.from(this);
         final LinearLayout entryTranchesLayout = (LinearLayout) findViewById(R.id.entry_tranches_container);
-        addTranche(entryTranchesLayout); // Insert initial trache
+        addTranche(inflater, entryTranchesLayout); // Insert initial trache
 
         Button addTrancheButton = (Button) findViewById(R.id.button_add_tranche);
         addTrancheButton.setOnClickListener(new View.OnClickListener()
@@ -113,7 +114,7 @@ public class CreateTradePlanActivity extends AppCompatActivity
             @Override
             public void onClick(View view)
             {
-                addTranche(entryTranchesLayout);
+                addTranche(inflater, entryTranchesLayout);
             }
         });
 
@@ -154,12 +155,12 @@ public class CreateTradePlanActivity extends AppCompatActivity
     /**
      * Adds a new tranche.
      *
+     * @param inflater            the LayoutInflater that creates the create_entry_tranche
      * @param entryTranchesLayout the layout containing the tranche list
      */
-    private void addTranche(LinearLayout entryTranchesLayout)
+    private void addTranche(LayoutInflater inflater, LinearLayout entryTranchesLayout)
     {
         // Create initial tranche
-        LayoutInflater inflater = LayoutInflater.from(CreateTradePlanActivity.this);
         View inflatedLayout = inflater.inflate(R.layout.create_entry_tranche, null, false);
         setEntryTrancheViewsProperties(entryTranchesLayout, inflatedLayout);
     }

@@ -18,87 +18,89 @@
         <GridLayout
             style="@style/GridLayoutLabelValuePair"
             android:layout_marginBottom="10dp"
-            android:layout_marginTop="?attr/actionBarSize"
-            android:orientation="horizontal">
+            android:layout_marginTop="?attr/actionBarSize">
 
             <TextView
                 android:id="@+id/textview_stock"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_margin="10dp"
+                android:layout_marginTop="20dp"
                 android:text="@android:string/unknownName"
                 android:textColor="@color/black"
                 android:textSize="25sp"
                 android:textStyle="bold"/>
 
             <GridLayout
-                style="@style/GridLayoutLabelValuePair">
+                style="@style/GridLayoutLabelValuePair"
+                android:layout_marginTop="10dp">
 
                 <TextView
                     style="@style/TextViewLabel"
-                    android:text="@string/label_entry_date"
-                    />
+                    android:text="@string/label_entry_date"/>
 
                 <TextView
                     android:id="@+id/textview_entry_date"
-                    style="@style/TextViewLabel"
-                    />
+                    style="@style/TextViewLabel"/>
 
                 <TextView
                     style="@style/TextViewLabel"
-                    android:text="@string/label_holding_period"
-                    />
+                    android:text="@string/label_holding_period"/>
 
                 <TextView
                     android:id="@+id/textview_holding_period"
-                    style="@style/TextViewLabel"
-                    />
+                    style="@style/TextViewLabel"/>
             </GridLayout>
 
             <TextView
                 style="@style/TextViewLabel"
-                android:text="@string/label_current_price"
-                />
+                android:layout_marginBottom="15dp"
+                android:text="@string/label_current_price"/>
 
             <TextView
                 android:id="@+id/textview_current_price"
-                style="@style/TextViewLabel"
-                />
+                style="@style/TextViewLabel"/>
 
             <TextView
                 style="@style/TextViewLabel"
-                android:text="@string/label_total_shares"
-                />
+                android:layout_marginBottom="15dp"
+                android:text="@string/label_total_shares"/>
 
             <TextView
                 android:id="@+id/textview_total_shares"
-                style="@style/TextViewLabel"
-                />
+                style="@style/TextViewLabel"/>
 
             <TextView
                 style="@style/TextViewLabel"
-                android:text="@string/label_average_price"
-                />
+                android:layout_marginBottom="15dp"
+                android:text="@string/label_average_price"/>
 
             <TextView
                 android:id="@+id/textview_average_price"
-                style="@style/TextViewLabel"
-                />
+                style="@style/TextViewLabel"/>
 
             <TextView
                 style="@style/TextViewLabel"
-                android:text="@string/label_total_amount"
-                />
+                android:layout_marginBottom="15dp"
+                android:text="@string/label_total_amount"/>
 
             <TextView
                 android:id="@+id/textview_total_amount"
-                style="@style/TextViewLabel"
-                />
+                style="@style/TextViewLabel"/>
 
             <TextView
                 style="@style/TextViewLabel"
-                android:text="@string/label_entry"
-                />
+                android:layout_marginBottom="15dp"
+                android:text="@string/label_gain_loss"/>
+
+            <TextView
+                android:id="@+id/textview_gain_loss"
+                style="@style/TextViewLabel"/>
+
+            <TextView
+                style="@style/TextViewLabel"
+                android:layout_marginBottom="15dp"
+                android:text="@string/label_entry"/>
 
             <ImageView
                 android:id="@+id/imageview_entry"
@@ -109,13 +111,101 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_columnSpan="2"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:visibility="gone">
 
                 <!-- Tranches are inserted dynamically in the code, refer to entry_tranche.xml -->
             </LinearLayout>
- 
-            <!-- continue with textviews -->
 
+            <TextView
+                style="@style/TextViewLabel"
+                android:layout_marginBottom="15dp"
+                android:text="@string/label_price_to_break_even"/>
+
+            <TextView
+                android:id="@+id/textview_price_to_break_even"
+                style="@style/TextViewLabel"/>
+
+            <TextView
+                style="@style/TextViewLabel"
+                android:layout_marginBottom="15dp"
+                android:text="@string/label_target"/>
+
+            <TextView
+                android:id="@+id/textview_target"
+                style="@style/TextViewLabel"/>
+
+            <TextView
+                style="@style/TextViewLabel"
+                android:layout_marginBottom="15dp"
+                android:text="@string/label_gain_target"/>
+
+            <TextView
+                android:id="@+id/textview_gain_target"
+                style="@style/TextViewLabel"/>
+
+            <TextView
+                style="@style/TextViewLabel"
+                android:layout_marginBottom="15dp"
+                android:text="@string/label_stop_loss"/>
+
+            <TextView
+                android:id="@+id/textview_stop_loss"
+                style="@style/TextViewLabel"/>
+
+            <TextView
+                style="@style/TextViewLabel"
+                android:layout_marginBottom="15dp"
+                android:text="@string/label_loss_stop_loss"/>
+
+            <TextView
+                android:id="@+id/textview_loss_stop_loss"
+                style="@style/TextViewLabel"/>
+
+            <TextView
+                style="@style/TextViewLabel"
+                android:layout_marginBottom="15dp"
+                android:text="@string/label_stop_date"/>
+
+            <TextView
+                android:id="@+id/textview_stop_date"
+                style="@style/TextViewLabel"/>
+
+            <TextView
+                style="@style/TextViewLabel"
+                android:layout_marginBottom="15dp"
+                android:text="@string/label_days_to_stop_date"/>
+
+            <TextView
+                android:id="@+id/textview_days_to_stop_date"
+                style="@style/TextViewLabel"/>
+
+            <TextView
+                style="@style/TextViewLabel"
+                android:layout_marginBottom="15dp"
+                android:text="@string/label_risk_reward"/>
+
+            <TextView
+                android:id="@+id/textview_risk_reward"
+                style="@style/TextViewLabel"/>
+
+            <TextView
+                style="@style/TextViewLabel"
+                android:layout_marginBottom="15dp"
+                android:text="@string/label_capital"/>
+
+            <TextView
+                android:id="@+id/textview_capital"
+                style="@style/TextViewLabel"/>
+
+            <TextView
+                style="@style/TextViewLabel"
+                android:layout_marginBottom="15dp"
+                android:text="@string/label_percent_of_capital"/>
+
+            <TextView
+                android:id="@+id/textview_percent_of_capital"
+                style="@style/TextViewLabel"/>
         </GridLayout>
 
     </RelativeLayout>

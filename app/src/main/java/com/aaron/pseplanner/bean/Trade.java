@@ -27,7 +27,7 @@ public class Trade implements Parcelable
     private double lossToStopLoss;
     private double stopLoss;
     private Date stopDate;
-    private int daysToTimeStop;
+    private int daysToStopDate;
     private double riskReward;
     private long capital;
     private double percentCapital;
@@ -37,7 +37,7 @@ public class Trade implements Parcelable
     {
     }
 
-    public Trade(double lossToStopLoss, Date entryDate, int holdingPeriod, String symbol, double currentPrice, double averagePrice, long totalShares, double totalAmount, double priceToBreakEven, double targetPrice, double gainLoss, double gainLossPercent, long gainToTarget, double stopLoss, Date stopDate, int daysToTimeStop, double riskReward, long capital, double percentCapital, List<TradeEntry> tradeEntries)
+    public Trade(double lossToStopLoss, Date entryDate, int holdingPeriod, String symbol, double currentPrice, double averagePrice, long totalShares, double totalAmount, double priceToBreakEven, double targetPrice, double gainLoss, double gainLossPercent, long gainToTarget, double stopLoss, Date stopDate, int daysToStopDate, double riskReward, long capital, double percentCapital, List<TradeEntry> tradeEntries)
     {
         this.lossToStopLoss = lossToStopLoss;
         this.entryDate = entryDate;
@@ -54,7 +54,7 @@ public class Trade implements Parcelable
         this.gainToTarget = gainToTarget;
         this.stopLoss = stopLoss;
         this.stopDate = stopDate;
-        this.daysToTimeStop = daysToTimeStop;
+        this.daysToStopDate = daysToStopDate;
         this.riskReward = riskReward;
         this.capital = capital;
         this.percentCapital = percentCapital;
@@ -80,7 +80,7 @@ public class Trade implements Parcelable
                 totalShares == trade.totalShares && totalAmount == trade.totalAmount && Double.compare(trade.priceToBreakEven, priceToBreakEven) == 0 &&
                 Double.compare(trade.targetPrice, targetPrice) == 0 && gainLoss == trade.gainLoss && gainLossPercent == trade.gainLossPercent &&
                 gainToTarget == trade.gainToTarget && Double.compare(trade.stopLoss, stopLoss) == 0 && lossToStopLoss == trade.lossToStopLoss &&
-                daysToTimeStop == trade.daysToTimeStop && Double.compare(trade.riskReward, riskReward) == 0 && capital == trade.capital &&
+                daysToStopDate == trade.daysToStopDate && Double.compare(trade.riskReward, riskReward) == 0 && capital == trade.capital &&
                 percentCapital == trade.percentCapital && entryDate.equals(trade.entryDate) && holdingPeriod == trade.holdingPeriod && symbol.equals(trade.symbol) &&
                 stopDate.equals(trade.stopDate) && tradeEntries.equals(trade.tradeEntries);
     }
@@ -114,7 +114,7 @@ public class Trade implements Parcelable
         temp = Double.doubleToLongBits(stopLoss);
         result = 31 * result + (int) (temp ^ (temp >>> 32));
         result = 31 * result + stopDate.hashCode();
-        result = 31 * result + daysToTimeStop;
+        result = 31 * result + daysToStopDate;
         temp = Double.doubleToLongBits(riskReward);
         result = 31 * result + (int) (temp ^ (temp >>> 32));
         result = 31 * result + (int) (capital ^ (capital >>> 32));
@@ -143,7 +143,7 @@ public class Trade implements Parcelable
                 ", stopLoss=" + stopLoss +
                 ", lossToStopLoss=" + lossToStopLoss +
                 ", stopDate=" + stopDate +
-                ", daysToTimeStop=" + daysToTimeStop +
+                ", daysToStopDate=" + daysToStopDate +
                 ", riskReward=" + riskReward +
                 ", capital=" + capital +
                 ", percentCapital=" + percentCapital +
@@ -301,14 +301,14 @@ public class Trade implements Parcelable
         this.stopDate = stopDate;
     }
 
-    public int getDaysToTimeStop()
+    public int getDaysToStopDate()
     {
-        return daysToTimeStop;
+        return daysToStopDate;
     }
 
-    public void setDaysToTimeStop(int daysToTimeStop)
+    public void setDaysToStopDate(int daysToStopDate)
     {
-        this.daysToTimeStop = daysToTimeStop;
+        this.daysToStopDate = daysToStopDate;
     }
 
     public double getRiskReward()
@@ -381,7 +381,7 @@ public class Trade implements Parcelable
         dest.writeDouble(this.stopLoss);
         dest.writeDouble(this.lossToStopLoss);
         dest.writeLong(this.stopDate != null ? this.stopDate.getTime() : -1);
-        dest.writeInt(this.daysToTimeStop);
+        dest.writeInt(this.daysToStopDate);
         dest.writeDouble(this.riskReward);
         dest.writeLong(this.capital);
         dest.writeDouble(this.percentCapital);
@@ -411,7 +411,7 @@ public class Trade implements Parcelable
         this.lossToStopLoss = in.readDouble();
         long tmpStopDate = in.readLong();
         this.stopDate = tmpStopDate == -1 ? null : new Date(tmpStopDate);
-        this.daysToTimeStop = in.readInt();
+        this.daysToStopDate = in.readInt();
         this.riskReward = in.readDouble();
         this.capital = in.readLong();
         this.percentCapital = in.readDouble();
