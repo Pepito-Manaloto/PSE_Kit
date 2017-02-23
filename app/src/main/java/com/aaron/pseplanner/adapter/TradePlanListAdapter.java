@@ -18,23 +18,25 @@ import com.aaron.pseplanner.service.FormatService;
 import com.aaron.pseplanner.service.ViewUtils;
 import com.aaron.pseplanner.service.implementation.FormatServiceImpl;
 
-import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Created by Aaron on 2/17/2017.
  * Contains all trade plans, and is responsible for converting Trade bean to a UI row in the ListView.
  */
-public class TradePlanAdapter extends ArrayAdapter<Trade>
+public class TradePlanListAdapter extends ArrayAdapter<Trade>
 {
     private Activity activity;
     private FormatService formatService;
+    private ArrayList<Trade> tradeList;
 
-    public TradePlanAdapter(Activity activity, List<Trade> tradeList)
+    public TradePlanListAdapter(Activity activity, ArrayList<Trade> tradeList)
     {
         super(activity, 0, tradeList);
 
         this.activity = activity;
         this.formatService = new FormatServiceImpl(activity);
+        this.tradeList = tradeList;
     }
 
 
@@ -71,7 +73,7 @@ public class TradePlanAdapter extends ArrayAdapter<Trade>
         }
 
         Trade trade = getItem(position);
-        holder.setTickerView(trade, this.formatService, new ListRowOnTouchChangeActivity(this.activity, TradePlanActivity.class, DataKey.EXTRA_TRADE, trade, IntentRequestCode.VIEW_TRADE_PLAN, holder.scroll));
+        holder.setTickerView(trade, this.formatService, new ListRowOnTouchChangeActivity(this.activity, TradePlanActivity.class, DataKey.EXTRA_TRADE, trade, DataKey.EXTRA_TRADE_LIST, this.tradeList, IntentRequestCode.VIEW_TRADE_PLAN, holder.scroll));
 
         return convertView;
     }

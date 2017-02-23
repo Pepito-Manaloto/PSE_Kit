@@ -8,7 +8,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.aaron.pseplanner.R;
-import com.aaron.pseplanner.adapter.TickerAdapter;
+import com.aaron.pseplanner.adapter.TickerListAdapter;
 import com.aaron.pseplanner.bean.Ticker;
 import com.aaron.pseplanner.service.PSEClientService;
 import com.aaron.pseplanner.service.implementation.PSEClientServiceImpl;
@@ -68,6 +68,6 @@ public class TickerListFragment extends AbstractListFragment
     @Override
     protected ArrayAdapter getArrayAdapter()
     {
-        return new TickerAdapter(getActivity(), tickerList);
+        return new TickerListAdapter(getActivity(), tickerList);
     }
 }

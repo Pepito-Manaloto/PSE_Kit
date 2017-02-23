@@ -14,6 +14,8 @@ import com.aaron.pseplanner.bean.Ticker;
 import com.aaron.pseplanner.constant.DataKey;
 import com.aaron.pseplanner.constant.IntentRequestCode;
 
+import java.util.ArrayList;
+
 /**
  * Created by aaron.asuncion on 12/9/2016.
  * Class for handling List row selection and horizontal scrolling.
@@ -25,6 +27,8 @@ public class ListRowOnTouchChangeActivity implements View.OnTouchListener
     private Class<? extends Activity> activityClass;
     private DataKey key;
     private Parcelable parcelableData;
+    private DataKey keyList;
+    private ArrayList<? extends Parcelable> parcelableListData;
     private IntentRequestCode requestCode;
     private View view;
     private int highlightedColor;
@@ -34,6 +38,7 @@ public class ListRowOnTouchChangeActivity implements View.OnTouchListener
      *
      * @param activity       the current activity
      * @param activityClass  the activity class to transition to
+     * @param key            the key of the parcelable data
      * @param parcelableData the data that will be passed to the new activity
      * @param requestCode    the request code of the new activity
      * @param view           the view of the listener
@@ -55,6 +60,26 @@ public class ListRowOnTouchChangeActivity implements View.OnTouchListener
         {
             this.highlightedColor = activity.getResources().getColor(R.color.lightSkyBlue);
         }
+    }
+
+    /**
+     * Constructor with array list extra.
+     *
+     * @param activity           the current activity
+     * @param activityClass      the activity class to transition to
+     * @param parcelableKey      the key of the parcelable data
+     * @param parcelableData     the data that will be passed to the new activity
+     * @param parcelableListKey  the key of the parcelable list data
+     * @param parcelableListData the data list that will be passed to the new activity
+     * @param requestCode        the request code of the new activity
+     * @param view               the view of the listener
+     */
+    public ListRowOnTouchChangeActivity(final Activity activity, final Class<? extends Activity> activityClass, final DataKey parcelableKey, final Parcelable parcelableData, final DataKey parcelableListKey, final ArrayList<? extends Parcelable> parcelableListData, final IntentRequestCode requestCode, final View view)
+    {
+        this(activity, activityClass, parcelableKey, parcelableData, requestCode, view);
+
+        this.keyList = parcelableListKey;
+        this.parcelableListData = parcelableListData;
     }
 
     /**
@@ -80,7 +105,13 @@ public class ListRowOnTouchChangeActivity implements View.OnTouchListener
                 if(touchMovedLessThan15Pixels)
                 {
                     Intent intent = new Intent(this.activity, this.activityClass);
-                    intent.putExtra(this.key.toString(), parcelableData);
+                    intent.putExtra(this.key.toString(), this.parcelableData);
+
+                    if(this.keyList != null && this.parcelableListData != null)
+                    {
+                        intent.putParcelableArrayListExtra(this.keyList.toString(), this.parcelableListData);
+                    }
+
                     this.activity.startActivityForResult(intent, this.requestCode.code());
                 }
 

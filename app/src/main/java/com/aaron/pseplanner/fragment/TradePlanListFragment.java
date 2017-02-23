@@ -1,7 +1,6 @@
 package com.aaron.pseplanner.fragment;
 
 import android.os.Bundle;
-import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,8 +8,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.aaron.pseplanner.R;
-import com.aaron.pseplanner.adapter.TradePlanAdapter;
-import com.aaron.pseplanner.bean.Ticker;
+import com.aaron.pseplanner.adapter.TradePlanListAdapter;
 import com.aaron.pseplanner.bean.Trade;
 import com.aaron.pseplanner.bean.TradeEntry;
 import com.aaron.pseplanner.service.PSEClientService;
@@ -28,7 +26,7 @@ import java.util.List;
 public class TradePlanListFragment extends AbstractListFragment
 {
     public static final String CLASS_NAME = TradePlanListFragment.class.getSimpleName();
-    private List<Trade> tradeList;
+    private ArrayList<Trade> tradeList;
     private PSEClientService client;
 
     /**
@@ -45,7 +43,7 @@ public class TradePlanListFragment extends AbstractListFragment
         // TODO: retrieve and parse data from database
         this.tradeList = new ArrayList<>();
 
-        for(int i = 0; i < 15; i++)
+        for(int i = 0; i < 5; i++)
         {
             this.tradeList.add(new Trade("CPG",
                     new Date(), 1, 0.53, 0.55, 300_000, 156_000, 0.567, 0.6, -28_020, -3.86, 53_543, 0.51, -10_000.7, new Date(), 23, 2.34, 500_000, 30.42,
@@ -78,6 +76,6 @@ public class TradePlanListFragment extends AbstractListFragment
     @Override
     protected ArrayAdapter getArrayAdapter()
     {
-        return new TradePlanAdapter(getActivity(), tradeList);
+        return new TradePlanListAdapter(getActivity(), tradeList);
     }
 }

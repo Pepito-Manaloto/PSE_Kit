@@ -25,12 +25,12 @@ import java.util.List;
  * Created by aaron.asuncion on 12/8/2016.
  * Contains all tickers, and is responsible for converting Ticker bean to a UI row in the ListView.
  */
-public class TickerAdapter extends ArrayAdapter<Ticker>
+public class TickerListAdapter extends ArrayAdapter<Ticker>
 {
     private Activity activity;
     private FormatService formatService;
 
-    public TickerAdapter(Activity activity, List<Ticker> tickerList)
+    public TickerListAdapter(Activity activity, List<Ticker> tickerList)
     {
         super(activity, 0, tickerList);
 
