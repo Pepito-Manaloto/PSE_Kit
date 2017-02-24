@@ -3,6 +3,8 @@ package com.aaron.pseplanner.bean;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.math.BigDecimal;
+
 /**
  * Created by aaron.asuncion on 12/20/2016.
  * Represents a trade(buy).
@@ -10,9 +12,9 @@ import android.os.Parcelable;
 public class TradeEntry implements Parcelable
 {
     private String symbol;
-    private double entryPrice;
+    private BigDecimal entryPrice;
     private long shares;
-    private double percentWeight;
+    private BigDecimal percentWeight;
 
     public TradeEntry()
     {
@@ -21,9 +23,17 @@ public class TradeEntry implements Parcelable
     public TradeEntry(String symbol, double entryPrice, long shares, double percentWeight)
     {
         this.symbol = symbol;
-        this.entryPrice = entryPrice;
+        this.entryPrice = BigDecimal.valueOf(entryPrice);
         this.shares = shares;
-        this.percentWeight = percentWeight;
+        this.percentWeight = BigDecimal.valueOf(percentWeight);
+    }
+
+    public TradeEntry(String symbol, String entryPrice, long shares, String percentWeight)
+    {
+        this.symbol = symbol;
+        this.entryPrice = new BigDecimal(entryPrice);
+        this.shares = shares;
+        this.percentWeight = new BigDecimal(percentWeight);
     }
 
     @Override
@@ -40,21 +50,17 @@ public class TradeEntry implements Parcelable
 
         TradeEntry that = (TradeEntry) o;
 
-        return Double.compare(that.entryPrice, entryPrice) == 0 && shares == that.shares &&
-                percentWeight == that.percentWeight && symbol.equals(that.symbol);
+        return entryPrice.equals(that.entryPrice) && shares == that.shares &&
+                percentWeight.equals(that.percentWeight) && symbol.equals(that.symbol);
     }
 
     @Override
     public int hashCode()
     {
-        int result;
-        long temp;
-        result = symbol.hashCode();
-        temp = Double.doubleToLongBits(entryPrice);
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
-        result = 31 * result + (int) (shares ^ (shares >>> 32));
-        temp = Double.doubleToLongBits(percentWeight);
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        int result = getSymbol().hashCode();
+        result = 31 * result + getEntryPrice().hashCode();
+        result = 31 * result + (int) (getShares() ^ (getShares() >>> 32));
+        result = 31 * result + getPercentWeight().hashCode();
         return result;
     }
 
@@ -69,12 +75,12 @@ public class TradeEntry implements Parcelable
                 '}';
     }
 
-    public double getPercentWeight()
+    public BigDecimal getPercentWeight()
     {
         return percentWeight;
     }
 
-    public void setPercentWeight(double percentWeight)
+    public void setPercentWeight(BigDecimal percentWeight)
     {
         this.percentWeight = percentWeight;
     }
@@ -89,12 +95,12 @@ public class TradeEntry implements Parcelable
         this.symbol = symbol;
     }
 
-    public double getEntryPrice()
+    public BigDecimal getEntryPrice()
     {
         return entryPrice;
     }
 
-    public void setEntryPrice(double entryPrice)
+    public void setEntryPrice(BigDecimal entryPrice)
     {
         this.entryPrice = entryPrice;
     }
@@ -125,9 +131,9 @@ public class TradeEntry implements Parcelable
     public void writeToParcel(Parcel dest, int flags)
     {
         dest.writeString(this.symbol);
-        dest.writeDouble(this.entryPrice);
+        dest.writeString(this.entryPrice.toPlainString());
         dest.writeLong(this.shares);
-        dest.writeDouble(this.percentWeight);
+        dest.writeString(this.percentWeight.toPlainString());
     }
 
     /**
@@ -136,9 +142,9 @@ public class TradeEntry implements Parcelable
     private TradeEntry(Parcel in)
     {
         this.symbol = in.readString();
-        this.entryPrice = in.readDouble();
+        this.entryPrice = new BigDecimal(in.readString());
         this.shares = in.readLong();
-        this.percentWeight = in.readDouble();
+        this.percentWeight = new BigDecimal(in.readString());
     }
 
     /**

@@ -3,6 +3,8 @@ package com.aaron.pseplanner.service;
 import com.aaron.pseplanner.bean.Ticker;
 import com.aaron.pseplanner.bean.Trade;
 
+import java.math.BigDecimal;
+
 /**
  * Created by aaron.asuncion on 12/19/2016.
  */
@@ -10,82 +12,82 @@ import com.aaron.pseplanner.bean.Trade;
 public interface CalculatorService
 {
     // 0.25%
-    double STOCK_BROKERS_COMMISSION = 0.0025;
+    BigDecimal STOCK_BROKERS_COMMISSION = BigDecimal.valueOf(0.0025);
 
     // 12%
-    double VAT = 0.12;
+    BigDecimal VAT = BigDecimal.valueOf(0.12);
 
     // 0.01
-    double CLEARING_FEE = 0.0001;
+    BigDecimal CLEARING_FEE = BigDecimal.valueOf(0.0001);
 
     // 0.005%
-    double PSE_TRANSACTION_FEE = 0.00005;
+    BigDecimal PSE_TRANSACTION_FEE = BigDecimal.valueOf(0.00005);
 
     // 0.5%
-    double SALES_TAX = 0.005;
+    BigDecimal SALES_TAX = BigDecimal.valueOf(0.005);
 
     // 0.295%
-    double TOTAL_BUY_FEE = STOCK_BROKERS_COMMISSION + (STOCK_BROKERS_COMMISSION * VAT) + CLEARING_FEE + PSE_TRANSACTION_FEE;
+    BigDecimal TOTAL_BUY_FEE = STOCK_BROKERS_COMMISSION.add(STOCK_BROKERS_COMMISSION.multiply(VAT)).add(CLEARING_FEE).add(PSE_TRANSACTION_FEE);
 
     // 0.795%
-    double TOTAL_SELL_FEE = TOTAL_BUY_FEE + SALES_TAX;
+    BigDecimal TOTAL_SELL_FEE = TOTAL_BUY_FEE.add(SALES_TAX);
 
     // 1.09%
-    double TOTAL_BUY_SELL_FEE = TOTAL_BUY_FEE + TOTAL_SELL_FEE;
+    BigDecimal TOTAL_BUY_SELL_FEE = TOTAL_BUY_FEE.add(TOTAL_SELL_FEE);
 
-    int MINIMUM_COMMISSION = 20;
+    BigDecimal MINIMUM_COMMISSION = BigDecimal.valueOf(20);
 
     /**
      * Gets the buy gross amount of a stock trade.
      *
      * @param buyPrice the price the stock to buy
      * @param shares   the number of shares to buy
-     * @return double
+     * @return BigDecimal
      */
-    double getBuyGrossAmount(double buyPrice, long shares);
+    BigDecimal getBuyGrossAmount(BigDecimal buyPrice, long shares);
 
     /**
      * Gets the buy net(additional fees added) amount of a stock trade.
      *
      * @param buyPrice the price the stock to buy
      * @param shares   the number of shares to buy
-     * @return double
+     * @return BigDecimal
      */
-    double getBuyNetAmount(double buyPrice, long shares);
+    BigDecimal getBuyNetAmount(BigDecimal buyPrice, long shares);
 
     /**
      * Gets the average price after the stock to buy. Adjusted with the additional fee.
      *
      * @param buyPrice the price the stock to buy
-     * @return double
+     * @return BigDecimal
      */
-    double getAveragePriceAfterBuy(double buyPrice);
+    BigDecimal getAveragePriceAfterBuy(BigDecimal buyPrice);
 
     /**
      * Gets the selling price needed in order to break-even after the stock to buy. Adjusted with the additional fee.
      *
      * @param buyPrice the price the stock to buy
-     * @return double
+     * @return BigDecimal
      */
-    double getPriceToBreakEven(double buyPrice);
+    BigDecimal getPriceToBreakEven(BigDecimal buyPrice);
 
     /**
      * Gets the sell gross amount of a stock trade.
      *
      * @param sellPrice the price the stock to sell
      * @param shares    the number of shares to sell
-     * @return double
+     * @return BigDecimal
      */
-    double getSellGrossAmount(double sellPrice, long shares);
+    BigDecimal getSellGrossAmount(BigDecimal sellPrice, long shares);
 
     /**
      * Gets the sell net(additional fees added) amount of a stock trade.
      *
      * @param sellPrice the price the stock to sell
      * @param shares    the number of shares to sell
-     * @return double
+     * @return BigDecimal
      */
-    double getSellNetAmount(double sellPrice, long shares);
+    BigDecimal getSellNetAmount(BigDecimal sellPrice, long shares);
 
 
     /**
@@ -94,9 +96,9 @@ public interface CalculatorService
      * @param buyPrice  the price the stock to buy
      * @param sellPrice the price the stock to sell
      * @param shares    the number of shares in the trade
-     * @return double
+     * @return BigDecimal
      */
-    double getGainLossAmount(double buyPrice, long shares, double sellPrice);
+    BigDecimal getGainLossAmount(BigDecimal buyPrice, long shares, BigDecimal sellPrice);
 
     /**
      * Gets the percent gain/loss amount of a stock trade.
@@ -104,9 +106,9 @@ public interface CalculatorService
      * @param buyPrice  the price the stock to buy
      * @param sellPrice the price the stock to sell
      * @param shares    the number of shares in the trade
-     * @return double
+     * @return BigDecimal
      */
-    double getPercentGainLoss(double buyPrice, long shares, double sellPrice);
+    BigDecimal getPercentGainLoss(BigDecimal buyPrice, long shares, BigDecimal sellPrice);
 
     /**
      * Gets risk/reward ratio of a stock trade.
@@ -114,18 +116,18 @@ public interface CalculatorService
      * @param entryPrice   the planned price entry of a stock
      * @param targetPrice  the planned target price of a stock
      * @param cutlossPrice the planned cutloss price of a stock
-     * @return double
+     * @return BigDecimal
      */
-    double getRiskRewardRatio(double entryPrice, double targetPrice, double cutlossPrice);
+    BigDecimal getRiskRewardRatio(BigDecimal entryPrice, BigDecimal targetPrice, BigDecimal cutlossPrice);
 
     /**
      * Gets dividend yield of a stock.
      *
      * @param shares       the number of shares to buy
      * @param cashDividend the dividend amount per share
-     * @return double
+     * @return BigDecimal
      */
-    double getDividendYield(long shares, double cashDividend);
+    BigDecimal getDividendYield(long shares, BigDecimal cashDividend);
 
     /**
      * Gets percent dividend yield of a stock.
@@ -133,56 +135,56 @@ public interface CalculatorService
      * @param price        the price of the stock to buy
      * @param shares       the number of shares to buy
      * @param cashDividend the dividend amount per share
-     * @return double
+     * @return BigDecimal
      */
-    double getPercentDividendYield(double price, long shares, double cashDividend);
+    BigDecimal getPercentDividendYield(BigDecimal price, long shares, BigDecimal cashDividend);
 
     /**
      * Gets the midpoint of the given price(high, low).
      *
      * @param high highest price
      * @param low  lowest price
-     * @return double
+     * @return BigDecimal
      */
-    double getMidpoint(double high, double low);
+    BigDecimal getMidpoint(BigDecimal high, BigDecimal low);
 
     /**
      * Gets the stock broker's commission.
      *
      * @param grossAmount the stock trade's gross amount
-     * @return double
+     * @return BigDecimal
      */
-    double getStockbrokersCommission(double grossAmount);
+    BigDecimal getStockbrokersCommission(BigDecimal grossAmount);
 
     /**
      * Gets the stock broker's commission's vat.
      *
      * @param stockbrokersCommission the stock trade's commission
-     * @return double
+     * @return BigDecimal
      */
-    double getVatOfCommission(double stockbrokersCommission);
+    BigDecimal getVatOfCommission(BigDecimal stockbrokersCommission);
 
     /**
      * Gets the clearing fee.
      *
      * @param grossAmount the stock trade's gross amount
-     * @return double
+     * @return BigDecimal
      */
-    double getClearingFee(double grossAmount);
+    BigDecimal getClearingFee(BigDecimal grossAmount);
 
     /**
      * Gets the transaction fee.
      *
      * @param grossAmount the stock trade's gross amount
-     * @return double
+     * @return BigDecimal
      */
-    double getTransactionFee(double grossAmount);
+    BigDecimal getTransactionFee(BigDecimal grossAmount);
 
     /**
      * Gets the sales tax.
      *
      * @param grossAmount the stock trade's gross amount
-     * @return double
+     * @return BigDecimal
      */
-    double getSalesTax(double grossAmount);
+    BigDecimal getSalesTax(BigDecimal grossAmount);
 }

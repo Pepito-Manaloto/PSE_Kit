@@ -1,6 +1,5 @@
 package com.aaron.pseplanner.fragment;
 
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,6 +15,7 @@ import com.aaron.pseplanner.service.LogManager;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.Locale;
@@ -31,9 +31,6 @@ public class CalculatorFragment extends AbstractCalculatorFragment
     private EditText buyPriceEditText;
     private EditText sharesEditText;
     private EditText sellPriceEditText;
-
-    private ImageView buyNetAmountImageView;
-    private ImageView sellNetAmountImageView;
 
     private TextView averagePriceText;
     private TextView priceToBreakEvenText;
@@ -95,20 +92,18 @@ public class CalculatorFragment extends AbstractCalculatorFragment
         setEditTextOnFocusChangeListener(this.buyPriceEditText, this.sharesEditText, this.sellPriceEditText);
         setEditTextTextChangeListener(this.buyPriceEditText, this.sharesEditText, this.sellPriceEditText);
 
-        this.buyNetAmountImageView = (ImageView) view.findViewById(R.id.imageview_buy_net_amount);
-        this.sellNetAmountImageView = (ImageView) view.findViewById(R.id.imageview_sell_net_amount);
-        this.setImageViewOnClickListener(this.buyNetAmountImageView, view.findViewById(R.id.additional_fees_layout), this.sellNetAmountImageView, view.findViewById(R.id.deduction_fees_layout));
+        ImageView buyNetAmountImageView = (ImageView) view.findViewById(R.id.imageview_buy_net_amount);
+        ImageView sellNetAmountImageView = (ImageView) view.findViewById(R.id.imageview_sell_net_amount);
+        this.setImageViewOnClickListener(buyNetAmountImageView, view.findViewById(R.id.additional_fees_layout), sellNetAmountImageView, view.findViewById(R.id.deduction_fees_layout));
 
         return view;
     }
 
     @Override
-    public void onDestroyView()
+    public void onStop()
     {
-        super.onDestroyView();
-        this.buyPriceEditText.setText("");
-        this.sharesEditText.setText("");
-        this.sellPriceEditText.setText("");
+        this.resetEditTexts();
+        super.onStop();
     }
 
     /**
@@ -126,14 +121,14 @@ public class CalculatorFragment extends AbstractCalculatorFragment
             {
                 boolean buyPriceAndSharesChanged = !buyPriceStr.equals(this.buyPriceStrPrevious) || !sharesStr.equals(this.sharesStrPrevious);
                 NumberFormat formatter = null;
-                double buyPrice = 0;
+                BigDecimal buyPrice = BigDecimal.ZERO;
                 long shares = 0;
 
                 // If at least one changed, then proceed calculating. Do not change if only sell price changed.
                 if(buyPriceAndSharesChanged)
                 {
                     formatter = NumberFormat.getInstance(Locale.US);
-                    buyPrice = formatter.parse(buyPriceStr).doubleValue();
+                    buyPrice = BigDecimal.valueOf(formatter.parse(buyPriceStr).doubleValue());
                     shares = formatter.parse(sharesStr).longValue();
 
                     calculateAndUpdateViewOnBuy(buyPrice, shares);
@@ -154,9 +149,9 @@ public class CalculatorFragment extends AbstractCalculatorFragment
                             formatter = NumberFormat.getInstance(Locale.US);
                         }
 
-                        if(buyPrice == 0)
+                        if(buyPrice.doubleValue() == 0.0)
                         {
-                            buyPrice = formatter.parse(buyPriceStr).doubleValue();
+                            buyPrice = BigDecimal.valueOf(formatter.parse(buyPriceStr).doubleValue());
                         }
 
                         if(shares == 0)
@@ -164,9 +159,12 @@ public class CalculatorFragment extends AbstractCalculatorFragment
                             shares = formatter.parse(sharesStr).longValue();
                         }
 
-                        double sellPrice = formatter.parse(sellPriceStr).doubleValue();
+                        BigDecimal sellPrice = BigDecimal.valueOf(formatter.parse(sellPriceStr).doubleValue());
 
-                        calculateAndUpdateViewOnSell(buyPrice, sellPrice, shares);
+                        if(sellPrice.doubleValue() != 0.0)
+                        {
+                            calculateAndUpdateViewOnSell(buyPrice, sellPrice, shares);
+                        }
 
                         // Set previous value to be compared on the next text change, to skip calculation if unchanged.
                         this.sellPriceStrPrevious = sellPriceStr;
@@ -188,68 +186,76 @@ public class CalculatorFragment extends AbstractCalculatorFragment
             // Either buyPriceEditText or sharesEditText is empty, reset to 0.
             resetAllValues();
         }
+
     }
 
     /**
      * Calculates the buy input, and updates the view.
      */
-    private void calculateAndUpdateViewOnBuy(double buyPrice, long shares)
+    private void calculateAndUpdateViewOnBuy(BigDecimal buyPrice, long shares)
     {
-        double averagePrice = calculatorService.getAveragePriceAfterBuy(buyPrice);
-        double priceToBreakEven = calculatorService.getPriceToBreakEven(buyPrice);
-        double buyGrossAmount = calculatorService.getBuyGrossAmount(buyPrice, shares);
-        double buyNetAmount = calculatorService.getBuyNetAmount(buyPrice, shares);
+        BigDecimal averagePrice = calculatorService.getAveragePriceAfterBuy(buyPrice);
+        BigDecimal priceToBreakEven = calculatorService.getPriceToBreakEven(buyPrice);
+        BigDecimal buyGrossAmount = calculatorService.getBuyGrossAmount(buyPrice, shares);
+        BigDecimal buyNetAmount = calculatorService.getBuyNetAmount(buyPrice, shares);
 
-        averagePriceText.setText(formatService.formatStockPrice(averagePrice));
-        priceToBreakEvenText.setText(formatService.formatStockPrice(priceToBreakEven));
-        buyGrossAmountText.setText(formatService.formatPrice(buyGrossAmount));
-        buyNetAmountText.setText(formatService.formatPrice(buyNetAmount));
+        averagePriceText.setText(formatService.formatStockPrice(averagePrice.doubleValue()));
+        priceToBreakEvenText.setText(formatService.formatStockPrice(priceToBreakEven.doubleValue()));
+        buyGrossAmountText.setText(formatService.formatPrice(buyGrossAmount.doubleValue()));
+        buyNetAmountText.setText(formatService.formatPrice(buyNetAmount.doubleValue()));
 
-        double stockBrokersCommission = calculatorService.getStockbrokersCommission(buyGrossAmount);
-        double vatOfCommission = calculatorService.getVatOfCommission(stockBrokersCommission);
-        double clearingFee = calculatorService.getClearingFee(buyGrossAmount);
-        double transactionFee = calculatorService.getTransactionFee(buyGrossAmount);
-        double total = stockBrokersCommission + vatOfCommission + clearingFee + transactionFee;
+        BigDecimal stockBrokersCommission = calculatorService.getStockbrokersCommission(buyGrossAmount);
+        BigDecimal vatOfCommission = calculatorService.getVatOfCommission(stockBrokersCommission);
+        BigDecimal clearingFee = calculatorService.getClearingFee(buyGrossAmount);
+        BigDecimal transactionFee = calculatorService.getTransactionFee(buyGrossAmount);
+        BigDecimal total = stockBrokersCommission.add(vatOfCommission).add(clearingFee).add(transactionFee);
 
-        additionalBrokersCommissionText.setText(formatService.formatPrice(stockBrokersCommission));
-        additionalVatOfCommissionText.setText(formatService.formatPrice(vatOfCommission));
-        additionalClearingFeeText.setText(formatService.formatPrice(clearingFee));
-        additionalTransactionFeeText.setText(formatService.formatPrice(transactionFee));
-        additionalTotal.setText(formatService.formatPrice(total));
+        additionalBrokersCommissionText.setText(formatService.formatPrice(stockBrokersCommission.doubleValue()));
+        additionalVatOfCommissionText.setText(formatService.formatPrice(vatOfCommission.doubleValue()));
+        additionalClearingFeeText.setText(formatService.formatPrice(clearingFee.doubleValue()));
+        additionalTransactionFeeText.setText(formatService.formatPrice(transactionFee.doubleValue()));
+        additionalTotal.setText(formatService.formatPrice(total.doubleValue()));
     }
 
     /**
      * Calculates the sell input, and updates the view.
      */
-    private void calculateAndUpdateViewOnSell(double buyPrice, double sellPrice, long shares)
+    private void calculateAndUpdateViewOnSell(BigDecimal buyPrice, BigDecimal sellPrice, long shares)
     {
-        double sellGrossAmount = calculatorService.getSellGrossAmount(sellPrice, shares);
-        double sellNetAmount = calculatorService.getSellNetAmount(sellPrice, shares);
+        BigDecimal sellGrossAmount = calculatorService.getSellGrossAmount(sellPrice, shares);
+        BigDecimal sellNetAmount = calculatorService.getSellNetAmount(sellPrice, shares);
 
-        sellGrossAmountText.setText(formatService.formatPrice(sellGrossAmount));
-        sellNetAmountText.setText(formatService.formatPrice(sellNetAmount));
+        sellGrossAmountText.setText(formatService.formatPrice(sellGrossAmount.doubleValue()));
+        sellNetAmountText.setText(formatService.formatPrice(sellNetAmount.doubleValue()));
 
-        double stockBrokersCommission = calculatorService.getStockbrokersCommission(sellGrossAmount);
-        double vatOfCommission = calculatorService.getVatOfCommission(stockBrokersCommission);
-        double clearingFee = calculatorService.getClearingFee(sellGrossAmount);
-        double transactionFee = calculatorService.getTransactionFee(sellGrossAmount);
-        double salesTax = calculatorService.getSalesTax(sellGrossAmount);
-        double total = stockBrokersCommission + vatOfCommission + clearingFee + transactionFee + salesTax;
+        BigDecimal stockBrokersCommission = calculatorService.getStockbrokersCommission(sellGrossAmount);
+        BigDecimal vatOfCommission = calculatorService.getVatOfCommission(stockBrokersCommission);
+        BigDecimal clearingFee = calculatorService.getClearingFee(sellGrossAmount);
+        BigDecimal transactionFee = calculatorService.getTransactionFee(sellGrossAmount);
+        BigDecimal salesTax = calculatorService.getSalesTax(sellGrossAmount);
+        BigDecimal total = stockBrokersCommission.add(vatOfCommission).add(clearingFee).add(transactionFee).add(salesTax);
 
-        deductionBrokersCommissionText.setText(formatService.formatPrice(stockBrokersCommission));
-        deductionVatOfCommissionText.setText(formatService.formatPrice(vatOfCommission));
-        deductionClearingFeeText.setText(formatService.formatPrice(clearingFee));
-        deductionTransactionFeeText.setText(formatService.formatPrice(transactionFee));
-        deductionSalesTax.setText(formatService.formatPrice(salesTax));
-        deductionTotal.setText(formatService.formatPrice(total));
+        deductionBrokersCommissionText.setText(formatService.formatPrice(stockBrokersCommission.doubleValue()));
+        deductionVatOfCommissionText.setText(formatService.formatPrice(vatOfCommission.doubleValue()));
+        deductionClearingFeeText.setText(formatService.formatPrice(clearingFee.doubleValue()));
+        deductionTransactionFeeText.setText(formatService.formatPrice(transactionFee.doubleValue()));
+        deductionSalesTax.setText(formatService.formatPrice(salesTax.doubleValue()));
+        deductionTotal.setText(formatService.formatPrice(total.doubleValue()));
 
-        double gainLossAmount = calculatorService.getGainLossAmount(buyPrice, shares, sellPrice);
-        double percentGainLoss = calculatorService.getPercentGainLoss(buyPrice, shares, sellPrice);
+        BigDecimal gainLossAmount = calculatorService.getGainLossAmount(buyPrice, shares, sellPrice);
+        BigDecimal percentGainLoss = calculatorService.getPercentGainLoss(buyPrice, shares, sellPrice);
 
-        gainLossAmountText.setText(formatService.formatPrice(gainLossAmount));
-        gainLossPercentText.setText(formatService.formatPercent(percentGainLoss));
-        formatService.formatTextColor(gainLossAmount, gainLossAmountText);
-        formatService.formatTextColor(percentGainLoss, gainLossPercentText);
+        gainLossAmountText.setText(formatService.formatPrice(gainLossAmount.doubleValue()));
+        gainLossPercentText.setText(formatService.formatPercent(percentGainLoss.doubleValue()));
+        formatService.formatTextColor(gainLossAmount.doubleValue(), gainLossAmountText);
+        formatService.formatTextColor(percentGainLoss.doubleValue(), gainLossPercentText);
+    }
+
+    private void resetEditTexts()
+    {
+        this.buyPriceEditText.setText("");
+        this.sharesEditText.setText("");
+        this.sellPriceEditText.setText("");
     }
 
     /**

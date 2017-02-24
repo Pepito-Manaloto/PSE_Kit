@@ -2,23 +2,29 @@ package com.aaron.pseplanner.service.implementation;
 
 import com.aaron.pseplanner.service.CalculatorService;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
+
 /**
  * Created by aaron.asuncion on 12/19/2016.
  */
 
 public class CalculatorServiceImpl implements CalculatorService
 {
+    private static final BigDecimal ONE_HUNDRED = new BigDecimal("100");
+    private static final BigDecimal TWO = new BigDecimal("2");
+
     /**
      * Gets the buy gross amount of a stock trade.
      *
      * @param buyPrice the price the stock to buy
      * @param shares   the number of shares to buy
-     * @return double
+     * @return BigDecimal
      */
     @Override
-    public double getBuyGrossAmount(double buyPrice, long shares)
+    public BigDecimal getBuyGrossAmount(BigDecimal buyPrice, long shares)
     {
-        return buyPrice * shares;
+        return buyPrice.multiply(BigDecimal.valueOf(shares));
     }
 
     /**
@@ -26,40 +32,40 @@ public class CalculatorServiceImpl implements CalculatorService
      *
      * @param buyPrice the price the stock to buy
      * @param shares   the number of shares to buy
-     * @return double
+     * @return BigDecimal
      */
     @Override
-    public double getBuyNetAmount(double buyPrice, long shares)
+    public BigDecimal getBuyNetAmount(BigDecimal buyPrice, long shares)
     {
-        double grossAmount = getBuyGrossAmount(buyPrice, shares);
+        BigDecimal grossAmount = getBuyGrossAmount(buyPrice, shares);
 
-        return grossAmount + (grossAmount * TOTAL_BUY_FEE);
+        return grossAmount.add(grossAmount.multiply(TOTAL_BUY_FEE));
     }
 
     /**
      * Gets the average price after the stock to buy. Adjusted with the additional fee.
      *
      * @param buyPrice the price the stock to buy
-     * @return double
+     * @return BigDecimal
      */
     @Override
-    public double getAveragePriceAfterBuy(double buyPrice)
+    public BigDecimal getAveragePriceAfterBuy(BigDecimal buyPrice)
     {
-        double buyPriceWithFees = buyPrice * TOTAL_BUY_FEE;
-        return buyPrice + buyPriceWithFees;
+        BigDecimal buyPriceWithFees = buyPrice.multiply(TOTAL_BUY_FEE);
+        return buyPrice.add(buyPriceWithFees);
     }
 
     /**
      * Gets the selling price needed in order to break-even after the stock to buy. Adjusted with the additional fee.
      *
      * @param buyPrice the price the stock to buy
-     * @return double
+     * @return BigDecimal
      */
     @Override
-    public double getPriceToBreakEven(double buyPrice)
+    public BigDecimal getPriceToBreakEven(BigDecimal buyPrice)
     {
-        double buyPriceWithFees = buyPrice * TOTAL_BUY_SELL_FEE;
-        return buyPrice + buyPriceWithFees;
+        BigDecimal buyPriceWithFees = buyPrice.multiply(TOTAL_BUY_SELL_FEE);
+        return buyPrice.add(buyPriceWithFees);
     }
 
     /**
@@ -67,12 +73,12 @@ public class CalculatorServiceImpl implements CalculatorService
      *
      * @param sellPrice the price the stock to sell
      * @param shares    the number of shares to sell
-     * @return double
+     * @return BigDecimal
      */
     @Override
-    public double getSellGrossAmount(double sellPrice, long shares)
+    public BigDecimal getSellGrossAmount(BigDecimal sellPrice, long shares)
     {
-        return sellPrice * shares;
+        return sellPrice.multiply(BigDecimal.valueOf(shares));
     }
 
     /**
@@ -80,14 +86,14 @@ public class CalculatorServiceImpl implements CalculatorService
      *
      * @param sellPrice the price the stock to sell
      * @param shares    the number of shares to sell
-     * @return double
+     * @return BigDecimal
      */
     @Override
-    public double getSellNetAmount(double sellPrice, long shares)
+    public BigDecimal getSellNetAmount(BigDecimal sellPrice, long shares)
     {
-        double sellGrossAmount = getSellGrossAmount(sellPrice, shares);
+        BigDecimal sellGrossAmount = getSellGrossAmount(sellPrice, shares);
 
-        return sellGrossAmount - (sellGrossAmount * TOTAL_SELL_FEE);
+        return sellGrossAmount.subtract(sellGrossAmount.multiply(TOTAL_SELL_FEE));
     }
 
     /**
@@ -96,15 +102,15 @@ public class CalculatorServiceImpl implements CalculatorService
      * @param buyPrice  the price the stock to buy
      * @param sellPrice the price the stock to sell
      * @param shares    the number of shares in the trade
-     * @return double
+     * @return BigDecimal
      */
     @Override
-    public double getGainLossAmount(double buyPrice, long shares, double sellPrice)
+    public BigDecimal getGainLossAmount(BigDecimal buyPrice, long shares, BigDecimal sellPrice)
     {
-        double buyNetAmount = getBuyNetAmount(buyPrice, shares);
-        double sellNetAmount = getSellNetAmount(sellPrice, shares);
+        BigDecimal buyNetAmount = getBuyNetAmount(buyPrice, shares);
+        BigDecimal sellNetAmount = getSellNetAmount(sellPrice, shares);
 
-        return sellNetAmount - buyNetAmount;
+        return sellNetAmount.subtract(buyNetAmount);
     }
 
     /**
@@ -113,15 +119,15 @@ public class CalculatorServiceImpl implements CalculatorService
      * @param buyPrice  the price the stock to buy
      * @param sellPrice the price the stock to sell
      * @param shares    the number of shares in the trade
-     * @return double
+     * @return BigDecimal
      */
     @Override
-    public double getPercentGainLoss(double buyPrice, long shares, double sellPrice)
+    public BigDecimal getPercentGainLoss(BigDecimal buyPrice, long shares, BigDecimal sellPrice)
     {
-        double gainLossAmount = getGainLossAmount(buyPrice, shares, sellPrice);
-        double sellNetAmount = getSellNetAmount(sellPrice, shares);
+        BigDecimal gainLossAmount = getGainLossAmount(buyPrice, shares, sellPrice);
+        BigDecimal sellNetAmount = getSellNetAmount(sellPrice, shares);
 
-        return 100 * (gainLossAmount / sellNetAmount);
+        return ONE_HUNDRED.multiply(gainLossAmount.divide(sellNetAmount, MathContext.DECIMAL64));
     }
 
     /**
@@ -130,14 +136,14 @@ public class CalculatorServiceImpl implements CalculatorService
      * @param entryPrice   the planned price entry of a stock
      * @param targetPrice  the planned target price of a stock
      * @param cutlossPrice the planned cutloss price of a stock
-     * @return double
+     * @return BigDecimal
      */
     @Override
-    public double getRiskRewardRatio(double entryPrice, double targetPrice, double cutlossPrice)
+    public BigDecimal getRiskRewardRatio(BigDecimal entryPrice, BigDecimal targetPrice, BigDecimal cutlossPrice)
     {
-        double gain = targetPrice - entryPrice;
-        double loss = entryPrice - cutlossPrice;
-        return gain / loss;
+        BigDecimal gain = targetPrice.subtract(entryPrice);
+        BigDecimal loss = entryPrice.subtract(cutlossPrice);
+        return gain.divide(loss, MathContext.DECIMAL64);
     }
 
     /**
@@ -145,12 +151,12 @@ public class CalculatorServiceImpl implements CalculatorService
      *
      * @param shares       the number of shares to buy
      * @param cashDividend the dividend amount per share
-     * @return double
+     * @return BigDecimal
      */
     @Override
-    public double getDividendYield(long shares, double cashDividend)
+    public BigDecimal getDividendYield(long shares, BigDecimal cashDividend)
     {
-        return shares * cashDividend;
+        return cashDividend.multiply(BigDecimal.valueOf(shares));
     }
 
     /**
@@ -159,14 +165,14 @@ public class CalculatorServiceImpl implements CalculatorService
      * @param price        the price of the stock to buy
      * @param shares       the number of shares to buy
      * @param cashDividend the dividend amount per share
-     * @return double
+     * @return BigDecimal
      */
     @Override
-    public double getPercentDividendYield(double price, long shares, double cashDividend)
+    public BigDecimal getPercentDividendYield(BigDecimal price, long shares, BigDecimal cashDividend)
     {
-        double dividendYield = getDividendYield(shares, cashDividend);
-        double totalAmount = getBuyGrossAmount(price, shares);
-        return 100 * (dividendYield / totalAmount);
+        BigDecimal dividendYield = getDividendYield(shares, cashDividend);
+        BigDecimal totalAmount = getBuyGrossAmount(price, shares);
+        return ONE_HUNDRED.multiply(dividendYield.divide(totalAmount, MathContext.DECIMAL64));
     }
 
     /**
@@ -174,72 +180,72 @@ public class CalculatorServiceImpl implements CalculatorService
      *
      * @param high highest price
      * @param low  lowest price
-     * @return double
+     * @return BigDecimal
      */
     @Override
-    public double getMidpoint(double high, double low)
+    public BigDecimal getMidpoint(BigDecimal high, BigDecimal low)
     {
-        return high - ((high - low) / 2);
+        return high.subtract(high.subtract(low).divide(TWO, MathContext.DECIMAL64));
     }
 
     /**
      * Gets the stock broker's commission.
      *
      * @param grossAmount the stock trade's gross amount
-     * @return double
+     * @return BigDecimal
      */
     @Override
-    public double getStockbrokersCommission(double grossAmount)
+    public BigDecimal getStockbrokersCommission(BigDecimal grossAmount)
     {
-        double commission = grossAmount * STOCK_BROKERS_COMMISSION;
-        return commission < MINIMUM_COMMISSION ? MINIMUM_COMMISSION : commission;
+        BigDecimal commission = grossAmount.multiply(STOCK_BROKERS_COMMISSION);
+        return commission.compareTo(MINIMUM_COMMISSION) < 0 ? MINIMUM_COMMISSION : commission;
     }
 
     /**
      * Gets the stock broker's commission's vat.
      *
      * @param stockbrokersCommission the stock trade's commission
-     * @return double
+     * @return BigDecimal
      */
     @Override
-    public double getVatOfCommission(double stockbrokersCommission)
+    public BigDecimal getVatOfCommission(BigDecimal stockbrokersCommission)
     {
-        return stockbrokersCommission * VAT;
+        return stockbrokersCommission.multiply(VAT);
     }
 
     /**
      * Gets the clearing fee.
      *
      * @param grossAmount the stock trade's gross amount
-     * @return double
+     * @return BigDecimal
      */
     @Override
-    public double getClearingFee(double grossAmount)
+    public BigDecimal getClearingFee(BigDecimal grossAmount)
     {
-        return grossAmount * CLEARING_FEE;
+        return grossAmount.multiply(CLEARING_FEE);
     }
 
     /**
      * Gets the transaction fee.
      *
      * @param grossAmount the stock trade's gross amount
-     * @return double
+     * @return BigDecimal
      */
     @Override
-    public double getTransactionFee(double grossAmount)
+    public BigDecimal getTransactionFee(BigDecimal grossAmount)
     {
-        return grossAmount * PSE_TRANSACTION_FEE;
+        return grossAmount.multiply(PSE_TRANSACTION_FEE);
     }
 
     /**
      * Gets the sales tax.
      *
      * @param grossAmount the stock trade's gross amount
-     * @return double
+     * @return BigDecimal
      */
     @Override
-    public double getSalesTax(double grossAmount)
+    public BigDecimal getSalesTax(BigDecimal grossAmount)
     {
-        return grossAmount * SALES_TAX;
+        return grossAmount.multiply(SALES_TAX);
     }
 }

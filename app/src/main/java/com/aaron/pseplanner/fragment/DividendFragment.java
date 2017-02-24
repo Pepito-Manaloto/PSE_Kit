@@ -14,6 +14,7 @@ import com.aaron.pseplanner.service.LogManager;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.Locale;
@@ -56,10 +57,10 @@ public class DividendFragment extends AbstractCalculatorFragment
     }
 
     @Override
-    public void onDestroyView()
+    public void onStop()
     {
-        super.onDestroyView();
         this.resetEditTexts();
+        super.onStop();
     }
 
     /**
@@ -77,25 +78,25 @@ public class DividendFragment extends AbstractCalculatorFragment
             try
             {
                 NumberFormat formatter = NumberFormat.getInstance(Locale.US);
-                double price = formatter.parse(priceStr).doubleValue();
+                BigDecimal price = BigDecimal.valueOf(formatter.parse(priceStr).doubleValue());
                 long shares = formatter.parse(sharesStr).longValue();
-                double cashDividend = formatter.parse(cashDividendStr).doubleValue();
+                BigDecimal cashDividend = BigDecimal.valueOf(formatter.parse(cashDividendStr).doubleValue());
 
                 if(!BoardLot.isValidBoardLot(price, shares))
                 {
                     Toast.makeText(getContext(), R.string.boardlot_invalid, Toast.LENGTH_SHORT).show();
                 }
 
-                double yield = calculatorService.getDividendYield(shares, cashDividend);
-                double percentYield = calculatorService.getPercentDividendYield(price, shares, cashDividend);
+                BigDecimal yield = calculatorService.getDividendYield(shares, cashDividend);
+                BigDecimal percentYield = calculatorService.getPercentDividendYield(price, shares, cashDividend);
 
-                this.yieldTextView.setText(formatService.formatPrice(yield));
-                this.percentYieldTextView.setText(formatService.formatPrice(percentYield));
-                this.formatService.formatTextColor(yield, yieldTextView);
-                this.formatService.formatTextColor(percentYield, percentYieldTextView);
+                this.yieldTextView.setText(formatService.formatPrice(yield.doubleValue()));
+                this.percentYieldTextView.setText(formatService.formatPercent(percentYield.doubleValue()));
+                this.formatService.formatTextColor(yield.doubleValue(), yieldTextView);
+                this.formatService.formatTextColor(percentYield.doubleValue(), percentYieldTextView);
 
-                double totalAmount = calculatorService.getBuyGrossAmount(price, shares);
-                this.totalAmountTextView.setText(formatService.formatPrice(totalAmount));
+                BigDecimal totalAmount = calculatorService.getBuyGrossAmount(price, shares);
+                this.totalAmountTextView.setText(formatService.formatPrice(totalAmount.doubleValue()));
             }
             catch(ParseException ex)
             {

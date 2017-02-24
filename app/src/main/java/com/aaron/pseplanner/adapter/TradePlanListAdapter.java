@@ -98,19 +98,19 @@ public class TradePlanListAdapter extends ArrayAdapter<Trade>
         {
             scroll.setOnTouchListener(listener);
             stock.setText(trade.getSymbol());
-            currentPrice.setText(service.formatStockPrice(trade.getCurrentPrice()));
-            averagePrice.setText(service.formatStockPrice(trade.getAveragePrice()));
-            String gainLossValue = ViewUtils.addPositiveSign(trade.getGainLoss(), service.formatPrice(trade.getGainLoss()));
-            String gainLossPercentValue = ViewUtils.addPositiveSign(trade.getGainLossPercent(), service.formatPercent(trade.getGainLossPercent()));
+            currentPrice.setText(service.formatStockPrice(trade.getCurrentPrice().doubleValue()));
+            averagePrice.setText(service.formatStockPrice(trade.getAveragePrice().doubleValue()));
+            String gainLossValue = ViewUtils.addPositiveSign(trade.getGainLoss().doubleValue(), service.formatPrice(trade.getGainLoss().doubleValue()));
+            String gainLossPercentValue = ViewUtils.addPositiveSign(trade.getGainLossPercent().doubleValue(), service.formatPercent(trade.getGainLossPercent().doubleValue()));
             gainLoss.setText(String.format("%s (%s)", gainLossValue, gainLossPercentValue));
             shares.setText(service.formatShares(trade.getTotalShares()));
-            stopLoss.setText(service.formatPrice(trade.getStopLoss()));
+            stopLoss.setText(service.formatPrice(trade.getStopLoss().doubleValue()));
             entryDate.setText(service.formatDate(trade.getEntryDate()));
             stopDate.setText(service.formatDate(trade.getStopDate()));
             String holdingPeriodLabel = trade.getHoldingPeriod() > 1 ? "days" : "day";
             holdingPeriod.setText(String.format("%s %s", trade.getHoldingPeriod(), holdingPeriodLabel));
 
-            service.formatTextColor(trade.getGainLoss(), gainLoss);
+            service.formatTextColor(trade.getGainLoss().doubleValue(), gainLoss);
         }
     }
 }

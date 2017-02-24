@@ -42,9 +42,9 @@ public class TickerListFragment extends AbstractListFragment
 
         for(int i = 0; i < 15; i++)
         {
-            this.tickerList.add(new Ticker("CPG", 110.56, 0, 0));
-            this.tickerList.add(new Ticker("CYBR", 2330.55, -0.01, -1.1));
-            this.tickerList.add(new Ticker("TAE", 0.1234, 0.61, 2.65));
+            this.tickerList.add(new Ticker("CPG", "", 10_000_000, 110.56, 0, 0));
+            this.tickerList.add(new Ticker("CYBR", "", 35_000_000, 2330.55, -0.01, -1.1));
+            this.tickerList.add(new Ticker("TAE", "", 20_1234, 0.1234, 0.61, 2.65));
         }
 
         updateListOnUiThread(this.tickerList);

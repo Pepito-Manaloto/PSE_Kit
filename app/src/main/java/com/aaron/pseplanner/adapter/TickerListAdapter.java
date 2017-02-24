@@ -86,14 +86,14 @@ public class TickerListAdapter extends ArrayAdapter<Ticker>
         {
             layout.setOnTouchListener(listener);
             stock.setText(ticker.getSymbol());
-            price.setText(service.formatStockPrice(ticker.getCurrentPrice()));
-            change.setText(service.formatStockPrice(ticker.getChange()));
-            String percentChangeText = service.formatStockPrice(ticker.getPercentChange()) + "%";
+            price.setText(service.formatStockPrice(ticker.getCurrentPrice().doubleValue()));
+            change.setText(service.formatStockPrice(ticker.getChange().doubleValue()));
+            String percentChangeText = service.formatStockPrice(ticker.getPercentChange().doubleValue()) + "%";
             percentChange.setText(percentChangeText);
 
-            service.formatTextColor(ticker.getChange(), price);
-            service.formatTextColor(ticker.getChange(), change);
-            service.formatTextColor(ticker.getChange(), percentChange);
+            service.formatTextColor(ticker.getChange().doubleValue(), price);
+            service.formatTextColor(ticker.getChange().doubleValue(), change);
+            service.formatTextColor(ticker.getChange().doubleValue(), percentChange);
         }
     }
 }

@@ -36,6 +36,7 @@ import com.aaron.pseplanner.service.implementation.CalculatorServiceImpl;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.HashMap;
@@ -132,12 +133,12 @@ public class CreateTradePlanActivity extends AppCompatActivity
                 String stopDate = stopDateEditText.getText().toString();
                 Map<Pair<EditText, EditText>, Pair<String, String>> priceWeightMap = getTranchePriceAndWeight(entryTranchesLayout);
                 // Also validates if prices and weights are not blank
-                Pair<Double, Double> averagePriceTotalWeight = getAveragePriceTotalWeight(priceWeightMap);
+                Pair<BigDecimal, BigDecimal> averagePriceTotalWeight = getAveragePriceTotalWeight(priceWeightMap);
 
                 if(averagePriceTotalWeight != null && validateTradePlanInput(shares, stopLoss, target, entryDate, stopDate, capital, priceWeightMap, averagePriceTotalWeight))
                 {
-                    double riskReward = calculator.getRiskRewardRatio(averagePriceTotalWeight.first, Double.parseDouble(target.replace(",", "")), Double.parseDouble(stopLoss.replace(",", "")));
-                    if(riskReward < 2)
+                    BigDecimal riskReward = calculator.getRiskRewardRatio(averagePriceTotalWeight.first, new BigDecimal(target.replace(",", "")), new BigDecimal(stopLoss.replace(",", "")));
+                    if(riskReward.doubleValue() < 2)
                     {
                         createAndShowAlertDialog(riskReward);
                     }
@@ -181,14 +182,14 @@ public class CreateTradePlanActivity extends AppCompatActivity
      * @param averagePriceTotalWeight the average price and total weight
      * @return true if all inputs are valid, else false
      */
-    private boolean validateTradePlanInput(String shares, String stopLoss, String target, String entryDate, String stopDate, String capital, Map<Pair<EditText, EditText>, Pair<String, String>> priceWeightMap, Pair<Double, Double> averagePriceTotalWeight)
+    private boolean validateTradePlanInput(String shares, String stopLoss, String target, String entryDate, String stopDate, String capital, Map<Pair<EditText, EditText>, Pair<String, String>> priceWeightMap, Pair<BigDecimal, BigDecimal> averagePriceTotalWeight)
     {
         // Validate inputs if blank
         if(isEditTextInputValid(shares, "shares", this.sharesEditText) && isEditTextInputValid(stopLoss, "stop loss", this.stopLossEditText) &&
                 isEditTextInputValid(target, "target", this.targetEditText) && isEditTextInputValid(entryDate, "entry date", this.entryDateEditText) &&
                 isEditTextInputValid(stopDate, "stop date", this.stopDateEditText) && isEditTextInputValid(capital, "capital", this.capitalEditText))
         {
-            double sharesNum = Double.parseDouble(shares.replace(",", ""));
+            long sharesNum = Long.parseLong(shares.replace(",", ""));
 
             // Validate per tranche entry
             int trancheNum = 0;
@@ -201,7 +202,7 @@ public class CreateTradePlanActivity extends AppCompatActivity
                 String price = valuesPair.first;
 
                 // Check if boardlot valid
-                if(!BoardLot.isValidBoardLot(Double.parseDouble(price.replace(",", "")), sharesNum))
+                if(!BoardLot.isValidBoardLot(new BigDecimal(price.replace(",", "")), sharesNum))
                 {
                     Toast.makeText(this, getString(R.string.boardlot_invalid), Toast.LENGTH_SHORT).show();
                     priceEditText.requestFocus();
@@ -210,15 +211,15 @@ public class CreateTradePlanActivity extends AppCompatActivity
             }
 
             // Validate weight
-            if(averagePriceTotalWeight.second != 100)
+            if(averagePriceTotalWeight.second.intValue() != 100)
             {
                 Toast.makeText(this, getString(R.string.tranche_weight_invalid), Toast.LENGTH_SHORT).show();
                 return false;
             }
 
-            double averagePrice = averagePriceTotalWeight.first;
+            BigDecimal averagePrice = averagePriceTotalWeight.first;
             // Check if total buy is greater than capital
-            if(Integer.parseInt(capital.replace(",", "")) < (sharesNum * averagePrice))
+            if(Integer.parseInt(capital.replace(",", "")) < (sharesNum * averagePrice.doubleValue()))
             {
                 Toast.makeText(this, getString(R.string.buy_greater_than_capital), Toast.LENGTH_SHORT).show();
                 return false;
@@ -243,7 +244,7 @@ public class CreateTradePlanActivity extends AppCompatActivity
 
             // Check if stop loss is greater than average price
             double stopLossNum = Double.parseDouble(stopLoss.replace(",", ""));
-            if(stopLossNum >= averagePrice)
+            if(stopLossNum >= averagePrice.doubleValue())
             {
                 Toast.makeText(this, getString(R.string.stoploss_invalid, averagePrice), Toast.LENGTH_SHORT).show();
                 return false;
@@ -251,7 +252,7 @@ public class CreateTradePlanActivity extends AppCompatActivity
 
             // Check if target is less than average price
             double targetNum = Double.parseDouble(target.replace(",", ""));
-            if(averagePrice >= targetNum)
+            if(averagePrice.doubleValue() >= targetNum)
             {
                 Toast.makeText(this, getString(R.string.target_invalid, averagePrice), Toast.LENGTH_SHORT).show();
                 return false;
@@ -316,10 +317,10 @@ public class CreateTradePlanActivity extends AppCompatActivity
      * @param priceWeightMap the price-weight map
      * @return the average price and total weight pair if inputs are valid, else null
      */
-    private Pair<Double, Double> getAveragePriceTotalWeight(Map<Pair<EditText, EditText>, Pair<String, String>> priceWeightMap)
+    private Pair<BigDecimal, BigDecimal> getAveragePriceTotalWeight(Map<Pair<EditText, EditText>, Pair<String, String>> priceWeightMap)
     {
-        double averagePrice = 0;
-        double totalWeight = 0;
+        BigDecimal averagePrice = BigDecimal.ZERO;
+        BigDecimal totalWeight = BigDecimal.ZERO;
 
         int trancheNum = 0;
         for(Map.Entry<Pair<EditText, EditText>, Pair<String, String>> entry : priceWeightMap.entrySet())
@@ -338,11 +339,11 @@ public class CreateTradePlanActivity extends AppCompatActivity
             // Validate inputs if blank
             if(isEditTextInputValid(price, "price at tranche " + trancheNum, priceEditText) && isEditTextInputValid(weight, "weight at tranche " + trancheNum, weightEditText))
             {
-                double priceNum = Double.parseDouble(price.replace(",", ""));
-                double weightNum = Double.parseDouble(weight);
+                BigDecimal priceNum = new BigDecimal(price.replace(",", ""));
+                BigDecimal weightNum = new BigDecimal(weight);
 
-                averagePrice += priceNum;
-                totalWeight += weightNum;
+                averagePrice = averagePrice.add(priceNum);
+                totalWeight = totalWeight.add(weightNum);
             }
             else
             {
@@ -464,10 +465,10 @@ public class CreateTradePlanActivity extends AppCompatActivity
     /**
      * Creates and show the prompt dialog if the risk-reward is less than 2.
      */
-    private void createAndShowAlertDialog(double riskReward)
+    private void createAndShowAlertDialog(BigDecimal riskReward)
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(getString(R.string.create_trade_plan_prompt, riskReward));
+        builder.setMessage(getString(R.string.create_trade_plan_prompt, riskReward.doubleValue()));
 
         builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener()
         {

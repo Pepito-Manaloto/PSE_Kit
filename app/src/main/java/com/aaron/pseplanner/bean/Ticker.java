@@ -3,6 +3,8 @@ package com.aaron.pseplanner.bean;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.math.BigDecimal;
+
 /**
  * Created by aaron.asuncion on 12/8/2016.
  * Represents a PSE stock.
@@ -12,42 +14,32 @@ public class Ticker implements Parcelable
     private String symbol;
     private String name;
     private long volume;
-    private double previous;
-    private double low;
-    private double high;
-    private double currentPrice;
-    private double averagePrice;
-    private double yearLow;
-    private double yearHigh;
-    private double change;
-    private double percentChange;
+    private BigDecimal currentPrice;
+    private BigDecimal change;
+    private BigDecimal percentChange;
 
     public Ticker()
     {
     }
 
-    public Ticker(String symbol, double currentPrice, double change, double percentChange)
-    {
-        this.symbol = symbol;
-        this.currentPrice = currentPrice;
-        this.change = change;
-        this.percentChange = percentChange;
-    }
-
-    public Ticker(String symbol, String name, long volume, double previous, double low, double high, double currentPrice, double averagePrice, double yearLow, double yearHigh, double change, double percentChange)
+    public Ticker(String symbol, String name, long volume, double currentPrice, double change, double percentChange)
     {
         this.symbol = symbol;
         this.name = name;
         this.volume = volume;
-        this.previous = previous;
-        this.low = low;
-        this.high = high;
-        this.currentPrice = currentPrice;
-        this.averagePrice = averagePrice;
-        this.yearLow = yearLow;
-        this.yearHigh = yearHigh;
-        this.change = change;
-        this.percentChange = percentChange;
+        this.currentPrice = BigDecimal.valueOf(currentPrice);
+        this.change = BigDecimal.valueOf(change);
+        this.percentChange = BigDecimal.valueOf(percentChange);
+    }
+
+    public Ticker(String symbol, String name, long volume, String currentPrice, String change, String percentChange)
+    {
+        this.symbol = symbol;
+        this.name = name;
+        this.volume = volume;
+        this.currentPrice = new BigDecimal(currentPrice);
+        this.change = new BigDecimal(change);
+        this.percentChange = new BigDecimal(percentChange);
     }
 
     @Override
@@ -65,40 +57,20 @@ public class Ticker implements Parcelable
 
         Ticker ticker = (Ticker) o;
 
-        return getVolume() == ticker.getVolume() && Double.compare(ticker.getPrevious(), getPrevious()) == 0 &&
-                Double.compare(ticker.getLow(), getLow()) == 0 && Double.compare(ticker.getHigh(), getHigh()) == 0 &&
-                Double.compare(ticker.getCurrentPrice(), getCurrentPrice()) == 0 && Double.compare(ticker.getAveragePrice(), getAveragePrice()) == 0 &&
-                Double.compare(ticker.getYearLow(), getYearLow()) == 0 && Double.compare(ticker.getYearHigh(), getYearHigh()) == 0 &&
-                Double.compare(ticker.getChange(), getChange()) == 0 && Double.compare(ticker.getPercentChange(), getPercentChange()) == 0 &&
+        return getVolume() == ticker.getVolume() && getCurrentPrice().equals(ticker.getCurrentPrice()) &&
+                getChange().equals(ticker.getChange()) && getPercentChange().equals(ticker.getPercentChange()) &&
                 getSymbol().equals(ticker.getSymbol()) && getName().equals(ticker.getName());
     }
 
     @Override
     public int hashCode()
     {
-        int result;
-        long temp;
-        result = getSymbol().hashCode();
+        int result = getSymbol().hashCode();
         result = 31 * result + getName().hashCode();
         result = 31 * result + (int) (getVolume() ^ (getVolume() >>> 32));
-        temp = Double.doubleToLongBits(getPrevious());
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(getLow());
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(getHigh());
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(getCurrentPrice());
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(getAveragePrice());
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(getYearLow());
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(getYearHigh());
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(getChange());
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(getPercentChange());
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        result = 31 * result + getCurrentPrice().hashCode();
+        result = 31 * result + getChange().hashCode();
+        result = 31 * result + getPercentChange().hashCode();
         return result;
     }
 
@@ -109,13 +81,7 @@ public class Ticker implements Parcelable
                 "symbol='" + symbol + '\'' +
                 ", name='" + name + '\'' +
                 ", volume=" + volume +
-                ", previous=" + previous +
-                ", low=" + low +
-                ", high=" + high +
                 ", currentPrice=" + currentPrice +
-                ", averagePrice=" + averagePrice +
-                ", yearLow=" + yearLow +
-                ", yearHigh=" + yearHigh +
                 ", change=" + change +
                 ", percentChange=" + percentChange +
                 '}';
@@ -129,36 +95,6 @@ public class Ticker implements Parcelable
     public void setSymbol(String symbol)
     {
         this.symbol = symbol;
-    }
-
-    public double getCurrentPrice()
-    {
-        return currentPrice;
-    }
-
-    public void setCurrentPrice(double currentPrice)
-    {
-        this.currentPrice = currentPrice;
-    }
-
-    public double getChange()
-    {
-        return change;
-    }
-
-    public void setChange(double change)
-    {
-        this.change = change;
-    }
-
-    public double getPercentChange()
-    {
-        return percentChange;
-    }
-
-    public void setPercentChange(double percentChange)
-    {
-        this.percentChange = percentChange;
     }
 
     public String getName()
@@ -181,64 +117,34 @@ public class Ticker implements Parcelable
         this.volume = volume;
     }
 
-    public double getPrevious()
+    public BigDecimal getCurrentPrice()
     {
-        return previous;
+        return currentPrice;
     }
 
-    public void setPrevious(double previous)
+    public void setCurrentPrice(BigDecimal currentPrice)
     {
-        this.previous = previous;
+        this.currentPrice = currentPrice;
     }
 
-    public double getLow()
+    public BigDecimal getChange()
     {
-        return low;
+        return change;
     }
 
-    public void setLow(double low)
+    public void setChange(BigDecimal change)
     {
-        this.low = low;
+        this.change = change;
     }
 
-    public double getHigh()
+    public BigDecimal getPercentChange()
     {
-        return high;
+        return percentChange;
     }
 
-    public void setHigh(double high)
+    public void setPercentChange(BigDecimal percentChange)
     {
-        this.high = high;
-    }
-
-    public double getAveragePrice()
-    {
-        return averagePrice;
-    }
-
-    public void setAveragePrice(double averagePrice)
-    {
-        this.averagePrice = averagePrice;
-    }
-
-    public double getYearLow()
-    {
-        return yearLow;
-    }
-
-    public void setYearLow(double yearLow)
-    {
-        this.yearLow = yearLow;
-    }
-
-    public double getYearHigh()
-    {
-        return yearHigh;
-    }
-
-    public void setYearHigh(double yearHigh)
-    {
-        this.yearHigh = yearHigh;
+        this.percentChange = percentChange;
     }
 
     @Override
@@ -253,15 +159,9 @@ public class Ticker implements Parcelable
         dest.writeString(this.symbol);
         dest.writeString(this.name);
         dest.writeLong(this.volume);
-        dest.writeDouble(this.previous);
-        dest.writeDouble(this.low);
-        dest.writeDouble(this.high);
-        dest.writeDouble(this.currentPrice);
-        dest.writeDouble(this.averagePrice);
-        dest.writeDouble(this.yearLow);
-        dest.writeDouble(this.yearHigh);
-        dest.writeDouble(this.change);
-        dest.writeDouble(this.percentChange);
+        dest.writeString(this.currentPrice.toPlainString());
+        dest.writeString(this.change.toPlainString());
+        dest.writeString(this.percentChange.toPlainString());
     }
 
     protected Ticker(Parcel in)
@@ -269,15 +169,9 @@ public class Ticker implements Parcelable
         this.symbol = in.readString();
         this.name = in.readString();
         this.volume = in.readLong();
-        this.previous = in.readDouble();
-        this.low = in.readDouble();
-        this.high = in.readDouble();
-        this.currentPrice = in.readDouble();
-        this.averagePrice = in.readDouble();
-        this.yearLow = in.readDouble();
-        this.yearHigh = in.readDouble();
-        this.change = in.readDouble();
-        this.percentChange = in.readDouble();
+        this.currentPrice = new BigDecimal(in.readString());
+        this.change = new BigDecimal(in.readString());
+        this.percentChange = new BigDecimal(in.readString());
     }
 
     public static final Parcelable.Creator<Ticker> CREATOR = new Parcelable.Creator<Ticker>()

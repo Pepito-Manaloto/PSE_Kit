@@ -95,22 +95,22 @@ public class TradePlanFragment extends Fragment
         holdingPeriod.setText(String.format("%s %s", this.selectedStock.getHoldingPeriod(), holdingPeriodLabel));
 
         TextView currentPrice = (TextView) view.findViewById(R.id.textview_current_price);
-        currentPrice.setText(this.formatService.formatStockPrice(this.selectedStock.getCurrentPrice()));
+        currentPrice.setText(this.formatService.formatStockPrice(this.selectedStock.getCurrentPrice().doubleValue()));
 
         TextView totalShares = (TextView) view.findViewById(R.id.textview_total_shares);
         totalShares.setText(this.formatService.formatShares(this.selectedStock.getTotalShares()));
 
         TextView averagePrice = (TextView) view.findViewById(R.id.textview_average_price);
-        averagePrice.setText(this.formatService.formatStockPrice(this.selectedStock.getAveragePrice()));
+        averagePrice.setText(this.formatService.formatStockPrice(this.selectedStock.getAveragePrice().doubleValue()));
 
         TextView totalAmount = (TextView) view.findViewById(R.id.textview_total_amount);
-        totalAmount.setText(this.formatService.formatPrice(this.selectedStock.getTotalAmount()));
+        totalAmount.setText(this.formatService.formatPrice(this.selectedStock.getTotalAmount().doubleValue()));
 
         TextView gainLoss = (TextView) view.findViewById(R.id.textview_gain_loss);
-        String gainLossValue = ViewUtils.addPositiveSign(this.selectedStock.getGainLoss(), this.formatService.formatPrice(this.selectedStock.getGainLoss()));
-        String gainLossPercentValue = ViewUtils.addPositiveSign(this.selectedStock.getGainLossPercent(), this.formatService.formatPercent(this.selectedStock.getGainLossPercent()));
+        String gainLossValue = ViewUtils.addPositiveSign(this.selectedStock.getGainLoss().doubleValue(), this.formatService.formatPrice(this.selectedStock.getGainLoss().doubleValue()));
+        String gainLossPercentValue = ViewUtils.addPositiveSign(this.selectedStock.getGainLossPercent().doubleValue(), this.formatService.formatPercent(this.selectedStock.getGainLossPercent().doubleValue()));
         gainLoss.setText(String.format("%s (%s)", gainLossValue, gainLossPercentValue));
-        this.formatService.formatTextColor(this.selectedStock.getGainLoss(), gainLoss);
+        this.formatService.formatTextColor(this.selectedStock.getGainLoss().doubleValue(), gainLoss);
 
         LinearLayout entryTranchesContainer = (LinearLayout) view.findViewById(R.id.entry_tranches_container);
         ImageView trancheImageView = (ImageView) view.findViewById(R.id.imageview_entry);
@@ -118,10 +118,10 @@ public class TradePlanFragment extends Fragment
         this.setTranchesValues(entryTranchesContainer);
 
         TextView priceToBreakEven = (TextView) view.findViewById(R.id.textview_price_to_break_even);
-        priceToBreakEven.setText(this.formatService.formatStockPrice(this.selectedStock.getPriceToBreakEven()));
+        priceToBreakEven.setText(this.formatService.formatStockPrice(this.selectedStock.getPriceToBreakEven().doubleValue()));
 
         TextView target = (TextView) view.findViewById(R.id.textview_target);
-        target.setText(this.formatService.formatStockPrice(this.selectedStock.getTargetPrice()));
+        target.setText(this.formatService.formatStockPrice(this.selectedStock.getTargetPrice().doubleValue()));
 
         TextView gainTarget = (TextView) view.findViewById(R.id.textview_gain_target);
         String gainToTarget = "+" + this.formatService.formatPrice(this.selectedStock.getGainToTarget());
@@ -129,11 +129,11 @@ public class TradePlanFragment extends Fragment
         this.formatService.formatTextColor(this.selectedStock.getGainToTarget(), gainTarget);
 
         TextView stopLoss = (TextView) view.findViewById(R.id.textview_stop_loss);
-        stopLoss.setText(this.formatService.formatStockPrice(this.selectedStock.getStopLoss()));
+        stopLoss.setText(this.formatService.formatStockPrice(this.selectedStock.getStopLoss().doubleValue()));
 
         TextView lossStopLoss = (TextView) view.findViewById(R.id.textview_loss_stop_loss);
-        lossStopLoss.setText(this.formatService.formatPrice(this.selectedStock.getLossToStopLoss()));
-        this.formatService.formatTextColor(this.selectedStock.getLossToStopLoss(), lossStopLoss);
+        lossStopLoss.setText(this.formatService.formatPrice(this.selectedStock.getLossToStopLoss().doubleValue()));
+        this.formatService.formatTextColor(this.selectedStock.getLossToStopLoss().doubleValue(), lossStopLoss);
 
         TextView stopDate = (TextView) view.findViewById(R.id.textview_stop_date);
         stopDate.setText(this.formatService.formatDate(this.selectedStock.getStopDate()));
@@ -148,7 +148,7 @@ public class TradePlanFragment extends Fragment
         capital.setText(this.formatService.formatPrice(this.selectedStock.getCapital()));
 
         TextView percentOfCapital = (TextView) view.findViewById(R.id.textview_percent_of_capital);
-        percentOfCapital.setText(this.formatService.formatPercent(this.selectedStock.getPercentCapital()));
+        percentOfCapital.setText(this.formatService.formatPercent(this.selectedStock.getPercentCapital().doubleValue()));
 
         return view;
     }
@@ -168,11 +168,11 @@ public class TradePlanFragment extends Fragment
             labelTranche.setText(getString(R.string.label_tranche, ViewUtils.getOrdinalNumber(entryTrancheNum)));
 
             TextView entryPrice = (TextView) entryTrancheLayout.findViewById(R.id.textview_entry_price);
-            entryPrice.setText(this.formatService.formatStockPrice(entry.getEntryPrice()));
+            entryPrice.setText(this.formatService.formatStockPrice(entry.getEntryPrice().doubleValue()));
             TextView shares = (TextView) entryTrancheLayout.findViewById(R.id.textview_shares);
             shares.setText(this.formatService.formatShares(entry.getShares()));
             TextView weight = (TextView) entryTrancheLayout.findViewById(R.id.textview_tranche_weight);
-            weight.setText(this.formatService.formatPercent(entry.getPercentWeight()));
+            weight.setText(this.formatService.formatPercent(entry.getPercentWeight().doubleValue()));
 
             entryTrancheNum++;
 

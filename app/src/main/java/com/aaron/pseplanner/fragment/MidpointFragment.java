@@ -1,8 +1,6 @@
 package com.aaron.pseplanner.fragment;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +13,7 @@ import com.aaron.pseplanner.service.LogManager;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.Locale;
@@ -50,10 +49,10 @@ public class MidpointFragment extends AbstractCalculatorFragment
     }
 
     @Override
-    public void onDestroyView()
+    public void onStop()
     {
-        super.onDestroyView();
         this.resetEditTexts();
+        super.onStop();
     }
 
     /**
@@ -70,13 +69,13 @@ public class MidpointFragment extends AbstractCalculatorFragment
             try
             {
                 NumberFormat formatter = NumberFormat.getInstance(Locale.US);
-                double high = formatter.parse(highStr).doubleValue();
-                double low = formatter.parse(lowStr).doubleValue();
+                BigDecimal high = BigDecimal.valueOf(formatter.parse(highStr).doubleValue());
+                BigDecimal low = BigDecimal.valueOf(formatter.parse(lowStr).doubleValue());
 
-                if(high > low)
+                if(high.compareTo(low) > 0)
                 {
-                    double midpoint = calculatorService.getMidpoint(high, low);
-                    this.midpointTextView.setText(formatService.formatStockPrice(midpoint));
+                    BigDecimal midpoint = calculatorService.getMidpoint(high, low);
+                    this.midpointTextView.setText(formatService.formatStockPrice(midpoint.doubleValue()));
                 }
                 else
                 {

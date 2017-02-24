@@ -1,5 +1,7 @@
 package com.aaron.pseplanner.bean;
 
+import java.math.BigDecimal;
+
 /**
  * Created by aaron.asuncion on 12/29/2016.
  * Current boardlot of PSE.
@@ -24,17 +26,17 @@ public enum BoardLot
     TWO_THOUSAND(2000, 4998, 5, 2.00),
     FIVE_THOUSAND(5000, Long.MAX_VALUE, 5, 5.00);
 
-    private double lowerRange;
-    private double upperRange;
+    private BigDecimal lowerRange;
+    private BigDecimal upperRange;
     private int minimumShares;
-    private double priceFluctuation;
+    private BigDecimal priceFluctuation;
 
     BoardLot(double lowerRange, double upperRange, int minimumShares, double priceFluctuation)
     {
-        this.lowerRange = lowerRange;
-        this.upperRange = upperRange;
+        this.lowerRange = BigDecimal.valueOf(lowerRange);
+        this.upperRange = BigDecimal.valueOf(upperRange);
         this.minimumShares = minimumShares;
-        this.priceFluctuation = priceFluctuation;
+        this.priceFluctuation = BigDecimal.valueOf(priceFluctuation);
     }
 
     /**
@@ -45,7 +47,7 @@ public enum BoardLot
      * @param shares the total shares
      * @return true if the price and shares are correct with regards to the board lot
      */
-    public static boolean isValidBoardLot(double price, double shares)
+    public static boolean isValidBoardLot(BigDecimal price, long shares)
     {
         for(BoardLot bl : BoardLot.values())
         {
@@ -64,17 +66,17 @@ public enum BoardLot
      * @param price the price to check
      * @return true if within range, else false
      */
-    public boolean priceWithinRange(double price)
+    public boolean priceWithinRange(BigDecimal price)
     {
-        return price >= getLowerRange() && price <= getUpperRange();
+        return price.compareTo(getLowerRange()) >= 0 && price.compareTo(getUpperRange()) <= 0;
     }
 
-    public double getLowerRange()
+    public BigDecimal getLowerRange()
     {
         return lowerRange;
     }
 
-    public double getUpperRange()
+    public BigDecimal getUpperRange()
     {
         return upperRange;
     }
@@ -84,7 +86,7 @@ public enum BoardLot
         return minimumShares;
     }
 
-    public double getPriceFluctuation()
+    public BigDecimal getPriceFluctuation()
     {
         return priceFluctuation;
     }
