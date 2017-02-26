@@ -9,7 +9,7 @@ import java.math.MathContext;
  * Created by aaron.asuncion on 12/19/2016.
  */
 
-public class CalculatorServiceImpl implements CalculatorService
+public class DefaultCalculatorService implements CalculatorService
 {
     private static final BigDecimal ONE_HUNDRED = new BigDecimal("100");
     private static final BigDecimal TWO = new BigDecimal("2");

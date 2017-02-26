@@ -14,8 +14,8 @@ import com.aaron.pseplanner.listener.EditTextOnTextChangeWrapper;
 import com.aaron.pseplanner.service.CalculatorService;
 import com.aaron.pseplanner.service.FormatService;
 import com.aaron.pseplanner.service.ViewUtils;
-import com.aaron.pseplanner.service.implementation.CalculatorServiceImpl;
-import com.aaron.pseplanner.service.implementation.FormatServiceImpl;
+import com.aaron.pseplanner.service.implementation.DefaultCalculatorService;
+import com.aaron.pseplanner.service.implementation.DefaultFormatService;
 
 /**
  * Created by aaron.asuncion on 1/24/2017.
@@ -33,8 +33,8 @@ public abstract class AbstractCalculatorFragment extends Fragment implements Inp
     {
         View view = inflater.inflate(resId, parent, false);
 
-        this.calculatorService = new CalculatorServiceImpl();
-        this.formatService = new FormatServiceImpl(getActivity());
+        this.calculatorService = new DefaultCalculatorService();
+        this.formatService = new DefaultFormatService(getActivity());
 
         return view;
     }

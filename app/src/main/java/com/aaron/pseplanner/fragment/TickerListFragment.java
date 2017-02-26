@@ -10,8 +10,8 @@ import android.widget.TextView;
 import com.aaron.pseplanner.R;
 import com.aaron.pseplanner.adapter.TickerListAdapter;
 import com.aaron.pseplanner.bean.Ticker;
-import com.aaron.pseplanner.service.PSEClientService;
-import com.aaron.pseplanner.service.implementation.PSEClientServiceImpl;
+import com.aaron.pseplanner.service.PSEPlannerService;
+import com.aaron.pseplanner.service.implementation.DefaultPSEPlannerService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +24,7 @@ public class TickerListFragment extends AbstractListFragment
 {
     public static final String CLASS_NAME = TickerListFragment.class.getSimpleName();
     private List<Ticker> tickerList;
-    private PSEClientService client;
+    private PSEPlannerService client;
 
     /**
      * Initializes non-fragment user interface.
@@ -35,7 +35,7 @@ public class TickerListFragment extends AbstractListFragment
     {
         super.onCreate(savedInstanceState);
 
-        this.client = new PSEClientServiceImpl();
+        this.client = new DefaultPSEPlannerService();
 
         // TODO: retrieve and parse data from PSE
         this.tickerList = new ArrayList<>();

@@ -3,7 +3,6 @@ package com.aaron.pseplanner;
 import android.app.Activity;
 
 import com.aaron.pseplanner.service.FormatService;
-import com.aaron.pseplanner.service.implementation.FormatServiceImpl;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -13,7 +12,7 @@ import static org.junit.Assert.assertEquals;
 /**
  * Tests for FormatService.
  */
-public class FormatServiceImplTest
+public class DefaultFormatServiceTest
 {
     //@Mock
     private Activity activity;
@@ -23,7 +22,7 @@ public class FormatServiceImplTest
     @Before
     public void init()
     {
-        //this.service = new FormatServiceImpl();
+        //this.service = new DefaultFormatService();
     }
 
     @Test

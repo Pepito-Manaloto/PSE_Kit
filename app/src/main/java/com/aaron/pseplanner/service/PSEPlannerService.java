@@ -10,7 +10,7 @@ import java.util.TimeZone;
  * Created by aaron.asuncion on 1/31/2017.
  */
 
-public interface PSEClientService
+public interface PSEPlannerService
 {
     String DATE_PATTERN = "MMMM dd, EEEE hh:mm:ss a";
     TimeZone MANILA_TIMEZONE = TimeZone.getTimeZone("Asia/Manila");

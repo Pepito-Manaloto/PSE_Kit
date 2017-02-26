@@ -12,14 +12,14 @@ import static org.junit.Assert.*;
  *
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
-public class CalculatorServiceImplTest
+public class DefaultCalculatorServiceTest
 {
     private CalculatorService service;
 
     @Before
     public void init()
     {
-        //this.service = new CalculatorServiceImpl();
+        //this.service = new DefaultCalculatorService();
     }
 
     @Test

@@ -18,11 +18,11 @@ import java.util.Date;
 /**
  * Created by aaron.asuncion on 12/8/2016.
  */
-public class FormatServiceImpl implements FormatService
+public class DefaultFormatService implements FormatService
 {
     private static int GREEN;
 
-    public FormatServiceImpl(Activity activity)
+    public DefaultFormatService(Activity activity)
     {
         if(Build.VERSION.SDK_INT >= 23)
         {

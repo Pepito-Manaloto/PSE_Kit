@@ -25,7 +25,7 @@ import com.aaron.pseplanner.listener.ImageViewOnClickHideExpand;
 import com.aaron.pseplanner.service.FormatService;
 import com.aaron.pseplanner.service.LogManager;
 import com.aaron.pseplanner.service.ViewUtils;
-import com.aaron.pseplanner.service.implementation.FormatServiceImpl;
+import com.aaron.pseplanner.service.implementation.DefaultFormatService;
 
 import java.util.List;
 
@@ -70,7 +70,7 @@ public class TradePlanFragment extends Fragment
 
         Bundle args = getArguments();
         this.selectedStock = args.getParcelable(DataKey.EXTRA_TRADE.toString());
-        this.formatService = new FormatServiceImpl(getActivity());
+        this.formatService = new DefaultFormatService(getActivity());
         setHasOptionsMenu(true);
 
         LogManager.debug(CLASS_NAME, "onCreate", this.selectedStock == null ? null : this.selectedStock.toString());

@@ -2,16 +2,13 @@ package com.aaron.pseplanner.listener;
 
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.widget.EditText;
-
-import com.aaron.pseplanner.constant.Constants;
 
 import org.apache.commons.lang3.StringUtils;
 
 import java.text.DecimalFormat;
 
-import static com.aaron.pseplanner.service.implementation.FormatServiceImpl.STOCK_PRICE_FORMAT;
+import static com.aaron.pseplanner.service.implementation.DefaultFormatService.STOCK_PRICE_FORMAT;
 
 /**
  * Created by Aaron on 12/3/2016.

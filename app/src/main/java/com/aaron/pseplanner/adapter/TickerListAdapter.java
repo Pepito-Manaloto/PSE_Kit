@@ -1,8 +1,6 @@
 package com.aaron.pseplanner.adapter;
 
 import android.app.Activity;
-import android.graphics.Color;
-import android.os.Build;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +14,7 @@ import com.aaron.pseplanner.bean.Ticker;
 import com.aaron.pseplanner.constant.DataKey;
 import com.aaron.pseplanner.constant.IntentRequestCode;
 import com.aaron.pseplanner.listener.ListRowOnTouchChangeActivity;
-import com.aaron.pseplanner.service.implementation.FormatServiceImpl;
+import com.aaron.pseplanner.service.implementation.DefaultFormatService;
 import com.aaron.pseplanner.service.FormatService;
 
 import java.util.List;
@@ -35,7 +33,7 @@ public class TickerListAdapter extends ArrayAdapter<Ticker>
         super(activity, 0, tickerList);
 
         this.activity = activity;
-        this.formatService = new FormatServiceImpl(activity);
+        this.formatService = new DefaultFormatService(activity);
     }
 
     /**

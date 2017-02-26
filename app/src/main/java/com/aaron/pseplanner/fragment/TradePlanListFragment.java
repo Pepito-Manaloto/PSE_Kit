@@ -11,13 +11,12 @@ import com.aaron.pseplanner.R;
 import com.aaron.pseplanner.adapter.TradePlanListAdapter;
 import com.aaron.pseplanner.bean.Trade;
 import com.aaron.pseplanner.bean.TradeEntry;
-import com.aaron.pseplanner.service.PSEClientService;
-import com.aaron.pseplanner.service.implementation.PSEClientServiceImpl;
+import com.aaron.pseplanner.service.PSEPlannerService;
+import com.aaron.pseplanner.service.implementation.DefaultPSEPlannerService;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 
 /**
  * Created by aaron.asuncion on 11/18/2016.
@@ -27,7 +26,7 @@ public class TradePlanListFragment extends AbstractListFragment
 {
     public static final String CLASS_NAME = TradePlanListFragment.class.getSimpleName();
     private ArrayList<Trade> tradeList;
-    private PSEClientService client;
+    private PSEPlannerService client;
 
     /**
      * Initializes non-fragment user interface.
@@ -38,7 +37,7 @@ public class TradePlanListFragment extends AbstractListFragment
     {
         super.onCreate(savedInstanceState);
 
-        this.client = new PSEClientServiceImpl();
+        this.client = new DefaultPSEPlannerService();
 
         // TODO: retrieve and parse data from database
         this.tradeList = new ArrayList<>();

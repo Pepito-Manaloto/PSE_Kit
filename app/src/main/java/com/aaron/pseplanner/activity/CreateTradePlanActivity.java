@@ -32,7 +32,7 @@ import com.aaron.pseplanner.listener.EditTextOnTextChangeWrapper;
 import com.aaron.pseplanner.service.CalculatorService;
 import com.aaron.pseplanner.service.LogManager;
 import com.aaron.pseplanner.service.ViewUtils;
-import com.aaron.pseplanner.service.implementation.CalculatorServiceImpl;
+import com.aaron.pseplanner.service.implementation.DefaultCalculatorService;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -150,7 +150,7 @@ public class CreateTradePlanActivity extends AppCompatActivity
             }
         });
 
-        this.calculator = new CalculatorServiceImpl();
+        this.calculator = new DefaultCalculatorService();
     }
 
     /**

@@ -1,17 +1,19 @@
 package com.aaron.pseplanner.service.implementation;
 
-import com.aaron.pseplanner.service.PSEClientService;
+import com.aaron.pseplanner.service.HttpClient;
+import com.aaron.pseplanner.service.PSEPlannerService;
 
 import java.util.Date;
-import java.util.Objects;
 
 /**
  * Created by aaron.asuncion on 1/31/2017.
  */
 
-public class PSEClientServiceImpl implements PSEClientService
+public class DefaultPSEPlannerService implements PSEPlannerService
 {
     private Date lastUpdated;
+    private HttpClient httpClient;
+
 
     /**
      * Returns the datetime of when the last http request occurs. Gets the cached lastUpdated first if not null, else retrieve from database.
@@ -30,5 +32,10 @@ public class PSEClientServiceImpl implements PSEClientService
             // TODO: query database
             return DATE_FORMATTER.format(new Date());
         }
+    }
+
+    public void setHttpClient(HttpClient client)
+    {
+        this.httpClient = client;
     }
 }
