@@ -29,13 +29,15 @@ import com.aaron.pseplanner.async.UpdateTickerTask;
 import com.aaron.pseplanner.bean.Ticker;
 import com.aaron.pseplanner.constant.DataKey;
 import com.aaron.pseplanner.constant.IntentRequestCode;
+import com.aaron.pseplanner.fragment.AbstractListFragment;
 import com.aaron.pseplanner.fragment.CalculatorTabsFragment;
-import com.aaron.pseplanner.fragment.TradePlanListFragment;
 import com.aaron.pseplanner.fragment.SettingsFragment;
 import com.aaron.pseplanner.fragment.TickerListFragment;
+import com.aaron.pseplanner.fragment.TradePlanListFragment;
 import com.aaron.pseplanner.service.LogManager;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 
 /**
  * The main activity, contains Navigation items in a Drawer. Contains fragments: trade plan list, calculator, ticker, and settings.
@@ -47,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private DrawerLayout drawer;
     private Menu toolbarMenu;
     private Toolbar toolbar;
+    private AbstractListFragment selectedListFragment;
 
     /**
      * Initializes the navigation drawer.
@@ -101,7 +104,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         {
             Ticker addedTicker = data.getParcelableExtra(DataKey.EXTRA_TICKER.toString());
 
-            //TODO: do something
+            //TODO: add to trade list
         }
     }
 
@@ -172,14 +175,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         {
             case R.id.nav_trade_plan:
             {
-                updateFragmentContainer(new TradePlanListFragment());
+                this.selectedListFragment = new TradePlanListFragment();
+                updateFragmentContainer(this.selectedListFragment);
                 this.inflateToolbarMenuItems();
                 this.toolbar.setTitle(R.string.app_name);
                 break;
             }
             case R.id.nav_ticker:
             {
-                updateFragmentContainer(new TickerListFragment());
+                this.selectedListFragment = TickerListFragment.newInstance(new ArrayList<Ticker>());
+                updateFragmentContainer(this.selectedListFragment);
                 this.inflateToolbarMenuItems();
                 this.toolbar.setTitle(R.string.nav_ticker);
                 break;
@@ -309,7 +314,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         item.setActionView(refreshImage);
 
-        UpdateTickerTask tickerUpdater = new UpdateTickerTask(this);
+        UpdateTickerTask tickerUpdater = new UpdateTickerTask(this, this.selectedListFragment);
         tickerUpdater.execute();
     }
 }

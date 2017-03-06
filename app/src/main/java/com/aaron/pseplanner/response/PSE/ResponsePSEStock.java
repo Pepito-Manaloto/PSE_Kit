@@ -1,4 +1,4 @@
-package com.aaron.pseplanner.response;
+package com.aaron.pseplanner.response.PSE;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -102,9 +102,7 @@ public class ResponsePSEStock
 
         ResponsePSEStock that = (ResponsePSEStock) o;
 
-        return totalVolume.equals(that.totalVolume) && indicator.equals(that.indicator) && percentChangeClose.equals(that.percentChangeClose) &&
-                lastTradedPrice.equals(that.lastTradedPrice) && securityAlias.equals(that.securityAlias) && indicatorImg.equals(that.indicatorImg) &&
-                securitySymbol.equals(that.securitySymbol);
+        return totalVolume.equals(that.totalVolume) && indicator.equals(that.indicator) && percentChangeClose.equals(that.percentChangeClose) && lastTradedPrice.equals(that.lastTradedPrice) && securityAlias.equals(that.securityAlias) && indicatorImg.equals(that.indicatorImg) && securitySymbol.equals(that.securitySymbol);
     }
 
     @Override
@@ -123,14 +121,6 @@ public class ResponsePSEStock
     @Override
     public String toString()
     {
-        return "ResponsePSEStock{" +
-                "totalVolume='" + totalVolume + '\'' +
-                ", indicator='" + indicator + '\'' +
-                ", percentChangeClose='" + percentChangeClose + '\'' +
-                ", lastTradedPrice='" + lastTradedPrice + '\'' +
-                ", securityAlias='" + securityAlias + '\'' +
-                ", indicatorImg='" + indicatorImg + '\'' +
-                ", securitySymbol='" + securitySymbol + '\'' +
-                '}';
+        return "ResponsePSEStock{" + "totalVolume='" + totalVolume + '\'' + ", indicator='" + indicator + '\'' + ", percentChangeClose='" + percentChangeClose + '\'' + ", lastTradedPrice='" + lastTradedPrice + '\'' + ", securityAlias='" + securityAlias + '\'' + ", indicatorImg='" + indicatorImg + '\'' + ", securitySymbol='" + securitySymbol + '\'' + '}';
     }
 }

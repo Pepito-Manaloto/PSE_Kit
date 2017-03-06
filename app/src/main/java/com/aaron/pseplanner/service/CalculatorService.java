@@ -187,4 +187,22 @@ public interface CalculatorService
      * @return BigDecimal
      */
     BigDecimal getSalesTax(BigDecimal grossAmount);
+
+    /**
+     * Gets the change between the previous price and current price based on the current price and percent change.
+     *
+     * @param currentPrice  the current price
+     * @param percentChange the percent change
+     * @return BigDecimal the amount change from the previous price
+     */
+    BigDecimal getCurrentAndPreviousPriceChange(double currentPrice, double percentChange);
+
+    /**
+     * Gets the previous price based on the current price and percent change.
+     *
+     * @param currentPrice  the current amount
+     * @param percentChange the percent change
+     * @return BigDecimal the previous price
+     */
+    BigDecimal getPreviousPrice(double currentPrice, double percentChange);
 }

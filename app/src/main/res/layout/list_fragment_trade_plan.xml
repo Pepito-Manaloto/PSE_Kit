@@ -18,4 +18,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fastScrollEnabled="true" />
+
+    <TextView
+        android:id="@android:id/empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_horizontal|center_vertical"
+        android:text="@string/label_empty_trade_plan_list" />
 </LinearLayout>

@@ -8,6 +8,7 @@ public enum DataKey
 {
     EXTRA_ID("com.aaron.pseplanner.id"),
     EXTRA_TICKER("com.aaron.pseplanner.ticker"),
+    EXTRA_TICKER_LIST("com.aaron.pseplanner.ticker_list"),
     EXTRA_TRADE("com.aaron.pseplanner.trade"),
     EXTRA_TRADE_LIST("com.aaron.pseplanner.trade_list"),
     EXTRA_DATE("com.aaron.pseplanner.date");

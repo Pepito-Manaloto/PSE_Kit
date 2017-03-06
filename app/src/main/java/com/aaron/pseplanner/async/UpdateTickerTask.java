@@ -1,9 +1,19 @@
 package com.aaron.pseplanner.async;
 
 import android.os.AsyncTask;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.aaron.pseplanner.activity.MainActivity;
+import com.aaron.pseplanner.bean.Ticker;
+import com.aaron.pseplanner.exception.HttpRequestException;
+import com.aaron.pseplanner.fragment.AbstractListFragment;
+import com.aaron.pseplanner.service.HttpClient;
+import com.aaron.pseplanner.service.PSEPlannerService;
+
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.List;
 
 /**
  * Created by Aaron on 11/20/2016.
@@ -12,31 +22,36 @@ import com.aaron.pseplanner.activity.MainActivity;
 public class UpdateTickerTask extends AsyncTask<Void, Void, String>
 {
     private MainActivity callerActivity;
+    private AbstractListFragment listFragment;
 
-    public UpdateTickerTask(MainActivity callerActivity)
+    public UpdateTickerTask(MainActivity callerActivity, AbstractListFragment listFragment)
     {
         this.callerActivity = callerActivity;
+        this.listFragment = listFragment;
     }
 
     @Override
     protected String doInBackground(Void... params)
     {
-        try {
-            // Set a time to simulate a long update process.
-            Thread.sleep(2000);
-
-            return null;
-
-        } catch (Exception e) {
-            return null;
+        try
+        {
+            this.listFragment.updateList();
+            return "";
+        }
+        catch(HttpRequestException e)
+        {
+            return e.getMessage();
         }
     }
 
     @Override
-    protected void onPostExecute(String result) {
-        Toast.makeText(callerActivity, "Finished complex background function!",
-                Toast.LENGTH_LONG).show();
+    protected void onPostExecute(String result)
+    {
+        if(StringUtils.isNotBlank(result))
+        {
+            Toast.makeText(this.callerActivity, "Update failed: " + result, Toast.LENGTH_LONG).show();
+        }
 
-        callerActivity.stopRefreshAnimation();
+        this.callerActivity.stopRefreshAnimation();
     }
 }

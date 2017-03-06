@@ -248,4 +248,64 @@ public class DefaultCalculatorService implements CalculatorService
     {
         return grossAmount.multiply(SALES_TAX);
     }
+
+    /**
+     * Gets the change between the previous price and current price based on the current price and percent change.
+     *
+     * @param currentPrice  the current price
+     * @param percentChange the percent change
+     * @return BigDecimal the amount change from the previous price
+     */
+    @Override
+    public BigDecimal getCurrentAndPreviousPriceChange(double currentPrice, double percentChange)
+    {
+        // Absolute value, so that result will always be negative, then computing for change will always add amount
+        BigDecimal percentChangeToDivide = BigDecimal.valueOf(percentChange).abs();
+        BigDecimal bdAmount = BigDecimal.valueOf(currentPrice);
+        BigDecimal change = BigDecimal.valueOf(currentPrice);
+
+        percentChangeToDivide = percentChangeToDivide.divide(ONE_HUNDRED, MathContext.DECIMAL64).subtract(BigDecimal.ONE);
+
+        // This will always result in a negative value, because the abs value of percentChange is used
+        change = bdAmount.divide(percentChangeToDivide, MathContext.DECIMAL64).add(bdAmount);
+
+        if(percentChange > 0)
+        {
+            // Remove negative sign, because the percent change is positive
+            return change.abs();
+        }
+        if(percentChange < 0)
+        {
+            return change;
+        }
+        else
+        {
+            return BigDecimal.ZERO;
+        }
+    }
+
+    /**
+     * Gets the previous price based on the current price and percent change.
+     *
+     * @param currentPrice  the current amount
+     * @param percentChange the percent change
+     * @return BigDecimal the previous price
+     */
+    @Override
+    public BigDecimal getPreviousPrice(double currentPrice, double percentChange)
+    {
+        BigDecimal change = getCurrentAndPreviousPriceChange(currentPrice, percentChange);
+        BigDecimal prevousAmount = BigDecimal.valueOf(currentPrice);
+
+        if(percentChange > 0)
+        {
+            prevousAmount = prevousAmount.add(change);
+        }
+        else
+        {
+            prevousAmount = prevousAmount.subtract(change);
+        }
+
+        return prevousAmount;
+    }
 }

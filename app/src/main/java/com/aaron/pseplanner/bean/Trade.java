@@ -38,6 +38,30 @@ public class Trade implements Parcelable
     {
     }
 
+    public Trade(Date entryDate, int holdingPeriod, String symbol, BigDecimal currentPrice, BigDecimal averagePrice, long totalShares, BigDecimal totalAmount, BigDecimal priceToBreakEven, BigDecimal targetPrice, BigDecimal gainLoss, BigDecimal gainLossPercent, long gainToTarget, BigDecimal lossToStopLoss, BigDecimal stopLoss, Date stopDate, int daysToStopDate, BigDecimal riskReward, long capital, BigDecimal percentCapital, List<TradeEntry> tradeEntries)
+    {
+        this.entryDate = entryDate;
+        this.holdingPeriod = holdingPeriod;
+        this.symbol = symbol;
+        this.currentPrice = currentPrice;
+        this.averagePrice = averagePrice;
+        this.totalShares = totalShares;
+        this.totalAmount = totalAmount;
+        this.priceToBreakEven = priceToBreakEven;
+        this.targetPrice = targetPrice;
+        this.gainLoss = gainLoss;
+        this.gainLossPercent = gainLossPercent;
+        this.gainToTarget = gainToTarget;
+        this.lossToStopLoss = lossToStopLoss;
+        this.stopLoss = stopLoss;
+        this.stopDate = stopDate;
+        this.daysToStopDate = daysToStopDate;
+        this.riskReward = riskReward;
+        this.capital = capital;
+        this.percentCapital = percentCapital;
+        this.tradeEntries = tradeEntries;
+    }
+
     public Trade(String symbol, Date entryDate, int holdingPeriod, double currentPrice, double averagePrice, long totalShares, double totalAmount, double priceToBreakEven, double targetPrice, double gainLoss, double gainLossPercent, long gainToTarget, double stopLoss, double lossToStopLoss, Date stopDate, int daysToStopDate, double riskReward, long capital, double percentCapital, List<TradeEntry> tradeEntries)
     {
         this.symbol = symbol;

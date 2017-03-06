@@ -3,6 +3,7 @@ package com.aaron.pseplanner.service.implementation;
 import android.app.Activity;
 import android.graphics.Color;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.widget.TextView;
 
 import com.aaron.pseplanner.R;
@@ -22,7 +23,7 @@ public class DefaultFormatService implements FormatService
 {
     private static int GREEN;
 
-    public DefaultFormatService(Activity activity)
+    public DefaultFormatService(@NonNull Activity activity)
     {
         if(Build.VERSION.SDK_INT >= 23)
         {
@@ -116,5 +117,11 @@ public class DefaultFormatService implements FormatService
         df.setRoundingMode(mode);
 
         return df.format(number);
+    }
+
+    @Override
+    public String formatLastUpdated(Date date)
+    {
+        return DATE_FORMATTER_LAST_UPDATED.format(date);
     }
 }

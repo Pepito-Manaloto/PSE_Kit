@@ -22,6 +22,16 @@ public class Ticker implements Parcelable
     {
     }
 
+    public Ticker(String symbol, String name, long volume, BigDecimal currentPrice, BigDecimal change, BigDecimal percentChange)
+    {
+        this.symbol = symbol;
+        this.name = name;
+        this.volume = volume;
+        this.currentPrice = currentPrice;
+        this.change = change;
+        this.percentChange = percentChange;
+    }
+
     public Ticker(String symbol, String name, long volume, double currentPrice, double change, double percentChange)
     {
         this.symbol = symbol;

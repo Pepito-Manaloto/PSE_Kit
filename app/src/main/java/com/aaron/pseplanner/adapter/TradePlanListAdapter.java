@@ -19,6 +19,7 @@ import com.aaron.pseplanner.service.ViewUtils;
 import com.aaron.pseplanner.service.implementation.DefaultFormatService;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Aaron on 2/17/2017.
@@ -30,15 +31,15 @@ public class TradePlanListAdapter extends ArrayAdapter<Trade>
     private FormatService formatService;
     private ArrayList<Trade> tradeList;
 
-    public TradePlanListAdapter(Activity activity, ArrayList<Trade> tradeList)
+    public TradePlanListAdapter(Activity activity, List<Trade> tradeList)
     {
         super(activity, 0, tradeList);
 
         this.activity = activity;
         this.formatService = new DefaultFormatService(activity);
-        this.tradeList = tradeList;
+        // ArrayList is used because this will be added in an intent
+        this.tradeList = (ArrayList<Trade>) tradeList;
     }
-
 
     /**
      * Populates the ListView.
