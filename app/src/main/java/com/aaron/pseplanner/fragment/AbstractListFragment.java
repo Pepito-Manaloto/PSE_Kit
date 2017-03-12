@@ -3,16 +3,10 @@ package com.aaron.pseplanner.fragment;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.app.ListFragment;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.aaron.pseplanner.R;
-import com.aaron.pseplanner.bean.Ticker;
-import com.aaron.pseplanner.bean.Trade;
-import com.aaron.pseplanner.bean.TradeEntry;
 import com.aaron.pseplanner.exception.HttpRequestException;
 import com.aaron.pseplanner.listener.OnScrollShowHideFastScroll;
 import com.aaron.pseplanner.service.FormatService;
@@ -20,9 +14,6 @@ import com.aaron.pseplanner.service.PSEPlannerService;
 import com.aaron.pseplanner.service.implementation.DefaultFormatService;
 import com.aaron.pseplanner.service.implementation.FacadePSEPlannerService;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -60,6 +51,17 @@ public abstract class AbstractListFragment<T extends Parcelable> extends ListFra
     }
 
     /**
+     * Saves fragment list data state to be loaded when the fragment is created once again.
+     */
+    @Override
+    public void onDestroy()
+    {
+        saveListState();
+        super.onDestroy();
+    }
+
+
+    /**
      * Updates the list view on UI thread, including the last updated text view.
      *
      * @param list        the new list
@@ -67,19 +69,22 @@ public abstract class AbstractListFragment<T extends Parcelable> extends ListFra
      */
     protected void updateListOnUiThread(final List<T> list, final String lastUpdated)
     {
-        this.getActivity().runOnUiThread(new Runnable()
+        if(list != null && !list.isEmpty())
         {
-            @Override
-            public void run()
+            this.getActivity().runOnUiThread(new Runnable()
             {
-                setListAdapter(getArrayAdapter(list));
-
-                if(lastUpdatedTextView != null)
+                @Override
+                public void run()
                 {
-                    lastUpdatedTextView.setText(getActivity().getString(R.string.last_updated, lastUpdated));
+                    setListAdapter(getArrayAdapter(list));
+
+                    if(lastUpdatedTextView != null)
+                    {
+                        lastUpdatedTextView.setText(getActivity().getString(R.string.last_updated, lastUpdated));
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     /**
@@ -95,4 +100,9 @@ public abstract class AbstractListFragment<T extends Parcelable> extends ListFra
      * @throws HttpRequestException http request failed
      */
     public abstract void updateList() throws HttpRequestException;
+
+    /**
+     * Save list data state.
+     */
+    protected abstract void saveListState();
 }

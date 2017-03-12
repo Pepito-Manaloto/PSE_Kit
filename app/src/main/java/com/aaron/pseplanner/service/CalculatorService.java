@@ -4,6 +4,8 @@ import com.aaron.pseplanner.bean.Ticker;
 import com.aaron.pseplanner.bean.Trade;
 
 import java.math.BigDecimal;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by aaron.asuncion on 12/19/2016.
@@ -36,6 +38,8 @@ public interface CalculatorService
     BigDecimal TOTAL_BUY_SELL_FEE = TOTAL_BUY_FEE.add(TOTAL_SELL_FEE);
 
     BigDecimal MINIMUM_COMMISSION = BigDecimal.valueOf(20);
+
+    long DAY_IN_MILLISECONDS = TimeUnit.DAYS.toMillis(1);
 
     /**
      * Gets the buy gross amount of a stock trade.
@@ -205,4 +209,14 @@ public interface CalculatorService
      * @return BigDecimal the previous price
      */
     BigDecimal getPreviousPrice(double currentPrice, double percentChange);
+
+    /**
+     * Gets day/s difference between the two dates.
+     *
+     * @param date1 the first date
+     * @param date2 the second date
+     * @return int the number of days between the two dates
+     */
+    int getDaysBetween(Date date1, Date date2);
+
 }

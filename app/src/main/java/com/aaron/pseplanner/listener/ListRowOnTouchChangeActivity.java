@@ -4,13 +4,10 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Parcelable;
-import android.util.Log;
-import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 
 import com.aaron.pseplanner.R;
-import com.aaron.pseplanner.bean.Ticker;
 import com.aaron.pseplanner.constant.DataKey;
 import com.aaron.pseplanner.constant.IntentRequestCode;
 
@@ -25,11 +22,11 @@ public class ListRowOnTouchChangeActivity implements View.OnTouchListener
     private float historicX;
     private Activity activity;
     private Class<? extends Activity> activityClass;
-    private DataKey key;
+    private DataKey extraKey;
     private Parcelable parcelableData;
-    private DataKey keyList;
+    private DataKey extraListKey;
     private ArrayList<? extends Parcelable> parcelableListData;
-    private IntentRequestCode requestCode;
+    private IntentRequestCode intentRequestCode;
     private View view;
     private int highlightedColor;
 
@@ -38,18 +35,18 @@ public class ListRowOnTouchChangeActivity implements View.OnTouchListener
      *
      * @param activity       the current activity
      * @param activityClass  the activity class to transition to
-     * @param key            the key of the parcelable data
+     * @param extraKey            the extraKey of the parcelable data
      * @param parcelableData the data that will be passed to the new activity
-     * @param requestCode    the request code of the new activity
+     * @param intentRequestCode    the request code of the new activity
      * @param view           the view of the listener
      */
-    public ListRowOnTouchChangeActivity(final Activity activity, final Class<? extends Activity> activityClass, final DataKey key, final Parcelable parcelableData, final IntentRequestCode requestCode, final View view)
+    public ListRowOnTouchChangeActivity(final Activity activity, final Class<? extends Activity> activityClass, final DataKey extraKey, final Parcelable parcelableData, final IntentRequestCode intentRequestCode, final View view)
     {
         this.activity = activity;
         this.activityClass = activityClass;
-        this.key = key;
+        this.extraKey = extraKey;
         this.parcelableData = parcelableData;
-        this.requestCode = requestCode;
+        this.intentRequestCode = intentRequestCode;
         this.view = view;
 
         if(android.os.Build.VERSION.SDK_INT >= 23)
@@ -67,18 +64,18 @@ public class ListRowOnTouchChangeActivity implements View.OnTouchListener
      *
      * @param activity           the current activity
      * @param activityClass      the activity class to transition to
-     * @param parcelableKey      the key of the parcelable data
+     * @param parcelableKey      the extraKey of the parcelable data
      * @param parcelableData     the data that will be passed to the new activity
-     * @param parcelableListKey  the key of the parcelable list data
+     * @param parcelableListKey  the extraKey of the parcelable list data
      * @param parcelableListData the data list that will be passed to the new activity
-     * @param requestCode        the request code of the new activity
+     * @param intentRequestCode        the request code of the new activity
      * @param view               the view of the listener
      */
-    public ListRowOnTouchChangeActivity(final Activity activity, final Class<? extends Activity> activityClass, final DataKey parcelableKey, final Parcelable parcelableData, final DataKey parcelableListKey, final ArrayList<? extends Parcelable> parcelableListData, final IntentRequestCode requestCode, final View view)
+    public ListRowOnTouchChangeActivity(final Activity activity, final Class<? extends Activity> activityClass, final DataKey parcelableKey, final Parcelable parcelableData, final DataKey parcelableListKey, final ArrayList<? extends Parcelable> parcelableListData, final IntentRequestCode intentRequestCode, final View view)
     {
-        this(activity, activityClass, parcelableKey, parcelableData, requestCode, view);
+        this(activity, activityClass, parcelableKey, parcelableData, intentRequestCode, view);
 
-        this.keyList = parcelableListKey;
+        this.extraListKey = parcelableListKey;
         this.parcelableListData = parcelableListData;
     }
 
@@ -105,14 +102,14 @@ public class ListRowOnTouchChangeActivity implements View.OnTouchListener
                 if(touchMovedLessThan15Pixels)
                 {
                     Intent intent = new Intent(this.activity, this.activityClass);
-                    intent.putExtra(this.key.toString(), this.parcelableData);
+                    intent.putExtra(this.extraKey.toString(), this.parcelableData);
 
-                    if(this.keyList != null && this.parcelableListData != null)
+                    if(this.extraListKey != null && this.parcelableListData != null)
                     {
-                        intent.putParcelableArrayListExtra(this.keyList.toString(), this.parcelableListData);
+                        intent.putParcelableArrayListExtra(this.extraListKey.toString(), this.parcelableListData);
                     }
 
-                    this.activity.startActivityForResult(intent, this.requestCode.code());
+                    this.activity.startActivityForResult(intent, this.intentRequestCode.code());
                 }
 
                 // Removes compiler warning

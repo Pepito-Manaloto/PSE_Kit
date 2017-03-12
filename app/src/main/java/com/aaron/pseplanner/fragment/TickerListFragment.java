@@ -1,5 +1,7 @@
 package com.aaron.pseplanner.fragment;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Pair;
 import android.view.LayoutInflater;
@@ -13,6 +15,7 @@ import com.aaron.pseplanner.adapter.TickerListAdapter;
 import com.aaron.pseplanner.bean.Ticker;
 import com.aaron.pseplanner.constant.DataKey;
 import com.aaron.pseplanner.exception.HttpRequestException;
+import com.aaron.pseplanner.service.LogManager;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -35,11 +38,14 @@ public class TickerListFragment extends AbstractListFragment<Ticker>
      */
     public static TickerListFragment newInstance(ArrayList<Ticker> list)
     {
-        Bundle bundle = new Bundle();
-        bundle.putParcelableArrayList(DataKey.EXTRA_TICKER_LIST.toString(), list);
-
         TickerListFragment tickerListFragment = new TickerListFragment();
-        tickerListFragment.setArguments(bundle);
+
+        if(list != null && !list.isEmpty())
+        {
+            Bundle bundle = new Bundle();
+            bundle.putParcelableArrayList(DataKey.EXTRA_TICKER_LIST.toString(), list);
+            tickerListFragment.setArguments(bundle);
+        }
 
         return tickerListFragment;
     }
@@ -53,18 +59,16 @@ public class TickerListFragment extends AbstractListFragment<Ticker>
     {
         super.onCreate(savedInstanceState);
 
-        if(getArguments().containsKey(DataKey.EXTRA_TICKER_LIST.toString()))
+        if(getArguments() != null && getArguments().containsKey(DataKey.EXTRA_TICKER_LIST.toString()))
         {
             this.tickerList = getArguments().getParcelableArrayList(DataKey.EXTRA_TICKER_LIST.toString());
-
         }
-        else if(savedInstanceState.containsKey(DataKey.EXTRA_TICKER_LIST.toString()))
+        else if(savedInstanceState != null && savedInstanceState.containsKey(DataKey.EXTRA_TICKER_LIST.toString()))
         {
             this.tickerList = savedInstanceState.getParcelableArrayList(DataKey.EXTRA_TICKER_LIST.toString());
         }
         else
         {
-            this.tickerList = new ArrayList<>();
             //TODO: retrieve from database
         }
     }
@@ -91,6 +95,7 @@ public class TickerListFragment extends AbstractListFragment<Ticker>
         super.onSaveInstanceState(outState);
 
         outState.putParcelableArrayList(DataKey.EXTRA_TICKER_LIST.toString(), this.tickerList);
+        LogManager.debug(CLASS_NAME, "onSaveInstanceState", "");
     }
 
     @Override
@@ -107,8 +112,16 @@ public class TickerListFragment extends AbstractListFragment<Ticker>
     @Override
     public void updateList() throws HttpRequestException
     {
-        Pair<List<Ticker>, Date> response = this.client.getTickerList();
+        Pair<List<Ticker>, Date> response = this.client.getAllTickerList();
+        this.tickerList = (ArrayList<Ticker>) response.first;
 
         updateListOnUiThread(response.first, this.formatService.formatLastUpdated(response.second));
     }
+
+    @Override
+    protected void saveListState()
+    {
+        getActivity().getIntent().putParcelableArrayListExtra(DataKey.EXTRA_TICKER_LIST.toString(), this.tickerList);
+    }
+
 }

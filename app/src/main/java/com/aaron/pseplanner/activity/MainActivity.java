@@ -15,6 +15,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -27,6 +28,7 @@ import android.widget.TextView;
 import com.aaron.pseplanner.R;
 import com.aaron.pseplanner.async.UpdateTickerTask;
 import com.aaron.pseplanner.bean.Ticker;
+import com.aaron.pseplanner.bean.Trade;
 import com.aaron.pseplanner.constant.DataKey;
 import com.aaron.pseplanner.constant.IntentRequestCode;
 import com.aaron.pseplanner.fragment.AbstractListFragment;
@@ -50,6 +52,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private Menu toolbarMenu;
     private Toolbar toolbar;
     private AbstractListFragment selectedListFragment;
+    private ArrayList<Ticker> tickerList;
+    private ArrayList<Trade> tradeList;
 
     /**
      * Initializes the navigation drawer.
@@ -80,8 +84,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         if(fragment == null)
         {
-            fragment = new TradePlanListFragment();
-            fm.beginTransaction().add(R.id.fragment_container, fragment).commit();
+            this.selectedListFragment = new TradePlanListFragment();
+            fm.beginTransaction().add(R.id.fragment_container, this.selectedListFragment).commit();
         }
     }
 
@@ -89,6 +93,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     /**
      * Receives the result data from the previous fragment. Updates the
      * application's state depending on the data received.
+     *
+     * @param requestCode the request code that determines the previous activity
+     * @param resultCode  the result of the previous activity or fragment
+     * @param data        the data that are returned from the previous activity or fragment
      */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data)
@@ -98,7 +106,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             return;
         }
 
-        LogManager.debug(CLASS_NAME, "onActivityResult", "requestCode=" + requestCode + " resultCode=" + resultCode);
+        LogManager.debug(CLASS_NAME, "onActivityResult", "requestCode=" + requestCode + " resultCode=" + resultCode + " dataKeys=" + data.getExtras().keySet());
 
         if(IntentRequestCode.CREATE_TRADE_PLAN.code() == requestCode && data.hasExtra(DataKey.EXTRA_TICKER.toString()))
         {
@@ -175,7 +183,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         {
             case R.id.nav_trade_plan:
             {
-                this.selectedListFragment = new TradePlanListFragment();
+                ArrayList<Trade> list;
+                if(getIntent().getExtras() != null)
+                {
+                    list = getIntent().getParcelableArrayListExtra(DataKey.EXTRA_TRADE_LIST.toString());
+                }
+                else
+                {
+                    list = new ArrayList<>();
+                }
+
+                this.selectedListFragment = TradePlanListFragment.newInstance(list);
                 updateFragmentContainer(this.selectedListFragment);
                 this.inflateToolbarMenuItems();
                 this.toolbar.setTitle(R.string.app_name);
@@ -183,7 +201,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
             case R.id.nav_ticker:
             {
-                this.selectedListFragment = TickerListFragment.newInstance(new ArrayList<Ticker>());
+                ArrayList<Ticker> list;
+                if(getIntent().getExtras() != null)
+                {
+                    list = getIntent().getParcelableArrayListExtra(DataKey.EXTRA_TICKER_LIST.toString());
+                }
+                else
+                {
+                    list = new ArrayList<>();
+                }
+
+                this.selectedListFragment = TickerListFragment.newInstance(list);
                 updateFragmentContainer(this.selectedListFragment);
                 this.inflateToolbarMenuItems();
                 this.toolbar.setTitle(R.string.nav_ticker);
@@ -232,6 +260,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void updateFragmentContainer(Fragment newFragment)
     {
         FragmentManager fm = getSupportFragmentManager();
+
         fm.beginTransaction().replace(R.id.fragment_container, newFragment).commit();
     }
 

@@ -6,6 +6,7 @@ import com.aaron.pseplanner.bean.Ticker;
 import com.aaron.pseplanner.bean.Trade;
 import com.aaron.pseplanner.exception.HttpRequestException;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -29,14 +30,14 @@ public interface HttpClient
      * @return {@code Pair<List<Ticker>, Date>} the list of stocks and last updated date
      * @throws HttpRequestException http request failed
      */
-    Pair<List<Ticker>, Date> getTickerList() throws HttpRequestException;
+    Pair<List<Ticker>, Date> getAllTickerList() throws HttpRequestException;
 
     /**
-     * Gets the trades(stocks) that are passed in the parameter from a web API.
+     * Gets the tickers(stocks) that are passed in the parameter from a web API.
      *
-     * @param symbols the list of stock symbol to retrieve
-     * @return {@code Pair<List<Trade>, Date>} the list of stocks and last updated date
+     * @param symbols the collection of stock symbol to retrieve
+     * @return {@code Pair<List<Ticker>, Date>} the list of stocks and last updated date
      * @throws HttpRequestException http request failed
      */
-    Pair<List<Trade>, Date> getTradeList(List<String> symbols) throws HttpRequestException;
+    Pair<List<Ticker>, Date> getTickerList(Collection<String> symbols) throws HttpRequestException;
 }

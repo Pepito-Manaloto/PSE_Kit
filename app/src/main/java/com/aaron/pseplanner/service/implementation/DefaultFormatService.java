@@ -50,7 +50,7 @@ public class DefaultFormatService implements FormatService
     @Override
     public String formatPrice(double number)
     {
-        return format(number, PRICE_FORMAT, RoundingMode.UP);
+        return format(number, PRICE_FORMAT, RoundingMode.DOWN);
     }
 
     /**
@@ -59,7 +59,7 @@ public class DefaultFormatService implements FormatService
     @Override
     public String formatPercent(double number)
     {
-        return format(number, PRICE_FORMAT, RoundingMode.UP) + "%";
+        return format(number, PRICE_FORMAT, RoundingMode.DOWN) + "%";
     }
 
     /**

@@ -1,9 +1,12 @@
 package com.aaron.pseplanner.service.implementation;
 
+import android.util.Log;
+
 import com.aaron.pseplanner.service.CalculatorService;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.util.Date;
 
 /**
  * Created by aaron.asuncion on 12/19/2016.
@@ -307,5 +310,41 @@ public class DefaultCalculatorService implements CalculatorService
         }
 
         return prevousAmount;
+    }
+
+    /**
+     * Gets day/s difference between the two dates.
+     *
+     * @param date1 the first date
+     * @param date2 the second date
+     * @return int the number of days between the two dates, -1 if either of the inputs are null
+     */
+    @Override
+    public int getDaysBetween(Date date1, Date date2)
+    {
+        if(date1 == null || date2 ==null)
+        {
+            return -1;
+        }
+
+        long time1 = date1.getTime();
+        long time2 = date2.getTime();
+        double diff;
+        Log.d("TAE", "getDaysBetween: " + date1 + " " + date2);
+        if(time1 > time2)
+        {
+            diff = time1 - time2;
+        }
+        else if(time1 < time2)
+        {
+            diff = time2 - time1;
+        }
+        else
+        {
+            return 0;
+        }
+
+        // Convert milliseconds difference to day and round up
+        return (int) Math.ceil(diff / DAY_IN_MILLISECONDS);
     }
 }

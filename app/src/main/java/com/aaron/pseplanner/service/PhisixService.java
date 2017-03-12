@@ -20,7 +20,7 @@ public interface PhisixService
      * @return {@code Call<ResponsePhisixStockWrapper>} list of response stock
      */
     @GET("stocks.json")
-    public Call<ResponsePhisixStockWrapper> getStocksList();
+    public Call<ResponsePhisixStockWrapper> getStock();
 
     /**
      * Retrieves a stock with dateUpdated, name, currency, amount, percentChange, volume, and symbol.
@@ -29,5 +29,5 @@ public interface PhisixService
      * @return {@code Call<ResponsePhisixStockWrapper>} the response stock
      */
     @GET("stocks/{symbol}.json")
-    public Call<ResponsePhisixStockWrapper> getStocksList(@Path("symbol") String symbol);
+    public Call<ResponsePhisixStockWrapper> getStock(@Path("symbol") String symbol);
 }
