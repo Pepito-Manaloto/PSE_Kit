@@ -79,6 +79,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        this.tickerList = new ArrayList<>();
+        this.tradeList = new ArrayList<>();
+
         FragmentManager fm = getSupportFragmentManager();
         Fragment fragment = fm.findFragmentById(R.id.fragment_container);
 
@@ -112,7 +115,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         {
             Ticker addedTicker = data.getParcelableExtra(DataKey.EXTRA_TICKER.toString());
 
-            //TODO: add to trade list
+            if(!this.tickerList.contains(addedTicker))
+            {
+                this.tickerList.add(addedTicker);
+            }
         }
     }
 
@@ -183,17 +189,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         {
             case R.id.nav_trade_plan:
             {
-                ArrayList<Trade> list;
                 if(getIntent().getExtras() != null)
                 {
-                    list = getIntent().getParcelableArrayListExtra(DataKey.EXTRA_TRADE_LIST.toString());
+                    this.tradeList = getIntent().getParcelableArrayListExtra(DataKey.EXTRA_TRADE_LIST.toString());
                 }
                 else
                 {
-                    list = new ArrayList<>();
+                    this.tradeList = new ArrayList<>();
                 }
 
-                this.selectedListFragment = TradePlanListFragment.newInstance(list);
+                this.selectedListFragment = TradePlanListFragment.newInstance(this.tradeList);
                 updateFragmentContainer(this.selectedListFragment);
                 this.inflateToolbarMenuItems();
                 this.toolbar.setTitle(R.string.app_name);
@@ -201,17 +206,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
             case R.id.nav_ticker:
             {
-                ArrayList<Ticker> list;
                 if(getIntent().getExtras() != null)
                 {
-                    list = getIntent().getParcelableArrayListExtra(DataKey.EXTRA_TICKER_LIST.toString());
+                    this.tickerList = getIntent().getParcelableArrayListExtra(DataKey.EXTRA_TICKER_LIST.toString());
                 }
                 else
                 {
-                    list = new ArrayList<>();
+                    this.tickerList = new ArrayList<>();
                 }
 
-                this.selectedListFragment = TickerListFragment.newInstance(list);
+                this.selectedListFragment = TickerListFragment.newInstance(this.tickerList);
                 updateFragmentContainer(this.selectedListFragment);
                 this.inflateToolbarMenuItems();
                 this.toolbar.setTitle(R.string.nav_ticker);

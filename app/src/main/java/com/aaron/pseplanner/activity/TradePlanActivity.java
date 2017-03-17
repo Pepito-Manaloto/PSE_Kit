@@ -1,5 +1,7 @@
 package com.aaron.pseplanner.activity;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -11,6 +13,7 @@ import com.aaron.pseplanner.R;
 import com.aaron.pseplanner.adapter.TradePlanPagerAdapter;
 import com.aaron.pseplanner.bean.Trade;
 import com.aaron.pseplanner.constant.DataKey;
+import com.aaron.pseplanner.constant.IntentRequestCode;
 import com.aaron.pseplanner.service.LogManager;
 
 import java.util.ArrayList;
@@ -50,7 +53,7 @@ public class TradePlanActivity extends AppCompatActivity
         LogManager.debug(CLASS_NAME, "onCreate", "selected=" + (this.selectedTradePlan == null ? null : this.selectedTradePlan.toString()));
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle(R.string.title_create_trade_plan);
+        toolbar.setTitle(R.string.title_trade_plan);
         setSupportActionBar(toolbar);
 
         ActionBar actionBar = getSupportActionBar();
@@ -80,4 +83,29 @@ public class TradePlanActivity extends AppCompatActivity
 
         LogManager.debug(CLASS_NAME, "onSaveInstanceState", "");
     }
+
+    /**
+     * Receives the result data from the previous fragment. Updates the
+     * application's state depending on the data received.
+     *
+     * @param requestCode the request code that determines the previous activity
+     * @param resultCode  the result of the previous activity or fragment
+     * @param data        the data that are returned from the previous activity or fragment
+     */
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        if(resultCode != Activity.RESULT_OK)
+        {
+            return;
+        }
+
+        LogManager.debug(CLASS_NAME, "onActivityResult", "requestCode=" + requestCode + " resultCode=" + resultCode + " dataKeys=" + data.getExtras().keySet());
+
+        if(IntentRequestCode.UPDATE_TRADE_PLAN.code() == requestCode && data.hasExtra(DataKey.EXTRA_TRADE.toString()))
+        {
+            this.selectedTradePlan = data.getParcelableExtra(DataKey.EXTRA_TRADE.toString());
+        }
+    }
+
 }

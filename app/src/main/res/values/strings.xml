@@ -7,6 +7,7 @@
     <string name="cancel_button">Cancel</string>
 
     <string name="title_create_trade_plan">Create Trade Plan</string>
+    <string name="title_update_trade_plan">Update Trade Plan</string>
     <string name="title_trade_plan">Trade Plan</string>
 
     <!-- Toolbar -->
@@ -101,6 +102,7 @@
     <!-- Button -->
     <string name="button_add_tranche">Add Tranche</string>
     <string name="button_add_trade_plan">Add Trade Plan</string>
+    <string name="button_update_trade_plan">Update Trade Plan</string>
 
     <string name="create_trade_plan_prompt">Risk-Reward is just %1$.2f\nAre you sure of this trade?</string>
     <string name="delete_trade_plan_prompt">Are you sure you want to delete your trade plan for %1$s?</string>

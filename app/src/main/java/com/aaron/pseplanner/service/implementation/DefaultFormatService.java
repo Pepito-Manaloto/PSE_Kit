@@ -119,6 +119,12 @@ public class DefaultFormatService implements FormatService
         return df.format(number);
     }
 
+    /**
+     * Formats the date to 'MMMM dd, EEEE hh:mm:ss a' pattern.
+     *
+     * @param date the Date to format
+     * @return formatted date string
+     */
     @Override
     public String formatLastUpdated(Date date)
     {

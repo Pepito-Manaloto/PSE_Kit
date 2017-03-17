@@ -8,7 +8,8 @@ public enum IntentRequestCode
 {
     HOME(1),
     CREATE_TRADE_PLAN(2),
-    VIEW_TRADE_PLAN(3);
+    UPDATE_TRADE_PLAN(3),
+    VIEW_TRADE_PLAN(4);
 
     private int code;
 

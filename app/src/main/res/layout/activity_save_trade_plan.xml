@@ -165,12 +165,13 @@
                 style="@style/TextViewLabel.EditText.Shares"/>
 
             <Button
-                android:id="@+id/button_add_trade_plan"
+                android:id="@+id/button_save_trade_plan"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_columnSpan="2"
                 android:layout_gravity="center_horizontal"
                 android:padding="20dp"
+                android:layout_marginBottom="5dp"
                 android:text="@string/button_add_trade_plan"
                 android:textSize="18sp"
                 />

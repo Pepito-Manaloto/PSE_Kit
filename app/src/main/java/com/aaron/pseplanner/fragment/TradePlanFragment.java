@@ -1,6 +1,7 @@
 package com.aaron.pseplanner.fragment;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -18,9 +19,11 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.aaron.pseplanner.R;
+import com.aaron.pseplanner.activity.UpdateTradePlanActivity;
 import com.aaron.pseplanner.bean.Trade;
 import com.aaron.pseplanner.bean.TradeEntry;
 import com.aaron.pseplanner.constant.DataKey;
+import com.aaron.pseplanner.constant.IntentRequestCode;
 import com.aaron.pseplanner.listener.ImageViewOnClickHideExpand;
 import com.aaron.pseplanner.service.FormatService;
 import com.aaron.pseplanner.service.LogManager;
@@ -207,7 +210,10 @@ public class TradePlanFragment extends Fragment
             }
             case R.id.menu_update:
             {
-                // TODO: go to update trade plan activity
+                Intent intent = new Intent(getActivity(), UpdateTradePlanActivity.class);
+                intent.putExtra(DataKey.EXTRA_TRADE.toString(), this.selectedStock);
+                getActivity().startActivityForResult(intent, IntentRequestCode.UPDATE_TRADE_PLAN.code());
+
                 return true;
             }
             case R.id.menu_delete:
