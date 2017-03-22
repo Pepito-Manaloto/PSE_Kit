@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.aaron.pseplanner.R;
 import com.aaron.pseplanner.activity.TradePlanActivity;
-import com.aaron.pseplanner.bean.Trade;
+import com.aaron.pseplanner.bean.TradeDto;
 import com.aaron.pseplanner.constant.DataKey;
 import com.aaron.pseplanner.constant.IntentRequestCode;
 import com.aaron.pseplanner.listener.ListRowOnTouchChangeActivity;
@@ -25,20 +25,20 @@ import java.util.List;
  * Created by Aaron on 2/17/2017.
  * Contains all trade plans, and is responsible for converting Trade bean to a UI row in the ListView.
  */
-public class TradePlanListAdapter extends ArrayAdapter<Trade>
+public class TradePlanListAdapter extends ArrayAdapter<TradeDto>
 {
     private Activity activity;
     private FormatService formatService;
-    private ArrayList<Trade> tradeList;
+    private ArrayList<TradeDto> tradeDtoList;
 
-    public TradePlanListAdapter(Activity activity, List<Trade> tradeList)
+    public TradePlanListAdapter(Activity activity, List<TradeDto> tradeDtoList)
     {
-        super(activity, 0, tradeList);
+        super(activity, 0, tradeDtoList);
 
         this.activity = activity;
         this.formatService = new DefaultFormatService(activity);
         // ArrayList is used because this will be added in an intent
-        this.tradeList = (ArrayList<Trade>) tradeList;
+        this.tradeDtoList = (ArrayList<TradeDto>) tradeDtoList;
     }
 
     /**
@@ -73,8 +73,8 @@ public class TradePlanListAdapter extends ArrayAdapter<Trade>
             holder = (ViewHolder) convertView.getTag();
         }
 
-        Trade trade = getItem(position);
-        holder.setTickerView(trade, this.formatService, new ListRowOnTouchChangeActivity(this.activity, TradePlanActivity.class, DataKey.EXTRA_TRADE, trade, DataKey.EXTRA_TRADE_LIST, this.tradeList, IntentRequestCode.VIEW_TRADE_PLAN, holder.scroll));
+        TradeDto tradeDto = getItem(position);
+        holder.setTickerView(tradeDto, this.formatService, new ListRowOnTouchChangeActivity(this.activity, TradePlanActivity.class, DataKey.EXTRA_TRADE, tradeDto, DataKey.EXTRA_TRADE_LIST, this.tradeDtoList, IntentRequestCode.VIEW_TRADE_PLAN, holder.scroll));
 
         return convertView;
     }
@@ -95,23 +95,23 @@ public class TradePlanListAdapter extends ArrayAdapter<Trade>
         TextView holdingPeriod;
         HorizontalScrollView scroll;
 
-        void setTickerView(Trade trade, FormatService service, View.OnTouchListener listener)
+        void setTickerView(TradeDto tradeDto, FormatService service, View.OnTouchListener listener)
         {
             scroll.setOnTouchListener(listener);
-            stock.setText(trade.getSymbol());
-            currentPrice.setText(service.formatStockPrice(trade.getCurrentPrice().doubleValue()));
-            averagePrice.setText(service.formatStockPrice(trade.getAveragePrice().doubleValue()));
-            String gainLossValue = ViewUtils.addPositiveSign(trade.getGainLoss().doubleValue(), service.formatPrice(trade.getGainLoss().doubleValue()));
-            String gainLossPercentValue = ViewUtils.addPositiveSign(trade.getGainLossPercent().doubleValue(), service.formatPercent(trade.getGainLossPercent().doubleValue()));
+            stock.setText(tradeDto.getSymbol());
+            currentPrice.setText(service.formatStockPrice(tradeDto.getCurrentPrice().doubleValue()));
+            averagePrice.setText(service.formatStockPrice(tradeDto.getAveragePrice().doubleValue()));
+            String gainLossValue = ViewUtils.addPositiveSign(tradeDto.getGainLoss().doubleValue(), service.formatPrice(tradeDto.getGainLoss().doubleValue()));
+            String gainLossPercentValue = ViewUtils.addPositiveSign(tradeDto.getGainLossPercent().doubleValue(), service.formatPercent(tradeDto.getGainLossPercent().doubleValue()));
             gainLoss.setText(String.format("%s (%s)", gainLossValue, gainLossPercentValue));
-            shares.setText(service.formatShares(trade.getTotalShares()));
-            stopLoss.setText(service.formatPrice(trade.getStopLoss().doubleValue()));
-            entryDate.setText(service.formatDate(trade.getEntryDate()));
-            stopDate.setText(service.formatDate(trade.getStopDate()));
-            String holdingPeriodLabel = trade.getHoldingPeriod() > 1 ? "days" : "day";
-            holdingPeriod.setText(String.format("%s %s", trade.getHoldingPeriod(), holdingPeriodLabel));
+            shares.setText(service.formatShares(tradeDto.getTotalShares()));
+            stopLoss.setText(service.formatPrice(tradeDto.getStopLoss().doubleValue()));
+            entryDate.setText(service.formatDate(tradeDto.getEntryDate()));
+            stopDate.setText(service.formatDate(tradeDto.getStopDate()));
+            String holdingPeriodLabel = tradeDto.getHoldingPeriod() > 1 ? "days" : "day";
+            holdingPeriod.setText(String.format("%s %s", tradeDto.getHoldingPeriod(), holdingPeriodLabel));
 
-            service.formatTextColor(trade.getGainLoss().doubleValue(), gainLoss);
+            service.formatTextColor(tradeDto.getGainLoss().doubleValue(), gainLoss);
         }
     }
 }

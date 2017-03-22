@@ -8,7 +8,7 @@ import android.support.v7.widget.Toolbar;
 import android.widget.TextView;
 
 import com.aaron.pseplanner.R;
-import com.aaron.pseplanner.bean.Ticker;
+import com.aaron.pseplanner.bean.TickerDto;
 import com.aaron.pseplanner.constant.DataKey;
 import com.aaron.pseplanner.service.LogManager;
 
@@ -18,7 +18,7 @@ import com.aaron.pseplanner.service.LogManager;
 public class CreateTradePlanActivity extends SaveTradePlanActivity
 {
     public static final String CLASS_NAME = CreateTradePlanActivity.class.getSimpleName();
-    private Ticker selectedStock;
+    private TickerDto selectedStock;
 
     /**
      * Inflates the UI.

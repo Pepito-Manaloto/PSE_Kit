@@ -1,19 +1,13 @@
 package com.aaron.pseplanner.async;
 
 import android.os.AsyncTask;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.aaron.pseplanner.activity.MainActivity;
-import com.aaron.pseplanner.bean.Ticker;
 import com.aaron.pseplanner.exception.HttpRequestException;
 import com.aaron.pseplanner.fragment.AbstractListFragment;
-import com.aaron.pseplanner.service.HttpClient;
-import com.aaron.pseplanner.service.PSEPlannerService;
 
 import org.apache.commons.lang3.StringUtils;
-
-import java.util.List;
 
 /**
  * Created by Aaron on 11/20/2016.

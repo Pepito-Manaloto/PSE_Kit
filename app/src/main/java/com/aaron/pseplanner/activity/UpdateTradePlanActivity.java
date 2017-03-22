@@ -12,8 +12,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.aaron.pseplanner.R;
-import com.aaron.pseplanner.bean.Trade;
-import com.aaron.pseplanner.bean.TradeEntry;
+import com.aaron.pseplanner.bean.TradeDto;
+import com.aaron.pseplanner.bean.TradeEntryDto;
 import com.aaron.pseplanner.constant.DataKey;
 import com.aaron.pseplanner.fragment.DatePickerFragment;
 import com.aaron.pseplanner.service.LogManager;
@@ -27,7 +27,7 @@ import java.util.List;
 public class UpdateTradePlanActivity extends SaveTradePlanActivity
 {
     public static final String CLASS_NAME = UpdateTradePlanActivity.class.getSimpleName();
-    private Trade tradePlanToUpdate;
+    private TradeDto tradeDtoPlanToUpdate;
 
     /**
      * Inflates the UI.
@@ -41,23 +41,23 @@ public class UpdateTradePlanActivity extends SaveTradePlanActivity
 
         if(savedInstanceState != null)
         {
-            this.tradePlanToUpdate = savedInstanceState.getParcelable(DataKey.EXTRA_TRADE.toString());
+            this.tradeDtoPlanToUpdate = savedInstanceState.getParcelable(DataKey.EXTRA_TRADE.toString());
         }
         else
         {
-            this.tradePlanToUpdate = getIntent().getParcelableExtra(DataKey.EXTRA_TRADE.toString());
+            this.tradeDtoPlanToUpdate = getIntent().getParcelableExtra(DataKey.EXTRA_TRADE.toString());
         }
 
-        this.sharesEditText.setText(String.valueOf(tradePlanToUpdate.getTotalShares()));
-        this.entryDateEditText.setText(DatePickerFragment.DATE_FORMATTER.format(tradePlanToUpdate.getEntryDate()));
-        this.stopDateEditText.setText(DatePickerFragment.DATE_FORMATTER.format(tradePlanToUpdate.getStopDate()));
-        this.stopLossEditText.setText(tradePlanToUpdate.getStopLoss().toPlainString());
-        this.targetEditText.setText(tradePlanToUpdate.getTargetPrice().toPlainString());
-        this.capitalEditText.setText(String.valueOf(tradePlanToUpdate.getCapital()));
+        this.sharesEditText.setText(String.valueOf(tradeDtoPlanToUpdate.getTotalShares()));
+        this.entryDateEditText.setText(DatePickerFragment.DATE_FORMATTER.format(tradeDtoPlanToUpdate.getEntryDate()));
+        this.stopDateEditText.setText(DatePickerFragment.DATE_FORMATTER.format(tradeDtoPlanToUpdate.getStopDate()));
+        this.stopLossEditText.setText(tradeDtoPlanToUpdate.getStopLoss().toPlainString());
+        this.targetEditText.setText(tradeDtoPlanToUpdate.getTargetPrice().toPlainString());
+        this.capitalEditText.setText(String.valueOf(tradeDtoPlanToUpdate.getCapital()));
 
-        this.setEntryTranchesValues(this.layoutInflater, this.entryTranchesLayout, this.tradePlanToUpdate.getTradeEntries());
+        this.setEntryTranchesValues(this.layoutInflater, this.entryTranchesLayout, this.tradeDtoPlanToUpdate.getTradeEntries());
 
-        LogManager.debug(CLASS_NAME, "onCreate", this.tradePlanToUpdate == null ? null : this.tradePlanToUpdate.toString());
+        LogManager.debug(CLASS_NAME, "onCreate", this.tradeDtoPlanToUpdate == null ? null : this.tradeDtoPlanToUpdate.toString());
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(R.string.title_update_trade_plan);
@@ -71,7 +71,7 @@ public class UpdateTradePlanActivity extends SaveTradePlanActivity
         }
 
         TextView stockLabel = (TextView) findViewById(R.id.textview_stock);
-        stockLabel.setText(this.tradePlanToUpdate.getSymbol());
+        stockLabel.setText(this.tradeDtoPlanToUpdate.getSymbol());
 
         this.saveButton.setText(R.string.button_update_trade_plan);
     }
@@ -79,7 +79,7 @@ public class UpdateTradePlanActivity extends SaveTradePlanActivity
     /**
      * Sets each entry tranche to the view.
      */
-    private void setEntryTranchesValues(LayoutInflater layoutInflater, LinearLayout entryTranchesLayout, List<TradeEntry> tradeEntries)
+    private void setEntryTranchesValues(LayoutInflater layoutInflater, LinearLayout entryTranchesLayout, List<TradeEntryDto> tradeEntries)
     {
         int entriesSize = tradeEntries.size() - 1; // Subtract one, because one tranche is already created
 
@@ -112,7 +112,7 @@ public class UpdateTradePlanActivity extends SaveTradePlanActivity
     {
         super.onSaveInstanceState(outState);
 
-        outState.putParcelable(DataKey.EXTRA_TRADE.toString(), this.tradePlanToUpdate);
+        outState.putParcelable(DataKey.EXTRA_TRADE.toString(), this.tradeDtoPlanToUpdate);
 
         LogManager.debug(CLASS_NAME, "onSaveInstanceState", "");
     }
@@ -129,7 +129,7 @@ public class UpdateTradePlanActivity extends SaveTradePlanActivity
 
         if(resultCode == Activity.RESULT_OK)
         {
-            data.putExtra(DataKey.EXTRA_TRADE.toString(), this.tradePlanToUpdate);
+            data.putExtra(DataKey.EXTRA_TRADE.toString(), this.tradeDtoPlanToUpdate);
         }
 
         setResult(resultCode, data);

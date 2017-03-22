@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.aaron.pseplanner.R;
 import com.aaron.pseplanner.activity.CreateTradePlanActivity;
-import com.aaron.pseplanner.bean.Ticker;
+import com.aaron.pseplanner.bean.TickerDto;
 import com.aaron.pseplanner.constant.DataKey;
 import com.aaron.pseplanner.constant.IntentRequestCode;
 import com.aaron.pseplanner.listener.ListRowOnTouchChangeActivity;
@@ -23,14 +23,14 @@ import java.util.List;
  * Created by aaron.asuncion on 12/8/2016.
  * Contains all tickers, and is responsible for converting Ticker bean to a UI row in the ListView.
  */
-public class TickerListAdapter extends ArrayAdapter<Ticker>
+public class TickerListAdapter extends ArrayAdapter<TickerDto>
 {
     private Activity activity;
     private FormatService formatService;
 
-    public TickerListAdapter(Activity activity, List<Ticker> tickerList)
+    public TickerListAdapter(Activity activity, List<TickerDto> tickerDtoList)
     {
-        super(activity, 0, tickerList);
+        super(activity, 0, tickerDtoList);
 
         this.activity = activity;
         this.formatService = new DefaultFormatService(activity);
@@ -63,8 +63,8 @@ public class TickerListAdapter extends ArrayAdapter<Ticker>
             holder = (ViewHolder) convertView.getTag();
         }
 
-        Ticker ticker = getItem(position);
-        holder.setTickerView(ticker, this.formatService, new ListRowOnTouchChangeActivity(this.activity, CreateTradePlanActivity.class, DataKey.EXTRA_TICKER, ticker, IntentRequestCode.CREATE_TRADE_PLAN, holder.layout));
+        TickerDto tickerDto = getItem(position);
+        holder.setTickerView(tickerDto, this.formatService, new ListRowOnTouchChangeActivity(this.activity, CreateTradePlanActivity.class, DataKey.EXTRA_TICKER, tickerDto, IntentRequestCode.CREATE_TRADE_PLAN, holder.layout));
 
         return convertView;
     }
@@ -80,18 +80,18 @@ public class TickerListAdapter extends ArrayAdapter<Ticker>
         TextView percentChange;
         LinearLayout layout;
 
-        void setTickerView(Ticker ticker, FormatService service, View.OnTouchListener listener)
+        void setTickerView(TickerDto tickerDto, FormatService service, View.OnTouchListener listener)
         {
             layout.setOnTouchListener(listener);
-            stock.setText(ticker.getSymbol());
-            price.setText(service.formatStockPrice(ticker.getCurrentPrice().doubleValue()));
-            change.setText(service.formatStockPrice(ticker.getChange().doubleValue()));
-            String percentChangeText = service.formatStockPrice(ticker.getPercentChange().doubleValue()) + "%";
+            stock.setText(tickerDto.getSymbol());
+            price.setText(service.formatStockPrice(tickerDto.getCurrentPrice().doubleValue()));
+            change.setText(service.formatStockPrice(tickerDto.getChange().doubleValue()));
+            String percentChangeText = service.formatStockPrice(tickerDto.getPercentChange().doubleValue()) + "%";
             percentChange.setText(percentChangeText);
 
-            service.formatTextColor(ticker.getChange().doubleValue(), price);
-            service.formatTextColor(ticker.getChange().doubleValue(), change);
-            service.formatTextColor(ticker.getChange().doubleValue(), percentChange);
+            service.formatTextColor(tickerDto.getChange().doubleValue(), price);
+            service.formatTextColor(tickerDto.getChange().doubleValue(), change);
+            service.formatTextColor(tickerDto.getChange().doubleValue(), percentChange);
         }
     }
 }

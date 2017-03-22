@@ -9,18 +9,18 @@ import java.math.BigDecimal;
  * Created by aaron.asuncion on 12/20/2016.
  * Represents a trade(buy).
  */
-public class TradeEntry implements Parcelable
+public class TradeEntryDto implements Parcelable
 {
     private String symbol;
     private BigDecimal entryPrice;
     private long shares;
     private BigDecimal percentWeight;
 
-    public TradeEntry()
+    public TradeEntryDto()
     {
     }
 
-    public TradeEntry(String symbol, BigDecimal entryPrice, long shares, BigDecimal percentWeight)
+    public TradeEntryDto(String symbol, BigDecimal entryPrice, long shares, BigDecimal percentWeight)
     {
         this.symbol = symbol;
         this.entryPrice = entryPrice;
@@ -28,7 +28,7 @@ public class TradeEntry implements Parcelable
         this.percentWeight = percentWeight;
     }
 
-    public TradeEntry(String symbol, double entryPrice, long shares, double percentWeight)
+    public TradeEntryDto(String symbol, double entryPrice, long shares, double percentWeight)
     {
         this.symbol = symbol;
         this.entryPrice = BigDecimal.valueOf(entryPrice);
@@ -36,7 +36,7 @@ public class TradeEntry implements Parcelable
         this.percentWeight = BigDecimal.valueOf(percentWeight);
     }
 
-    public TradeEntry(String symbol, String entryPrice, long shares, String percentWeight)
+    public TradeEntryDto(String symbol, String entryPrice, long shares, String percentWeight)
     {
         this.symbol = symbol;
         this.entryPrice = new BigDecimal(entryPrice);
@@ -51,12 +51,12 @@ public class TradeEntry implements Parcelable
         {
             return true;
         }
-        if(!(o instanceof TradeEntry))
+        if(!(o instanceof TradeEntryDto))
         {
             return false;
         }
 
-        TradeEntry that = (TradeEntry) o;
+        TradeEntryDto that = (TradeEntryDto) o;
 
         return entryPrice.equals(that.entryPrice) && shares == that.shares &&
                 percentWeight.equals(that.percentWeight) && symbol.equals(that.symbol);
@@ -75,7 +75,7 @@ public class TradeEntry implements Parcelable
     @Override
     public String toString()
     {
-        return "TradeEntry{" +
+        return "TradeEntryDto{" +
                 "symbol='" + symbol + '\'' +
                 ", entryPrice=" + entryPrice +
                 ", shares=" + shares +
@@ -133,7 +133,7 @@ public class TradeEntry implements Parcelable
     }
 
     /**
-     * Flatten this TradeEntry object in to a Parcel.
+     * Flatten this TradeEntryDto object in to a Parcel.
      */
     @Override
     public void writeToParcel(Parcel dest, int flags)
@@ -147,7 +147,7 @@ public class TradeEntry implements Parcelable
     /**
      * Constructor that will be called in creating the parcel.
      */
-    private TradeEntry(Parcel in)
+    private TradeEntryDto(Parcel in)
     {
         this.symbol = in.readString();
         this.entryPrice = new BigDecimal(in.readString());
@@ -158,18 +158,18 @@ public class TradeEntry implements Parcelable
     /**
      * Generates instances of your Parcelable class from a Parcel.
      */
-    public static final Parcelable.Creator<TradeEntry> CREATOR = new Parcelable.Creator<TradeEntry>()
+    public static final Parcelable.Creator<TradeEntryDto> CREATOR = new Parcelable.Creator<TradeEntryDto>()
     {
         @Override
-        public TradeEntry createFromParcel(Parcel source)
+        public TradeEntryDto createFromParcel(Parcel source)
         {
-            return new TradeEntry(source);
+            return new TradeEntryDto(source);
         }
 
         @Override
-        public TradeEntry[] newArray(int size)
+        public TradeEntryDto[] newArray(int size)
         {
-            return new TradeEntry[size];
+            return new TradeEntryDto[size];
         }
     };
 }

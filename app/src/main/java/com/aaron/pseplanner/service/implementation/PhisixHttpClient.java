@@ -1,10 +1,8 @@
 package com.aaron.pseplanner.service.implementation;
 
-import android.util.Log;
 import android.util.Pair;
 
-import com.aaron.pseplanner.bean.Ticker;
-import com.aaron.pseplanner.bean.Trade;
+import com.aaron.pseplanner.bean.TickerDto;
 import com.aaron.pseplanner.exception.HttpRequestException;
 import com.aaron.pseplanner.response.Phisix.ResponsePhisixStock;
 import com.aaron.pseplanner.response.Phisix.ResponsePhisixStockWrapper;
@@ -25,7 +23,6 @@ import java.util.concurrent.CountDownLatch;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.http.HTTP;
 
 /**
  * Created by Aaron on 2/26/2017.
@@ -57,12 +54,12 @@ public class PhisixHttpClient extends BaseHttpClient
      * Retrieves a stock from Phisix.
      *
      * @param symbol the stock to retrieve
-     * @return the stock converted to Ticker object, plus the last updated date
+     * @return the stock converted to TickerDto object, plus the last updated date
      * @throws IllegalArgumentException if the parameter is empty
      * @throws HttpRequestException     request is not successful
      */
     @Override
-    public Pair<Ticker, Date> getTicker(String symbol) throws HttpRequestException
+    public Pair<TickerDto, Date> getTicker(String symbol) throws HttpRequestException
     {
         if(StringUtils.isBlank(symbol))
         {
@@ -113,11 +110,11 @@ public class PhisixHttpClient extends BaseHttpClient
     /**
      * Retrieves list of stocks from Phisix.
      *
-     * @return the stocks list converted to Ticker object, plus the last updated date
+     * @return the stocks list converted to TickerDto object, plus the last updated date
      * @throws HttpRequestException request is not successful
      */
     @Override
-    public Pair<List<Ticker>, Date> getAllTickerList() throws HttpRequestException
+    public Pair<List<TickerDto>, Date> getAllTickerList() throws HttpRequestException
     {
         Response<ResponsePhisixStockWrapper> response = null;
 
@@ -139,14 +136,14 @@ public class PhisixHttpClient extends BaseHttpClient
 
                 ResponsePhisixStockWrapper phisixStockWrapper = response.body();
                 List<ResponsePhisixStock> responseList = phisixStockWrapper.getResponsePhisixStocksList();
-                List<Ticker> tickerList = new ArrayList<>(responseList.size());
+                List<TickerDto> tickerDtoList = new ArrayList<>(responseList.size());
 
                 for(ResponsePhisixStock phisixStock : responseList)
                 {
-                    tickerList.add(convertResponsePhisixStockToTicker(phisixStock));
+                    tickerDtoList.add(convertResponsePhisixStockToTicker(phisixStock));
                 }
 
-                return new Pair<>(tickerList, phisixStockWrapper.getDateUpdated());
+                return new Pair<>(tickerDtoList, phisixStockWrapper.getDateUpdated());
             }
 
             throw new HttpRequestException("Response is null");
@@ -170,12 +167,12 @@ public class PhisixHttpClient extends BaseHttpClient
      * Retrieves a list of stock from Phisix.
      *
      * @param symbols the stocks to retrieve
-     * @return the stock converted to Ticker object, plus the last updated date
+     * @return the stock converted to TickerDto object, plus the last updated date
      * @throws IllegalArgumentException if the parameter is empty
      * @throws HttpRequestException     request is not successful
      */
     @Override
-    public Pair<List<Ticker>, Date> getTickerList(Collection<String> symbols) throws HttpRequestException
+    public Pair<List<TickerDto>, Date> getTickerList(Collection<String> symbols) throws HttpRequestException
     {
         if(symbols == null || symbols.isEmpty())
         {
@@ -183,8 +180,8 @@ public class PhisixHttpClient extends BaseHttpClient
         }
 
         int size = symbols.size();
-        final CallbackResult<Ticker> callbackResult = new CallbackResult<>();
-        callbackResult.setResponseList(new ArrayList<Ticker>(size));
+        final CallbackResult<TickerDto> callbackResult = new CallbackResult<>();
+        callbackResult.setResponseList(new ArrayList<TickerDto>(size));
         // Used to wait for all async requests to finish
         final CountDownLatch doneSignal = new CountDownLatch(size);
 
@@ -260,9 +257,9 @@ public class PhisixHttpClient extends BaseHttpClient
         return new Pair<>(callbackResult.getResponseList(), callbackResult.getLastUpdated());
     }
 
-    private Ticker convertResponsePhisixStockToTicker(ResponsePhisixStock phisixStock)
+    private TickerDto convertResponsePhisixStockToTicker(ResponsePhisixStock phisixStock)
     {
-        return new Ticker(phisixStock.getSymbol(), phisixStock.getName(), phisixStock.getVolume(), BigDecimal.valueOf(phisixStock.getAmount()), this.calculatorService.getCurrentAndPreviousPriceChange(phisixStock.getAmount(), phisixStock.getPercentChange()), BigDecimal.valueOf(phisixStock.getPercentChange()));
+        return new TickerDto(phisixStock.getSymbol(), phisixStock.getName(), phisixStock.getVolume(), BigDecimal.valueOf(phisixStock.getAmount()), this.calculatorService.getCurrentAndPreviousPriceChange(phisixStock.getAmount(), phisixStock.getPercentChange()), BigDecimal.valueOf(phisixStock.getPercentChange()));
     }
 
     @Override

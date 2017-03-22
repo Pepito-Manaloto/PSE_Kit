@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.util.Pair;
 
-import com.aaron.pseplanner.bean.Ticker;
+import com.aaron.pseplanner.bean.TickerDto;
 import com.aaron.pseplanner.exception.HttpRequestException;
 import com.aaron.pseplanner.service.FormatService;
 import com.aaron.pseplanner.service.HttpClient;
@@ -60,21 +60,21 @@ public class FacadePSEPlannerService implements PSEPlannerService
     }
 
     @Override
-    public Pair<Ticker, Date> getTicker(String symbol) throws HttpRequestException
+    public Pair<TickerDto, Date> getTicker(String symbol) throws HttpRequestException
     {
         // TODO: update database ticker and last updated
         return this.phisixHttpClient.getTicker(symbol);
     }
 
     @Override
-    public Pair<List<Ticker>, Date> getAllTickerList() throws HttpRequestException
+    public Pair<List<TickerDto>, Date> getAllTickerList() throws HttpRequestException
     {
         // TODO: update database ticker and last updated
         return this.phisixHttpClient.getAllTickerList();
     }
 
     @Override
-    public Pair<List<Ticker>, Date> getTickerList(Collection<String> symbols) throws HttpRequestException
+    public Pair<List<TickerDto>, Date> getTickerList(Collection<String> symbols) throws HttpRequestException
     {
         // TODO: update database trade and last updated
         return this.phisixHttpClient.getTickerList(symbols);

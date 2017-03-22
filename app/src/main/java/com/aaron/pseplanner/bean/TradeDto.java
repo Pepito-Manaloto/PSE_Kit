@@ -11,7 +11,7 @@ import java.util.List;
  * Created by aaron.asuncion on 12/20/2016.
  * Represents a trading plan.
  */
-public class Trade implements Parcelable
+public class TradeDto implements Parcelable
 {
     private Date entryDate;
     private int holdingPeriod;
@@ -32,13 +32,13 @@ public class Trade implements Parcelable
     private BigDecimal riskReward;
     private long capital;
     private BigDecimal percentCapital;
-    private List<TradeEntry> tradeEntries;
+    private List<TradeEntryDto> tradeEntries;
 
-    public Trade()
+    public TradeDto()
     {
     }
 
-    public Trade(Date entryDate, int holdingPeriod, String symbol, BigDecimal currentPrice, BigDecimal averagePrice, long totalShares, BigDecimal totalAmount, BigDecimal priceToBreakEven, BigDecimal targetPrice, BigDecimal gainLoss, BigDecimal gainLossPercent, long gainToTarget, BigDecimal lossToStopLoss, BigDecimal stopLoss, Date stopDate, int daysToStopDate, BigDecimal riskReward, long capital, BigDecimal percentCapital, List<TradeEntry> tradeEntries)
+    public TradeDto(Date entryDate, int holdingPeriod, String symbol, BigDecimal currentPrice, BigDecimal averagePrice, long totalShares, BigDecimal totalAmount, BigDecimal priceToBreakEven, BigDecimal targetPrice, BigDecimal gainLoss, BigDecimal gainLossPercent, long gainToTarget, BigDecimal lossToStopLoss, BigDecimal stopLoss, Date stopDate, int daysToStopDate, BigDecimal riskReward, long capital, BigDecimal percentCapital, List<TradeEntryDto> tradeEntries)
     {
         this.entryDate = entryDate;
         this.holdingPeriod = holdingPeriod;
@@ -62,7 +62,7 @@ public class Trade implements Parcelable
         this.tradeEntries = tradeEntries;
     }
 
-    public Trade(String symbol, Date entryDate, int holdingPeriod, double currentPrice, double averagePrice, long totalShares, double totalAmount, double priceToBreakEven, double targetPrice, double gainLoss, double gainLossPercent, long gainToTarget, double stopLoss, double lossToStopLoss, Date stopDate, int daysToStopDate, double riskReward, long capital, double percentCapital, List<TradeEntry> tradeEntries)
+    public TradeDto(String symbol, Date entryDate, int holdingPeriod, double currentPrice, double averagePrice, long totalShares, double totalAmount, double priceToBreakEven, double targetPrice, double gainLoss, double gainLossPercent, long gainToTarget, double stopLoss, double lossToStopLoss, Date stopDate, int daysToStopDate, double riskReward, long capital, double percentCapital, List<TradeEntryDto> tradeEntries)
     {
         this.symbol = symbol;
         this.entryDate = entryDate;
@@ -86,7 +86,7 @@ public class Trade implements Parcelable
         this.tradeEntries = tradeEntries;
     }
 
-    public Trade(String symbol, Date entryDate, int holdingPeriod, String currentPrice, String averagePrice, long totalShares, String totalAmount, String priceToBreakEven, String targetPrice, String gainLoss, String gainLossPercent, long gainToTarget, String stopLoss, String lossToStopLoss, Date stopDate, int daysToStopDate, String riskReward, long capital, String percentCapital, List<TradeEntry> tradeEntries)
+    public TradeDto(String symbol, Date entryDate, int holdingPeriod, String currentPrice, String averagePrice, long totalShares, String totalAmount, String priceToBreakEven, String targetPrice, String gainLoss, String gainLossPercent, long gainToTarget, String stopLoss, String lossToStopLoss, Date stopDate, int daysToStopDate, String riskReward, long capital, String percentCapital, List<TradeEntryDto> tradeEntries)
     {
         this.symbol = symbol;
         this.entryDate = entryDate;
@@ -118,20 +118,20 @@ public class Trade implements Parcelable
             return true;
         }
 
-        if(!(o instanceof Trade))
+        if(!(o instanceof TradeDto))
         {
             return false;
         }
 
-        Trade trade = (Trade) o;
+        TradeDto tradeDto = (TradeDto) o;
 
-        return currentPrice.equals(trade.currentPrice) && averagePrice.equals(trade.averagePrice) &&
-                totalShares == trade.totalShares && totalAmount.equals(trade.totalAmount) && priceToBreakEven.equals(trade.priceToBreakEven) &&
-                targetPrice.equals(trade.targetPrice) && gainLoss.equals(trade.gainLoss) && gainLossPercent.equals(trade.gainLossPercent) &&
-                gainToTarget == trade.gainToTarget && stopLoss.equals(trade.stopLoss) && lossToStopLoss.equals(trade.lossToStopLoss) &&
-                daysToStopDate == trade.daysToStopDate && riskReward.equals(trade.riskReward) && capital == trade.capital &&
-                percentCapital.equals(trade.percentCapital) && entryDate.equals(trade.entryDate) && holdingPeriod == trade.holdingPeriod &&
-                symbol.equals(trade.symbol) && stopDate.equals(trade.stopDate) && tradeEntries.equals(trade.tradeEntries);
+        return currentPrice.equals(tradeDto.currentPrice) && averagePrice.equals(tradeDto.averagePrice) &&
+                totalShares == tradeDto.totalShares && totalAmount.equals(tradeDto.totalAmount) && priceToBreakEven.equals(tradeDto.priceToBreakEven) &&
+                targetPrice.equals(tradeDto.targetPrice) && gainLoss.equals(tradeDto.gainLoss) && gainLossPercent.equals(tradeDto.gainLossPercent) &&
+                gainToTarget == tradeDto.gainToTarget && stopLoss.equals(tradeDto.stopLoss) && lossToStopLoss.equals(tradeDto.lossToStopLoss) &&
+                daysToStopDate == tradeDto.daysToStopDate && riskReward.equals(tradeDto.riskReward) && capital == tradeDto.capital &&
+                percentCapital.equals(tradeDto.percentCapital) && entryDate.equals(tradeDto.entryDate) && holdingPeriod == tradeDto.holdingPeriod &&
+                symbol.equals(tradeDto.symbol) && stopDate.equals(tradeDto.stopDate) && tradeEntries.equals(tradeDto.tradeEntries);
     }
 
     @Override
@@ -163,7 +163,7 @@ public class Trade implements Parcelable
     @Override
     public String toString()
     {
-        return "Trade{" +
+        return "TradeDto{" +
                 "entryDate=" + entryDate +
                 ", holdingPeriod=" + holdingPeriod +
                 ", symbol='" + symbol + '\'' +
@@ -377,12 +377,12 @@ public class Trade implements Parcelable
         this.percentCapital = percentCapital;
     }
 
-    public List<TradeEntry> getTradeEntries()
+    public List<TradeEntryDto> getTradeEntries()
     {
         return tradeEntries;
     }
 
-    public void setTradeEntries(List<TradeEntry> tradeEntries)
+    public void setTradeEntries(List<TradeEntryDto> tradeEntries)
     {
         this.tradeEntries = tradeEntries;
     }
@@ -397,7 +397,7 @@ public class Trade implements Parcelable
     }
 
     /**
-     * Flatten this Trade object in to a Parcel.
+     * Flatten this TradeDto object in to a Parcel.
      */
     @Override
     public void writeToParcel(Parcel dest, int flags)
@@ -428,7 +428,7 @@ public class Trade implements Parcelable
      * Constructor that will be called in creating the parcel.
      * Note: Reading the parcel should be the same order as writing the parcel!
      */
-    private Trade(Parcel in)
+    private TradeDto(Parcel in)
     {
         long tmpEntryDate = in.readLong();
         this.entryDate = tmpEntryDate == -1 ? null : new Date(tmpEntryDate);
@@ -451,24 +451,24 @@ public class Trade implements Parcelable
         this.riskReward = new BigDecimal(in.readString());
         this.capital = in.readLong();
         this.percentCapital = new BigDecimal(in.readString());
-        this.tradeEntries = in.createTypedArrayList(TradeEntry.CREATOR);
+        this.tradeEntries = in.createTypedArrayList(TradeEntryDto.CREATOR);
     }
 
     /**
      * Generates instances of your Parcelable class from a Parcel.
      */
-    public static final Parcelable.Creator<Trade> CREATOR = new Parcelable.Creator<Trade>()
+    public static final Parcelable.Creator<TradeDto> CREATOR = new Parcelable.Creator<TradeDto>()
     {
         @Override
-        public Trade createFromParcel(Parcel source)
+        public TradeDto createFromParcel(Parcel source)
         {
-            return new Trade(source);
+            return new TradeDto(source);
         }
 
         @Override
-        public Trade[] newArray(int size)
+        public TradeDto[] newArray(int size)
         {
-            return new Trade[size];
+            return new TradeDto[size];
         }
     };
 }

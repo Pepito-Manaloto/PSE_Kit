@@ -20,8 +20,8 @@ import android.widget.TextView;
 
 import com.aaron.pseplanner.R;
 import com.aaron.pseplanner.activity.UpdateTradePlanActivity;
-import com.aaron.pseplanner.bean.Trade;
-import com.aaron.pseplanner.bean.TradeEntry;
+import com.aaron.pseplanner.bean.TradeDto;
+import com.aaron.pseplanner.bean.TradeEntryDto;
 import com.aaron.pseplanner.constant.DataKey;
 import com.aaron.pseplanner.constant.IntentRequestCode;
 import com.aaron.pseplanner.listener.ImageViewOnClickHideExpand;
@@ -40,11 +40,11 @@ public class TradePlanFragment extends Fragment
 {
     public static final String CLASS_NAME = TradePlanFragment.class.getSimpleName();
 
-    private Trade selectedStock;
+    private TradeDto selectedStock;
     private FormatService formatService;
 
     /**
-     * Creates a new TradePlanFragment instance and stores the passed Trade data as argument.
+     * Creates a new TradePlanFragment instance and stores the passed TradeDto data as argument.
      * Note: Android will call no-argument constructor of a fragment when it decides to recreate the fragment;
      * hence, overloading a fragment constructor for data passing will not be able to save the passed data.
      * That is why this static initializer is used.
@@ -52,7 +52,7 @@ public class TradePlanFragment extends Fragment
      *
      * @param selectedStock the selected trade
      */
-    public static TradePlanFragment newInstance(Trade selectedStock)
+    public static TradePlanFragment newInstance(TradeDto selectedStock)
     {
         Bundle bundle = new Bundle();
         bundle.putParcelable(DataKey.EXTRA_TRADE.toString(), selectedStock);
@@ -80,7 +80,7 @@ public class TradePlanFragment extends Fragment
     }
 
     /**
-     * Initialize Trade Plan UI view.
+     * Initialize TradeDto Plan UI view.
      */
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
@@ -161,10 +161,10 @@ public class TradePlanFragment extends Fragment
      */
     private void setTranchesValues(LinearLayout entryTranchesContainer)
     {
-        List<TradeEntry> tradeEntries = this.selectedStock.getTradeEntries();
+        List<TradeEntryDto> tradeEntries = this.selectedStock.getTradeEntries();
         LayoutInflater inflater = LayoutInflater.from(getActivity());
         int entryTrancheNum = 0;
-        for(TradeEntry entry : tradeEntries)
+        for(TradeEntryDto entry : tradeEntries)
         {
             View entryTrancheLayout = inflater.inflate(R.layout.entry_tranche, null, false);
             TextView labelTranche = (TextView) entryTrancheLayout.findViewById(R.id.label_tranche);

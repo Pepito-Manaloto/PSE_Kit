@@ -1,8 +1,5 @@
 package com.aaron.pseplanner.service;
 
-import com.aaron.pseplanner.bean.Ticker;
-import com.aaron.pseplanner.bean.Trade;
-
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;

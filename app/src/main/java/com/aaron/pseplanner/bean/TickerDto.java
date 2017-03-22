@@ -9,7 +9,7 @@ import java.math.BigDecimal;
  * Created by aaron.asuncion on 12/8/2016.
  * Represents a PSE stock.
  */
-public class Ticker implements Parcelable
+public class TickerDto implements Parcelable
 {
     private String symbol;
     private String name;
@@ -18,11 +18,11 @@ public class Ticker implements Parcelable
     private BigDecimal change;
     private BigDecimal percentChange;
 
-    public Ticker()
+    public TickerDto()
     {
     }
 
-    public Ticker(String symbol, String name, long volume, BigDecimal currentPrice, BigDecimal change, BigDecimal percentChange)
+    public TickerDto(String symbol, String name, long volume, BigDecimal currentPrice, BigDecimal change, BigDecimal percentChange)
     {
         this.symbol = symbol;
         this.name = name;
@@ -32,7 +32,7 @@ public class Ticker implements Parcelable
         this.percentChange = percentChange;
     }
 
-    public Ticker(String symbol, String name, long volume, double currentPrice, double change, double percentChange)
+    public TickerDto(String symbol, String name, long volume, double currentPrice, double change, double percentChange)
     {
         this.symbol = symbol;
         this.name = name;
@@ -42,7 +42,7 @@ public class Ticker implements Parcelable
         this.percentChange = BigDecimal.valueOf(percentChange);
     }
 
-    public Ticker(String symbol, String name, long volume, String currentPrice, String change, String percentChange)
+    public TickerDto(String symbol, String name, long volume, String currentPrice, String change, String percentChange)
     {
         this.symbol = symbol;
         this.name = name;
@@ -60,16 +60,16 @@ public class Ticker implements Parcelable
             return true;
         }
 
-        if(!(o instanceof Ticker))
+        if(!(o instanceof TickerDto))
         {
             return false;
         }
 
-        Ticker ticker = (Ticker) o;
+        TickerDto tickerDto = (TickerDto) o;
 
-        return getVolume() == ticker.getVolume() && getCurrentPrice().equals(ticker.getCurrentPrice()) &&
-                getChange().equals(ticker.getChange()) && getPercentChange().equals(ticker.getPercentChange()) &&
-                getSymbol().equals(ticker.getSymbol()) && getName().equals(ticker.getName());
+        return getVolume() == tickerDto.getVolume() && getCurrentPrice().equals(tickerDto.getCurrentPrice()) &&
+                getChange().equals(tickerDto.getChange()) && getPercentChange().equals(tickerDto.getPercentChange()) &&
+                getSymbol().equals(tickerDto.getSymbol()) && getName().equals(tickerDto.getName());
     }
 
     @Override
@@ -87,7 +87,7 @@ public class Ticker implements Parcelable
     @Override
     public String toString()
     {
-        return "Ticker{" +
+        return "TickerDto{" +
                 "symbol='" + symbol + '\'' +
                 ", name='" + name + '\'' +
                 ", volume=" + volume +
@@ -174,7 +174,7 @@ public class Ticker implements Parcelable
         dest.writeString(this.percentChange.toPlainString());
     }
 
-    protected Ticker(Parcel in)
+    protected TickerDto(Parcel in)
     {
         this.symbol = in.readString();
         this.name = in.readString();
@@ -184,18 +184,18 @@ public class Ticker implements Parcelable
         this.percentChange = new BigDecimal(in.readString());
     }
 
-    public static final Parcelable.Creator<Ticker> CREATOR = new Parcelable.Creator<Ticker>()
+    public static final Parcelable.Creator<TickerDto> CREATOR = new Parcelable.Creator<TickerDto>()
     {
         @Override
-        public Ticker createFromParcel(Parcel source)
+        public TickerDto createFromParcel(Parcel source)
         {
-            return new Ticker(source);
+            return new TickerDto(source);
         }
 
         @Override
-        public Ticker[] newArray(int size)
+        public TickerDto[] newArray(int size)
         {
-            return new Ticker[size];
+            return new TickerDto[size];
         }
     };
 }

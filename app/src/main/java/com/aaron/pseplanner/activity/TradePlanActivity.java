@@ -11,7 +11,7 @@ import android.support.v7.widget.Toolbar;
 
 import com.aaron.pseplanner.R;
 import com.aaron.pseplanner.adapter.TradePlanPagerAdapter;
-import com.aaron.pseplanner.bean.Trade;
+import com.aaron.pseplanner.bean.TradeDto;
 import com.aaron.pseplanner.constant.DataKey;
 import com.aaron.pseplanner.constant.IntentRequestCode;
 import com.aaron.pseplanner.service.LogManager;
@@ -25,8 +25,8 @@ import java.util.ArrayList;
 public class TradePlanActivity extends AppCompatActivity
 {
     public static final String CLASS_NAME = TradePlanActivity.class.getSimpleName();
-    private ArrayList<Trade> tradePlanList;
-    private Trade selectedTradePlan;
+    private ArrayList<TradeDto> tradeDtoPlanList;
+    private TradeDto selectedTradeDtoPlan;
 
     /**
      * Inflates the UI.
@@ -41,16 +41,16 @@ public class TradePlanActivity extends AppCompatActivity
 
         if(savedInstanceState != null)
         {
-            this.tradePlanList = savedInstanceState.getParcelableArrayList(DataKey.EXTRA_TRADE_LIST.toString());
-            this.selectedTradePlan = savedInstanceState.getParcelable(DataKey.EXTRA_TRADE.toString());
+            this.tradeDtoPlanList = savedInstanceState.getParcelableArrayList(DataKey.EXTRA_TRADE_LIST.toString());
+            this.selectedTradeDtoPlan = savedInstanceState.getParcelable(DataKey.EXTRA_TRADE.toString());
         }
         else
         {
-            this.tradePlanList = getIntent().getParcelableArrayListExtra(DataKey.EXTRA_TRADE_LIST.toString());
-            this.selectedTradePlan = getIntent().getParcelableExtra(DataKey.EXTRA_TRADE.toString());
+            this.tradeDtoPlanList = getIntent().getParcelableArrayListExtra(DataKey.EXTRA_TRADE_LIST.toString());
+            this.selectedTradeDtoPlan = getIntent().getParcelableExtra(DataKey.EXTRA_TRADE.toString());
         }
 
-        LogManager.debug(CLASS_NAME, "onCreate", "selected=" + (this.selectedTradePlan == null ? null : this.selectedTradePlan.toString()));
+        LogManager.debug(CLASS_NAME, "onCreate", "selected=" + (this.selectedTradeDtoPlan == null ? null : this.selectedTradeDtoPlan.toString()));
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(R.string.title_trade_plan);
@@ -64,10 +64,10 @@ public class TradePlanActivity extends AppCompatActivity
         }
 
         ViewPager viewPager = (ViewPager) findViewById(R.id.view_pager);
-        FragmentPagerAdapter pagerAdapter = new TradePlanPagerAdapter(getSupportFragmentManager(), this.tradePlanList, this.tradePlanList.size());
+        FragmentPagerAdapter pagerAdapter = new TradePlanPagerAdapter(getSupportFragmentManager(), this.tradeDtoPlanList, this.tradeDtoPlanList.size());
 
         viewPager.setAdapter(pagerAdapter);
-        viewPager.setCurrentItem(this.tradePlanList.indexOf(this.selectedTradePlan));
+        viewPager.setCurrentItem(this.tradeDtoPlanList.indexOf(this.selectedTradeDtoPlan));
     }
 
     /**
@@ -78,8 +78,8 @@ public class TradePlanActivity extends AppCompatActivity
     {
         super.onSaveInstanceState(outState);
 
-        outState.putParcelableArrayList(DataKey.EXTRA_TRADE_LIST.toString(), this.tradePlanList);
-        outState.putParcelable(DataKey.EXTRA_TRADE.toString(), this.selectedTradePlan);
+        outState.putParcelableArrayList(DataKey.EXTRA_TRADE_LIST.toString(), this.tradeDtoPlanList);
+        outState.putParcelable(DataKey.EXTRA_TRADE.toString(), this.selectedTradeDtoPlan);
 
         LogManager.debug(CLASS_NAME, "onSaveInstanceState", "");
     }
@@ -104,7 +104,7 @@ public class TradePlanActivity extends AppCompatActivity
 
         if(IntentRequestCode.UPDATE_TRADE_PLAN.code() == requestCode && data.hasExtra(DataKey.EXTRA_TRADE.toString()))
         {
-            this.selectedTradePlan = data.getParcelableExtra(DataKey.EXTRA_TRADE.toString());
+            this.selectedTradeDtoPlan = data.getParcelableExtra(DataKey.EXTRA_TRADE.toString());
         }
     }
 

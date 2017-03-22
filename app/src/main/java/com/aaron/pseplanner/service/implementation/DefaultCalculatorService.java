@@ -330,7 +330,7 @@ public class DefaultCalculatorService implements CalculatorService
         long time1 = date1.getTime();
         long time2 = date2.getTime();
         double diff;
-        Log.d("TAE", "getDaysBetween: " + date1 + " " + date2);
+
         if(time1 > time2)
         {
             diff = time1 - time2;

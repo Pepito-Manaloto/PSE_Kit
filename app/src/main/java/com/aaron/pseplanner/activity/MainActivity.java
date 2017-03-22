@@ -15,7 +15,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -27,8 +26,8 @@ import android.widget.TextView;
 
 import com.aaron.pseplanner.R;
 import com.aaron.pseplanner.async.UpdateTickerTask;
-import com.aaron.pseplanner.bean.Ticker;
-import com.aaron.pseplanner.bean.Trade;
+import com.aaron.pseplanner.bean.TickerDto;
+import com.aaron.pseplanner.bean.TradeDto;
 import com.aaron.pseplanner.constant.DataKey;
 import com.aaron.pseplanner.constant.IntentRequestCode;
 import com.aaron.pseplanner.fragment.AbstractListFragment;
@@ -52,8 +51,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private Menu toolbarMenu;
     private Toolbar toolbar;
     private AbstractListFragment selectedListFragment;
-    private ArrayList<Ticker> tickerList;
-    private ArrayList<Trade> tradeList;
+    private ArrayList<TickerDto> tickerDtoList;
+    private ArrayList<TradeDto> tradeDtoList;
 
     /**
      * Initializes the navigation drawer.
@@ -79,8 +78,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        this.tickerList = new ArrayList<>();
-        this.tradeList = new ArrayList<>();
+        this.tickerDtoList = new ArrayList<>();
+        this.tradeDtoList = new ArrayList<>();
 
         FragmentManager fm = getSupportFragmentManager();
         Fragment fragment = fm.findFragmentById(R.id.fragment_container);
@@ -113,11 +112,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         if(IntentRequestCode.CREATE_TRADE_PLAN.code() == requestCode && data.hasExtra(DataKey.EXTRA_TICKER.toString()))
         {
-            Ticker addedTicker = data.getParcelableExtra(DataKey.EXTRA_TICKER.toString());
+            TickerDto addedTickerDto = data.getParcelableExtra(DataKey.EXTRA_TICKER.toString());
 
-            if(!this.tickerList.contains(addedTicker))
+            if(!this.tickerDtoList.contains(addedTickerDto))
             {
-                this.tickerList.add(addedTicker);
+                this.tickerDtoList.add(addedTickerDto);
             }
         }
     }
@@ -191,14 +190,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             {
                 if(getIntent().getExtras() != null)
                 {
-                    this.tradeList = getIntent().getParcelableArrayListExtra(DataKey.EXTRA_TRADE_LIST.toString());
+                    this.tradeDtoList = getIntent().getParcelableArrayListExtra(DataKey.EXTRA_TRADE_LIST.toString());
                 }
                 else
                 {
-                    this.tradeList = new ArrayList<>();
+                    this.tradeDtoList = new ArrayList<>();
                 }
 
-                this.selectedListFragment = TradePlanListFragment.newInstance(this.tradeList);
+                this.selectedListFragment = TradePlanListFragment.newInstance(this.tradeDtoList);
                 updateFragmentContainer(this.selectedListFragment);
                 this.inflateToolbarMenuItems();
                 this.toolbar.setTitle(R.string.app_name);
@@ -208,14 +207,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             {
                 if(getIntent().getExtras() != null)
                 {
-                    this.tickerList = getIntent().getParcelableArrayListExtra(DataKey.EXTRA_TICKER_LIST.toString());
+                    this.tickerDtoList = getIntent().getParcelableArrayListExtra(DataKey.EXTRA_TICKER_LIST.toString());
                 }
                 else
                 {
-                    this.tickerList = new ArrayList<>();
+                    this.tickerDtoList = new ArrayList<>();
                 }
 
-                this.selectedListFragment = TickerListFragment.newInstance(this.tickerList);
+                this.selectedListFragment = TickerListFragment.newInstance(this.tickerDtoList);
                 updateFragmentContainer(this.selectedListFragment);
                 this.inflateToolbarMenuItems();
                 this.toolbar.setTitle(R.string.nav_ticker);
