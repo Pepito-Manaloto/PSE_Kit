@@ -402,12 +402,9 @@ public class Trade
         myDao.update(this);
     }
 
-    /**
-     * called by internal mechanisms, do not call yourself.
-     */
+    /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 281372810)
-    public void __setDaoSession(DaoSession daoSession)
-    {
+    public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getTradeDao() : null;
     }

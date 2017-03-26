@@ -14,6 +14,7 @@ import com.aaron.pseplanner.bean.TickerDto;
 import com.aaron.pseplanner.bean.TradeDto;
 import com.aaron.pseplanner.bean.TradeEntryDto;
 import com.aaron.pseplanner.constant.DataKey;
+import com.aaron.pseplanner.constant.PSEPlannerPreference;
 import com.aaron.pseplanner.exception.HttpRequestException;
 import com.aaron.pseplanner.service.CalculatorService;
 import com.aaron.pseplanner.service.LogManager;
@@ -99,7 +100,7 @@ public class TradePlanListFragment extends AbstractListFragment<TradeDto>
     {
         View view = inflater.inflate(R.layout.list_fragment_trade_plan, parent, false);
         this.lastUpdatedTextView = (TextView) view.findViewById(R.id.textview_last_updated);
-        updateListOnUiThread(this.tradeDtoList, this.client.getLastUpdated());
+        updateListOnUiThread(this.tradeDtoList, this.pseService.getLastUpdated(PSEPlannerPreference.LAST_UPDATED_TRADE_PLAN.toString()));
 
         return view;
     }
@@ -131,7 +132,7 @@ public class TradePlanListFragment extends AbstractListFragment<TradeDto>
     @Override
     public void updateList() throws HttpRequestException
     {
-        Pair<List<TickerDto>, Date> response = this.client.getTickerList(this.tradesMap.keySet());
+        Pair<List<TickerDto>, Date> response = this.pseService.getTickerList(this.tradesMap.keySet());
 
         List<TickerDto> tickerDtoList = response.first;
         Date lastUpdated = response.second;

@@ -25,7 +25,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.aaron.pseplanner.R;
-import com.aaron.pseplanner.async.UpdateTickerTask;
+import com.aaron.pseplanner.async.InitTickerListTask;
+import com.aaron.pseplanner.async.UpdateFragmentListTask;
 import com.aaron.pseplanner.bean.TickerDto;
 import com.aaron.pseplanner.bean.TradeDto;
 import com.aaron.pseplanner.constant.DataKey;
@@ -36,6 +37,8 @@ import com.aaron.pseplanner.fragment.SettingsFragment;
 import com.aaron.pseplanner.fragment.TickerListFragment;
 import com.aaron.pseplanner.fragment.TradePlanListFragment;
 import com.aaron.pseplanner.service.LogManager;
+import com.aaron.pseplanner.service.PSEPlannerService;
+import com.aaron.pseplanner.service.implementation.FacadePSEPlannerService;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -53,6 +56,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private AbstractListFragment selectedListFragment;
     private ArrayList<TickerDto> tickerDtoList;
     private ArrayList<TradeDto> tradeDtoList;
+    private PSEPlannerService pseService;
 
     /**
      * Initializes the navigation drawer.
@@ -78,8 +82,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        this.tickerDtoList = new ArrayList<>();
         this.tradeDtoList = new ArrayList<>();
+        this.tickerDtoList = new ArrayList<>();
+        this.pseService = new FacadePSEPlannerService(this);
 
         FragmentManager fm = getSupportFragmentManager();
         Fragment fragment = fm.findFragmentById(R.id.fragment_container);
@@ -89,8 +94,40 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             this.selectedListFragment = new TradePlanListFragment();
             fm.beginTransaction().add(R.id.fragment_container, this.selectedListFragment).commit();
         }
+
+        this.initTickerDtoList();
     }
 
+    /**
+     * Init ticker dto list data.
+     */
+    private void initTickerDtoList()
+    {
+        if(this.tickerDtoList.isEmpty())
+        {
+            LogManager.debug(CLASS_NAME, "initTickerDtoList", "TickerList is empty, getting values from intent extras.");
+
+            // Check if exists in intent extras
+            if(getIntent().getExtras() != null)
+            {
+                this.tickerDtoList = getIntent().getParcelableArrayListExtra(DataKey.EXTRA_TICKER_LIST.toString());
+            }
+
+            if(this.tickerDtoList.isEmpty())
+            {
+                LogManager.debug(CLASS_NAME, "initTickerDtoList", "TickerList is still empty, getting values from database.");
+                // Check if exists in database
+                this.tickerDtoList = (ArrayList<TickerDto>) this.pseService.getTickerListFromDatabase();
+
+                if(this.tickerDtoList.isEmpty())
+                {
+                    LogManager.debug(CLASS_NAME, "initTickerDtoList", "TickerList is still empty, getting values from web api asynchronously.");
+                    // Does not exists in both intent extra and database, then retrieve from web api.
+                    new InitTickerListTask(this, this.pseService).execute();
+                }
+            }
+        }
+    }
 
     /**
      * Receives the result data from the previous fragment. Updates the
@@ -346,7 +383,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         item.setActionView(refreshImage);
 
-        UpdateTickerTask tickerUpdater = new UpdateTickerTask(this, this.selectedListFragment);
+        UpdateFragmentListTask tickerUpdater = new UpdateFragmentListTask(this, this.selectedListFragment);
         tickerUpdater.execute();
     }
 }

@@ -22,7 +22,7 @@ import java.util.List;
  */
 public abstract class AbstractListFragment<T extends Parcelable> extends ListFragment
 {
-    protected PSEPlannerService client;
+    protected PSEPlannerService pseService;
     protected FormatService formatService;
     protected TextView lastUpdatedTextView;
 
@@ -35,7 +35,7 @@ public abstract class AbstractListFragment<T extends Parcelable> extends ListFra
     {
         super.onCreate(savedInstanceState);
 
-        this.client = new FacadePSEPlannerService(getActivity());
+        this.pseService = new FacadePSEPlannerService(getActivity());
         this.formatService = new DefaultFormatService(getActivity());
     }
 
@@ -54,12 +54,11 @@ public abstract class AbstractListFragment<T extends Parcelable> extends ListFra
      * Saves fragment list data state to be loaded when the fragment is created once again.
      */
     @Override
-    public void onDestroy()
+    public void onStop()
     {
         saveListState();
-        super.onDestroy();
+        super.onStop();
     }
-
 
     /**
      * Updates the list view on UI thread, including the last updated text view.

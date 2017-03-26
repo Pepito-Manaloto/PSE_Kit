@@ -12,6 +12,7 @@ import com.aaron.pseplanner.R;
 import com.aaron.pseplanner.adapter.TickerListAdapter;
 import com.aaron.pseplanner.bean.TickerDto;
 import com.aaron.pseplanner.constant.DataKey;
+import com.aaron.pseplanner.constant.PSEPlannerPreference;
 import com.aaron.pseplanner.exception.HttpRequestException;
 import com.aaron.pseplanner.service.LogManager;
 
@@ -65,9 +66,14 @@ public class TickerListFragment extends AbstractListFragment<TickerDto>
         {
             this.tickerDtoList = savedInstanceState.getParcelableArrayList(DataKey.EXTRA_TICKER_LIST.toString());
         }
-        else
+
+        if(this.tickerDtoList != null && !this.tickerDtoList.isEmpty())
         {
-            //TODO: retrieve from database
+            setListAdapter(getArrayAdapter(this.tickerDtoList));
+            if(lastUpdatedTextView != null)
+            {
+                lastUpdatedTextView.setText(getActivity().getString(R.string.last_updated, this.pseService.getLastUpdated(PSEPlannerPreference.LAST_UPDATED_TICKER.toString())));
+            }
         }
     }
 
@@ -79,7 +85,7 @@ public class TickerListFragment extends AbstractListFragment<TickerDto>
     {
         View view = inflater.inflate(R.layout.list_fragment_ticker, parent, false);
         this.lastUpdatedTextView = (TextView) view.findViewById(R.id.textview_last_updated);
-        updateListOnUiThread(this.tickerDtoList, this.client.getLastUpdated());
+        updateListOnUiThread(this.tickerDtoList, this.pseService.getLastUpdated(PSEPlannerPreference.LAST_UPDATED_TICKER.toString()));
 
         return view;
     }
@@ -110,16 +116,23 @@ public class TickerListFragment extends AbstractListFragment<TickerDto>
     @Override
     public void updateList() throws HttpRequestException
     {
-        Pair<List<TickerDto>, Date> response = this.client.getAllTickerList();
+        Pair<List<TickerDto>, Date> response = this.pseService.getAllTickerList();
         this.tickerDtoList = (ArrayList<TickerDto>) response.first;
 
         updateListOnUiThread(response.first, this.formatService.formatLastUpdated(response.second));
     }
 
+    /**
+     * Saves ticker list state in the activity's intent and in the database
+     */
     @Override
     protected void saveListState()
     {
-        getActivity().getIntent().putParcelableArrayListExtra(DataKey.EXTRA_TICKER_LIST.toString(), this.tickerDtoList);
+        if(this.tickerDtoList != null && !this.tickerDtoList.isEmpty())
+        {
+            getActivity().getIntent().putParcelableArrayListExtra(DataKey.EXTRA_TICKER_LIST.toString(), this.tickerDtoList);
+            this.pseService.saveTickerList(this.tickerDtoList);
+        }
     }
 
 }

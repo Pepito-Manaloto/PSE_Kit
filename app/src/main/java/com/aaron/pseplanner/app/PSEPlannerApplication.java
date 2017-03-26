@@ -31,6 +31,11 @@ public class PSEPlannerApplication extends Application
         DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(this, ENCRYPTED ? DATABASE_ENCRYPTED_NAME : DATABASE_NAME);
         Database database = ENCRYPTED ? helper.getEncryptedWritableDb("") : helper.getWritableDb();
         daoSession = new DaoMaster(database).newSession();
+
+        /* uncomment for debugging purposes only
+        QueryBuilder.LOG_SQL = true;
+        QueryBuilder.LOG_VALUES = true;
+        */
     }
 
     public DaoSession getDaoSession()
