@@ -12,13 +12,11 @@ import com.aaron.pseplanner.constant.PSEPlannerPreference;
 import com.aaron.pseplanner.entity.DaoSession;
 import com.aaron.pseplanner.entity.Stock;
 import com.aaron.pseplanner.entity.StockDao;
-import com.aaron.pseplanner.entity.StockDao.Properties;
 import com.aaron.pseplanner.exception.HttpRequestException;
 import com.aaron.pseplanner.service.FormatService;
 import com.aaron.pseplanner.service.HttpClient;
+import com.aaron.pseplanner.service.LogManager;
 import com.aaron.pseplanner.service.PSEPlannerService;
-
-import org.greenrobot.greendao.query.Query;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -33,7 +31,9 @@ import java.util.Set;
 
 public class FacadePSEPlannerService implements PSEPlannerService
 {
+    public static final String CLASS_NAME = FacadePSEPlannerService.class.getSimpleName();
     private static final Date EPOCH_DATE = new Date(0);
+
     private HttpClient phisixHttpClient;
     private HttpClient pseHttpClient;
     private FormatService formatService;
@@ -73,7 +73,9 @@ public class FacadePSEPlannerService implements PSEPlannerService
     @Override
     public String getLastUpdated(String preference)
     {
-        Date lastUpdated = getLastUpdatedDate(preference);
+        Date lastUpdated = this.getLastUpdatedDate(preference);
+
+        LogManager.debug(CLASS_NAME, "getLastUpdated", lastUpdated.toString());
 
         return this.formatService.formatLastUpdated(lastUpdated);
     }
@@ -101,6 +103,8 @@ public class FacadePSEPlannerService implements PSEPlannerService
         this.stockDao.updateInTx(stockList);
         this.updateLastUpdated(lastUpdated);
 
+        LogManager.debug(CLASS_NAME, "saveTickerList", "Saved: count = " + stockList.size() + " date = " + lastUpdated.toString());
+
         return true;
     }
 
@@ -120,6 +124,8 @@ public class FacadePSEPlannerService implements PSEPlannerService
             tickerDtoList.add(new TickerDto(stock.getSymbol(), stock.getName(), stock.getVolume(), stock.getCurrentPrice(), stock.getChange(), stock.getPercentChange()));
         }
 
+        LogManager.debug(CLASS_NAME, "getTickerListFromDatabase", "Retrieved: count = " + tickerDtoList.size());
+
         return tickerDtoList;
     }
 
@@ -127,14 +133,6 @@ public class FacadePSEPlannerService implements PSEPlannerService
     public Pair<TickerDto, Date> getTicker(String symbol) throws HttpRequestException
     {
         Pair<TickerDto, Date> pair = this.phisixHttpClient.getTicker(symbol);
-
-        //        TickerDto dto = pair.first;
-
-        //        Stock updatedStock = this.stockDao.queryBuilder().where(Properties.Symbol.eq(symbol)).unique();
-        //        updatedStock = this.fromTickerDtoToStock(updatedStock, dto, pair.second);
-        //
-        //        this.stockDao.update(updatedStock);
-        //        this.updateLastUpdated(pair.second);
         updateLastUpdated(pair.second);
 
         return pair;
@@ -144,8 +142,6 @@ public class FacadePSEPlannerService implements PSEPlannerService
     public Pair<List<TickerDto>, Date> getAllTickerList() throws HttpRequestException
     {
         Pair<List<TickerDto>, Date> pair = this.phisixHttpClient.getAllTickerList();
-
-        //this.updateStockListFromTickerDtoList(pair.first, pair.second);
         updateLastUpdated(pair.second);
 
         return pair;
@@ -155,8 +151,6 @@ public class FacadePSEPlannerService implements PSEPlannerService
     public Pair<List<TickerDto>, Date> getTickerList(Collection<String> symbols) throws HttpRequestException
     {
         Pair<List<TickerDto>, Date> pair = this.phisixHttpClient.getTickerList(symbols);
-
-        //this.updateStockListFromTickerDtoList(pair.first, pair.second);
         updateLastUpdated(pair.second);
 
         return pair;
@@ -195,32 +189,6 @@ public class FacadePSEPlannerService implements PSEPlannerService
         stock.setDateUpdate(now);
 
         return stock;
-    }
-
-    /**
-     * Updates the list of Stock that corresponds the list of TickerDto.
-     *
-     * @param tickerDtoList the list of stocks to update
-     * @param lastUpdated   the current datetime
-     */
-    @Deprecated
-    private void updateStockListFromTickerDtoList(List<TickerDto> tickerDtoList, Date lastUpdated)
-    {
-        List<Stock> stockList = new ArrayList<>(tickerDtoList.size());
-        Query<Stock> query = this.stockDao.queryBuilder().where(Properties.Symbol.eq("")).build();
-
-        // Retrieve each stock from the database
-        for(TickerDto dto : tickerDtoList)
-        {
-            query.setParameter(0, dto.getSymbol());
-            Stock updatedStock = query.unique();
-            updatedStock = this.fromTickerDtoToStock(updatedStock, dto, lastUpdated);
-
-            stockList.add(updatedStock);
-        }
-
-        this.stockDao.updateInTx(stockList);
-        this.updateLastUpdated(lastUpdated);
     }
 
     /**

@@ -53,12 +53,16 @@ public class DividendFragment extends AbstractCalculatorFragment
         setEditTextOnFocusChangeListener(this.priceEditText, this.sharesEditText, this.dividendEditText);
         setEditTextTextChangeListener(this.priceEditText, this.sharesEditText, this.dividendEditText);
 
+        LogManager.debug(CLASS_NAME, "onCreateView", "");
+
         return view;
     }
 
     @Override
     public void onStop()
     {
+        LogManager.debug(CLASS_NAME, "onStop", "");
+
         this.resetEditTexts();
         super.onStop();
     }

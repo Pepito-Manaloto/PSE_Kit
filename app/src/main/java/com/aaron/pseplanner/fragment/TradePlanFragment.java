@@ -71,6 +71,8 @@ public class TradePlanFragment extends Fragment
     {
         super.onCreate(savedInstanceState);
 
+        LogManager.debug(CLASS_NAME, "onCreate", "");
+
         Bundle args = getArguments();
         this.selectedStock = args.getParcelable(DataKey.EXTRA_TRADE.toString());
         this.formatService = new DefaultFormatService(getActivity());
@@ -85,6 +87,8 @@ public class TradePlanFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
     {
+        LogManager.debug(CLASS_NAME, "onCreateView", "");
+
         ScrollView view = (ScrollView) inflater.inflate(R.layout.fragment_trade_plan, container, false);
 
         TextView stock = (TextView) view.findViewById(R.id.textview_stock);

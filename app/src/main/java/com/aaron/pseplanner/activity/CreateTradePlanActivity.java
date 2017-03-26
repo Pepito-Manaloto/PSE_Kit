@@ -30,6 +30,8 @@ public class CreateTradePlanActivity extends SaveTradePlanActivity
     {
         super.onCreate(savedInstanceState);
 
+        LogManager.debug(CLASS_NAME, "onCreate", "");
+
         if(savedInstanceState != null)
         {
             this.selectedStock = savedInstanceState.getParcelable(DataKey.EXTRA_TICKER.toString());
@@ -66,7 +68,7 @@ public class CreateTradePlanActivity extends SaveTradePlanActivity
 
         outState.putParcelable(DataKey.EXTRA_TICKER.toString(), this.selectedStock);
 
-        LogManager.debug(CLASS_NAME, "onSaveInstanceState", "");
+        LogManager.debug(CLASS_NAME, "onSaveInstanceState", "Stock: " + this.selectedStock);
     }
 
     /**
@@ -78,6 +80,8 @@ public class CreateTradePlanActivity extends SaveTradePlanActivity
     protected void setActivityResult(int resultCode)
     {
         Intent data = new Intent();
+
+        LogManager.debug(CLASS_NAME, "setActivityResult", "Result code: " + resultCode + " Stock: " + this.selectedStock);
 
         if(resultCode == Activity.RESULT_OK)
         {

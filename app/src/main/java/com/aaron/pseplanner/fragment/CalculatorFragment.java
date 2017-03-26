@@ -96,12 +96,16 @@ public class CalculatorFragment extends AbstractCalculatorFragment
         ImageView sellNetAmountImageView = (ImageView) view.findViewById(R.id.imageview_sell_net_amount);
         this.setImageViewOnClickListener(buyNetAmountImageView, view.findViewById(R.id.additional_fees_layout), sellNetAmountImageView, view.findViewById(R.id.deduction_fees_layout));
 
+        LogManager.debug(CLASS_NAME, "onCreateView", "");
+
         return view;
     }
 
     @Override
     public void onStop()
     {
+        LogManager.debug(CLASS_NAME, "onStop", "");
+
         this.resetEditTexts();
         super.onStop();
     }

@@ -15,12 +15,15 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.aaron.pseplanner.R;
+import com.aaron.pseplanner.service.LogManager;
 
 /**
  * Created by aaron.asuncion on 11/18/2016.
  */
 public class SettingsFragment extends Fragment
 {
+    public static final String CLASS_NAME = MidpointFragment.class.getSimpleName();
+
     private LinearLayout refreshIntervalLayout;
     private Dialog intervalDialog;
 
@@ -43,6 +46,7 @@ public class SettingsFragment extends Fragment
             }
         });
 
+        LogManager.debug(CLASS_NAME, "onCreateView", "");
 
         return view;
     }
@@ -53,13 +57,15 @@ public class SettingsFragment extends Fragment
     @Override
     public void onStop()
     {
-        super.onStop();
+        LogManager.debug(CLASS_NAME, "onStop", "");
 
         if(this.intervalDialog != null)
         {
             this.intervalDialog.dismiss();
             this.intervalDialog = null;
         }
+
+        super.onStop();
     }
 
     /**

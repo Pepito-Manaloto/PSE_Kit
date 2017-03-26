@@ -58,6 +58,8 @@ public class TickerListFragment extends AbstractListFragment<TickerDto>
     {
         super.onCreate(savedInstanceState);
 
+        LogManager.debug(CLASS_NAME, "onCreate", "");
+
         if(getArguments() != null && getArguments().containsKey(DataKey.EXTRA_TICKER_LIST.toString()))
         {
             this.tickerDtoList = getArguments().getParcelableArrayList(DataKey.EXTRA_TICKER_LIST.toString());
@@ -87,6 +89,8 @@ public class TickerListFragment extends AbstractListFragment<TickerDto>
         this.lastUpdatedTextView = (TextView) view.findViewById(R.id.textview_last_updated);
         updateListOnUiThread(this.tickerDtoList, this.pseService.getLastUpdated(PSEPlannerPreference.LAST_UPDATED_TICKER.toString()));
 
+        LogManager.debug(CLASS_NAME, "onCreateView", "");
+
         return view;
     }
 
@@ -99,7 +103,7 @@ public class TickerListFragment extends AbstractListFragment<TickerDto>
         super.onSaveInstanceState(outState);
 
         outState.putParcelableArrayList(DataKey.EXTRA_TICKER_LIST.toString(), this.tickerDtoList);
-        LogManager.debug(CLASS_NAME, "onSaveInstanceState", "");
+        LogManager.debug(CLASS_NAME, "onSaveInstanceState", "Ticker list count: " + this.tickerDtoList.size());
     }
 
     @Override

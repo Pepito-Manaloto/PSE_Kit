@@ -37,6 +37,9 @@ public class TradePlanActivity extends AppCompatActivity
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+
+        LogManager.debug(CLASS_NAME, "onCreate", "");
+
         setContentView(R.layout.activity_trade_plan);
 
         if(savedInstanceState != null)
@@ -81,7 +84,7 @@ public class TradePlanActivity extends AppCompatActivity
         outState.putParcelableArrayList(DataKey.EXTRA_TRADE_LIST.toString(), this.tradeDtoPlanList);
         outState.putParcelable(DataKey.EXTRA_TRADE.toString(), this.selectedTradeDtoPlan);
 
-        LogManager.debug(CLASS_NAME, "onSaveInstanceState", "");
+        LogManager.debug(CLASS_NAME, "onSaveInstanceState", "Trade: " + this.selectedTradeDtoPlan);
     }
 
     /**
@@ -107,5 +110,4 @@ public class TradePlanActivity extends AppCompatActivity
             this.selectedTradeDtoPlan = data.getParcelableExtra(DataKey.EXTRA_TRADE.toString());
         }
     }
-
 }

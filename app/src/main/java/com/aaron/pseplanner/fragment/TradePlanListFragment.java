@@ -67,6 +67,8 @@ public class TradePlanListFragment extends AbstractListFragment<TradeDto>
     {
         super.onCreate(savedInstanceState);
 
+        LogManager.debug(CLASS_NAME, "onCreate", "");
+
         this.calculatorService = new DefaultCalculatorService();
 
         if(getArguments() != null && getArguments().containsKey(DataKey.EXTRA_TRADE_LIST.toString()))
@@ -102,6 +104,8 @@ public class TradePlanListFragment extends AbstractListFragment<TradeDto>
         this.lastUpdatedTextView = (TextView) view.findViewById(R.id.textview_last_updated);
         updateListOnUiThread(this.tradeDtoList, this.pseService.getLastUpdated(PSEPlannerPreference.LAST_UPDATED_TRADE_PLAN.toString()));
 
+        LogManager.debug(CLASS_NAME, "onCreateView", "");
+
         return view;
     }
 
@@ -115,7 +119,7 @@ public class TradePlanListFragment extends AbstractListFragment<TradeDto>
 
         outState.putParcelableArrayList(DataKey.EXTRA_TRADE_LIST.toString(), this.tradeDtoList);
 
-        LogManager.debug(CLASS_NAME, "onSaveInstanceState", "");
+        LogManager.debug(CLASS_NAME, "onSaveInstanceState", "Trade plan list count: " + this.tradeDtoList.size());
     }
 
     @Override

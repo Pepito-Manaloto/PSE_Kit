@@ -4,6 +4,7 @@ import android.app.Application;
 
 import com.aaron.pseplanner.entity.DaoMaster;
 import com.aaron.pseplanner.entity.DaoSession;
+import com.aaron.pseplanner.service.LogManager;
 
 import org.greenrobot.greendao.database.Database;
 
@@ -21,6 +22,8 @@ public class PSEPlannerApplication extends Application
     public static final String DATABASE_NAME = "pse-planner-db";
     public static final String DATABASE_ENCRYPTED_NAME = DATABASE_NAME + "-encrypted";
 
+    public static final String CLASS_NAME = PSEPlannerApplication.class.getSimpleName();
+
     private DaoSession daoSession;
 
     @Override
@@ -32,6 +35,7 @@ public class PSEPlannerApplication extends Application
         Database database = ENCRYPTED ? helper.getEncryptedWritableDb("") : helper.getWritableDb();
         daoSession = new DaoMaster(database).newSession();
 
+        LogManager.debug(CLASS_NAME, "onCreate", "Initialized GreenDao database and session.");
         /* uncomment for debugging purposes only
         QueryBuilder.LOG_SQL = true;
         QueryBuilder.LOG_VALUES = true;

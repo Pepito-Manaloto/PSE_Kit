@@ -10,6 +10,7 @@ import com.aaron.pseplanner.R;
 import com.aaron.pseplanner.exception.HttpRequestException;
 import com.aaron.pseplanner.listener.OnScrollShowHideFastScroll;
 import com.aaron.pseplanner.service.FormatService;
+import com.aaron.pseplanner.service.LogManager;
 import com.aaron.pseplanner.service.PSEPlannerService;
 import com.aaron.pseplanner.service.implementation.DefaultFormatService;
 import com.aaron.pseplanner.service.implementation.FacadePSEPlannerService;
@@ -22,6 +23,8 @@ import java.util.List;
  */
 public abstract class AbstractListFragment<T extends Parcelable> extends ListFragment
 {
+    public static final String CLASS_NAME = AbstractListFragment.class.getSimpleName();
+
     protected PSEPlannerService pseService;
     protected FormatService formatService;
     protected TextView lastUpdatedTextView;
@@ -37,6 +40,8 @@ public abstract class AbstractListFragment<T extends Parcelable> extends ListFra
 
         this.pseService = new FacadePSEPlannerService(getActivity());
         this.formatService = new DefaultFormatService(getActivity());
+
+        LogManager.debug(CLASS_NAME, "onCreateView", "");
     }
 
     /**
@@ -48,6 +53,8 @@ public abstract class AbstractListFragment<T extends Parcelable> extends ListFra
         super.onActivityCreated(savedInstanceState);
 
         getListView().setOnScrollListener(new OnScrollShowHideFastScroll());
+
+        LogManager.debug(CLASS_NAME, "onActivityCreated", "");
     }
 
     /**
@@ -56,6 +63,8 @@ public abstract class AbstractListFragment<T extends Parcelable> extends ListFra
     @Override
     public void onStop()
     {
+        LogManager.debug(CLASS_NAME, "onStop", "");
+
         saveListState();
         super.onStop();
     }

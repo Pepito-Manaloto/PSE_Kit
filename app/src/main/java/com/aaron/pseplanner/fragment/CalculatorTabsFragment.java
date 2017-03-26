@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.aaron.pseplanner.R;
+import com.aaron.pseplanner.service.LogManager;
 
 /**
  * Created by Aaron on 1/16/2017.
@@ -18,6 +19,7 @@ import com.aaron.pseplanner.R;
  */
 public class CalculatorTabsFragment extends Fragment
 {
+    public static final String CLASS_NAME = CalculatorTabsFragment.class.getSimpleName();
     private TabLayout tabLayout;
     private ViewPager viewPager;
 
@@ -40,6 +42,8 @@ public class CalculatorTabsFragment extends Fragment
             }
         });
 
+        LogManager.debug(CLASS_NAME, "onCreateView", "");
+
         return view;
     }
 
@@ -48,9 +52,7 @@ public class CalculatorTabsFragment extends Fragment
      */
     private enum Tab
     {
-        Calculator(new CalculatorFragment()),
-        Dividend(new DividendFragment()),
-        Midpoint(new MidpointFragment());
+        Calculator(new CalculatorFragment()), Dividend(new DividendFragment()), Midpoint(new MidpointFragment());
 
         private static final int LENGTH = Tab.values().length;
         private Fragment fragment;

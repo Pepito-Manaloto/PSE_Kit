@@ -54,6 +54,8 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState)
     {
+        LogManager.debug(CLASS_NAME, "onCreateDialog", "");
+
         int editTextId = getArguments().getInt(DataKey.EXTRA_ID.toString());
         this.editText = (EditText) getActivity().findViewById(editTextId);
 
@@ -91,6 +93,8 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
 
         String selectedDate = DATE_FORMATTER.format(calendar);
         this.editText.setText(selectedDate);
+
+        LogManager.debug(CLASS_NAME, "onDateSet", "Date: " + selectedDate);
 
         // Clear focus, because Date EditText is not focusable it is awkward for the focus to be on a different View
         View focusedView = getActivity().getCurrentFocus();

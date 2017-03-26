@@ -39,6 +39,8 @@ public class UpdateTradePlanActivity extends SaveTradePlanActivity
     {
         super.onCreate(savedInstanceState);
 
+        LogManager.debug(CLASS_NAME, "onCreate", "");
+
         if(savedInstanceState != null)
         {
             this.tradeDtoPlanToUpdate = savedInstanceState.getParcelable(DataKey.EXTRA_TRADE.toString());
@@ -114,7 +116,7 @@ public class UpdateTradePlanActivity extends SaveTradePlanActivity
 
         outState.putParcelable(DataKey.EXTRA_TRADE.toString(), this.tradeDtoPlanToUpdate);
 
-        LogManager.debug(CLASS_NAME, "onSaveInstanceState", "");
+        LogManager.debug(CLASS_NAME, "onSaveInstanceState", "Trade Plan: " + this.tradeDtoPlanToUpdate);
     }
 
     /**
@@ -126,6 +128,8 @@ public class UpdateTradePlanActivity extends SaveTradePlanActivity
     protected void setActivityResult(int resultCode)
     {
         Intent data = new Intent();
+
+        LogManager.debug(CLASS_NAME, "setActivityResult", "Result code: " + resultCode + " Trade Plan: " + this.tradeDtoPlanToUpdate);
 
         if(resultCode == Activity.RESULT_OK)
         {

@@ -3,6 +3,7 @@ package com.aaron.pseplanner.activity;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -65,11 +66,13 @@ public abstract class SaveTradePlanActivity extends AppCompatActivity
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+
+        LogManager.debug(CLASS_NAME, "onCreate", "");
+
         setContentView(R.layout.activity_save_trade_plan);
 
         sharesEditText = (EditText) findViewById(R.id.edittext_shares);
         stopLossEditText = (EditText) findViewById(R.id.edittext_stop_loss);
-        targetEditText = (EditText) findViewById(R.id.edittext_target);
         capitalEditText = (EditText) findViewById(R.id.edittext_capital);
         setEditTextOnFocusChangeListener(sharesEditText, stopLossEditText, targetEditText, capitalEditText);
         setEditTextTextChangeListener(sharesEditText, stopLossEditText, targetEditText, capitalEditText);
@@ -95,7 +98,7 @@ public abstract class SaveTradePlanActivity extends AppCompatActivity
         });
 
         this.saveButton = (Button) findViewById(R.id.button_save_trade_plan);
-        this.saveButton .setOnClickListener(new View.OnClickListener()
+        this.saveButton.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
@@ -232,7 +235,8 @@ public abstract class SaveTradePlanActivity extends AppCompatActivity
             }
 
             return true;
-        }else
+        }
+        else
         {
             return false;
         }
@@ -289,6 +293,7 @@ public abstract class SaveTradePlanActivity extends AppCompatActivity
      * @param priceWeightMap the price-weight map
      * @return the average price and total weight pair if inputs are valid, else null
      */
+    @Nullable
     private Pair<BigDecimal, BigDecimal> getAveragePriceTotalWeight(Map<Pair<EditText, EditText>, Pair<String, String>> priceWeightMap)
     {
         BigDecimal averagePrice = BigDecimal.ZERO;

@@ -45,12 +45,16 @@ public class MidpointFragment extends AbstractCalculatorFragment
         setEditTextOnFocusChangeListener(this.highEditText, this.lowEditText);
         setEditTextTextChangeListener(this.highEditText, this.lowEditText);
 
+        LogManager.debug(CLASS_NAME, "onCreateView", "");
+
         return view;
     }
 
     @Override
     public void onStop()
     {
+        LogManager.debug(CLASS_NAME, "onStop", "");
+
         this.resetEditTexts();
         super.onStop();
     }

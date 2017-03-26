@@ -68,6 +68,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+
+        LogManager.debug(CLASS_NAME, "onCreate", "");
+
         setContentView(R.layout.activity_main);
 
         this.toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -282,6 +285,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      */
     public void stopRefreshAnimation()
     {
+        LogManager.debug(CLASS_NAME, "stopRefreshAnimation", "");
+
         // Get our refresh item from the menu
         MenuItem refreshMenu = this.toolbarMenu.findItem(R.id.menu_refresh);
         if(refreshMenu.getActionView() != null)
@@ -383,7 +388,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         item.setActionView(refreshImage);
 
-        UpdateFragmentListTask tickerUpdater = new UpdateFragmentListTask(this, this.selectedListFragment);
-        tickerUpdater.execute();
+        UpdateFragmentListTask fragmentListUpdater = new UpdateFragmentListTask(this, this.selectedListFragment);
+        fragmentListUpdater.execute();
+
+        LogManager.debug(CLASS_NAME, "executeRefreshTicker", "Executed!");
     }
 }
