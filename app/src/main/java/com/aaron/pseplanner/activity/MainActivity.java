@@ -232,10 +232,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 {
                     this.tradeDtoList = getIntent().getParcelableArrayListExtra(DataKey.EXTRA_TRADE_LIST.toString());
                 }
-                else
-                {
-                    this.tradeDtoList = new ArrayList<>();
-                }
 
                 this.selectedListFragment = TradePlanListFragment.newInstance(this.tradeDtoList);
                 updateFragmentContainer(this.selectedListFragment);
@@ -248,10 +244,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 if(getIntent().getExtras() != null)
                 {
                     this.tickerDtoList = getIntent().getParcelableArrayListExtra(DataKey.EXTRA_TICKER_LIST.toString());
-                }
-                else
-                {
-                    this.tickerDtoList = new ArrayList<>();
                 }
 
                 this.selectedListFragment = TickerListFragment.newInstance(this.tickerDtoList);

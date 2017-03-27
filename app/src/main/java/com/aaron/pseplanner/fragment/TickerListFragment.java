@@ -102,8 +102,11 @@ public class TickerListFragment extends AbstractListFragment<TickerDto>
     {
         super.onSaveInstanceState(outState);
 
-        outState.putParcelableArrayList(DataKey.EXTRA_TICKER_LIST.toString(), this.tickerDtoList);
-        LogManager.debug(CLASS_NAME, "onSaveInstanceState", "Ticker list count: " + this.tickerDtoList.size());
+        if(this.tickerDtoList != null && !this.tickerDtoList.isEmpty())
+        {
+            outState.putParcelableArrayList(DataKey.EXTRA_TICKER_LIST.toString(), this.tickerDtoList);
+            LogManager.debug(CLASS_NAME, "onSaveInstanceState", "Ticker list count: " + this.tickerDtoList.size());
+        }
     }
 
     @Override

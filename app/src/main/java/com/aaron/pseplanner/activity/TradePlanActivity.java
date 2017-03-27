@@ -81,10 +81,16 @@ public class TradePlanActivity extends AppCompatActivity
     {
         super.onSaveInstanceState(outState);
 
-        outState.putParcelableArrayList(DataKey.EXTRA_TRADE_LIST.toString(), this.tradeDtoPlanList);
-        outState.putParcelable(DataKey.EXTRA_TRADE.toString(), this.selectedTradeDtoPlan);
+        if(this.tradeDtoPlanList != null && !this.tradeDtoPlanList.isEmpty())
+        {
+            outState.putParcelableArrayList(DataKey.EXTRA_TRADE_LIST.toString(), this.tradeDtoPlanList);
+        }
 
-        LogManager.debug(CLASS_NAME, "onSaveInstanceState", "Trade: " + this.selectedTradeDtoPlan);
+        if(this.selectedTradeDtoPlan != null)
+        {
+            outState.putParcelable(DataKey.EXTRA_TRADE.toString(), this.selectedTradeDtoPlan);
+            LogManager.debug(CLASS_NAME, "onSaveInstanceState", "Trade: " + this.selectedTradeDtoPlan);
+        }
     }
 
     /**

@@ -37,7 +37,9 @@ public class InitTickerListTask extends AsyncTask<Void, Void, String>
         {
             ArrayList<TickerDto> tickerDtoList = (ArrayList<TickerDto>) this.service.getAllTickerList().first;
             this.callerActivity.getIntent().putParcelableArrayListExtra(DataKey.EXTRA_TICKER_LIST.toString(), tickerDtoList);
-            LogManager.debug(CLASS_NAME, "doInBackground", "Retrieved from Web API, count: " + tickerDtoList.size());
+            this.service.saveTickerList(tickerDtoList);
+
+            LogManager.debug(CLASS_NAME, "doInBackground", "Retrieved from Web API and saved to database, count: " + tickerDtoList.size());
 
             return "";
         }
@@ -51,11 +53,6 @@ public class InitTickerListTask extends AsyncTask<Void, Void, String>
     @Override
     protected void onPostExecute(String result)
     {
-        if(StringUtils.isNotBlank(result))
-        {
-            Toast.makeText(this.callerActivity, "Update failed: " + result, Toast.LENGTH_LONG).show();
-        }
-
-        this.callerActivity.stopRefreshAnimation();
+        // Do something?
     }
 }

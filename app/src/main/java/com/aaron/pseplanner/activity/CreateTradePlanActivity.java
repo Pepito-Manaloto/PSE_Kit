@@ -66,9 +66,11 @@ public class CreateTradePlanActivity extends SaveTradePlanActivity
     {
         super.onSaveInstanceState(outState);
 
-        outState.putParcelable(DataKey.EXTRA_TICKER.toString(), this.selectedStock);
-
-        LogManager.debug(CLASS_NAME, "onSaveInstanceState", "Stock: " + this.selectedStock);
+        if(this.selectedStock != null)
+        {
+            outState.putParcelable(DataKey.EXTRA_TICKER.toString(), this.selectedStock);
+            LogManager.debug(CLASS_NAME, "onSaveInstanceState", "Stock: " + this.selectedStock);
+        }
     }
 
     /**

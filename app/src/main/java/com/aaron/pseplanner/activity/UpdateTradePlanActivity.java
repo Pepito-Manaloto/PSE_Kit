@@ -114,9 +114,11 @@ public class UpdateTradePlanActivity extends SaveTradePlanActivity
     {
         super.onSaveInstanceState(outState);
 
-        outState.putParcelable(DataKey.EXTRA_TRADE.toString(), this.tradeDtoPlanToUpdate);
-
-        LogManager.debug(CLASS_NAME, "onSaveInstanceState", "Trade Plan: " + this.tradeDtoPlanToUpdate);
+        if(this.tradeDtoPlanToUpdate != null)
+        {
+            outState.putParcelable(DataKey.EXTRA_TRADE.toString(), this.tradeDtoPlanToUpdate);
+            LogManager.debug(CLASS_NAME, "onSaveInstanceState", "Trade Plan: " + this.tradeDtoPlanToUpdate);
+        }
     }
 
     /**
