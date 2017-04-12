@@ -11,6 +11,7 @@ public enum DataKey
     EXTRA_TICKER_LIST("com.aaron.pseplanner.ticker_list"),
     EXTRA_TRADE("com.aaron.pseplanner.trade"),
     EXTRA_TRADE_LIST("com.aaron.pseplanner.trade_list"),
+    EXTRA_SETTINGS("com.aaron.pseplanner.settings"),
     EXTRA_DATE("com.aaron.pseplanner.date");
 
     private String value;

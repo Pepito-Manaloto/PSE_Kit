@@ -116,7 +116,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 this.tickerDtoList = getIntent().getParcelableArrayListExtra(DataKey.EXTRA_TICKER_LIST.toString());
             }
 
-            if(this.tickerDtoList.isEmpty())
+            if(this.tickerDtoList == null || this.tickerDtoList.isEmpty())
             {
                 LogManager.debug(CLASS_NAME, "initTickerDtoList", "TickerList is still empty, getting values from database.");
                 // Check if exists in database
