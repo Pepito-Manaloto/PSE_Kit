@@ -80,6 +80,10 @@
     <string name="label_percent_of_capital">% Of Capital : </string>
     <string name="label_empty_ticker_list">Refresh to load tickers.</string>
     <string name="label_empty_trade_plan_list">You currently do not have any trade plan.</string>
+    <string name="label_proxy">Proxy</string>
+    <string name="label_no_proxy">No Proxy</string>
+    <string name="label_http">http://</string>
+    <string name="label_colon">:</string>
 
     <!-- Values -->
     <string name="default_value">0</string>
@@ -106,7 +110,7 @@
 
     <string name="create_trade_plan_prompt">Risk-Reward is just %1$.2f\nAre you sure of this trade?</string>
     <string name="delete_trade_plan_prompt">Are you sure you want to delete your trade plan for %1$s?</string>
-    
+
     <string name="input_blank">Please input %1$s</string>
     <string name="last_updated">Last Updated: %1$s</string>
 

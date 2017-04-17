@@ -3,6 +3,8 @@ package com.aaron.pseplanner.bean;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.Objects;
+
 /**
  * Created by aaron.asuncion on 4/12/2017.
  */
@@ -15,12 +17,14 @@ public class SettingsDto implements Parcelable
     private boolean notifyTargetPrice;
     private boolean notiftyTimeStop;
     private boolean notifySoundEffect;
+    private String proxyHost;
+    private int proxyPort;
 
     public SettingsDto()
     {
     }
 
-    public SettingsDto(boolean autoRefresh, int refreshInterval, boolean notifyStopLoss, boolean notifyTargetPrice, boolean notiftyTimeStop, boolean notifySoundEffect)
+    public SettingsDto(boolean autoRefresh, int refreshInterval, boolean notifyStopLoss, boolean notifyTargetPrice, boolean notiftyTimeStop, boolean notifySoundEffect, String proxyHost, int proxyPort)
     {
         this.autoRefresh = autoRefresh;
         this.refreshInterval = refreshInterval;
@@ -28,6 +32,8 @@ public class SettingsDto implements Parcelable
         this.notifyTargetPrice = notifyTargetPrice;
         this.notiftyTimeStop = notiftyTimeStop;
         this.notifySoundEffect = notifySoundEffect;
+        this.proxyHost = proxyHost;
+        this.proxyPort = proxyPort;
     }
 
     public boolean isAutoRefresh()
@@ -90,6 +96,26 @@ public class SettingsDto implements Parcelable
         this.notifySoundEffect = notifySoundEffect;
     }
 
+    public String getProxyHost()
+    {
+        return proxyHost;
+    }
+
+    public void setProxyHost(String proxyHost)
+    {
+        this.proxyHost = proxyHost;
+    }
+
+    public int getProxyPort()
+    {
+        return proxyPort;
+    }
+
+    public void setProxyPort(int proxyPort)
+    {
+        this.proxyPort = proxyPort;
+    }
+
     @Override
     public boolean equals(Object o)
     {
@@ -97,12 +123,14 @@ public class SettingsDto implements Parcelable
         {
             return true;
         }
+
         if(!(o instanceof SettingsDto))
         {
             return false;
         }
+
         SettingsDto that = (SettingsDto) o;
-        return isAutoRefresh() == that.isAutoRefresh() && getRefreshInterval() == that.getRefreshInterval() && isNotifyStopLoss() == that.isNotifyStopLoss() && isNotifyTargetPrice() == that.isNotifyTargetPrice() && isNotiftyTimeStop() == that.isNotiftyTimeStop() && isNotifySoundEffect() == that.isNotifySoundEffect();
+        return isAutoRefresh() == that.isAutoRefresh() && getRefreshInterval() == that.getRefreshInterval() && isNotifyStopLoss() == that.isNotifyStopLoss() && isNotifyTargetPrice() == that.isNotifyTargetPrice() && isNotiftyTimeStop() == that.isNotiftyTimeStop() && isNotifySoundEffect() == that.isNotifySoundEffect() && getProxyPort() == that.getProxyPort() && getProxyHost().equals(that.getProxyHost());
     }
 
     @Override
@@ -114,13 +142,15 @@ public class SettingsDto implements Parcelable
         result = 31 * result + (isNotifyTargetPrice() ? 1 : 0);
         result = 31 * result + (isNotiftyTimeStop() ? 1 : 0);
         result = 31 * result + (isNotifySoundEffect() ? 1 : 0);
+        result = 31 * result + (getProxyHost() != null ? getProxyHost().hashCode() : 0);
+        result = 31 * result + getProxyPort();
         return result;
     }
 
     @Override
     public String toString()
     {
-        return "SettingsDto{" + "autoRefresh=" + autoRefresh + ", refreshInterval=" + refreshInterval + ", notifyStopLoss=" + notifyStopLoss + ", notifyTargetPrice=" + notifyTargetPrice + ", notiftyTimeStop=" + notiftyTimeStop + ", notifySoundEffect=" + notifySoundEffect + '}';
+        return "SettingsDto{" + "autoRefresh=" + autoRefresh + ", refreshInterval=" + refreshInterval + ", notifyStopLoss=" + notifyStopLoss + ", notifyTargetPrice=" + notifyTargetPrice + ", notiftyTimeStop=" + notiftyTimeStop + ", notifySoundEffect=" + notifySoundEffect + ", proxyHost='" + proxyHost + '\'' + ", proxyPort=" + proxyPort + '}';
     }
 
     protected SettingsDto(Parcel in)
@@ -131,6 +161,8 @@ public class SettingsDto implements Parcelable
         this.notifyTargetPrice = in.readByte() != 0;
         this.notiftyTimeStop = in.readByte() != 0;
         this.notifySoundEffect = in.readByte() != 0;
+        this.proxyHost = in.readString();
+        this.proxyPort = in.readInt();
     }
 
     @Override
@@ -142,6 +174,8 @@ public class SettingsDto implements Parcelable
         dest.writeByte((byte) (this.notifyTargetPrice ? 1 : 0));
         dest.writeByte((byte) (this.notiftyTimeStop ? 1 : 0));
         dest.writeByte((byte) (this.notifySoundEffect ? 1 : 0));
+        dest.writeString(this.proxyHost);
+        dest.writeInt(this.proxyPort);
     }
 
     @Override

@@ -1,205 +1,205 @@
 <resources>
 
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-    </style>
+<!-- Base application theme. -->
+<style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <!-- Customize your theme here. -->
+    <item name="colorPrimary">@color/colorPrimary</item>
+    <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+    <item name="colorAccent">@color/colorAccent</item>
+</style>
 
-    <style name="AppTheme.NoActionBar">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-        <item name="actionOverflowMenuStyle">@style/OverflowMenu</item>
-    </style>
+<style name="AppTheme.NoActionBar">
+    <item name="windowActionBar">false</item>
+    <item name="windowNoTitle">true</item>
+    <item name="actionOverflowMenuStyle">@style/OverflowMenu</item>
+</style>
 
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
+<style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
 
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
+<style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
 
-    <style name="NavigationMenu">
-        <item name="android:textSize">18sp</item>
-    </style>
+<style name="NavigationMenu">
+    <item name="android:textSize">18sp</item>
+</style>
 
-    <style name="OverflowMenu" parent="Widget.AppCompat.PopupMenu.Overflow">
-        <!-- Required for pre-Lollipop. -->
-        <item name="overlapAnchor">false</item>
-        <item name="android:dropDownVerticalOffset">-4.0dip</item>
-    </style>
+<style name="OverflowMenu" parent="Widget.AppCompat.PopupMenu.Overflow">
+    <!-- Required for pre-Lollipop. -->
+    <item name="overlapAnchor">false</item>
+    <item name="android:dropDownVerticalOffset">-4.0dip</item>
+</style>
 
-    <style name="AlertDialogTheme" parent="android:Theme.Holo.Light.Dialog">
-        <item name="android:textSize">18sp</item>
-        <item name="android:gravity">center</item>
-        <item name="android:textAlignment">center</item>
-    </style>
+<style name="AlertDialogTheme" parent="android:Theme.Holo.Light.Dialog">
+    <item name="android:textSize">18sp</item>
+    <item name="android:gravity">center</item>
+    <item name="android:textAlignment">center</item>
+</style>
 
-    <style name="Divider">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">1dp</item>
-        <item name="android:layout_marginLeft">7dp</item>
-        <item name="android:layout_marginRight">7dp</item>
-        <item name="android:background">@color/sysLightGray</item>
-    </style>
+<style name="Divider">
+    <item name="android:layout_width">match_parent</item>
+    <item name="android:layout_height">1dp</item>
+    <item name="android:layout_marginLeft">7dp</item>
+    <item name="android:layout_marginRight">7dp</item>
+    <item name="android:background">@color/sysLightGray</item>
+</style>
 
-    <style name="Divider2">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">1dp</item>
-        <item name="android:layout_marginBottom">10dp</item>
-        <item name="android:background">@color/black</item>
-    </style>
+<style name="Divider2">
+    <item name="android:layout_width">match_parent</item>
+    <item name="android:layout_height">1dp</item>
+    <item name="android:layout_marginBottom">10dp</item>
+    <item name="android:background">@color/black</item>
+</style>
 
-    <style name="LinearLayoutHorizontal">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:orientation">horizontal</item>
-        <item name="android:padding">2dp</item>
-        <item name="android:layout_marginBottom">10dp</item>
-    </style>
+<style name="LinearLayoutHorizontal">
+    <item name="android:layout_width">match_parent</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:orientation">horizontal</item>
+    <item name="android:padding">2dp</item>
+    <item name="android:layout_marginBottom">10dp</item>
+</style>
 
-    <style name="LinearLayoutHorizontal.WithDivider" parent="LinearLayoutHorizontal">
-        <item name="android:background">@drawable/border_divider</item>
-    </style>
+<style name="LinearLayoutHorizontal.WithDivider" parent="LinearLayoutHorizontal">
+    <item name="android:background">@drawable/border_divider</item>
+</style>
 
-    <style name="GridLayoutLabelValuePair">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:columnCount">2</item>
-        <item name="android:orientation">horizontal</item>
-        <item name="android:clickable">true</item>
-        <item name="android:focusableInTouchMode">true</item>
-    </style>
+<style name="GridLayoutLabelValuePair">
+    <item name="android:layout_width">wrap_content</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:columnCount">2</item>
+    <item name="android:orientation">horizontal</item>
+    <item name="android:clickable">true</item>
+    <item name="android:focusableInTouchMode">true</item>
+</style>
 
-    <style name="GridLayoutLabelValue.Expandable" parent="GridLayoutLabelValuePair">
-        <item name="android:layout_marginTop">0dp</item>
-        <item name="android:visibility">gone</item>
-    </style>
+<style name="GridLayoutLabelValue.Expandable" parent="GridLayoutLabelValuePair">
+    <item name="android:layout_marginTop">0dp</item>
+    <item name="android:visibility">gone</item>
+</style>
 
-    <style name="SettingsCheckbox">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:paddingTop">20dp</item>
-        <item name="android:paddingBottom">20dp</item>
-        <item name="android:paddingLeft">15dp</item>
-        <item name="android:paddingRight">25dp</item>
-        <item name="android:paddingStart">15dp</item>
-        <item name="android:paddingEnd">25dp</item>
-        <item name="android:textSize">20sp</item>
-        <item name="android:button">@null</item>
-        <item name="android:drawableRight">?android:attr/listChoiceIndicatorMultiple</item>
-    </style>
+<style name="SettingsCheckbox">
+    <item name="android:layout_width">match_parent</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:paddingTop">20dp</item>
+    <item name="android:paddingBottom">20dp</item>
+    <item name="android:paddingLeft">15dp</item>
+    <item name="android:paddingRight">25dp</item>
+    <item name="android:paddingStart">15dp</item>
+    <item name="android:paddingEnd">25dp</item>
+    <item name="android:textSize">20sp</item>
+    <item name="android:button">@null</item>
+    <item name="android:drawableRight">?android:attr/listChoiceIndicatorMultiple</item>
+</style>
 
-    <style name="TextViewLabel">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginBottom">10dp</item>
-        <item name="android:layout_marginLeft">10dp</item>
-        <item name="android:layout_marginStart">10dp</item>
-        <item name="android:textSize">18sp</item>
-        <item name="android:textColor">@color/black</item>
-    </style>
+<style name="TextViewLabel">
+    <item name="android:layout_width">wrap_content</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:layout_marginBottom">10dp</item>
+    <item name="android:layout_marginLeft">10dp</item>
+    <item name="android:layout_marginStart">10dp</item>
+    <item name="android:textSize">18sp</item>
+    <item name="android:textColor">@color/black</item>
+</style>
 
-    <style name="TextViewLabel.SubLabel" parent="TextViewLabel">
-        <item name="android:layout_marginLeft">20dp</item>
-        <item name="android:layout_marginStart">20dp</item>
-        <item name="android:textSize">15sp</item>
-    </style>
+<style name="TextViewLabel.SubLabel" parent="TextViewLabel">
+    <item name="android:layout_marginLeft">20dp</item>
+    <item name="android:layout_marginStart">20dp</item>
+    <item name="android:textSize">15sp</item>
+</style>
 
-    <style name="TextViewLabel.EditText" parent="TextViewLabel">
-        <item name="android:background">@drawable/edit_text_style</item>
-        <item name="android:paddingTop">3dp</item>
-        <item name="android:paddingBottom">3dp</item>
-        <item name="android:paddingStart">7dp</item>
-        <item name="android:paddingLeft">7dp</item>
-    </style>
+<style name="TextViewLabel.EditText" parent="TextViewLabel">
+    <item name="android:background">@drawable/edit_text_style</item>
+    <item name="android:paddingTop">3dp</item>
+    <item name="android:paddingBottom">3dp</item>
+    <item name="android:paddingStart">7dp</item>
+    <item name="android:paddingLeft">7dp</item>
+</style>
 
-    <style name="TextViewLabel.EditText.CashDividend" parent="TextViewLabel.EditText">
-        <item name="android:width">75dp</item>
-        <item name="android:inputType">numberDecimal</item>
-        <item name="android:maxLength">@integer/dividend_cash_max_length</item>
-    </style>
+<style name="TextViewLabel.EditText.CashDividend" parent="TextViewLabel.EditText">
+    <item name="android:width">75dp</item>
+    <item name="android:inputType">numberDecimal</item>
+    <item name="android:maxLength">@integer/dividend_cash_max_length</item>
+</style>
 
-    <style name="TextViewLabel.EditText.Percent" parent="TextViewLabel.EditText">
-        <item name="android:width">65dp</item>
-        <item name="android:inputType">numberDecimal</item>
-        <item name="android:maxLength">@integer/percent_max_length</item>
-    </style>
+<style name="TextViewLabel.EditText.Percent" parent="TextViewLabel.EditText">
+    <item name="android:width">65dp</item>
+    <item name="android:inputType">numberDecimal</item>
+    <item name="android:maxLength">@integer/percent_max_length</item>
+</style>
 
-    <style name="TextViewLabel.EditText.Price" parent="TextViewLabel.EditText">
-        <item name="android:width">80dp</item>
-        <item name="android:inputType">numberDecimal</item>
-        <item name="android:maxLength">@integer/price_max_length</item>
-    </style>
+<style name="TextViewLabel.EditText.Price" parent="TextViewLabel.EditText">
+    <item name="android:width">80dp</item>
+    <item name="android:inputType">numberDecimal</item>
+    <item name="android:maxLength">@integer/price_max_length</item>
+</style>
 
-    <style name="TextViewLabel.EditText.Date" parent="TextViewLabel.EditText">
-        <item name="android:width">105dp</item>
-        <item name="android:focusable">false</item>
-        <item name="android:cursorVisible">false</item>
-        <item name="android:inputType">date</item>
-        <item name="android:maxLength">@integer/date_max_length</item>
-    </style>
+<style name="TextViewLabel.EditText.Date" parent="TextViewLabel.EditText">
+    <item name="android:width">105dp</item>
+    <item name="android:focusable">false</item>
+    <item name="android:cursorVisible">false</item>
+    <item name="android:inputType">date</item>
+    <item name="android:maxLength">@integer/date_max_length</item>
+</style>
 
-    <style name="TextViewLabel.EditText.Shares" parent="TextViewLabel.EditText">
-        <item name="android:width">135dp</item>
-        <item name="android:inputType">number</item>
-        <item name="android:maxLength">@integer/shares_max_length</item>
-    </style>
+<style name="TextViewLabel.EditText.Shares" parent="TextViewLabel.EditText">
+    <item name="android:width">135dp</item>
+    <item name="android:inputType">number</item>
+    <item name="android:maxLength">@integer/shares_max_length</item>
+</style>
 
-    <style name="ImageViewExpandable">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:contentDescription">@string/hide_arrow</item>
-        <item name="android:focusable">true</item>
-        <item name="android:clickable">true</item>
-        <item name="android:src">@mipmap/hide_arrow</item>
-        <item name="android:layout_marginTop">-10dp</item>
-    </style>
+<style name="ImageViewExpandable">
+    <item name="android:layout_width">wrap_content</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:contentDescription">@string/hide_arrow</item>
+    <item name="android:focusable">true</item>
+    <item name="android:clickable">true</item>
+    <item name="android:src">@mipmap/hide_arrow</item>
+    <item name="android:layout_marginTop">-10dp</item>
+</style>
 
-    <style name="ImageViewRemove">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:contentDescription">@string/remove_button</item>
-        <item name="android:focusable">true</item>
-        <item name="android:clickable">true</item>
-        <item name="android:src">@mipmap/remove_button</item>
-        <item name="android:paddingLeft">10dp</item>
-        <item name="android:paddingStart">10dp</item>
-        <item name="android:layout_marginTop">-15dp</item>
-    </style>
+<style name="ImageViewRemove">
+    <item name="android:layout_width">wrap_content</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:contentDescription">@string/remove_button</item>
+    <item name="android:focusable">true</item>
+    <item name="android:clickable">true</item>
+    <item name="android:src">@mipmap/remove_button</item>
+    <item name="android:paddingLeft">10dp</item>
+    <item name="android:paddingStart">10dp</item>
+    <item name="android:layout_marginTop">-15dp</item>
+</style>
 
-    <style name="TickerRow">
-        <item name="android:layout_width">0dp</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginTop">5dp</item>
-        <item name="android:layout_marginBottom">5dp</item>
-        <item name="android:layout_weight">1</item>
-        <item name="android:textColor">@color/black</item>
-        <item name="android:gravity">center</item>
-    </style>
+<style name="TickerRow">
+    <item name="android:layout_width">0dp</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:layout_marginTop">5dp</item>
+    <item name="android:layout_marginBottom">5dp</item>
+    <item name="android:layout_weight">1</item>
+    <item name="android:textColor">@color/black</item>
+    <item name="android:gravity">center</item>
+</style>
 
-    <style name="TickerRow.TickerRow_TextView" parent="TickerRow">
-        <item name="android:textSize">15sp</item>
-    </style>
+<style name="TickerRow.TickerRow_TextView" parent="TickerRow">
+    <item name="android:textSize">15sp</item>
+</style>
 
-    <style name="TickerRow.TickerHeader_TextView" parent="TickerRow">
-        <item name="android:textSize">16sp</item>
-        <item name="android:textStyle">bold</item>
-    </style>
+<style name="TickerRow.TickerHeader_TextView" parent="TickerRow">
+    <item name="android:textSize">16sp</item>
+    <item name="android:textStyle">bold</item>
+</style>
 
-    <style name="TickerRow.TickerRow_ImageView" parent="TickerRow">
-        <item name="android:layout_width">35dp</item>
-        <item name="android:layout_height">30dp</item>
-        <item name="android:contentDescription">@string/add_button</item>
-        <item name="android:src">@mipmap/add_button</item>
-    </style>
+<style name="TickerRow.TickerRow_ImageView" parent="TickerRow">
+    <item name="android:layout_width">35dp</item>
+    <item name="android:layout_height">30dp</item>
+    <item name="android:contentDescription">@string/add_button</item>
+    <item name="android:src">@mipmap/add_button</item>
+</style>
 
-    <style name="LastModified_TextView">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:padding">3dp</item>
-        <item name="android:paddingStart">7dp</item>
-        <item name="android:paddingLeft">7dp</item>
-        <item name="android:background">@color/black</item>
-        <item name="android:textColor">@color/white</item>
-    </style>
+<style name="LastModified_TextView">
+    <item name="android:layout_width">match_parent</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:padding">3dp</item>
+    <item name="android:paddingStart">7dp</item>
+    <item name="android:paddingLeft">7dp</item>
+    <item name="android:background">@color/black</item>
+    <item name="android:textColor">@color/white</item>
+</style>
 </resources>

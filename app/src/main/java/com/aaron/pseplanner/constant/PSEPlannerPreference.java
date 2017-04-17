@@ -14,4 +14,6 @@ public enum PSEPlannerPreference
     NOTIFY_STOP_LOSS,
     NOTIFY_TIME_STOP,
     NOTIFY_SOUND_EFFECT,
+    PROXY_HOST,
+    PROXY_PORT,
 }

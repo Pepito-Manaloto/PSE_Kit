@@ -32,18 +32,16 @@ public class DefaultSettingsService implements SettingsService
         editor.putBoolean(PSEPlannerPreference.NOTIFY_STOP_LOSS.toString(), dto.isNotifyStopLoss());
         editor.putBoolean(PSEPlannerPreference.NOTIFY_TIME_STOP.toString(), dto.isNotiftyTimeStop());
         editor.putBoolean(PSEPlannerPreference.NOTIFY_SOUND_EFFECT.toString(), dto.isNotifySoundEffect());
+        editor.putString(PSEPlannerPreference.PROXY_HOST.toString(), dto.getProxyHost());
+        editor.putInt(PSEPlannerPreference.PROXY_PORT.toString(), dto.getProxyPort());
+
         editor.apply();
     }
 
     @Override
     public SettingsDto getSettings()
     {
-        if(this.sharedPreferences.contains(PSEPlannerPreference.AUTO_REFRESH.toString()) &&
-           this.sharedPreferences.contains(PSEPlannerPreference.REFRESH_INTERVAL.toString()) &&
-           this.sharedPreferences.contains(PSEPlannerPreference.NOTIFY_TARGET_PRICE.toString()) &&
-           this.sharedPreferences.contains(PSEPlannerPreference.NOTIFY_STOP_LOSS.toString()) &&
-           this.sharedPreferences.contains(PSEPlannerPreference.NOTIFY_TIME_STOP.toString()) &&
-           this.sharedPreferences.contains(PSEPlannerPreference.NOTIFY_SOUND_EFFECT.toString()))
+        if(this.sharedPreferences.contains(PSEPlannerPreference.AUTO_REFRESH.toString()) && this.sharedPreferences.contains(PSEPlannerPreference.REFRESH_INTERVAL.toString()) && this.sharedPreferences.contains(PSEPlannerPreference.NOTIFY_TARGET_PRICE.toString()) && this.sharedPreferences.contains(PSEPlannerPreference.NOTIFY_STOP_LOSS.toString()) && this.sharedPreferences.contains(PSEPlannerPreference.NOTIFY_TIME_STOP.toString()) && this.sharedPreferences.contains(PSEPlannerPreference.NOTIFY_SOUND_EFFECT.toString()))
         {
             boolean autoRefresh = this.sharedPreferences.getBoolean(PSEPlannerPreference.AUTO_REFRESH.toString(), false);
             int interval = this.sharedPreferences.getInt(PSEPlannerPreference.REFRESH_INTERVAL.toString(), 30);
@@ -51,8 +49,10 @@ public class DefaultSettingsService implements SettingsService
             boolean stopLoss = this.sharedPreferences.getBoolean(PSEPlannerPreference.NOTIFY_STOP_LOSS.toString(), false);
             boolean timeStop = this.sharedPreferences.getBoolean(PSEPlannerPreference.NOTIFY_TIME_STOP.toString(), false);
             boolean soundEffect = this.sharedPreferences.getBoolean(PSEPlannerPreference.NOTIFY_SOUND_EFFECT.toString(), false);
+            String proxyHost = this.sharedPreferences.getString(PSEPlannerPreference.PROXY_HOST.toString(), "");
+            int proxyPort = this.sharedPreferences.getInt(PSEPlannerPreference.PROXY_PORT.toString(), 0);
 
-            return new SettingsDto(autoRefresh, interval, targetPrice, stopLoss, timeStop, soundEffect);
+            return new SettingsDto(autoRefresh, interval, targetPrice, stopLoss, timeStop, soundEffect, proxyHost, proxyPort);
         }
 
         return null;

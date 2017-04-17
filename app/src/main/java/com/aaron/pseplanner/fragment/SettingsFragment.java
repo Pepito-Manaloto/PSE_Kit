@@ -1,5 +1,6 @@
 package com.aaron.pseplanner.fragment;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -12,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -34,7 +36,6 @@ public class SettingsFragment extends Fragment
 {
     public static final String CLASS_NAME = SettingsFragment.class.getSimpleName();
 
-    private LinearLayout refreshIntervalLayout;
     private Dialog intervalDialog;
     private SettingsDto settingsDto;
     private SettingsService service;
@@ -45,6 +46,7 @@ public class SettingsFragment extends Fragment
     private CheckBox notifyTargetPriceCheck;
     private CheckBox notiftyTimeStopCheck;
     private CheckBox notifySoundEffectCheck;
+    private TextView proxyText;
 
     /**
      * Initializes non-fragment user interface.
@@ -81,12 +83,12 @@ public class SettingsFragment extends Fragment
     {
         View view = inflater.inflate(R.layout.fragment_settings, parent, false);
 
-        this.refreshIntervalLayout = (LinearLayout) view.findViewById(R.id.layout_refresh_interval);
+        LinearLayout refreshIntervalLayout = (LinearLayout) view.findViewById(R.id.layout_refresh_interval);
         this.refreshIntervalText = (TextView) view.findViewById(R.id.textview_refresh_interval);
 
         String refreshInterval = this.settingsDto.getRefreshInterval() == 0 ? getResources().getStringArray(R.array.refresh_intervals)[0] : String.valueOf(this.settingsDto.getRefreshInterval());
         this.refreshIntervalText.setText(refreshInterval);
-        this.refreshIntervalLayout.setOnClickListener(new View.OnClickListener()
+        refreshIntervalLayout.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
@@ -106,6 +108,19 @@ public class SettingsFragment extends Fragment
         this.notifySoundEffectCheck = (CheckBox) view.findViewById(R.id.checkbox_notify_with_sound_effect);
         this.notifySoundEffectCheck.setChecked(this.settingsDto.isNotifySoundEffect());
 
+        LinearLayout proxyLayout = (LinearLayout) view.findViewById(R.id.layout_proxy);
+        proxyLayout.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                createAndShowProxyDialog();
+            }
+        });
+
+        this.proxyText = (TextView) view.findViewById(R.id.textview_proxy);
+        updateProxyText();
+
         LogManager.debug(CLASS_NAME, "onCreateView", "");
 
         return view;
@@ -117,10 +132,10 @@ public class SettingsFragment extends Fragment
     @Override
     public void onStop()
     {
-        LogManager.debug(CLASS_NAME, "onStop", "");
-
         this.updateSettingsDto(this.settingsDto);
         this.service.saveSettings(this.settingsDto);
+
+        LogManager.debug(CLASS_NAME, "onStop", "Saved: " + this.settingsDto);
 
         if(this.intervalDialog != null)
         {
@@ -176,6 +191,50 @@ public class SettingsFragment extends Fragment
     }
 
     /**
+     * Creates and show the proxy dialog.
+     */
+    private void createAndShowProxyDialog()
+    {
+        Activity activity = getActivity();
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+
+        View view = activity.getLayoutInflater().inflate(R.layout.dialog_proxy, null);
+        builder.setView(view);
+
+        final EditText proxyHost = (EditText) view.findViewById(R.id.edittext_proxy_host);
+        if(StringUtils.isNotBlank(this.settingsDto.getProxyHost()))
+        {
+            proxyHost.setText(this.settingsDto.getProxyHost());
+        }
+
+        final EditText proxyPort = (EditText) view.findViewById(R.id.edittext_proxy_port);
+        if(this.settingsDto.getProxyPort() > 0)
+        {
+            proxyPort.setText(String.valueOf(this.settingsDto.getProxyPort()));
+        }
+
+        builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener()
+        {
+            public void onClick(DialogInterface dialog, int id)
+            {
+                settingsDto.setProxyHost(proxyHost.getText().toString());
+                settingsDto.setProxyPort(Integer.parseInt(proxyPort.getText().toString()));
+                updateProxyText();
+                dialog.dismiss();
+            }
+        });
+        builder.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener()
+        {
+            public void onClick(DialogInterface dialog, int id)
+            {
+                dialog.dismiss();
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+    /**
      * Updates the settings dto with the current values of the settings.
      *
      * @param dto the settings to update
@@ -194,5 +253,17 @@ public class SettingsFragment extends Fragment
         dto.setNotifyTargetPrice(this.notifyTargetPriceCheck.isChecked());
         dto.setNotiftyTimeStop(this.notiftyTimeStopCheck.isChecked());
         dto.setNotifySoundEffect(this.notifySoundEffectCheck.isChecked());
+    }
+
+    private void updateProxyText()
+    {
+        if(StringUtils.isNotBlank(this.settingsDto.getProxyHost()) && this.settingsDto.getProxyPort() > 0)
+        {
+            this.proxyText.setText(this.settingsDto.getProxyHost() + ":" + this.settingsDto.getProxyPort());
+        }
+        else
+        {
+            this.proxyText.setText(R.string.label_no_proxy);
+        }
     }
 }

@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.util.Pair;
 
 import com.aaron.pseplanner.app.PSEPlannerApplication;
+import com.aaron.pseplanner.bean.SettingsDto;
 import com.aaron.pseplanner.bean.TickerDto;
 import com.aaron.pseplanner.constant.PSEPlannerPreference;
 import com.aaron.pseplanner.entity.DaoSession;
@@ -17,6 +18,9 @@ import com.aaron.pseplanner.service.FormatService;
 import com.aaron.pseplanner.service.HttpClient;
 import com.aaron.pseplanner.service.LogManager;
 import com.aaron.pseplanner.service.PSEPlannerService;
+import com.aaron.pseplanner.service.SettingsService;
+
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -37,14 +41,26 @@ public class FacadePSEPlannerService implements PSEPlannerService
     private HttpClient phisixHttpClient;
     private HttpClient pseHttpClient;
     private FormatService formatService;
+    private SettingsService settingsService;
 
     private SharedPreferences sharedPreferences;
     private StockDao stockDao;
 
     public FacadePSEPlannerService(@NonNull Activity activity)
     {
-        this.phisixHttpClient = new PhisixHttpClient(DEFAUT_TIMEOUT, DEFAUT_TIMEOUT, DEFAUT_TIMEOUT);
-        this.pseHttpClient = new PSEHttpClient(DEFAUT_TIMEOUT, DEFAUT_TIMEOUT, DEFAUT_TIMEOUT);
+        this.settingsService = new DefaultSettingsService(activity);
+        SettingsDto settings = this.settingsService.getSettings();
+        if(StringUtils.isNotBlank(settings.getProxyHost()) && settings.getProxyPort() > 0)
+        {
+            this.phisixHttpClient = new PhisixHttpClient(DEFAUT_TIMEOUT, DEFAUT_TIMEOUT, DEFAUT_TIMEOUT, settings.getProxyHost(), settings.getProxyPort());
+            this.pseHttpClient = new PSEHttpClient(DEFAUT_TIMEOUT, DEFAUT_TIMEOUT, DEFAUT_TIMEOUT, settings.getProxyHost(), settings.getProxyPort());
+        }
+        else
+        {
+            this.phisixHttpClient = new PhisixHttpClient(DEFAUT_TIMEOUT, DEFAUT_TIMEOUT, DEFAUT_TIMEOUT);
+            this.pseHttpClient = new PSEHttpClient(DEFAUT_TIMEOUT, DEFAUT_TIMEOUT, DEFAUT_TIMEOUT);
+        }
+
         this.formatService = new DefaultFormatService(activity);
         this.sharedPreferences = activity.getSharedPreferences(PSEPlannerPreference.class.getSimpleName(), Context.MODE_PRIVATE);
 
@@ -55,8 +71,19 @@ public class FacadePSEPlannerService implements PSEPlannerService
 
     public FacadePSEPlannerService(@NonNull Activity activity, long connectionTimeout, long readTimeout, long pingInterval)
     {
-        this.phisixHttpClient = new PhisixHttpClient(connectionTimeout, readTimeout, pingInterval);
-        this.pseHttpClient = new PSEHttpClient(connectionTimeout, readTimeout, pingInterval);
+        this.settingsService = new DefaultSettingsService(activity);
+        SettingsDto settings = this.settingsService.getSettings();
+        if(StringUtils.isNotBlank(settings.getProxyHost()) && settings.getProxyPort() > 0)
+        {
+            this.phisixHttpClient = new PhisixHttpClient(connectionTimeout, readTimeout, pingInterval, settings.getProxyHost(), settings.getProxyPort());
+            this.pseHttpClient = new PSEHttpClient(connectionTimeout, readTimeout, pingInterval, settings.getProxyHost(), settings.getProxyPort());
+        }
+        else
+        {
+            this.phisixHttpClient = new PhisixHttpClient(connectionTimeout, readTimeout, pingInterval);
+            this.pseHttpClient = new PSEHttpClient(connectionTimeout, readTimeout, pingInterval);
+        }
+
         this.formatService = new DefaultFormatService(activity);
         this.sharedPreferences = activity.getSharedPreferences(PSEPlannerPreference.class.getSimpleName(), Context.MODE_PRIVATE);
 
