@@ -120,7 +120,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 this.tickerDtoList = getIntent().getParcelableArrayListExtra(DataKey.EXTRA_TICKER_LIST.toString());
             }
 
-            if(this.tickerDtoList.isEmpty())
+            if(this.tickerDtoList == null || this.tickerDtoList.isEmpty())
             {
                 LogManager.debug(CLASS_NAME, "initTickerDtoList", "TickerList is still empty, getting values from database.");
                 // Check if exists in database
@@ -244,7 +244,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                 this.selectedListFragment = TradePlanListFragment.newInstance(this.tradeDtoList);
                 updateFragmentContainer(this.selectedListFragment);
-                this.inflateToolbarMenuItems();
+                this.showToolbarMenuItems();
                 this.toolbar.setTitle(R.string.app_name);
                 break;
             }
@@ -259,21 +259,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                 this.selectedListFragment = TickerListFragment.newInstance(this.tickerDtoList);
                 updateFragmentContainer(this.selectedListFragment);
-                this.inflateToolbarMenuItems();
+                this.showToolbarMenuItems();
                 this.toolbar.setTitle(R.string.nav_ticker);
                 break;
             }
             case R.id.nav_calculator:
             {
                 updateFragmentContainer(new CalculatorTabsFragment());
-                this.removeToolbarMenuItems();
+                this.hideToolbarMenuItems();
                 this.toolbar.setTitle(R.string.nav_calculator);
                 break;
             }
             case R.id.nav_settings:
             {
                 updateFragmentContainer(new SettingsFragment());
-                this.removeToolbarMenuItems();
+                this.hideToolbarMenuItems();
                 this.toolbar.setTitle(R.string.nav_settings);
                 break;
             }
@@ -313,24 +313,40 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     /**
-     * Inflates the toolbar menu in the view.
+     * Shows the toolbar menu in the view.
      */
-    protected void inflateToolbarMenuItems()
+    protected void showToolbarMenuItems()
     {
-        if(this.toolbarMenu != null && this.toolbarMenu.size() <= 0)
+        if(this.toolbarMenu != null && this.toolbarMenu.size() > 0)
         {
-            getMenuInflater().inflate(R.menu.toolbar_options, this.toolbarMenu);
+            setMenuItemsVisibility(this.toolbarMenu, true);
         }
     }
 
     /**
-     * Removes the toolbar menu in the view.
+     * Hides the toolbar menu in the view.
      */
-    protected void removeToolbarMenuItems()
+    protected void hideToolbarMenuItems()
     {
         if(this.toolbarMenu != null && this.toolbarMenu.size() > 0)
         {
-            this.toolbarMenu.clear();
+            setMenuItemsVisibility(this.toolbarMenu, false);
+        }
+    }
+
+    /**
+     * Sets the visibility of the items in the given menu.
+     *
+     * @param menu    the menu to alter
+     * @param visible if true shows each item of the menu, else hides all items
+     */
+    protected void setMenuItemsVisibility(Menu menu, boolean visible)
+    {
+        int size = menu.size();
+        for(int i = 0; i < size; i++)
+        {
+            MenuItem item = menu.getItem(i);
+            item.setVisible(visible);
         }
     }
 
@@ -376,12 +392,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     /**
-     * Executes the UpdateTicker async task. Starts the refresh button animation then retrieves data from PSE.
-     *
-     * @param item the refresh button menu item
+     * Stops the rotating animation of the refresh menu.
      */
-    protected void executeRefreshTicker(MenuItem item)
+    protected void startRefreshAnimation(MenuItem item)
     {
+        LogManager.debug(CLASS_NAME, "startRefreshAnimation", "");
+
         // Do animation start
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         ImageView refreshImage = (ImageView) inflater.inflate(R.layout.imageview_refresh, null);
@@ -390,6 +406,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         refreshImage.startAnimation(rotation);
 
         item.setActionView(refreshImage);
+    }
+
+    /**
+     * Executes the UpdateTicker async task. Starts the refresh button animation then retrieves data from PSE.
+     *
+     * @param item the refresh button menu item
+     */
+    protected void executeRefreshTicker(MenuItem item)
+    {
+        startRefreshAnimation(item);
 
         UpdateFragmentListTask fragmentListUpdater = new UpdateFragmentListTask(this, this.selectedListFragment, this.isUpdating);
         fragmentListUpdater.execute();

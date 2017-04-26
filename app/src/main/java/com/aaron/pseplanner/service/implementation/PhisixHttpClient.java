@@ -40,6 +40,8 @@ public class PhisixHttpClient extends BaseHttpClient
 
         this.service = retrofit.create(PhisixService.class);
         this.calculatorService = new DefaultCalculatorService();
+
+        LogManager.debug(CLASS_NAME, "PhisixHttpClient", "Initialized without proxy.");
     }
 
     public PhisixHttpClient(long connectionTimeout, long readTimeout, long pingInterval, String proxyHost, int proxyPort)
@@ -48,6 +50,8 @@ public class PhisixHttpClient extends BaseHttpClient
 
         this.service = retrofit.create(PhisixService.class);
         this.calculatorService = new DefaultCalculatorService();
+
+        LogManager.debug(CLASS_NAME, "PhisixHttpClient", "Initialized with proxy = " + proxyHost + ":" + proxyPort);
     }
 
     /**
@@ -150,7 +154,7 @@ public class PhisixHttpClient extends BaseHttpClient
         }
         catch(IOException e)
         {
-            LogManager.error(CLASS_NAME, "getTicker", "Error getting stock from Phisix: " + e.getCause().getClass().getSimpleName(), e);
+            LogManager.error(CLASS_NAME, "getTicker", "Error getting stock from Phisix: " + e.getMessage(), e);
 
             if(response != null)
             {

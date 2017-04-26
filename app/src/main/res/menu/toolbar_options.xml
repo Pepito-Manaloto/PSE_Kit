@@ -15,7 +15,6 @@
         android:title="@string/refresh_button"
         android:icon="@drawable/ic_menu_refresh"
         android:orderInCategory="2"
-
         app:showAsAction="ifRoom"
         />
 </menu>

@@ -73,7 +73,7 @@ public abstract class BaseHttpClient implements HttpClient
                                                 .readTimeout(readTimeout, TimeUnit.SECONDS)
                                                 .writeTimeout(readTimeout, TimeUnit.SECONDS)
                                                 .pingInterval(pingInterval, TimeUnit.SECONDS)
-                                                .proxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost, proxyPort)))
+                                                .proxy(new Proxy(Proxy.Type.HTTP, InetSocketAddress.createUnresolved(proxyHost, proxyPort)))
                                                 .build();
 
         retrofit = new Retrofit.Builder()

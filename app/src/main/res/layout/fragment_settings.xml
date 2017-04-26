@@ -22,12 +22,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:paddingBottom="20dp"
             android:paddingEnd="30dp"
-            android:paddingRight="30dp"
             android:paddingLeft="15dp"
+            android:paddingRight="30dp"
             android:paddingStart="15dp"
-            android:paddingTop="20dp"
-            android:paddingBottom="20dp">
+            android:paddingTop="20dp">
 
             <TextView
                 android:id="@android:id/empty"
@@ -76,6 +76,40 @@
             android:text="@string/settings_notify_with_sound_effect"/>
 
         <View style="@style/Divider"/>
+
+        <LinearLayout
+            android:id="@+id/layout_proxy"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="20dp"
+            android:paddingEnd="30dp"
+            android:paddingLeft="15dp"
+            android:paddingRight="30dp"
+            android:paddingStart="15dp"
+            android:paddingTop="20dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/label_proxy"
+                android:textColor="@color/black"
+                android:textSize="20sp"/>
+
+            <TextView
+                android:id="@+id/textview_proxy"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="10dp"
+                android:paddingStart="10dp"
+                android:text="@string/label_no_proxy"
+                android:textColor="@color/black"
+                android:textSize="16sp"/>
+        </LinearLayout>
+
+        <View
+            style="@style/Divider"
+            android:layout_marginBottom="10dp"/>
     </LinearLayout>
 
 </ScrollView>
