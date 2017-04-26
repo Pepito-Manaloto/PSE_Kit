@@ -14,7 +14,7 @@ import java.util.List;
  */
 public interface HttpClient
 {
-    long DEFAUT_TIMEOUT = 10_000;
+    long DEFAUT_TIMEOUT = 15_000;
 
     /**
      * Gets a specific ticker(stock) from a web API.

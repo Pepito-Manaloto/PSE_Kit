@@ -50,15 +50,18 @@ public class FacadePSEPlannerService implements PSEPlannerService
     {
         this.settingsService = new DefaultSettingsService(activity);
         SettingsDto settings = this.settingsService.getSettings();
+        // Deduct by 1 so that it will not overlap the next request
+        long timeout = (settings.getRefreshInterval() > 0 ? settings.getRefreshInterval() : DEFAUT_TIMEOUT) - 1;
+
         if(StringUtils.isNotBlank(settings.getProxyHost()) && settings.getProxyPort() > 0)
         {
-            this.phisixHttpClient = new PhisixHttpClient(DEFAUT_TIMEOUT, DEFAUT_TIMEOUT, DEFAUT_TIMEOUT, settings.getProxyHost(), settings.getProxyPort());
-            this.pseHttpClient = new PSEHttpClient(DEFAUT_TIMEOUT, DEFAUT_TIMEOUT, DEFAUT_TIMEOUT, settings.getProxyHost(), settings.getProxyPort());
+            this.phisixHttpClient = new PhisixHttpClient(timeout, timeout, timeout, settings.getProxyHost(), settings.getProxyPort());
+            this.pseHttpClient = new PSEHttpClient(timeout, timeout, timeout, settings.getProxyHost(), settings.getProxyPort());
         }
         else
         {
-            this.phisixHttpClient = new PhisixHttpClient(DEFAUT_TIMEOUT, DEFAUT_TIMEOUT, DEFAUT_TIMEOUT);
-            this.pseHttpClient = new PSEHttpClient(DEFAUT_TIMEOUT, DEFAUT_TIMEOUT, DEFAUT_TIMEOUT);
+            this.phisixHttpClient = new PhisixHttpClient(timeout, timeout, timeout);
+            this.pseHttpClient = new PSEHttpClient(timeout, timeout, timeout);
         }
 
         this.formatService = new DefaultFormatService(activity);

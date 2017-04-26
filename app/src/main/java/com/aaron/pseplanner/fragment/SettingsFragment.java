@@ -26,6 +26,7 @@ import com.aaron.pseplanner.service.SettingsService;
 import com.aaron.pseplanner.service.implementation.DefaultSettingsService;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 
 import java.util.ArrayList;
 
@@ -218,7 +219,9 @@ public class SettingsFragment extends Fragment
             public void onClick(DialogInterface dialog, int id)
             {
                 settingsDto.setProxyHost(proxyHost.getText().toString());
-                settingsDto.setProxyPort(Integer.parseInt(proxyPort.getText().toString()));
+
+                String port = proxyPort.getText().toString();
+                settingsDto.setProxyPort(NumberUtils.isDigits(port) ? Integer.parseInt(port) : 0);
                 updateProxyText();
                 dialog.dismiss();
             }
