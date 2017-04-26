@@ -8,10 +8,15 @@ import android.util.Pair;
 
 import com.aaron.pseplanner.app.PSEPlannerApplication;
 import com.aaron.pseplanner.bean.TickerDto;
+import com.aaron.pseplanner.bean.TradeDto;
+import com.aaron.pseplanner.bean.TradeEntryDto;
 import com.aaron.pseplanner.constant.PSEPlannerPreference;
 import com.aaron.pseplanner.entity.DaoSession;
 import com.aaron.pseplanner.entity.Stock;
 import com.aaron.pseplanner.entity.StockDao;
+import com.aaron.pseplanner.entity.Trade;
+import com.aaron.pseplanner.entity.TradeDao;
+import com.aaron.pseplanner.entity.TradeEntry;
 import com.aaron.pseplanner.exception.HttpRequestException;
 import com.aaron.pseplanner.service.FormatService;
 import com.aaron.pseplanner.service.HttpClient;
@@ -40,6 +45,7 @@ public class FacadePSEPlannerService implements PSEPlannerService
 
     private SharedPreferences sharedPreferences;
     private StockDao stockDao;
+    private TradeDao tradeDao;
 
     public FacadePSEPlannerService(@NonNull Activity activity)
     {
@@ -51,6 +57,7 @@ public class FacadePSEPlannerService implements PSEPlannerService
         // get the note DAO
         DaoSession daoSession = ((PSEPlannerApplication) activity.getApplication()).getDaoSession();
         this.stockDao = daoSession.getStockDao();
+        this.tradeDao = daoSession.getTradeDao();
     }
 
     public FacadePSEPlannerService(@NonNull Activity activity, long connectionTimeout, long readTimeout, long pingInterval)
@@ -63,6 +70,7 @@ public class FacadePSEPlannerService implements PSEPlannerService
         // get the note DAO
         DaoSession daoSession = ((PSEPlannerApplication) activity.getApplication()).getDaoSession();
         this.stockDao = daoSession.getStockDao();
+        this.tradeDao = daoSession.getTradeDao();
     }
 
     /**
@@ -81,13 +89,44 @@ public class FacadePSEPlannerService implements PSEPlannerService
     }
 
     /**
-     * Insert/Update the given TickerDto as Stock entity in the database.
+     * Inserts the given TickerDto list as Stock entity in the database.
      *
      * @param tickerDtoList the list of TickerDto
      * @return true if successful, else false
      */
     @Override
-    public boolean saveTickerList(List<TickerDto> tickerDtoList)
+    public boolean insertTickerList(List<TickerDto> tickerDtoList)
+    {
+        Set<Stock> stockList = this.getStockListAndUpdateLastUpdated(tickerDtoList);
+
+        // Bulk insert
+        this.stockDao.insertOrReplaceInTx(stockList);
+
+        LogManager.debug(CLASS_NAME, "insertTickerList", "Inserted: count = " + stockList.size());
+
+        return true;
+    }
+
+    /**
+     * Updates the given TickerDto list as Stock entity in the database.
+     *
+     * @param tickerDtoList the list of TickerDto
+     * @return true if successful, else false
+     */
+    @Override
+    public boolean updateTickerList(List<TickerDto> tickerDtoList)
+    {
+        Set<Stock> stockList = this.getStockListAndUpdateLastUpdated(tickerDtoList);
+
+        // Bulk update
+        this.stockDao.updateInTx(stockList);
+
+        LogManager.debug(CLASS_NAME, "updateTickerList", "Updated: count = " + stockList.size());
+
+        return true;
+    }
+
+    private Set<Stock> getStockListAndUpdateLastUpdated(List<TickerDto> tickerDtoList)
     {
         Date lastUpdated = this.getLastUpdatedDate(PSEPlannerPreference.LAST_UPDATED_TICKER.toString());
         Set<Stock> stockList = new HashSet<>(tickerDtoList.size());
@@ -99,13 +138,10 @@ public class FacadePSEPlannerService implements PSEPlannerService
             stockList.add(stock);
         }
 
-        // Bulk update
-        this.stockDao.updateInTx(stockList);
-        this.updateLastUpdated(lastUpdated);
+        this.updateLastUpdated(lastUpdated, PSEPlannerPreference.LAST_UPDATED_TICKER);
+        LogManager.debug(CLASS_NAME, "getStockListAndUpdateLastUpdated", "Last updated = " + lastUpdated.toString());
 
-        LogManager.debug(CLASS_NAME, "saveTickerList", "Saved: count = " + stockList.size() + " date = " + lastUpdated.toString());
-
-        return true;
+        return stockList;
     }
 
     /**
@@ -114,10 +150,10 @@ public class FacadePSEPlannerService implements PSEPlannerService
      * @return {@code List<TickerDto>}
      */
     @Override
-    public List<TickerDto> getTickerListFromDatabase()
+    public ArrayList<TickerDto> getTickerListFromDatabase()
     {
-        List<Stock> stockList = this.stockDao.loadAll();
-        List<TickerDto> tickerDtoList = new ArrayList<>(stockList.size());
+        List<Stock> stockList = this.stockDao.queryBuilder().orderAsc(StockDao.Properties.Symbol).list();
+        ArrayList<TickerDto> tickerDtoList = new ArrayList<>(stockList.size());
 
         for(Stock stock : stockList)
         {
@@ -130,10 +166,129 @@ public class FacadePSEPlannerService implements PSEPlannerService
     }
 
     @Override
+    public boolean isTickerListSavedInDatabase()
+    {
+        long count = this.stockDao.count();
+
+        LogManager.debug(CLASS_NAME, "isTickerListSavedInDatabase", "Retrieved: count = " + count);
+
+        return count > getExpectedMinimumTotalStocks();
+    }
+
+    @Override
+    public int getExpectedMinimumTotalStocks()
+    {
+        // TODO: Need to determine current total stocks
+        return 200;
+    }
+
+    /**
+     * Inserts the given TradeDto as Trade entity in the database.
+     *
+     * @param tradeDto the TradeDto
+     * @return true if successful, else false
+     */
+    @Override
+    public boolean insertTradePlan(TradeDto tradeDto)
+    {
+        Date now = new Date();
+        this.updateLastUpdated(now, PSEPlannerPreference.LAST_UPDATED_TRADE_PLAN);
+        Trade trade = this.fromTradeDtoToTrade(tradeDto, now);
+
+        this.tradeDao.insert(trade);
+
+        LogManager.debug(CLASS_NAME, "insertTradePlan", "Inserted: dto = " + tradeDto);
+
+        return true;
+    }
+
+
+    /**
+     * Updates the given TradeDto list as Trade entity in the database.
+     *
+     * @param tradeDtoFirst the first tradeDto, ensures this method will not be called with an empty vararg
+     * @param tradeDtos     the list of TradeDto
+     * @return true if successful, else false
+     */
+    @Override
+    public boolean updateTradePlan(TradeDto tradeDtoFirst, TradeDto... tradeDtos)
+    {
+        Date now = new Date();
+        Set<Trade> tradeList = new HashSet<>(tradeDtos.length);
+        tradeList.add(this.fromTradeDtoToTrade(tradeDtoFirst, now));
+
+        for(TradeDto dto : tradeDtos)
+        {
+            Trade trade = this.fromTradeDtoToTrade(dto, now);
+            tradeList.add(trade);
+        }
+
+        this.tradeDao.updateInTx(tradeList);
+
+        LogManager.debug(CLASS_NAME, "updateTradePlan", "Updated: count = " + tradeList.size());
+
+        return true;
+    }
+
+    private Trade fromTradeDtoToTrade(TradeDto tradeDto, Date now)
+    {
+        Trade trade = new Trade();
+
+        return this.fromTradeDtoToTrade(trade, tradeDto, now);
+    }
+
+    private Trade fromTradeDtoToTrade(Trade trade, TradeDto tradeDto, Date now)
+    {
+        trade.setSymbol(tradeDto.getSymbol());
+        trade.setCurrentPrice(tradeDto.getCurrentPrice().toPlainString());
+        trade.setAveragePrice(tradeDto.getAveragePrice().toPlainString());
+        trade.setPercentCapital(tradeDto.getPercentCapital().toPlainString());
+        trade.setCapital(tradeDto.getCapital());
+        trade.setTotalAmount(tradeDto.getTotalAmount().toPlainString());
+        trade.setTotalShares(tradeDto.getTotalShares());
+        trade.setEntryDate(tradeDto.getEntryDate());
+        trade.setDaysToStopDate(tradeDto.getDaysToStopDate());
+        trade.setHoldingPeriod(tradeDto.getHoldingPeriod());
+        trade.setTargetPrice(tradeDto.getTargetPrice().toPlainString());
+        trade.setGainToTarget(tradeDto.getGainToTarget());
+        trade.setGainLoss(tradeDto.getGainLoss().toPlainString());
+        trade.setGainLossPercent(tradeDto.getGainLossPercent().toPlainString());
+        trade.setLossToStopLoss(tradeDto.getLossToStopLoss().toPlainString());
+        trade.setStopLoss(tradeDto.getStopLoss().toPlainString());
+        trade.setStopDate(tradeDto.getStopDate());
+        trade.setPriceToBreakEven(tradeDto.getPriceToBreakEven().toPlainString());
+        trade.setRiskReward(tradeDto.getRiskReward().toPlainString());
+
+        return trade;
+    }
+
+    @Override
+    public ArrayList<TradeDto> getTradePlanListFromDatabase()
+    {
+        List<Trade> tradePlanList = this.tradeDao.loadAll();
+        ArrayList<TradeDto> tradePlanDtoList = new ArrayList<>(tradePlanList.size());
+
+        for(Trade trade : tradePlanList)
+        {
+            List<TradeEntryDto> tradeEntryDtos = new ArrayList<>(trade.getTradeEntries().size());
+            for(TradeEntry tradeEntry : trade.getTradeEntries())
+            {
+                tradeEntryDtos.add(new TradeEntryDto(tradeEntry.getTradeSymbol(), tradeEntry.getEntryPrice(), tradeEntry.getShares(), tradeEntry.getPercentWeight()));
+            }
+
+            tradePlanDtoList.add(new TradeDto(trade.getSymbol(), trade.getEntryDate(), trade.getHoldingPeriod(), trade.getCurrentPrice(), trade.getAveragePrice(), trade.getTotalShares(), trade.getTotalAmount(), trade.getPriceToBreakEven(), trade.getTargetPrice(), trade.getGainLoss(), trade.getGainLossPercent(), trade.getGainToTarget(), trade.getStopLoss(), trade.getLossToStopLoss(), trade.getStopDate(), trade.getDaysToStopDate(), trade.getRiskReward(), trade.getCapital(), trade.getPercentCapital(), tradeEntryDtos));
+        }
+
+        LogManager.debug(CLASS_NAME, "getTradePlanListFromDatabase", "Retrieved: count = " + tradePlanDtoList.size());
+
+        return tradePlanDtoList;
+    }
+
+    @Override
     public Pair<TickerDto, Date> getTicker(String symbol) throws HttpRequestException
     {
         Pair<TickerDto, Date> pair = this.phisixHttpClient.getTicker(symbol);
-        updateLastUpdated(pair.second);
+        updateLastUpdated(pair.second, PSEPlannerPreference.LAST_UPDATED_TICKER);
 
         return pair;
     }
@@ -142,7 +297,7 @@ public class FacadePSEPlannerService implements PSEPlannerService
     public Pair<List<TickerDto>, Date> getAllTickerList() throws HttpRequestException
     {
         Pair<List<TickerDto>, Date> pair = this.phisixHttpClient.getAllTickerList();
-        updateLastUpdated(pair.second);
+        updateLastUpdated(pair.second, PSEPlannerPreference.LAST_UPDATED_TICKER);
 
         return pair;
     }
@@ -151,7 +306,7 @@ public class FacadePSEPlannerService implements PSEPlannerService
     public Pair<List<TickerDto>, Date> getTickerList(Collection<String> symbols) throws HttpRequestException
     {
         Pair<List<TickerDto>, Date> pair = this.phisixHttpClient.getTickerList(symbols);
-        updateLastUpdated(pair.second);
+        updateLastUpdated(pair.second, PSEPlannerPreference.LAST_UPDATED_TICKER);
 
         return pair;
     }
@@ -196,10 +351,10 @@ public class FacadePSEPlannerService implements PSEPlannerService
      *
      * @param now the current datetime
      */
-    private void updateLastUpdated(Date now)
+    private void updateLastUpdated(Date now, PSEPlannerPreference preference)
     {
         SharedPreferences.Editor editor = this.sharedPreferences.edit();
-        editor.putLong(PSEPlannerPreference.LAST_UPDATED_TICKER.toString(), now.getTime());
+        editor.putLong(preference.toString(), now.getTime());
         editor.apply();
     }
 

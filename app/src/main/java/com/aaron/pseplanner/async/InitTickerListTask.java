@@ -1,12 +1,14 @@
 package com.aaron.pseplanner.async;
 
+import android.content.Intent;
 import android.os.AsyncTask;
-import android.widget.Toast;
 
 import com.aaron.pseplanner.activity.MainActivity;
 import com.aaron.pseplanner.bean.TickerDto;
 import com.aaron.pseplanner.constant.DataKey;
+import com.aaron.pseplanner.entity.DaoSession;
 import com.aaron.pseplanner.exception.HttpRequestException;
+import com.aaron.pseplanner.fragment.TickerListFragment;
 import com.aaron.pseplanner.service.LogManager;
 import com.aaron.pseplanner.service.PSEPlannerService;
 
@@ -33,13 +35,27 @@ public class InitTickerListTask extends AsyncTask<Void, Void, String>
     @Override
     protected String doInBackground(Void... params)
     {
+        LogManager.debug(CLASS_NAME, "doInBackground", "Start");
         try
         {
-            ArrayList<TickerDto> tickerDtoList = (ArrayList<TickerDto>) this.service.getAllTickerList().first;
-            this.callerActivity.getIntent().putParcelableArrayListExtra(DataKey.EXTRA_TICKER_LIST.toString(), tickerDtoList);
-            this.service.saveTickerList(tickerDtoList);
+            ArrayList<TickerDto> tickerDtoList;
+            if(!this.service.isTickerListSavedInDatabase())
+            {
+                tickerDtoList = (ArrayList<TickerDto>) this.service.getAllTickerList().first;
+                this.service.insertTickerList(tickerDtoList);
 
-            LogManager.debug(CLASS_NAME, "doInBackground", "Retrieved from Web API and saved to database, count: " + tickerDtoList.size());
+                LogManager.debug(CLASS_NAME, "doInBackground", "Retrieved from Web API and saved to database, count: " + tickerDtoList.size());
+            }
+            else
+            {
+                tickerDtoList = this.service.getTickerListFromDatabase();
+                LogManager.debug(CLASS_NAME, "doInBackground", "Retrieved from database, count: " + tickerDtoList.size());
+            }
+
+            if(!tickerDtoList.isEmpty())
+            {
+                this.callerActivity.getIntent().putParcelableArrayListExtra(DataKey.EXTRA_TICKER_LIST.toString(), tickerDtoList);
+            }
 
             return "";
         }
@@ -53,6 +69,14 @@ public class InitTickerListTask extends AsyncTask<Void, Void, String>
     @Override
     protected void onPostExecute(String result)
     {
-        // Do something?
+        if(StringUtils.isBlank(result))
+        {
+            // Update ticker view if it is the current selected fragment
+            if(this.callerActivity.getSelectedListFragment() instanceof TickerListFragment)
+            {
+                LogManager.debug(CLASS_NAME, "onPostExecute", "Updating TickerListFragment.");
+                this.callerActivity.getSelectedListFragment().updateListFromDatabase();
+            }
+        }
     }
 }

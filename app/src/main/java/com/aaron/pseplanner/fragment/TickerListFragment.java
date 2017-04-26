@@ -68,6 +68,10 @@ public class TickerListFragment extends AbstractListFragment<TickerDto>
         {
             this.tickerDtoList = savedInstanceState.getParcelableArrayList(DataKey.EXTRA_TICKER_LIST.toString());
         }
+        else
+        {
+            this.tickerDtoList = this.pseService.getTickerListFromDatabase();
+        }
 
         if(this.tickerDtoList != null && !this.tickerDtoList.isEmpty())
         {
@@ -121,12 +125,26 @@ public class TickerListFragment extends AbstractListFragment<TickerDto>
      * @throws HttpRequestException if the http request failed, does not update the list
      */
     @Override
-    public void updateList() throws HttpRequestException
+    public void updateListFromWeb() throws HttpRequestException
     {
         Pair<List<TickerDto>, Date> response = this.pseService.getAllTickerList();
         this.tickerDtoList = (ArrayList<TickerDto>) response.first;
 
         updateListOnUiThread(response.first, this.formatService.formatLastUpdated(response.second));
+    }
+
+    /**
+     * Updates the ticker list by getting the latest data from the database.
+     */
+    @Override
+    public void updateListFromDatabase()
+    {
+        this.tickerDtoList = this.pseService.getTickerListFromDatabase();
+
+        if(!this.tickerDtoList.isEmpty())
+        {
+            updateListOnUiThread(this.tickerDtoList, this.pseService.getLastUpdated(PSEPlannerPreference.LAST_UPDATED_TICKER.toString()));
+        }
     }
 
     /**
@@ -138,7 +156,7 @@ public class TickerListFragment extends AbstractListFragment<TickerDto>
         if(this.tickerDtoList != null && !this.tickerDtoList.isEmpty())
         {
             getActivity().getIntent().putParcelableArrayListExtra(DataKey.EXTRA_TICKER_LIST.toString(), this.tickerDtoList);
-            this.pseService.saveTickerList(this.tickerDtoList);
+            this.pseService.updateTickerList(this.tickerDtoList);
         }
     }
 

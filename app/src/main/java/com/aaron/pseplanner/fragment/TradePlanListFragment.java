@@ -81,16 +81,13 @@ public class TradePlanListFragment extends AbstractListFragment<TradeDto>
         }
         else
         {
-            // TODO: retrieve and parse data from database
+            this.tradeDtoList = pseService.getTradePlanListFromDatabase();
             this.tradesMap = new ConcurrentHashMap<>();
-            for(int i = 0; i < 5; i++)
-            {
-                this.tradesMap.put("CPG", new TradeDto("CPG", new Date(), 1, 0.53, 0.55, 300_000, 156_000, 0.567, 0.6, -28_020, -3.86, 53_543, 0.51, -10_000.7, new Date(), 23, 2.34, 500_000, 30.42, Arrays.asList(new TradeEntryDto("CPG", 0.54, 150_000, 50), new TradeEntryDto("CPG", 0.55, 150_000, 50))));
-                this.tradesMap.put("CYBR", new TradeDto("CYBR", new Date(), 14, 0.56, 0.55, 500_000, 256_000, 0.577, 0.6, 98_120, 2.86, 53_543, 0.53, -40_000, new Date(), 56, 5.8, 500_000, 20.42, Arrays.asList(new TradeEntryDto("CYBR", 0.54, 200_000, 37), new TradeEntryDto("CYBR", 0.55, 150_000, 31.5), new TradeEntryDto("CYBR", 0.56, 150_000, 31.5))));
-                this.tradesMap.put("GERI", new TradeDto("GERI", new Date(), 63, 1.02, 0.98, 800_000, 891_020, 0.989, 1.1, 138_020, 6.86, 53_543, 0.91, -7_000.34, new Date(), 87, 8.14, 700_000, 57.42, Arrays.asList(new TradeEntryDto("GERI", 1.02, 800_000, 100))));
-            }
 
-            this.tradeDtoList = new ArrayList<>(this.tradesMap.values());
+            for(TradeDto dto : this.tradeDtoList)
+            {
+                this.tradesMap.put(dto.getSymbol(), dto);
+            }
         }
     }
 
@@ -134,7 +131,7 @@ public class TradePlanListFragment extends AbstractListFragment<TradeDto>
      * @throws HttpRequestException if the http request failed, does not update the list
      */
     @Override
-    public void updateList() throws HttpRequestException
+    public void updateListFromWeb() throws HttpRequestException
     {
         Pair<List<TickerDto>, Date> response = this.pseService.getTickerList(this.tradesMap.keySet());
 
@@ -159,6 +156,20 @@ public class TradePlanListFragment extends AbstractListFragment<TradeDto>
             this.tradeDtoList = new ArrayList<>(this.tradesMap.values());
 
             updateListOnUiThread(this.tradeDtoList, this.formatService.formatLastUpdated(lastUpdated));
+        }
+    }
+
+    /**
+     * Updates the trade list by getting the latest data from the database.
+     */
+    @Override
+    public void updateListFromDatabase()
+    {
+        this.tradeDtoList = this.pseService.getTradePlanListFromDatabase();
+
+        if(!this.tradeDtoList.isEmpty())
+        {
+            updateListOnUiThread(this.tradeDtoList, this.pseService.getLastUpdated(PSEPlannerPreference.LAST_UPDATED_TRADE_PLAN.toString()));
         }
     }
 

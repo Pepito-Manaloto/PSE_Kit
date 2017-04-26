@@ -42,6 +42,7 @@ import com.aaron.pseplanner.service.implementation.FacadePSEPlannerService;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * The main activity, contains Navigation items in a Drawer. Contains fragments: trade plan list, calculator, ticker, and settings.
@@ -49,6 +50,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
 {
     public static final String CLASS_NAME = MainActivity.class.getSimpleName();
+    private final AtomicBoolean isUpdating = new AtomicBoolean(false);
 
     private DrawerLayout drawer;
     private Menu toolbarMenu;
@@ -98,6 +100,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             fm.beginTransaction().add(R.id.fragment_container, this.selectedListFragment).commit();
         }
 
+
         this.initTickerDtoList();
     }
 
@@ -110,8 +113,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         {
             LogManager.debug(CLASS_NAME, "initTickerDtoList", "TickerList is empty, getting values from intent extras.");
 
+            Bundle extras = getIntent().getExtras();
             // Check if exists in intent extras
-            if(getIntent().getExtras() != null)
+            if(extras != null && extras.containsKey(DataKey.EXTRA_TICKER_LIST.toString()))
             {
                 this.tickerDtoList = getIntent().getParcelableArrayListExtra(DataKey.EXTRA_TICKER_LIST.toString());
             }
@@ -122,7 +126,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 // Check if exists in database
                 this.tickerDtoList = (ArrayList<TickerDto>) this.pseService.getTickerListFromDatabase();
 
-                if(this.tickerDtoList.isEmpty())
+                if(this.tickerDtoList.size() < this.pseService.getExpectedMinimumTotalStocks())
                 {
                     LogManager.debug(CLASS_NAME, "initTickerDtoList", "TickerList is still empty, getting values from web api asynchronously.");
                     // Does not exists in both intent extra and database, then retrieve from web api.
@@ -189,7 +193,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
             case R.id.menu_refresh:
             {
-                executeRefreshTicker(item);
+                if(!isUpdating.get())
+                {
+                    executeRefreshTicker(item);
+                }
                 return true;
             }
             default:
@@ -228,7 +235,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         {
             case R.id.nav_trade_plan:
             {
-                if(getIntent().getExtras() != null)
+                Bundle extras = getIntent().getExtras();
+                // Check if exists in intent extras
+                if(extras != null && extras.containsKey(DataKey.EXTRA_TRADE_LIST.toString()))
                 {
                     this.tradeDtoList = getIntent().getParcelableArrayListExtra(DataKey.EXTRA_TRADE_LIST.toString());
                 }
@@ -241,7 +250,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
             case R.id.nav_ticker:
             {
-                if(getIntent().getExtras() != null)
+                Bundle extras = getIntent().getExtras();
+                // Check if exists in intent extras
+                if(extras != null && extras.containsKey(DataKey.EXTRA_TICKER_LIST.toString()))
                 {
                     this.tickerDtoList = getIntent().getParcelableArrayListExtra(DataKey.EXTRA_TICKER_LIST.toString());
                 }
@@ -380,9 +391,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         item.setActionView(refreshImage);
 
-        UpdateFragmentListTask fragmentListUpdater = new UpdateFragmentListTask(this, this.selectedListFragment);
+        UpdateFragmentListTask fragmentListUpdater = new UpdateFragmentListTask(this, this.selectedListFragment, this.isUpdating);
         fragmentListUpdater.execute();
 
+        isUpdating.set(true);
+
         LogManager.debug(CLASS_NAME, "executeRefreshTicker", "Executed!");
+    }
+
+    public AbstractListFragment getSelectedListFragment()
+    {
+        return this.selectedListFragment;
     }
 }

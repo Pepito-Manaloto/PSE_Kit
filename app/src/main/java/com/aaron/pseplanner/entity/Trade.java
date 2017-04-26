@@ -22,7 +22,7 @@ import org.greenrobot.greendao.DaoException;
 public class Trade
 {
     @Id(autoincrement = true)
-    private long id;
+    private Long id;
 
     @NotNull
     private Date entryDate;
@@ -82,21 +82,23 @@ public class Trade
     @OrderBy("order ASC")
     private List<TradeEntry> tradeEntries;
 
-    /**
-     * Used to resolve relations
-     */
+    /** Used to resolve relations */
     @Generated(hash = 2040040024)
     private transient DaoSession daoSession;
 
-    /**
-     * Used for active entity operations.
-     */
+    /** Used for active entity operations. */
     @Generated(hash = 295783675)
     private transient TradeDao myDao;
 
-    @Generated(hash = 1265420813)
-    public Trade(long id, @NotNull Date entryDate, int holdingPeriod, @NotNull String symbol, @NotNull String currentPrice, @NotNull String averagePrice, long totalShares, @NotNull String totalAmount, @NotNull String priceToBreakEven, @NotNull String targetPrice, @NotNull String gainLoss, @NotNull String gainLossPercent, long gainToTarget, @NotNull String lossToStopLoss, @NotNull String stopLoss, @NotNull Date stopDate, int daysToStopDate, @NotNull String riskReward, long capital, @NotNull String percentCapital)
-    {
+    @Generated(hash = 1471992902)
+    public Trade(Long id, @NotNull Date entryDate, int holdingPeriod, @NotNull String symbol,
+            @NotNull String currentPrice, @NotNull String averagePrice, long totalShares,
+            @NotNull String totalAmount, @NotNull String priceToBreakEven,
+            @NotNull String targetPrice, @NotNull String gainLoss,
+            @NotNull String gainLossPercent, long gainToTarget,
+            @NotNull String lossToStopLoss, @NotNull String stopLoss, @NotNull Date stopDate,
+            int daysToStopDate, @NotNull String riskReward, long capital,
+            @NotNull String percentCapital) {
         this.id = id;
         this.entryDate = entryDate;
         this.holdingPeriod = holdingPeriod;
@@ -120,16 +122,15 @@ public class Trade
     }
 
     @Generated(hash = 1773414334)
-    public Trade()
-    {
+    public Trade() {
     }
 
-    public long getId()
+    public Long getId()
     {
         return this.id;
     }
 
-    public void setId(long id)
+    public void setId(Long id)
     {
         this.id = id;
     }
@@ -329,21 +330,16 @@ public class Trade
      * Changes to to-many relations are not persisted, make changes to the target entity.
      */
     @Generated(hash = 1790216817)
-    public List<TradeEntry> getTradeEntries()
-    {
-        if(tradeEntries == null)
-        {
+    public List<TradeEntry> getTradeEntries() {
+        if (tradeEntries == null) {
             final DaoSession daoSession = this.daoSession;
-            if(daoSession == null)
-            {
+            if (daoSession == null) {
                 throw new DaoException("Entity is detached from DAO context");
             }
             TradeEntryDao targetDao = daoSession.getTradeEntryDao();
             List<TradeEntry> tradeEntriesNew = targetDao._queryTrade_TradeEntries(symbol);
-            synchronized(this)
-            {
-                if(tradeEntries == null)
-                {
+            synchronized (this) {
+                if (tradeEntries == null) {
                     tradeEntries = tradeEntriesNew;
                 }
             }
@@ -351,12 +347,9 @@ public class Trade
         return tradeEntries;
     }
 
-    /**
-     * Resets a to-many relationship, making the next get call to query for a fresh result.
-     */
+    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
     @Generated(hash = 1183466938)
-    public synchronized void resetTradeEntries()
-    {
+    public synchronized void resetTradeEntries() {
         tradeEntries = null;
     }
 
@@ -365,10 +358,8 @@ public class Trade
      * Entity must attached to an entity context.
      */
     @Generated(hash = 128553479)
-    public void delete()
-    {
-        if(myDao == null)
-        {
+    public void delete() {
+        if (myDao == null) {
             throw new DaoException("Entity is detached from DAO context");
         }
         myDao.delete(this);
@@ -379,10 +370,8 @@ public class Trade
      * Entity must attached to an entity context.
      */
     @Generated(hash = 1942392019)
-    public void refresh()
-    {
-        if(myDao == null)
-        {
+    public void refresh() {
+        if (myDao == null) {
             throw new DaoException("Entity is detached from DAO context");
         }
         myDao.refresh(this);
@@ -393,10 +382,8 @@ public class Trade
      * Entity must attached to an entity context.
      */
     @Generated(hash = 713229351)
-    public void update()
-    {
-        if(myDao == null)
-        {
+    public void update() {
+        if (myDao == null) {
             throw new DaoException("Entity is detached from DAO context");
         }
         myDao.update(this);
@@ -408,6 +395,4 @@ public class Trade
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getTradeDao() : null;
     }
-
-
 }

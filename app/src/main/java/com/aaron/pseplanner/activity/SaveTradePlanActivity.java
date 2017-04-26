@@ -21,21 +21,28 @@ import android.widget.Toast;
 
 import com.aaron.pseplanner.R;
 import com.aaron.pseplanner.bean.BoardLot;
+import com.aaron.pseplanner.bean.TradeDto;
+import com.aaron.pseplanner.bean.TradeEntryDto;
 import com.aaron.pseplanner.fragment.DatePickerFragment;
 import com.aaron.pseplanner.listener.EditTextOnFocusChangeHideKeyboard;
 import com.aaron.pseplanner.listener.EditTextOnTextChangeAddComma;
 import com.aaron.pseplanner.listener.EditTextOnTextChangeWrapper;
 import com.aaron.pseplanner.service.CalculatorService;
 import com.aaron.pseplanner.service.LogManager;
+import com.aaron.pseplanner.service.PSEPlannerService;
 import com.aaron.pseplanner.service.ViewUtils;
 import com.aaron.pseplanner.service.implementation.DefaultCalculatorService;
+import com.aaron.pseplanner.service.implementation.FacadePSEPlannerService;
 
 import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -45,6 +52,7 @@ public abstract class SaveTradePlanActivity extends AppCompatActivity
 {
     public static final String CLASS_NAME = SaveTradePlanActivity.class.getSimpleName();
     protected CalculatorService calculator;
+    protected PSEPlannerService pseService;
 
     protected EditText sharesEditText;
     protected EditText entryDateEditText;
@@ -73,6 +81,7 @@ public abstract class SaveTradePlanActivity extends AppCompatActivity
 
         sharesEditText = (EditText) findViewById(R.id.edittext_shares);
         stopLossEditText = (EditText) findViewById(R.id.edittext_stop_loss);
+        targetEditText = (EditText) findViewById(R.id.edittext_target);
         capitalEditText = (EditText) findViewById(R.id.edittext_capital);
         setEditTextOnFocusChangeListener(sharesEditText, stopLossEditText, targetEditText, capitalEditText);
         setEditTextTextChangeListener(sharesEditText, stopLossEditText, targetEditText, capitalEditText);
@@ -83,8 +92,7 @@ public abstract class SaveTradePlanActivity extends AppCompatActivity
 
         final LayoutInflater inflater = LayoutInflater.from(this);
         this.layoutInflater = inflater;
-        final LinearLayout localEntryTranchesLayout = (LinearLayout) findViewById(R.id.entry_tranches_container);
-        this.entryTranchesLayout = localEntryTranchesLayout;
+        this.entryTranchesLayout = (LinearLayout) findViewById(R.id.entry_tranches_container);
         addTranche(inflater, entryTranchesLayout); // Insert initial trache
 
         Button addTrancheButton = (Button) findViewById(R.id.button_add_tranche);
@@ -103,32 +111,59 @@ public abstract class SaveTradePlanActivity extends AppCompatActivity
             @Override
             public void onClick(View v)
             {
-                String shares = sharesEditText.getText().toString();
-                String stopLoss = stopLossEditText.getText().toString();
-                String target = targetEditText.getText().toString();
-                String capital = capitalEditText.getText().toString();
-                String entryDate = entryDateEditText.getText().toString();
-                String stopDate = stopDateEditText.getText().toString();
-                Map<Pair<EditText, EditText>, Pair<String, String>> priceWeightMap = getTranchePriceAndWeight(entryTranchesLayout);
-                // Also validates if prices and weights are not blank
-                Pair<BigDecimal, BigDecimal> averagePriceTotalWeight = getAveragePriceTotalWeight(priceWeightMap);
+                String sharesStr = sharesEditText.getText().toString();
+                String stopLossStr = stopLossEditText.getText().toString();
+                String targetStr = targetEditText.getText().toString();
+                String capitalStr = capitalEditText.getText().toString();
+                String entryDateStr = entryDateEditText.getText().toString();
+                String stopDateStr = stopDateEditText.getText().toString();
 
-                if(averagePriceTotalWeight != null && validateTradePlanInput(shares, stopLoss, target, entryDate, stopDate, capital, priceWeightMap, averagePriceTotalWeight))
+                // Validate inputs if blank
+                if(isEditTextInputValid(sharesStr, "shares", sharesEditText) && isEditTextInputValid(stopLossStr, "stop loss", stopLossEditText) && isEditTextInputValid(targetStr, "target", targetEditText) && isEditTextInputValid(entryDateStr, "entry date", entryDateEditText) && isEditTextInputValid(stopDateStr, "stop date", stopDateEditText) && isEditTextInputValid(capitalStr, "capital", capitalEditText))
                 {
-                    BigDecimal riskReward = calculator.getRiskRewardRatio(averagePriceTotalWeight.first, new BigDecimal(target.replace(",", "")), new BigDecimal(stopLoss.replace(",", "")));
-                    if(riskReward.doubleValue() < 2)
+                    long shares = Long.parseLong(sharesStr.replace(",", ""));
+                    BigDecimal stopLoss = new BigDecimal(stopLossStr.replace(",", ""));
+                    BigDecimal target = new BigDecimal(targetStr.replace(",", ""));
+                    long capital = Long.parseLong(capitalStr.replace(",", ""));
+
+                    Map<Pair<EditText, EditText>, Pair<String, String>> priceWeightMap = getTranchePriceAndWeight(entryTranchesLayout);
+                    // Also validates if prices and weights are not blank
+                    Pair<BigDecimal, BigDecimal> averagePriceTotalWeight = getAveragePriceTotalWeight(priceWeightMap);
+
+                    if(averagePriceTotalWeight != null && validateTradePlanInput(shares, stopLoss, target, entryDateStr, stopDateStr, capital, priceWeightMap, averagePriceTotalWeight))
                     {
-                        createAndShowAlertDialog(riskReward);
-                    }
-                    else
-                    {
-                        saveTradePlan();
+                        BigDecimal riskReward = calculator.getRiskRewardRatio(averagePriceTotalWeight.first, target, stopLoss);
+
+                        Date entryDate = null;
+                        Date stopDate = null;
+                        try
+                        {
+                            entryDate = DatePickerFragment.DATE_FORMATTER.parse(entryDateStr);
+                            stopDate = DatePickerFragment.DATE_FORMATTER.parse(stopDateStr);
+                        }
+                        catch(ParseException e)
+                        {
+                            LogManager.error(CLASS_NAME, "onClick(save button)", "Error parsing date, will use current date instead.", e);
+                            entryDate = new Date();
+                            stopDate = entryDate;
+                        }
+
+                        TradeDto dto = getTradeToSave(shares, stopLoss, target, capital, entryDate, stopDate, riskReward, priceWeightMap.values());
+                        if(riskReward.doubleValue() < 2)
+                        {
+                            createAndShowAlertDialog(dto);
+                        }
+                        else
+                        {
+                            saveTradePlan(dto);
+                        }
                     }
                 }
             }
         });
 
         this.calculator = new DefaultCalculatorService();
+        this.pseService = new FacadePSEPlannerService(this);
     }
 
     /**
@@ -160,86 +195,76 @@ public abstract class SaveTradePlanActivity extends AppCompatActivity
      * @param averagePriceTotalWeight the average price and total weight
      * @return true if all inputs are valid, else false
      */
-    private boolean validateTradePlanInput(String shares, String stopLoss, String target, String entryDate, String stopDate, String capital, Map<Pair<EditText, EditText>, Pair<String, String>> priceWeightMap, Pair<BigDecimal, BigDecimal> averagePriceTotalWeight)
+    private boolean validateTradePlanInput(long shares, BigDecimal stopLoss, BigDecimal target, String entryDate, String stopDate, long capital, Map<Pair<EditText, EditText>, Pair<String, String>> priceWeightMap, Pair<BigDecimal, BigDecimal> averagePriceTotalWeight)
     {
-        // Validate inputs if blank
-        if(isEditTextInputValid(shares, "shares", this.sharesEditText) && isEditTextInputValid(stopLoss, "stop loss", this.stopLossEditText) && isEditTextInputValid(target, "target", this.targetEditText) && isEditTextInputValid(entryDate, "entry date", this.entryDateEditText) && isEditTextInputValid(stopDate, "stop date", this.stopDateEditText) && isEditTextInputValid(capital, "capital", this.capitalEditText))
+        // Validate per tranche entry
+        int trancheNum = 0;
+        for(Map.Entry<Pair<EditText, EditText>, Pair<String, String>> entry : priceWeightMap.entrySet())
         {
-            long sharesNum = Long.parseLong(shares.replace(",", ""));
+            Pair<EditText, EditText> editTextPair = entry.getKey();
+            EditText priceEditText = editTextPair.first;
 
-            // Validate per tranche entry
-            int trancheNum = 0;
-            for(Map.Entry<Pair<EditText, EditText>, Pair<String, String>> entry : priceWeightMap.entrySet())
+            Pair<String, String> valuesPair = entry.getValue();
+            String price = valuesPair.first;
+
+            // Check if boardlot valid
+            if(!BoardLot.isValidBoardLot(new BigDecimal(price), shares))
             {
-                Pair<EditText, EditText> editTextPair = entry.getKey();
-                EditText priceEditText = editTextPair.first;
-
-                Pair<String, String> valuesPair = entry.getValue();
-                String price = valuesPair.first;
-
-                // Check if boardlot valid
-                if(!BoardLot.isValidBoardLot(new BigDecimal(price.replace(",", "")), sharesNum))
-                {
-                    Toast.makeText(this, getString(R.string.boardlot_invalid), Toast.LENGTH_SHORT).show();
-                    priceEditText.requestFocus();
-                    return false;
-                }
-            }
-
-            // Validate weight
-            if(averagePriceTotalWeight.second.intValue() != 100)
-            {
-                Toast.makeText(this, getString(R.string.tranche_weight_invalid), Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.boardlot_invalid), Toast.LENGTH_SHORT).show();
+                priceEditText.requestFocus();
                 return false;
             }
-
-            BigDecimal averagePrice = averagePriceTotalWeight.first;
-            // Check if total buy is greater than capital
-            if(Integer.parseInt(capital.replace(",", "")) < (sharesNum * averagePrice.doubleValue()))
-            {
-                Toast.makeText(this, getString(R.string.buy_greater_than_capital), Toast.LENGTH_SHORT).show();
-                return false;
-            }
-
-            // Check if entry date is greater than stop date
-            try
-            {
-                Date entry = DatePickerFragment.DATE_FORMATTER.parse(entryDate);
-                Date stop = DatePickerFragment.DATE_FORMATTER.parse(stopDate);
-
-                if(entry.getTime() == stop.getTime() || entry.after(stop))
-                {
-                    Toast.makeText(this, getString(R.string.entry_greater_than_stop_date), Toast.LENGTH_SHORT).show();
-                    return false;
-                }
-            }
-            catch(ParseException e)
-            {
-                LogManager.error(CLASS_NAME, "validateTradePlanInput", "Failed checking entry and stop date.", e);
-            }
-
-            // Check if stop loss is greater than average price
-            double stopLossNum = Double.parseDouble(stopLoss.replace(",", ""));
-            if(stopLossNum >= averagePrice.doubleValue())
-            {
-                Toast.makeText(this, getString(R.string.stoploss_invalid, averagePrice), Toast.LENGTH_SHORT).show();
-                return false;
-            }
-
-            // Check if target is less than average price
-            double targetNum = Double.parseDouble(target.replace(",", ""));
-            if(averagePrice.doubleValue() >= targetNum)
-            {
-                Toast.makeText(this, getString(R.string.target_invalid, averagePrice), Toast.LENGTH_SHORT).show();
-                return false;
-            }
-
-            return true;
         }
-        else
+
+        // Validate weight
+        if(averagePriceTotalWeight.second.intValue() != 100)
         {
+            Toast.makeText(this, getString(R.string.tranche_weight_invalid), Toast.LENGTH_SHORT).show();
             return false;
         }
+
+        BigDecimal averagePrice = averagePriceTotalWeight.first;
+        // Check if total buy is greater than capital
+        if(capital < (shares * averagePrice.doubleValue()))
+        {
+            Toast.makeText(this, getString(R.string.buy_greater_than_capital), Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        // Check if entry date is greater than stop date
+        try
+        {
+            Date entry = DatePickerFragment.DATE_FORMATTER.parse(entryDate);
+            Date stop = DatePickerFragment.DATE_FORMATTER.parse(stopDate);
+
+            if(entry.getTime() == stop.getTime() || entry.after(stop))
+            {
+                Toast.makeText(this, getString(R.string.entry_greater_than_stop_date), Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        }
+        catch(ParseException e)
+        {
+            LogManager.error(CLASS_NAME, "validateTradePlanInput", "Failed checking entry and stop date.", e);
+        }
+
+        // Check if stop loss is greater than average price
+        double stopLossNum = stopLoss.doubleValue();
+        if(stopLossNum >= averagePrice.doubleValue())
+        {
+            Toast.makeText(this, getString(R.string.stoploss_invalid, averagePrice), Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        // Check if target is less than average price
+        double targetNum = target.doubleValue();
+        if(averagePrice.doubleValue() >= targetNum)
+        {
+            Toast.makeText(this, getString(R.string.target_invalid, averagePrice), Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -319,7 +344,8 @@ public abstract class SaveTradePlanActivity extends AppCompatActivity
                 BigDecimal priceNum = new BigDecimal(price.replace(",", ""));
                 BigDecimal weightNum = new BigDecimal(weight);
 
-                averagePrice = averagePrice.add(priceNum);
+                BigDecimal weightNumPercent = weightNum.movePointLeft(2);
+                averagePrice = averagePrice.add(priceNum.multiply(weightNumPercent));
                 totalWeight = totalWeight.add(weightNum);
             }
             else
@@ -327,6 +353,8 @@ public abstract class SaveTradePlanActivity extends AppCompatActivity
                 return null;
             }
         }
+
+        LogManager.debug(CLASS_NAME, "getAveragePriceTotalWeight", "averagePrice = " + averagePrice + " totalWeight = " + totalWeight);
 
         return new Pair<>(averagePrice, totalWeight);
     }
@@ -411,16 +439,16 @@ public abstract class SaveTradePlanActivity extends AppCompatActivity
     /**
      * Creates and show the prompt dialog if the risk-reward is less than 2.
      */
-    private void createAndShowAlertDialog(BigDecimal riskReward)
+    private void createAndShowAlertDialog(final TradeDto dto)
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(getString(R.string.create_trade_plan_prompt, riskReward.doubleValue()));
+        builder.setMessage(getString(R.string.create_trade_plan_prompt, dto.getRiskReward().doubleValue()));
 
         builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener()
         {
             public void onClick(DialogInterface dialog, int id)
             {
-                saveTradePlan();
+                saveTradePlan(dto);
                 dialog.dismiss();
             }
         });
@@ -488,11 +516,25 @@ public abstract class SaveTradePlanActivity extends AppCompatActivity
         }
     }
 
+    protected List<TradeEntryDto> priceWeightListToTradeEntryList(String stock, long shares, Collection<Pair<String, String>> priceWeightList)
+    {
+        List<TradeEntryDto> dtos = new ArrayList<>(priceWeightList.size());
+
+        for(Pair<String, String> priceWeight : priceWeightList)
+        {
+            String weightStr = priceWeight.second;
+            double weightMultiplier = Double.parseDouble(weightStr) / 100;
+            long partialShares = Math.round(shares * weightMultiplier);
+
+            dtos.add(new TradeEntryDto(stock, priceWeight.first, partialShares, weightStr));
+        }
+
+        return dtos;
+    }
+
     protected abstract void setActivityResult(int resultCode);
 
-    /**
-     *
-     */
-    protected abstract void saveTradePlan();
+    protected abstract void saveTradePlan(TradeDto dto);
 
+    protected abstract TradeDto getTradeToSave(long shares, BigDecimal stopLoss, BigDecimal target, long capital, Date entryDate, Date stopDate, BigDecimal riskReward, Collection<Pair<String, String>> priceWeightList);
 }

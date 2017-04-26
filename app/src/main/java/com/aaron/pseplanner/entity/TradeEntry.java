@@ -13,7 +13,7 @@ import org.greenrobot.greendao.annotation.Generated;
 public class TradeEntry
 {
     @Id(autoincrement = true)
-    private long id;
+    private Long id;
 
     @Property(nameInDb = "SYMBOL")
     @NotNull
@@ -29,8 +29,8 @@ public class TradeEntry
 
     private int order;
 
-    @Generated(hash = 1082169048)
-    public TradeEntry(long id, @NotNull String tradeSymbol,
+    @Generated(hash = 1533414364)
+    public TradeEntry(Long id, @NotNull String tradeSymbol,
             @NotNull String entryPrice, long shares, @NotNull String percentWeight,
             int order) {
         this.id = id;
@@ -45,12 +45,12 @@ public class TradeEntry
     public TradeEntry() {
     }
 
-    public long getId()
+    public Long getId()
     {
         return id;
     }
 
-    public void setId(long id)
+    public void setId(Long id)
     {
         this.id = id;
     }

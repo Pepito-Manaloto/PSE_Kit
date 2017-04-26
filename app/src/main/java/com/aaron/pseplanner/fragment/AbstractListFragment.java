@@ -107,7 +107,12 @@ public abstract class AbstractListFragment<T extends Parcelable> extends ListFra
      *
      * @throws HttpRequestException http request failed
      */
-    public abstract void updateList() throws HttpRequestException;
+    public abstract void updateListFromWeb() throws HttpRequestException;
+
+    /**
+     * Updates the list of this fragment list by getting the latest data from the database.
+     */
+    public abstract void updateListFromDatabase();
 
     /**
      * Save list data state.

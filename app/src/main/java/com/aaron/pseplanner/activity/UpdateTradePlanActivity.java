@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -15,10 +16,14 @@ import com.aaron.pseplanner.R;
 import com.aaron.pseplanner.bean.TradeDto;
 import com.aaron.pseplanner.bean.TradeEntryDto;
 import com.aaron.pseplanner.constant.DataKey;
+import com.aaron.pseplanner.entity.TradeEntry;
 import com.aaron.pseplanner.fragment.DatePickerFragment;
 import com.aaron.pseplanner.service.LogManager;
 import com.aaron.pseplanner.service.ViewUtils;
 
+import java.math.BigDecimal;
+import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -146,8 +151,25 @@ public class UpdateTradePlanActivity extends SaveTradePlanActivity
      * Update database
      */
     @Override
-    protected void saveTradePlan()
+    protected void saveTradePlan(TradeDto dto)
     {
+        this.pseService.updateTradePlan(dto);
+    }
 
+    @Override
+    protected TradeDto getTradeToSave(long shares, BigDecimal stopLoss, BigDecimal target, long capital, Date entryDate, Date stopDate, BigDecimal riskReward, Collection<Pair<String, String>> priceWeightList)
+    {
+        this.tradeDtoPlanToUpdate.setTotalShares(shares);
+        this.tradeDtoPlanToUpdate.setStopLoss(stopLoss);
+        this.tradeDtoPlanToUpdate.setTargetPrice(target);
+        this.tradeDtoPlanToUpdate.setCapital(capital);
+        this.tradeDtoPlanToUpdate.setEntryDate(entryDate);
+        this.tradeDtoPlanToUpdate.setStopDate(stopDate);
+        this.tradeDtoPlanToUpdate.setRiskReward(riskReward);
+
+        List<TradeEntryDto> list = priceWeightListToTradeEntryList(this.tradeDtoPlanToUpdate.getSymbol(), shares, priceWeightList);
+        this.tradeDtoPlanToUpdate.setTradeEntries(list);
+
+        return this.tradeDtoPlanToUpdate;
     }
 }

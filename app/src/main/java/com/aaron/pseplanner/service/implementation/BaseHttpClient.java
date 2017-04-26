@@ -39,7 +39,7 @@ public abstract class BaseHttpClient implements HttpClient
      * Sets the retrofit http client.
      *
      * @param connectionTimeout connect timeout in seconds for new connections
-     * @param readTimeout       read timeout in seconds  for new connections
+     * @param readTimeout       read timeout in seconds for new connections
      * @param pingInterval      interval in seconds between web socket pings initiated by this client. Use this to automatically send web socket ping frames until either the web socket fails or it is closed.
      */
     public void setRetrofit(long connectionTimeout, long readTimeout, long pingInterval)
@@ -47,6 +47,7 @@ public abstract class BaseHttpClient implements HttpClient
         OkHttpClient client = new OkHttpClient.Builder()
                                                 .connectTimeout(connectionTimeout, TimeUnit.SECONDS)
                                                 .readTimeout(readTimeout, TimeUnit.SECONDS)
+                                                .writeTimeout(readTimeout, TimeUnit.SECONDS)
                                                 .pingInterval(pingInterval, TimeUnit.SECONDS)
                                                 .build();
 
@@ -60,7 +61,7 @@ public abstract class BaseHttpClient implements HttpClient
      * Sets the retrofit http client with proxy
      *
      * @param connectionTimeout connect timeout in seconds for new connections
-     * @param readTimeout       read timeout in seconds  for new connections
+     * @param readTimeout       read timeout in seconds for new connections
      * @param pingInterval      interval in seconds between web socket pings initiated by this client. Use this to automatically send web socket ping frames until either the web socket fails or it is closed.
      * @param proxyHost         the proxy host name
      * @param proxyPort         the proxy port number
@@ -70,6 +71,7 @@ public abstract class BaseHttpClient implements HttpClient
         OkHttpClient client = new OkHttpClient.Builder()
                                                 .connectTimeout(connectionTimeout, TimeUnit.SECONDS)
                                                 .readTimeout(readTimeout, TimeUnit.SECONDS)
+                                                .writeTimeout(readTimeout, TimeUnit.SECONDS)
                                                 .pingInterval(pingInterval, TimeUnit.SECONDS)
                                                 .proxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost, proxyPort)))
                                                 .build();

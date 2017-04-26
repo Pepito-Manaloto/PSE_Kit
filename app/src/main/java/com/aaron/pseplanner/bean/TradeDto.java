@@ -38,11 +38,11 @@ public class TradeDto implements Parcelable
     {
     }
 
-    public TradeDto(Date entryDate, int holdingPeriod, String symbol, BigDecimal currentPrice, BigDecimal averagePrice, long totalShares, BigDecimal totalAmount, BigDecimal priceToBreakEven, BigDecimal targetPrice, BigDecimal gainLoss, BigDecimal gainLossPercent, long gainToTarget, BigDecimal lossToStopLoss, BigDecimal stopLoss, Date stopDate, int daysToStopDate, BigDecimal riskReward, long capital, BigDecimal percentCapital, List<TradeEntryDto> tradeEntries)
+    public TradeDto(String symbol, Date entryDate, int holdingPeriod, BigDecimal currentPrice, BigDecimal averagePrice, long totalShares, BigDecimal totalAmount, BigDecimal priceToBreakEven, BigDecimal targetPrice, BigDecimal gainLoss, BigDecimal gainLossPercent, long gainToTarget, BigDecimal lossToStopLoss, BigDecimal stopLoss, Date stopDate, int daysToStopDate, BigDecimal riskReward, long capital, BigDecimal percentCapital, List<TradeEntryDto> tradeEntries)
     {
+        this.symbol = symbol;
         this.entryDate = entryDate;
         this.holdingPeriod = holdingPeriod;
-        this.symbol = symbol;
         this.currentPrice = currentPrice;
         this.averagePrice = averagePrice;
         this.totalShares = totalShares;

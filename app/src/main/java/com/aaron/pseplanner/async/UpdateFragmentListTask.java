@@ -1,7 +1,6 @@
 package com.aaron.pseplanner.async;
 
 import android.os.AsyncTask;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.aaron.pseplanner.activity.MainActivity;
@@ -10,6 +9,8 @@ import com.aaron.pseplanner.fragment.AbstractListFragment;
 import com.aaron.pseplanner.service.LogManager;
 
 import org.apache.commons.lang3.StringUtils;
+
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Created by Aaron on 11/20/2016.
@@ -20,11 +21,13 @@ public class UpdateFragmentListTask extends AsyncTask<Void, Void, String>
     public static final String CLASS_NAME = UpdateFragmentListTask.class.getSimpleName();
     private MainActivity callerActivity;
     private AbstractListFragment listFragment;
+    private AtomicBoolean isUpdating;
 
-    public UpdateFragmentListTask(MainActivity callerActivity, AbstractListFragment listFragment)
+    public UpdateFragmentListTask(MainActivity callerActivity, AbstractListFragment listFragment, AtomicBoolean isUpdating)
     {
         this.callerActivity = callerActivity;
         this.listFragment = listFragment;
+        this.isUpdating = isUpdating;
     }
 
     @Override
@@ -32,7 +35,7 @@ public class UpdateFragmentListTask extends AsyncTask<Void, Void, String>
     {
         try
         {
-            this.listFragment.updateList();
+            this.listFragment.updateListFromWeb();
 
             return "";
         }
@@ -52,5 +55,6 @@ public class UpdateFragmentListTask extends AsyncTask<Void, Void, String>
         }
 
         this.callerActivity.stopRefreshAnimation();
+        this.isUpdating.set(false);
     }
 }

@@ -16,7 +16,7 @@ import org.greenrobot.greendao.annotation.Generated;
 public class Stock
 {
     @Id(autoincrement = true)
-    private long id;
+    private Long id;
 
     @Unique
     @NotNull
@@ -39,8 +39,8 @@ public class Stock
     @NotNull
     private Date dateUpdate;
 
-    @Generated(hash = 825049657)
-    public Stock(long id, @NotNull String symbol, @NotNull String name, long volume,
+    @Generated(hash = 1761935474)
+    public Stock(Long id, @NotNull String symbol, @NotNull String name, long volume,
             @NotNull String currentPrice, @NotNull String change,
             @NotNull String percentChange, @NotNull Date dateUpdate) {
         this.id = id;
@@ -57,12 +57,12 @@ public class Stock
     public Stock() {
     }
 
-    public long getId()
+    public Long getId()
     {
         return id;
     }
 
-    public void setId(long id)
+    public void setId(Long id)
     {
         this.id = id;
     }

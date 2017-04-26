@@ -5,12 +5,20 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
+import android.util.Pair;
 import android.widget.TextView;
 
 import com.aaron.pseplanner.R;
 import com.aaron.pseplanner.bean.TickerDto;
+import com.aaron.pseplanner.bean.TradeDto;
+import com.aaron.pseplanner.bean.TradeEntryDto;
 import com.aaron.pseplanner.constant.DataKey;
 import com.aaron.pseplanner.service.LogManager;
+
+import java.math.BigDecimal;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Create Trade Plan Activity. Does not contain navigation views or menu items.
@@ -98,7 +106,27 @@ public class CreateTradePlanActivity extends SaveTradePlanActivity
      * Insert to database
      */
     @Override
-    protected void saveTradePlan()
+    protected void saveTradePlan(TradeDto dto)
     {
+        this.pseService.insertTradePlan(dto);
+    }
+
+    @Override
+    protected TradeDto getTradeToSave(long shares, BigDecimal stopLoss, BigDecimal target, long capital, Date entryDate, Date stopDate, BigDecimal riskReward, Collection<Pair<String, String>> priceWeightList)
+    {
+        TradeDto tradeDto = new TradeDto();
+
+        tradeDto.setTotalShares(shares);
+        tradeDto.setStopLoss(stopLoss);
+        tradeDto.setTargetPrice(target);
+        tradeDto.setCapital(capital);
+        tradeDto.setEntryDate(entryDate);
+        tradeDto.setStopDate(stopDate);
+        tradeDto.setRiskReward(riskReward);
+
+        List<TradeEntryDto> list = priceWeightListToTradeEntryList(this.selectedStock.getSymbol(), shares, priceWeightList);
+        tradeDto.setTradeEntries(list);
+
+        return tradeDto;
     }
 }
