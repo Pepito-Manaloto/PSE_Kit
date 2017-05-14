@@ -1,12 +1,11 @@
 package com.aaron.pseplanner.async;
 
-import android.content.Intent;
 import android.os.AsyncTask;
 
 import com.aaron.pseplanner.activity.MainActivity;
 import com.aaron.pseplanner.bean.TickerDto;
-import com.aaron.pseplanner.constant.DataKey;
-import com.aaron.pseplanner.entity.DaoSession;
+import com.aaron.pseplanner.bean.TradeDto;
+import com.aaron.pseplanner.constant.PSEPlannerPreference;
 import com.aaron.pseplanner.exception.HttpRequestException;
 import com.aaron.pseplanner.fragment.TickerListFragment;
 import com.aaron.pseplanner.service.LogManager;
@@ -15,6 +14,7 @@ import com.aaron.pseplanner.service.PSEPlannerService;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
+import java.util.Set;
 
 /**
  * Created by Aaron on 3/25/2017.
@@ -25,11 +25,13 @@ public class InitTickerListTask extends AsyncTask<Void, Void, String>
     public static final String CLASS_NAME = InitTickerListTask.class.getSimpleName();
     private MainActivity callerActivity;
     private PSEPlannerService service;
+    private Set<String> tradeDtoSymbols;
 
-    public InitTickerListTask(MainActivity callerActivity, PSEPlannerService service)
+    public InitTickerListTask(MainActivity callerActivity, PSEPlannerService service, ArrayList<TradeDto> tradeDtoList)
     {
         this.callerActivity = callerActivity;
         this.service = service;
+        this.tradeDtoSymbols = this.service.getTradeSymbolsFromTradeDtos(tradeDtoList);
     }
 
     @Override
@@ -39,7 +41,7 @@ public class InitTickerListTask extends AsyncTask<Void, Void, String>
         try
         {
             ArrayList<TickerDto> tickerDtoList;
-            if(!this.service.isTickerListSavedInDatabase())
+            if(!this.service.isTickerListSavedInDatabase() || !this.service.isUpToDate(PSEPlannerPreference.LAST_UPDATED_TICKER))
             {
                 tickerDtoList = (ArrayList<TickerDto>) this.service.getAllTickerList().first;
                 this.service.insertTickerList(tickerDtoList);
@@ -54,7 +56,8 @@ public class InitTickerListTask extends AsyncTask<Void, Void, String>
 
             if(!tickerDtoList.isEmpty())
             {
-                this.callerActivity.getIntent().putParcelableArrayListExtra(DataKey.EXTRA_TICKER_LIST.toString(), tickerDtoList);
+                this.service.setTickerDtoListHasTradePlan(tickerDtoList, this.tradeDtoSymbols);
+                this.callerActivity.setTickerDtoList(tickerDtoList);
             }
 
             return "";

@@ -2,6 +2,7 @@ package com.aaron.pseplanner.activity;
 
 import android.app.Activity;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
@@ -23,6 +24,7 @@ import com.aaron.pseplanner.R;
 import com.aaron.pseplanner.bean.BoardLot;
 import com.aaron.pseplanner.bean.TradeDto;
 import com.aaron.pseplanner.bean.TradeEntryDto;
+import com.aaron.pseplanner.constant.DataKey;
 import com.aaron.pseplanner.fragment.DatePickerFragment;
 import com.aaron.pseplanner.listener.EditTextOnFocusChangeHideKeyboard;
 import com.aaron.pseplanner.listener.EditTextOnTextChangeAddComma;
@@ -42,6 +44,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -148,7 +151,7 @@ public abstract class SaveTradePlanActivity extends AppCompatActivity
                             stopDate = entryDate;
                         }
 
-                        TradeDto dto = getTradeToSave(shares, stopLoss, target, capital, entryDate, stopDate, riskReward, priceWeightMap.values());
+                        TradeDto dto = getTradeToSave(shares, stopLoss, target, capital, entryDate, stopDate, riskReward, averagePriceTotalWeight.first, priceWeightMap.values());
                         if(riskReward.doubleValue() < 2)
                         {
                             createAndShowAlertDialog(dto);
@@ -157,6 +160,10 @@ public abstract class SaveTradePlanActivity extends AppCompatActivity
                         {
                             saveTradePlan(dto);
                         }
+
+                        LogManager.debug(CLASS_NAME, "onCreate(saveButton)", "Saved TradePlan: " + dto);
+
+                        setActivityResultSaveClicked(dto);
                     }
                 }
             }
@@ -296,7 +303,7 @@ public abstract class SaveTradePlanActivity extends AppCompatActivity
     private Map<Pair<EditText, EditText>, Pair<String, String>> getTranchePriceAndWeight(LinearLayout entryTranchesLayout)
     {
         int numOfTranches = entryTranchesLayout.getChildCount();
-        Map<Pair<EditText, EditText>, Pair<String, String>> map = new HashMap<>(numOfTranches);
+        Map<Pair<EditText, EditText>, Pair<String, String>> map = new LinkedHashMap<>(numOfTranches);
 
         for(int i = 0, trancheNum = 1; i < numOfTranches; i++, trancheNum++)
         {
@@ -369,7 +376,7 @@ public abstract class SaveTradePlanActivity extends AppCompatActivity
         {
             case android.R.id.home:
             {
-                this.setActivityResult(Activity.RESULT_CANCELED);
+                this.setActivityResultHome(Activity.RESULT_CANCELED);
                 return true;
             }
             default:
@@ -532,9 +539,11 @@ public abstract class SaveTradePlanActivity extends AppCompatActivity
         return dtos;
     }
 
-    protected abstract void setActivityResult(int resultCode);
+    protected abstract void setActivityResultSaveClicked(TradeDto dto);
+
+    protected abstract void setActivityResultHome(int resultCode);
 
     protected abstract void saveTradePlan(TradeDto dto);
 
-    protected abstract TradeDto getTradeToSave(long shares, BigDecimal stopLoss, BigDecimal target, long capital, Date entryDate, Date stopDate, BigDecimal riskReward, Collection<Pair<String, String>> priceWeightList);
+    protected abstract TradeDto getTradeToSave(long shares, BigDecimal stopLoss, BigDecimal target, long capital, Date entryDate, Date stopDate, BigDecimal riskReward, BigDecimal averagePrice, Collection<Pair<String, String>> priceWeightList);
 }

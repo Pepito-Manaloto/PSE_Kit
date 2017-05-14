@@ -22,9 +22,12 @@ import com.aaron.pseplanner.service.LogManager;
 import com.aaron.pseplanner.service.ViewUtils;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+
+import static com.aaron.pseplanner.service.CalculatorService.ONE_HUNDRED;
 
 /**
  * Update Trade Plan Activity. Does not contain navigation views or menu items.
@@ -37,7 +40,7 @@ public class UpdateTradePlanActivity extends SaveTradePlanActivity
     /**
      * Inflates the UI.
      *
-     * @param savedInstanceState this Bundle is unused in this method.
+     * @param savedInstanceState stores the current state: tradeDtoPlanToUpdate
      */
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -132,11 +135,11 @@ public class UpdateTradePlanActivity extends SaveTradePlanActivity
      * @param resultCode the result of the user's action
      */
     @Override
-    protected void setActivityResult(int resultCode)
+    protected void setActivityResultHome(int resultCode)
     {
         Intent data = new Intent();
 
-        LogManager.debug(CLASS_NAME, "setActivityResult", "Result code: " + resultCode + " Trade Plan: " + this.tradeDtoPlanToUpdate);
+        LogManager.debug(CLASS_NAME, "setActivityResultHome", "Result code: " + resultCode + " Trade Plan: " + this.tradeDtoPlanToUpdate);
 
         if(resultCode == Activity.RESULT_OK)
         {
@@ -145,6 +148,23 @@ public class UpdateTradePlanActivity extends SaveTradePlanActivity
 
         setResult(resultCode, data);
         finish();
+    }
+
+    /**
+     * Sets the saved trade dto then sends it to the main activity fragment.
+     *
+     * @param dto the saved trade plan
+     */
+    @Override
+    protected void setActivityResultSaveClicked(TradeDto dto)
+    {
+        Intent data = new Intent();
+
+        data.putExtra(DataKey.EXTRA_TRADE.toString(), dto);
+        setResult(Activity.RESULT_OK, data);
+        finish();
+
+        LogManager.debug(CLASS_NAME, "setActivityResultHome", "TradeDto result: " + dto);
     }
 
     /**
@@ -157,14 +177,28 @@ public class UpdateTradePlanActivity extends SaveTradePlanActivity
     }
 
     @Override
-    protected TradeDto getTradeToSave(long shares, BigDecimal stopLoss, BigDecimal target, long capital, Date entryDate, Date stopDate, BigDecimal riskReward, Collection<Pair<String, String>> priceWeightList)
+    protected TradeDto getTradeToSave(long shares, BigDecimal stopLoss, BigDecimal target, long capital, Date entryDate, Date stopDate, BigDecimal riskReward, BigDecimal averagePrice, Collection<Pair<String, String>> priceWeightList)
     {
+        BigDecimal averagePriceAfterBuy = this.calculator.getAveragePriceAfterBuy(averagePrice);
+        BigDecimal totalAmount = averagePriceAfterBuy.multiply(new BigDecimal(shares));
+        BigDecimal targetTotalAmount = this.calculator.getSellNetAmount(target, shares);
+        BigDecimal stopLossTotalAmount = this.calculator.getSellNetAmount(stopLoss, shares);
+
+        this.tradeDtoPlanToUpdate.setAveragePrice(averagePriceAfterBuy);
+        this.tradeDtoPlanToUpdate.setTotalAmount(totalAmount);
+        this.tradeDtoPlanToUpdate.setPriceToBreakEven(this.calculator.getPriceToBreakEven(averagePrice));
+        this.tradeDtoPlanToUpdate.setLossToStopLoss(stopLossTotalAmount.subtract(totalAmount));
+        this.tradeDtoPlanToUpdate.setGainToTarget(targetTotalAmount.subtract(totalAmount));
         this.tradeDtoPlanToUpdate.setTotalShares(shares);
         this.tradeDtoPlanToUpdate.setStopLoss(stopLoss);
         this.tradeDtoPlanToUpdate.setTargetPrice(target);
+        this.tradeDtoPlanToUpdate.setGainLoss(this.calculator.getGainLossAmount(averagePriceAfterBuy, shares, this.tradeDtoPlanToUpdate.getCurrentPrice()));
+        this.tradeDtoPlanToUpdate.setGainLossPercent(this.calculator.getPercentGainLoss(averagePriceAfterBuy, shares, this.tradeDtoPlanToUpdate.getCurrentPrice()));
         this.tradeDtoPlanToUpdate.setCapital(capital);
+        this.tradeDtoPlanToUpdate.setPercentCapital(totalAmount.divide(new BigDecimal(capital), MathContext.DECIMAL64).multiply(ONE_HUNDRED).setScale(2, BigDecimal.ROUND_CEILING));
         this.tradeDtoPlanToUpdate.setEntryDate(entryDate);
         this.tradeDtoPlanToUpdate.setStopDate(stopDate);
+        this.tradeDtoPlanToUpdate.setHoldingPeriod(this.calculator.getDaysBetween(new Date(), entryDate));
         this.tradeDtoPlanToUpdate.setRiskReward(riskReward);
 
         List<TradeEntryDto> list = priceWeightListToTradeEntryList(this.tradeDtoPlanToUpdate.getSymbol(), shares, priceWeightList);

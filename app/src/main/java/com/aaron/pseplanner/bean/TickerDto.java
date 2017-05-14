@@ -17,6 +17,8 @@ public class TickerDto implements Parcelable
     private BigDecimal currentPrice;
     private BigDecimal change;
     private BigDecimal percentChange;
+    private boolean hasTradePlan;
+
 
     public TickerDto()
     {
@@ -67,9 +69,7 @@ public class TickerDto implements Parcelable
 
         TickerDto tickerDto = (TickerDto) o;
 
-        return getVolume() == tickerDto.getVolume() && getCurrentPrice().equals(tickerDto.getCurrentPrice()) &&
-                getChange().equals(tickerDto.getChange()) && getPercentChange().equals(tickerDto.getPercentChange()) &&
-                getSymbol().equals(tickerDto.getSymbol()) && getName().equals(tickerDto.getName());
+        return getVolume() == tickerDto.getVolume() && getCurrentPrice().equals(tickerDto.getCurrentPrice()) && getChange().equals(tickerDto.getChange()) && getPercentChange().equals(tickerDto.getPercentChange()) && getSymbol().equals(tickerDto.getSymbol()) && getName().equals(tickerDto.getName());
     }
 
     @Override
@@ -87,14 +87,7 @@ public class TickerDto implements Parcelable
     @Override
     public String toString()
     {
-        return "TickerDto{" +
-                "symbol='" + symbol + '\'' +
-                ", name='" + name + '\'' +
-                ", volume=" + volume +
-                ", currentPrice=" + currentPrice +
-                ", change=" + change +
-                ", percentChange=" + percentChange +
-                '}';
+        return "TickerDto{" + "symbol='" + symbol + '\'' + ", name='" + name + '\'' + ", volume=" + volume + ", currentPrice=" + currentPrice + ", change=" + change + ", percentChange=" + percentChange + ", hasTradePlan=" + hasTradePlan + '}';
     }
 
     public String getSymbol()
@@ -157,6 +150,16 @@ public class TickerDto implements Parcelable
         this.percentChange = percentChange;
     }
 
+    public boolean isHasTradePlan()
+    {
+        return hasTradePlan;
+    }
+
+    public void setHasTradePlan(boolean hasTradePlan)
+    {
+        this.hasTradePlan = hasTradePlan;
+    }
+
     @Override
     public int describeContents()
     {
@@ -172,6 +175,7 @@ public class TickerDto implements Parcelable
         dest.writeString(this.currentPrice.toPlainString());
         dest.writeString(this.change.toPlainString());
         dest.writeString(this.percentChange.toPlainString());
+        dest.writeByte((byte) (this.hasTradePlan ? 1 : 0));
     }
 
     protected TickerDto(Parcel in)
@@ -182,6 +186,7 @@ public class TickerDto implements Parcelable
         this.currentPrice = new BigDecimal(in.readString());
         this.change = new BigDecimal(in.readString());
         this.percentChange = new BigDecimal(in.readString());
+        this.hasTradePlan = in.readByte() != 0;
     }
 
     public static final Parcelable.Creator<TickerDto> CREATOR = new Parcelable.Creator<TickerDto>()

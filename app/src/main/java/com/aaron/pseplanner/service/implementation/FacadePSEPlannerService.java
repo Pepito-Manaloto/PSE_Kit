@@ -18,7 +18,9 @@ import com.aaron.pseplanner.entity.StockDao;
 import com.aaron.pseplanner.entity.Trade;
 import com.aaron.pseplanner.entity.TradeDao;
 import com.aaron.pseplanner.entity.TradeEntry;
+import com.aaron.pseplanner.entity.TradeEntryDao;
 import com.aaron.pseplanner.exception.HttpRequestException;
+import com.aaron.pseplanner.service.CalculatorService;
 import com.aaron.pseplanner.service.FormatService;
 import com.aaron.pseplanner.service.HttpClient;
 import com.aaron.pseplanner.service.LogManager;
@@ -27,7 +29,9 @@ import com.aaron.pseplanner.service.SettingsService;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -47,22 +51,37 @@ public class FacadePSEPlannerService implements PSEPlannerService
     private HttpClient pseHttpClient;
     private FormatService formatService;
     private SettingsService settingsService;
+    private CalculatorService calculatorService;
 
     private SharedPreferences sharedPreferences;
     private StockDao stockDao;
     private TradeDao tradeDao;
+    private TradeEntryDao tradeEntryDao;
 
     public FacadePSEPlannerService(@NonNull Activity activity)
     {
         this.settingsService = new DefaultSettingsService(activity);
         SettingsDto settings = this.settingsService.getSettings();
-        // Deduct by 1 so that it will not overlap the next request
-        long timeout = (settings.getRefreshInterval() > 0 ? settings.getRefreshInterval() : DEFAUT_TIMEOUT) - 1;
-
-        if(StringUtils.isNotBlank(settings.getProxyHost()) && settings.getProxyPort() > 0)
+        long timeout;
+        String proxyHost = null;
+        int proxyPort = 0;
+        if(settings != null)
         {
-            this.phisixHttpClient = new PhisixHttpClient(timeout, timeout, timeout, settings.getProxyHost(), settings.getProxyPort());
-            this.pseHttpClient = new PSEHttpClient(timeout, timeout, timeout, settings.getProxyHost(), settings.getProxyPort());
+            // Deduct by 1 so that it will not overlap the next request
+            timeout = (settings.getRefreshInterval() > 0 ? settings.getRefreshInterval() : DEFAUT_TIMEOUT) - 1;
+
+            proxyHost = settings.getProxyHost();
+            proxyPort = settings.getProxyPort();
+        }
+        else
+        {
+            timeout = DEFAUT_TIMEOUT - 1;
+        }
+
+        if(StringUtils.isNotBlank(proxyHost) && proxyPort > 0)
+        {
+            this.phisixHttpClient = new PhisixHttpClient(timeout, timeout, timeout, proxyHost, proxyPort);
+            this.pseHttpClient = new PSEHttpClient(timeout, timeout, timeout, proxyHost, proxyPort);
         }
         else
         {
@@ -72,11 +91,13 @@ public class FacadePSEPlannerService implements PSEPlannerService
 
         this.formatService = new DefaultFormatService(activity);
         this.sharedPreferences = activity.getSharedPreferences(PSEPlannerPreference.class.getSimpleName(), Context.MODE_PRIVATE);
+        this.calculatorService = new DefaultCalculatorService();
 
         // get the note DAO
         DaoSession daoSession = ((PSEPlannerApplication) activity.getApplication()).getDaoSession();
         this.stockDao = daoSession.getStockDao();
         this.tradeDao = daoSession.getTradeDao();
+        this.tradeEntryDao = daoSession.getTradeEntryDao();
     }
 
     public FacadePSEPlannerService(@NonNull Activity activity, long connectionTimeout, long readTimeout, long pingInterval)
@@ -107,6 +128,9 @@ public class FacadePSEPlannerService implements PSEPlannerService
      * Returns the datetime of when the last http request occurs. Gets the cached lastUpdated first if not null, else retrieve from database.
      * Pattern: MMMM dd, EEEE hh:mm:ss a
      * Timezone: Manila, Philippines
+     *
+     * @param preference the shared preference key, determines which last updated date will be retrieved
+     * @return String the last updated formatted
      */
     @Override
     public String getLastUpdated(String preference)
@@ -196,6 +220,30 @@ public class FacadePSEPlannerService implements PSEPlannerService
     }
 
     @Override
+    public Set<String> getTradeSymbolsFromTradeDtos(Collection<TradeDto> tradeDtos)
+    {
+        Set<String> tradeDtoSymbols = new HashSet<>();
+        for(TradeDto dto : tradeDtos)
+        {
+            tradeDtoSymbols.add(dto.getSymbol());
+        }
+
+        return tradeDtoSymbols;
+    }
+
+    @Override
+    public void setTickerDtoListHasTradePlan(Collection<TickerDto> tickerDtoList, Set<String> tradeDtoSymbols)
+    {
+        for(TickerDto dto : tickerDtoList)
+        {
+            if(tradeDtoSymbols.contains(dto.getSymbol()))
+            {
+                dto.setHasTradePlan(true);
+            }
+        }
+    }
+
+    @Override
     public boolean isTickerListSavedInDatabase()
     {
         long count = this.stockDao.count();
@@ -224,14 +272,15 @@ public class FacadePSEPlannerService implements PSEPlannerService
         Date now = new Date();
         this.updateLastUpdated(now, PSEPlannerPreference.LAST_UPDATED_TRADE_PLAN);
         Trade trade = this.fromTradeDtoToTrade(tradeDto, now);
+        List<TradeEntry> tradeEntries = this.fromTradeEntryDtoToTradeEntry(tradeDto.getTradeEntries());
 
         this.tradeDao.insert(trade);
+        this.tradeEntryDao.insertInTx(tradeEntries);
 
         LogManager.debug(CLASS_NAME, "insertTradePlan", "Inserted: dto = " + tradeDto);
 
         return true;
     }
-
 
     /**
      * Updates the given TradeDto list as Trade entity in the database.
@@ -254,6 +303,7 @@ public class FacadePSEPlannerService implements PSEPlannerService
         }
 
         this.tradeDao.updateInTx(tradeList);
+        // TODO: update trade entries
 
         LogManager.debug(CLASS_NAME, "updateTradePlan", "Updated: count = " + tradeList.size());
 
@@ -280,7 +330,7 @@ public class FacadePSEPlannerService implements PSEPlannerService
         trade.setDaysToStopDate(tradeDto.getDaysToStopDate());
         trade.setHoldingPeriod(tradeDto.getHoldingPeriod());
         trade.setTargetPrice(tradeDto.getTargetPrice().toPlainString());
-        trade.setGainToTarget(tradeDto.getGainToTarget());
+        trade.setGainToTarget(tradeDto.getGainToTarget().toPlainString());
         trade.setGainLoss(tradeDto.getGainLoss().toPlainString());
         trade.setGainLossPercent(tradeDto.getGainLossPercent().toPlainString());
         trade.setLossToStopLoss(tradeDto.getLossToStopLoss().toPlainString());
@@ -292,6 +342,27 @@ public class FacadePSEPlannerService implements PSEPlannerService
         return trade;
     }
 
+    private List<TradeEntry> fromTradeEntryDtoToTradeEntry(List<TradeEntryDto> tradeEntries)
+    {
+        List<TradeEntry> tradeEntryList = new ArrayList<>(tradeEntries.size());
+
+        int order = 0;
+        for(TradeEntryDto dto : tradeEntries)
+        {
+            TradeEntry entry = new TradeEntry();
+            entry.setTradeSymbol(dto.getSymbol());
+            entry.setShares(dto.getShares());
+            entry.setEntryPrice(dto.getEntryPrice().toPlainString());
+            entry.setPercentWeight(dto.getPercentWeight().toPlainString());
+            entry.setOrder(order);
+            order++;
+
+            tradeEntryList.add(entry);
+        }
+
+        return tradeEntryList;
+    }
+
     @Override
     public ArrayList<TradeDto> getTradePlanListFromDatabase()
     {
@@ -300,8 +371,10 @@ public class FacadePSEPlannerService implements PSEPlannerService
 
         for(Trade trade : tradePlanList)
         {
-            List<TradeEntryDto> tradeEntryDtos = new ArrayList<>(trade.getTradeEntries().size());
-            for(TradeEntry tradeEntry : trade.getTradeEntries())
+            List<TradeEntry> tradeEntryList = trade.getTradeEntries();
+
+            List<TradeEntryDto> tradeEntryDtos = new ArrayList<>(tradeEntryList.size());
+            for(TradeEntry tradeEntry : tradeEntryList)
             {
                 tradeEntryDtos.add(new TradeEntryDto(tradeEntry.getTradeSymbol(), tradeEntry.getEntryPrice(), tradeEntry.getShares(), tradeEntry.getPercentWeight()));
             }
@@ -312,6 +385,73 @@ public class FacadePSEPlannerService implements PSEPlannerService
         LogManager.debug(CLASS_NAME, "getTradePlanListFromDatabase", "Retrieved: count = " + tradePlanDtoList.size());
 
         return tradePlanDtoList;
+    }
+
+    private boolean isWeekEnd(Calendar calendar)
+    {
+        return calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY || calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY;
+    }
+
+    private boolean isTradingHours(Calendar calendar)
+    {
+        int hourOfDay = calendar.get(Calendar.HOUR_OF_DAY);
+        int minuteOfHour = calendar.get(Calendar.MINUTE);
+
+        boolean morningOpeningHour = hourOfDay == 9 && minuteOfHour >= 30;
+        boolean morningHour = (morningOpeningHour || hourOfDay >= 10) && hourOfDay <= 12;
+        boolean afternoonOpeningHour = hourOfDay == 13 && minuteOfHour >= 30;
+        boolean afternoonClosingHour = hourOfDay == 15 && minuteOfHour <= 20;
+        boolean afternoonHour = afternoonOpeningHour || hourOfDay == 14 || afternoonClosingHour;
+
+        // Hour of day is between 9:30AM and 12PM AND between 1:30PM and 3:30PM
+        return morningHour && afternoonHour;
+    }
+
+    /**
+     * Checks if the market is open.
+     * Monday to Friday, 9:30AM - 12:00PM and 1:30PM - 3:20PM
+     *
+     * @return true is market is open, else false
+     */
+    @Override
+    public boolean isMarketOpen()
+    {
+        Calendar cal = Calendar.getInstance(FormatService.MANILA_TIMEZONE);
+
+        boolean isWeekday = !isWeekEnd(cal);
+        boolean isTradingHours = isTradingHours(cal);
+
+
+        LogManager.debug(CLASS_NAME, "isMarketOpen", "isWeekday:" + isWeekday + " && isTradingHours:" + isTradingHours);
+
+        return isWeekday && isTradingHours;
+    }
+
+    /**
+     * Checks if the lastUpdated is up date with respect to the current time.
+     *
+     * @param preference the type of lastUpdated, either ticker or trade plan
+     * @return true if up to date, else false
+     */
+    @Override
+    public boolean isUpToDate(PSEPlannerPreference preference)
+    {
+        Calendar lastUpdated = Calendar.getInstance(FormatService.MANILA_TIMEZONE);
+        lastUpdated.setTime(this.getLastUpdatedDate(preference.toString()));
+        Calendar now = Calendar.getInstance(FormatService.MANILA_TIMEZONE);
+
+        boolean isWeekEnd = isWeekEnd(now);
+        boolean isWeekDay = !isWeekEnd;
+        boolean lastUpdateEndOfHour = (int) lastUpdated.get(Calendar.HOUR_OF_DAY) == 15 && (int) lastUpdated.get(Calendar.MINUTE) == 20;
+        boolean lastUpdateEndOfWeek = lastUpdated.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY && lastUpdateEndOfHour;
+
+        int daysDifference = this.calculatorService.getDaysBetween(lastUpdated.getTime(), now.getTime());
+
+        LogManager.debug(CLASS_NAME, "isUpToDate", "(daysDifference:" + daysDifference + " < 3 && lastUpdateEndOfWeek:" + lastUpdateEndOfWeek + " && isWeekEnd:" + isWeekEnd + ")" + " || (daysDifference:" + daysDifference + " == 0 && lastUpdateEndOfHour:" + lastUpdateEndOfHour + " && isWeekDay:" + isWeekDay + ")");
+
+        // (Days difference is just 2 days(sat and sun) AND lastUpdated is on Friday 3:20PM AND today is a weekend) OR
+        // (There is no difference in days AND lastUpdated is 3:20PM AND today is a weekday)
+        return (daysDifference < 3 && lastUpdateEndOfWeek && isWeekEnd) || (daysDifference == 0 && lastUpdateEndOfHour && isWeekDay);
     }
 
     @Override

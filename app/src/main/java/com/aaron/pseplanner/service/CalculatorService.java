@@ -36,6 +36,10 @@ public interface CalculatorService
 
     BigDecimal MINIMUM_COMMISSION = BigDecimal.valueOf(20);
 
+    BigDecimal ONE_HUNDRED = new BigDecimal("100");
+
+    BigDecimal TWO = new BigDecimal("2");
+
     long DAY_IN_MILLISECONDS = TimeUnit.DAYS.toMillis(1);
 
     /**

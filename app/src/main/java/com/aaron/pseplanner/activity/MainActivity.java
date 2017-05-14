@@ -53,12 +53,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private final AtomicBoolean isUpdating = new AtomicBoolean(false);
 
     private DrawerLayout drawer;
+    private NavigationView navigationView;
     private Menu toolbarMenu;
     private Toolbar toolbar;
     private AbstractListFragment selectedListFragment;
     private ArrayList<TickerDto> tickerDtoList;
     private ArrayList<TradeDto> tradeDtoList;
     private PSEPlannerService pseService;
+    private boolean isReturningResultHomeView;
 
     /**
      * Initializes the navigation drawer.
@@ -67,6 +69,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      * @param savedInstanceState this Bundle is unused in this method.
      */
     @Override
+
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
@@ -84,12 +87,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         this.drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+        this.navigationView = (NavigationView) findViewById(R.id.nav_view);
+        this.navigationView.setNavigationItemSelectedListener(this);
 
-        this.tradeDtoList = new ArrayList<>();
-        this.tickerDtoList = new ArrayList<>();
         this.pseService = new FacadePSEPlannerService(this);
+        this.tickerDtoList = new ArrayList<>();
+        this.tradeDtoList = this.pseService.getTradePlanListFromDatabase();
 
         FragmentManager fm = getSupportFragmentManager();
         Fragment fragment = fm.findFragmentById(R.id.fragment_container);
@@ -100,25 +103,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             fm.beginTransaction().add(R.id.fragment_container, this.selectedListFragment).commit();
         }
 
-
-        this.initTickerDtoList();
+        this.initTickerDtoList(this.tradeDtoList);
     }
 
     /**
      * Init ticker dto list data.
      */
-    private void initTickerDtoList()
+    private void initTickerDtoList(ArrayList<TradeDto> tradeDtoList)
     {
         if(this.tickerDtoList.isEmpty())
         {
             LogManager.debug(CLASS_NAME, "initTickerDtoList", "TickerList is empty, getting values from intent extras.");
 
             Bundle extras = getIntent().getExtras();
-            // Check if exists in intent extras
-            if(extras != null && extras.containsKey(DataKey.EXTRA_TICKER_LIST.toString()))
-            {
-                this.tickerDtoList = getIntent().getParcelableArrayListExtra(DataKey.EXTRA_TICKER_LIST.toString());
-            }
 
             if(this.tickerDtoList == null || this.tickerDtoList.isEmpty())
             {
@@ -130,9 +127,30 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 {
                     LogManager.debug(CLASS_NAME, "initTickerDtoList", "TickerList is still empty, getting values from web api asynchronously.");
                     // Does not exists in both intent extra and database, then retrieve from web api.
-                    new InitTickerListTask(this, this.pseService).execute();
+                    new InitTickerListTask(this, this.pseService, tradeDtoList).execute();
+                }
+                else
+                {
+                    this.pseService.setTickerDtoListHasTradePlan(this.tickerDtoList, this.pseService.getTradeSymbolsFromTradeDtos(tradeDtoList));
                 }
             }
+        }
+    }
+
+    /**
+     * Update selected fragment here instead in onActivityResult() to avoid "IllegalStateException: Can not perform this action after onSaveInstanceState".
+     */
+    @Override
+    public void onPostResume()
+    {
+        super.onPostResume();
+        LogManager.debug(CLASS_NAME, "onPostResume", "");
+
+        if(this.isReturningResultHomeView)
+        {
+            setDefaultHomeView();
+            this.navigationView.setCheckedItem(R.id.nav_trade_plan);
+            this.isReturningResultHomeView = false;
         }
     }
 
@@ -152,15 +170,38 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             return;
         }
 
-        LogManager.debug(CLASS_NAME, "onActivityResult", "requestCode=" + requestCode + " resultCode=" + resultCode + " dataKeys=" + data.getExtras().keySet());
+        LogManager.debug(CLASS_NAME, "onActivityResult", "requestCode=" + requestCode + " resultCode=" + resultCode);
 
-        if(IntentRequestCode.CREATE_TRADE_PLAN.code() == requestCode && data.hasExtra(DataKey.EXTRA_TICKER.toString()))
+        if(IntentRequestCode.CREATE_TRADE_PLAN.code() == requestCode)
         {
-            TickerDto addedTickerDto = data.getParcelableExtra(DataKey.EXTRA_TICKER.toString());
-
-            if(!this.tickerDtoList.contains(addedTickerDto))
+            if(data.hasExtra(DataKey.EXTRA_TICKER.toString()))
             {
-                this.tickerDtoList.add(addedTickerDto);
+                TickerDto addedTickerDto = data.getParcelableExtra(DataKey.EXTRA_TICKER.toString());
+
+                int addedTickerIndex = this.tickerDtoList.indexOf(addedTickerDto);
+                // Replace ticker dto
+                if(addedTickerIndex != -1)
+                {
+                    this.tickerDtoList.remove(addedTickerDto);
+                }
+
+                LogManager.debug(CLASS_NAME, "onActivityResult", "Extra Ticker: " + addedTickerDto);
+                this.tickerDtoList.add(addedTickerIndex, addedTickerDto);
+            }
+
+            if(data.hasExtra(DataKey.EXTRA_TRADE.toString()))
+            {
+                TradeDto addedTradeDto = data.getParcelableExtra(DataKey.EXTRA_TRADE.toString());
+
+                if(!this.tradeDtoList.contains(addedTradeDto))
+                {
+                    this.tradeDtoList.add(addedTradeDto);
+                }
+
+                LogManager.debug(CLASS_NAME, "onActivityResult", "Extra Trade: " + addedTradeDto);
+                this.isReturningResultHomeView = true;
+
+                getIntent().putParcelableArrayListExtra(DataKey.EXTRA_TRADE_LIST.toString(), this.tradeDtoList);
             }
         }
     }
@@ -242,21 +283,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     this.tradeDtoList = getIntent().getParcelableArrayListExtra(DataKey.EXTRA_TRADE_LIST.toString());
                 }
 
-                this.selectedListFragment = TradePlanListFragment.newInstance(this.tradeDtoList);
-                updateFragmentContainer(this.selectedListFragment);
-                this.showToolbarMenuItems();
-                this.toolbar.setTitle(R.string.app_name);
+                setDefaultHomeView();
                 break;
             }
             case R.id.nav_ticker:
             {
-                Bundle extras = getIntent().getExtras();
-                // Check if exists in intent extras
-                if(extras != null && extras.containsKey(DataKey.EXTRA_TICKER_LIST.toString()))
-                {
-                    this.tickerDtoList = getIntent().getParcelableArrayListExtra(DataKey.EXTRA_TICKER_LIST.toString());
-                }
-
                 this.selectedListFragment = TickerListFragment.newInstance(this.tickerDtoList);
                 updateFragmentContainer(this.selectedListFragment);
                 this.showToolbarMenuItems();
@@ -428,5 +459,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public AbstractListFragment getSelectedListFragment()
     {
         return this.selectedListFragment;
+    }
+
+    public void setTickerDtoList(ArrayList<TickerDto> tickerDtoList)
+    {
+        this.tickerDtoList = tickerDtoList;
+    }
+
+    public void setTradeDtoList(ArrayList<TradeDto> tradeDtoList)
+    {
+        this.tradeDtoList = tradeDtoList;
+    }
+
+    /**
+     * Sets the default home view, which is the trade plan list fragment.
+     */
+    private void setDefaultHomeView()
+    {
+        this.selectedListFragment = TradePlanListFragment.newInstance(this.tradeDtoList);
+        updateFragmentContainer(this.selectedListFragment);
+        this.showToolbarMenuItems();
+        this.toolbar.setTitle(R.string.app_name);
     }
 }

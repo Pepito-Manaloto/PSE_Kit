@@ -33,12 +33,12 @@ public class ListRowOnTouchChangeActivity implements View.OnTouchListener
     /**
      * Default constructor.
      *
-     * @param activity       the current activity
-     * @param activityClass  the activity class to transition to
-     * @param extraKey            the extraKey of the parcelable data
-     * @param parcelableData the data that will be passed to the new activity
-     * @param intentRequestCode    the request code of the new activity
-     * @param view           the view of the listener
+     * @param activity          the current activity
+     * @param activityClass     the activity class to transition to
+     * @param extraKey          the extraKey of the parcelable data
+     * @param parcelableData    the data that will be passed to the new activity
+     * @param intentRequestCode the request code of the new activity
+     * @param view              the view of the listener
      */
     public ListRowOnTouchChangeActivity(final Activity activity, final Class<? extends Activity> activityClass, final DataKey extraKey, final Parcelable parcelableData, final IntentRequestCode intentRequestCode, final View view)
     {
@@ -68,7 +68,7 @@ public class ListRowOnTouchChangeActivity implements View.OnTouchListener
      * @param parcelableData     the data that will be passed to the new activity
      * @param parcelableListKey  the extraKey of the parcelable list data
      * @param parcelableListData the data list that will be passed to the new activity
-     * @param intentRequestCode        the request code of the new activity
+     * @param intentRequestCode  the request code of the new activity
      * @param view               the view of the listener
      */
     public ListRowOnTouchChangeActivity(final Activity activity, final Class<? extends Activity> activityClass, final DataKey parcelableKey, final Parcelable parcelableData, final DataKey parcelableListKey, final ArrayList<? extends Parcelable> parcelableListData, final IntentRequestCode intentRequestCode, final View view)

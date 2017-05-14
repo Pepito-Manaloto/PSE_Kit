@@ -5,11 +5,14 @@ import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.aaron.pseplanner.R;
 import com.aaron.pseplanner.activity.CreateTradePlanActivity;
+import com.aaron.pseplanner.activity.MainActivity;
+import com.aaron.pseplanner.activity.TradePlanActivity;
 import com.aaron.pseplanner.bean.TickerDto;
 import com.aaron.pseplanner.constant.DataKey;
 import com.aaron.pseplanner.constant.IntentRequestCode;
@@ -54,6 +57,7 @@ public class TickerListAdapter extends ArrayAdapter<TickerDto>
             holder.price = (TextView) convertView.findViewById(R.id.ticker_price_row);
             holder.change = (TextView) convertView.findViewById(R.id.ticker_change_row);
             holder.percentChange = (TextView) convertView.findViewById(R.id.ticker_percent_change_row);
+            holder.icon = (ImageView) convertView.findViewById(R.id.ticker_icon_row);
             holder.layout = (LinearLayout) convertView.findViewById(R.id.list_row_layout);
 
             convertView.setTag(holder);
@@ -64,7 +68,7 @@ public class TickerListAdapter extends ArrayAdapter<TickerDto>
         }
 
         TickerDto tickerDto = getItem(position);
-        holder.setTickerView(tickerDto, this.formatService, new ListRowOnTouchChangeActivity(this.activity, CreateTradePlanActivity.class, DataKey.EXTRA_TICKER, tickerDto, IntentRequestCode.CREATE_TRADE_PLAN, holder.layout));
+        holder.setTickerView(tickerDto, this.formatService, this.activity);
 
         return convertView;
     }
@@ -79,10 +83,23 @@ public class TickerListAdapter extends ArrayAdapter<TickerDto>
         TextView change;
         TextView percentChange;
         LinearLayout layout;
+        ImageView icon;
 
-        void setTickerView(TickerDto tickerDto, FormatService service, View.OnTouchListener listener)
+        void setTickerView(TickerDto tickerDto, FormatService service, Activity activity)
         {
-            layout.setOnTouchListener(listener);
+            if(tickerDto.isHasTradePlan())
+            {
+                View.OnTouchListener listener = new ListRowOnTouchChangeActivity(activity, TradePlanActivity.class, DataKey.EXTRA_TICKER, tickerDto, IntentRequestCode.VIEW_TRADE_PLAN, this.layout);
+                layout.setOnTouchListener(listener);
+
+                icon.setImageResource(R.mipmap.check_icon);
+            }
+            else
+            {
+                View.OnTouchListener listener = new ListRowOnTouchChangeActivity(activity, CreateTradePlanActivity.class, DataKey.EXTRA_TICKER, tickerDto, IntentRequestCode.CREATE_TRADE_PLAN, this.layout);
+                layout.setOnTouchListener(listener);
+            }
+
             stock.setText(tickerDto.getSymbol());
             price.setText(service.formatStockPrice(tickerDto.getCurrentPrice().doubleValue()));
             change.setText(service.formatStockPrice(tickerDto.getChange().doubleValue()));

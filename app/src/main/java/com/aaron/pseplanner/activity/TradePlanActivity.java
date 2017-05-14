@@ -11,10 +11,13 @@ import android.support.v7.widget.Toolbar;
 
 import com.aaron.pseplanner.R;
 import com.aaron.pseplanner.adapter.TradePlanPagerAdapter;
+import com.aaron.pseplanner.bean.TickerDto;
 import com.aaron.pseplanner.bean.TradeDto;
 import com.aaron.pseplanner.constant.DataKey;
 import com.aaron.pseplanner.constant.IntentRequestCode;
 import com.aaron.pseplanner.service.LogManager;
+import com.aaron.pseplanner.service.PSEPlannerService;
+import com.aaron.pseplanner.service.implementation.FacadePSEPlannerService;
 
 import java.util.ArrayList;
 
@@ -27,11 +30,12 @@ public class TradePlanActivity extends AppCompatActivity
     public static final String CLASS_NAME = TradePlanActivity.class.getSimpleName();
     private ArrayList<TradeDto> tradeDtoPlanList;
     private TradeDto selectedTradeDtoPlan;
+    private PSEPlannerService pseService;
 
     /**
      * Inflates the UI.
      *
-     * @param savedInstanceState this Bundle is unused in this method.
+     * @param savedInstanceState stores the current state: tradeDtoPlanList and selectedTradeDtoPlan
      */
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -49,8 +53,28 @@ public class TradePlanActivity extends AppCompatActivity
         }
         else
         {
-            this.tradeDtoPlanList = getIntent().getParcelableArrayListExtra(DataKey.EXTRA_TRADE_LIST.toString());
-            this.selectedTradeDtoPlan = getIntent().getParcelableExtra(DataKey.EXTRA_TRADE.toString());
+            // Check if coming from TickerListFragment
+            TickerDto ticker = getIntent().getParcelableExtra(DataKey.EXTRA_TICKER.toString());
+            if(ticker != null)
+            {
+                this.pseService = new FacadePSEPlannerService(this);
+                this.tradeDtoPlanList = this.pseService.getTradePlanListFromDatabase();
+
+                for(TradeDto dto : this.tradeDtoPlanList)
+                {
+                    if(ticker.getSymbol().equals(dto.getSymbol()))
+                    {
+                        this.selectedTradeDtoPlan = dto;
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                this.tradeDtoPlanList = getIntent().getParcelableArrayListExtra(DataKey.EXTRA_TRADE_LIST.toString());
+                this.selectedTradeDtoPlan = getIntent().getParcelableExtra(DataKey.EXTRA_TRADE.toString());
+            }
+
         }
 
         LogManager.debug(CLASS_NAME, "onCreate", "selected=" + (this.selectedTradeDtoPlan == null ? null : this.selectedTradeDtoPlan.toString()));

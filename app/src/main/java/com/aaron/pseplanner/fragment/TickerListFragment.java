@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.aaron.pseplanner.R;
 import com.aaron.pseplanner.adapter.TickerListAdapter;
 import com.aaron.pseplanner.bean.TickerDto;
+import com.aaron.pseplanner.bean.TradeDto;
 import com.aaron.pseplanner.constant.DataKey;
 import com.aaron.pseplanner.constant.PSEPlannerPreference;
 import com.aaron.pseplanner.exception.HttpRequestException;
@@ -18,7 +19,9 @@ import com.aaron.pseplanner.service.LogManager;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by aaron.asuncion on 11/18/2016.
@@ -71,6 +74,10 @@ public class TickerListFragment extends AbstractListFragment<TickerDto>
         else
         {
             this.tickerDtoList = this.pseService.getTickerListFromDatabase();
+
+            ArrayList<TradeDto> tradeDtos = this.pseService.getTradePlanListFromDatabase();
+            Set<String> tradeDtoSymbols = this.pseService.getTradeSymbolsFromTradeDtos(tradeDtos);
+            this.pseService.setTickerDtoListHasTradePlan(this.tickerDtoList, tradeDtoSymbols);
         }
 
         if(this.tickerDtoList != null && !this.tickerDtoList.isEmpty())

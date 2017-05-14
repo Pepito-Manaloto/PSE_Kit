@@ -14,9 +14,6 @@ import java.util.Date;
 
 public class DefaultCalculatorService implements CalculatorService
 {
-    private static final BigDecimal ONE_HUNDRED = new BigDecimal("100");
-    private static final BigDecimal TWO = new BigDecimal("2");
-
     /**
      * Gets the buy gross amount of a stock trade.
      *

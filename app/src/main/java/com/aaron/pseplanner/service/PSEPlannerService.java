@@ -4,12 +4,15 @@ import android.icu.text.TimeZoneNames;
 
 import com.aaron.pseplanner.bean.TickerDto;
 import com.aaron.pseplanner.bean.TradeDto;
+import com.aaron.pseplanner.constant.PSEPlannerPreference;
 
 import org.apache.commons.lang3.time.FastDateFormat;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import java.util.TimeZone;
 
 /**
@@ -24,7 +27,7 @@ public interface PSEPlannerService extends HttpClient
      * Timezone: Manila, Philippines
      *
      * @param preference the shared preference key, determines which last updated date will be retrieved
-     * @return String the last updated formatted date
+     * @return String the last updated formatted
      */
     String getLastUpdated(String preference);
 
@@ -44,6 +47,22 @@ public interface PSEPlannerService extends HttpClient
      * @return {@code List<TickerDto>} the list of ticker dto
      */
     ArrayList<TickerDto> getTickerListFromDatabase();
+
+    /**
+     * Converts the collections of tradeDtos to a set of trade symbols.
+     *
+     * @param tradeDtos the collection of trade symbols
+     * @return {@code Set<String>} the set of stock symbols
+     */
+    Set<String> getTradeSymbolsFromTradeDtos(Collection<TradeDto> tradeDtos);
+
+    /**
+     * Sets each TickerDto's hasTradePlan to true if there is a corresponding TradePlan.
+     *
+     * @param tickerDtoList   the tickerDtoList to transform
+     * @param tradeDtoSymbols the TradePlan symbols used in checking if a tickerDto hasTradePlan
+     */
+    void setTickerDtoListHasTradePlan(Collection<TickerDto> tickerDtoList, Set<String> tradeDtoSymbols);
 
     /**
      * Returns true if the ticker list is already in the database.
@@ -75,4 +94,20 @@ public interface PSEPlannerService extends HttpClient
      * @return {@code List<TradeDto>} the list of trade plan dto
      */
     ArrayList<TradeDto> getTradePlanListFromDatabase();
+
+    /**
+     * Checks if the market is open.
+     * Monday to Friday, 9:30AM - 12:00PM and 1:30PM - 3:20PM
+     *
+     * @return true is market is open, else false
+     */
+    boolean isMarketOpen();
+
+    /**
+     * Checks if the lastUpdated is up date with respect to the current time.
+     *
+     * @param preference the type of lastUpdated, either ticker or trade plan
+     * @return true if up to date, else false
+     */
+    boolean isUpToDate(PSEPlannerPreference preference);
 }

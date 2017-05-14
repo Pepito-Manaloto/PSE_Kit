@@ -131,9 +131,10 @@ public class TradePlanFragment extends Fragment
         target.setText(this.formatService.formatStockPrice(this.selectedStock.getTargetPrice().doubleValue()));
 
         TextView gainTarget = (TextView) view.findViewById(R.id.textview_gain_target);
-        String gainToTarget = "+" + this.formatService.formatPrice(this.selectedStock.getGainToTarget());
+        double gainToTargetValue = this.selectedStock.getGainToTarget().doubleValue();
+        String gainToTarget = "+" + this.formatService.formatPrice(gainToTargetValue);
         gainTarget.setText(gainToTarget);
-        this.formatService.formatTextColor(this.selectedStock.getGainToTarget(), gainTarget);
+        this.formatService.formatTextColor(gainToTargetValue, gainTarget);
 
         TextView stopLoss = (TextView) view.findViewById(R.id.textview_stop_loss);
         stopLoss.setText(this.formatService.formatStockPrice(this.selectedStock.getStopLoss().doubleValue()));
@@ -149,7 +150,7 @@ public class TradePlanFragment extends Fragment
         daysToStopDate.setText(String.valueOf(this.selectedStock.getDaysToStopDate()));
 
         TextView riskReward = (TextView) view.findViewById(R.id.textview_risk_reward);
-        riskReward.setText(String.valueOf(this.selectedStock.getRiskReward()));
+        riskReward.setText(this.formatService.formatStockPrice(this.selectedStock.getRiskReward().doubleValue()));
 
         TextView capital = (TextView) view.findViewById(R.id.textview_capital);
         capital.setText(this.formatService.formatPrice(this.selectedStock.getCapital()));

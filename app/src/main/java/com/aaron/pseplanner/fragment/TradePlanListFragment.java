@@ -81,13 +81,13 @@ public class TradePlanListFragment extends AbstractListFragment<TradeDto>
         }
         else
         {
-            this.tradeDtoList = pseService.getTradePlanListFromDatabase();
-            this.tradesMap = new ConcurrentHashMap<>();
+            this.tradeDtoList = this.pseService.getTradePlanListFromDatabase();
+        }
 
-            for(TradeDto dto : this.tradeDtoList)
-            {
-                this.tradesMap.put(dto.getSymbol(), dto);
-            }
+        this.tradesMap = new ConcurrentHashMap<>();
+        for(TradeDto dto : this.tradeDtoList)
+        {
+            this.tradesMap.put(dto.getSymbol(), dto);
         }
     }
 

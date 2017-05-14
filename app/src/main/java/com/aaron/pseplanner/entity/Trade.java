@@ -57,7 +57,8 @@ public class Trade
     @NotNull
     private String gainLossPercent;
 
-    private long gainToTarget;
+    @NotNull
+    private String gainToTarget;
 
     @NotNull
     private String lossToStopLoss;
@@ -90,12 +91,12 @@ public class Trade
     @Generated(hash = 295783675)
     private transient TradeDao myDao;
 
-    @Generated(hash = 1471992902)
+    @Generated(hash = 1506989549)
     public Trade(Long id, @NotNull Date entryDate, int holdingPeriod, @NotNull String symbol,
             @NotNull String currentPrice, @NotNull String averagePrice, long totalShares,
             @NotNull String totalAmount, @NotNull String priceToBreakEven,
             @NotNull String targetPrice, @NotNull String gainLoss,
-            @NotNull String gainLossPercent, long gainToTarget,
+            @NotNull String gainLossPercent, @NotNull String gainToTarget,
             @NotNull String lossToStopLoss, @NotNull String stopLoss, @NotNull Date stopDate,
             int daysToStopDate, @NotNull String riskReward, long capital,
             @NotNull String percentCapital) {
@@ -245,12 +246,12 @@ public class Trade
         this.gainLossPercent = gainLossPercent;
     }
 
-    public long getGainToTarget()
+    public String getGainToTarget()
     {
         return this.gainToTarget;
     }
 
-    public void setGainToTarget(long gainToTarget)
+    public void setGainToTarget(String gainToTarget)
     {
         this.gainToTarget = gainToTarget;
     }
