@@ -1,5 +1,6 @@
 package com.aaron.pseplanner.fragment;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -19,6 +20,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.aaron.pseplanner.R;
+import com.aaron.pseplanner.activity.MainActivity;
 import com.aaron.pseplanner.activity.UpdateTradePlanActivity;
 import com.aaron.pseplanner.bean.TradeDto;
 import com.aaron.pseplanner.bean.TradeEntryDto;
@@ -27,8 +29,10 @@ import com.aaron.pseplanner.constant.IntentRequestCode;
 import com.aaron.pseplanner.listener.ImageViewOnClickHideExpand;
 import com.aaron.pseplanner.service.FormatService;
 import com.aaron.pseplanner.service.LogManager;
+import com.aaron.pseplanner.service.PSEPlannerService;
 import com.aaron.pseplanner.service.ViewUtils;
 import com.aaron.pseplanner.service.implementation.DefaultFormatService;
+import com.aaron.pseplanner.service.implementation.FacadePSEPlannerService;
 
 import java.util.List;
 
@@ -42,6 +46,7 @@ public class TradePlanFragment extends Fragment
 
     private TradeDto selectedStock;
     private FormatService formatService;
+    private PSEPlannerService pseService;
 
     /**
      * Creates a new TradePlanFragment instance and stores the passed TradeDto data as argument.
@@ -76,6 +81,7 @@ public class TradePlanFragment extends Fragment
         Bundle args = getArguments();
         this.selectedStock = args.getParcelable(DataKey.EXTRA_TRADE.toString());
         this.formatService = new DefaultFormatService(getActivity());
+        this.pseService = new FacadePSEPlannerService(getActivity());
         setHasOptionsMenu(true);
 
         LogManager.debug(CLASS_NAME, "onCreate", this.selectedStock == null ? null : this.selectedStock.toString());
@@ -268,9 +274,20 @@ public class TradePlanFragment extends Fragment
         }
     }
 
+    /**
+     * Deletes the selected trade plan and sets it as extra to the Main activity to update trade plan list and ticker list.
+     */
     private void deleteTradePlan()
     {
-        // TODO: delete this trade plan
-        getActivity().finish();
+        this.pseService.deleteTradePlan(this.selectedStock);
+
+        Intent data = new Intent();
+        data.putExtra(DataKey.EXTRA_TRADE.toString(), this.selectedStock);
+
+        Activity activity = getActivity();
+        activity.setResult(Activity.RESULT_OK, data);
+        activity.finish();
+
+        LogManager.debug(CLASS_NAME, "deleteTradePlan", "Deleted: " + this.selectedStock);
     }
 }

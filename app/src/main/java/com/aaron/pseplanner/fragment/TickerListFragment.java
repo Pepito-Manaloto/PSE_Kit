@@ -31,23 +31,33 @@ public class TickerListFragment extends AbstractListFragment<TickerDto>
 {
     public static final String CLASS_NAME = TickerListFragment.class.getSimpleName();
     private ArrayList<TickerDto> tickerDtoList;
+    private ArrayList<TradeDto> tradeDtoList;
+    private Set<String> tradeDtoSymbols;
 
     /**
      * Gets a new instance of TickerListFragment with the TickerDto list.
      *
-     * @param list the list of Tickers
+     * @param tickerDtoArgList the list of Tickers
+     * @param tradeDtoArgList  the list of Trade Plans
      * @return TickerListFragment
      */
-    public static TickerListFragment newInstance(ArrayList<TickerDto> list)
+    public static TickerListFragment newInstance(ArrayList<TickerDto> tickerDtoArgList, ArrayList<TradeDto> tradeDtoArgList)
     {
         TickerListFragment tickerListFragment = new TickerListFragment();
 
-        if(list != null && !list.isEmpty())
+        Bundle bundle = new Bundle();
+
+        if(tickerDtoArgList != null && !tickerDtoArgList.isEmpty())
         {
-            Bundle bundle = new Bundle();
-            bundle.putParcelableArrayList(DataKey.EXTRA_TICKER_LIST.toString(), list);
-            tickerListFragment.setArguments(bundle);
+            bundle.putParcelableArrayList(DataKey.EXTRA_TICKER_LIST.toString(), tickerDtoArgList);
         }
+
+        if(tradeDtoArgList != null && !tradeDtoArgList.isEmpty())
+        {
+            bundle.putParcelableArrayList(DataKey.EXTRA_TRADE_LIST.toString(), tradeDtoArgList);
+        }
+
+        tickerListFragment.setArguments(bundle);
 
         return tickerListFragment;
     }
@@ -63,6 +73,20 @@ public class TickerListFragment extends AbstractListFragment<TickerDto>
 
         LogManager.debug(CLASS_NAME, "onCreate", "");
 
+        if(getArguments() != null && getArguments().containsKey(DataKey.EXTRA_TRADE_LIST.toString()))
+        {
+            this.tradeDtoList = getArguments().getParcelableArrayList(DataKey.EXTRA_TRADE_LIST.toString());
+        }
+        else if(savedInstanceState != null && savedInstanceState.containsKey(DataKey.EXTRA_TRADE_LIST.toString()))
+        {
+            this.tradeDtoList = savedInstanceState.getParcelableArrayList(DataKey.EXTRA_TRADE_LIST.toString());
+        }
+        else
+        {
+            this.tradeDtoList = this.pseService.getTradePlanListFromDatabase();
+        }
+        this.tradeDtoSymbols = this.pseService.getTradeSymbolsFromTradeDtos(this.tradeDtoList);
+
         if(getArguments() != null && getArguments().containsKey(DataKey.EXTRA_TICKER_LIST.toString()))
         {
             this.tickerDtoList = getArguments().getParcelableArrayList(DataKey.EXTRA_TICKER_LIST.toString());
@@ -74,10 +98,7 @@ public class TickerListFragment extends AbstractListFragment<TickerDto>
         else
         {
             this.tickerDtoList = this.pseService.getTickerListFromDatabase();
-
-            ArrayList<TradeDto> tradeDtos = this.pseService.getTradePlanListFromDatabase();
-            Set<String> tradeDtoSymbols = this.pseService.getTradeSymbolsFromTradeDtos(tradeDtos);
-            this.pseService.setTickerDtoListHasTradePlan(this.tickerDtoList, tradeDtoSymbols);
+            this.pseService.setTickerDtoListHasTradePlan(this.tickerDtoList, this.tradeDtoSymbols);
         }
 
         if(this.tickerDtoList != null && !this.tickerDtoList.isEmpty())
@@ -118,6 +139,29 @@ public class TickerListFragment extends AbstractListFragment<TickerDto>
             outState.putParcelableArrayList(DataKey.EXTRA_TICKER_LIST.toString(), this.tickerDtoList);
             LogManager.debug(CLASS_NAME, "onSaveInstanceState", "Ticker list count: " + this.tickerDtoList.size());
         }
+
+        if(this.tradeDtoList != null && !this.tradeDtoList.isEmpty())
+        {
+            outState.putParcelableArrayList(DataKey.EXTRA_TRADE_LIST.toString(), this.tradeDtoList);
+            LogManager.debug(CLASS_NAME, "onSaveInstanceState", "Trade Plan list count: " + this.tradeDtoList.size());
+        }
+    }
+
+    /**
+     * Saves ticker list state in the database.
+     */
+    @Override
+    public void onStop()
+    {
+        LogManager.debug(CLASS_NAME, "onStop", "");
+
+        if(this.tickerDtoList != null && !this.tickerDtoList.isEmpty())
+        {
+            // Save in database, because upon refresh we are only saving the updated ticker in cache
+            this.pseService.updateTickerList(this.tickerDtoList);
+        }
+
+        super.onStop();
     }
 
     @Override
@@ -137,6 +181,9 @@ public class TickerListFragment extends AbstractListFragment<TickerDto>
         Pair<List<TickerDto>, Date> response = this.pseService.getAllTickerList();
         this.tickerDtoList = (ArrayList<TickerDto>) response.first;
 
+
+        this.pseService.setTickerDtoListHasTradePlan(tickerDtoList, this.tradeDtoSymbols);
+
         updateListOnUiThread(response.first, this.formatService.formatLastUpdated(response.second));
     }
 
@@ -153,18 +200,4 @@ public class TickerListFragment extends AbstractListFragment<TickerDto>
             updateListOnUiThread(this.tickerDtoList, this.pseService.getLastUpdated(PSEPlannerPreference.LAST_UPDATED_TICKER.toString()));
         }
     }
-
-    /**
-     * Saves ticker list state in the activity's intent and in the database
-     */
-    @Override
-    protected void saveListState()
-    {
-        if(this.tickerDtoList != null && !this.tickerDtoList.isEmpty())
-        {
-            getActivity().getIntent().putParcelableArrayListExtra(DataKey.EXTRA_TICKER_LIST.toString(), this.tickerDtoList);
-            this.pseService.updateTickerList(this.tickerDtoList);
-        }
-    }
-
 }

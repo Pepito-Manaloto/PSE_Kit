@@ -19,7 +19,6 @@ public class TickerDto implements Parcelable
     private BigDecimal percentChange;
     private boolean hasTradePlan;
 
-
     public TickerDto()
     {
     }

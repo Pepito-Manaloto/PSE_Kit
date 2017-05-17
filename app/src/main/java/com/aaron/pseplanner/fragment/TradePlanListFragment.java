@@ -172,11 +172,4 @@ public class TradePlanListFragment extends AbstractListFragment<TradeDto>
             updateListOnUiThread(this.tradeDtoList, this.pseService.getLastUpdated(PSEPlannerPreference.LAST_UPDATED_TRADE_PLAN.toString()));
         }
     }
-
-    @Override
-    protected void saveListState()
-    {
-        getActivity().getIntent().putParcelableArrayListExtra(DataKey.EXTRA_TRADE_LIST.toString(), this.tradeDtoList);
-    }
-
 }

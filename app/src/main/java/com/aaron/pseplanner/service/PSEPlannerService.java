@@ -89,6 +89,11 @@ public interface PSEPlannerService extends HttpClient
     boolean updateTradePlan(TradeDto tradeDtoFirst, TradeDto... tradeDtos);
 
     /**
+     * Deletes the trade dto in the database.
+     */
+    boolean deleteTradePlan(TradeDto tradeDto);
+
+    /**
      * Retrieves the list of trade plans from the database.
      *
      * @return {@code List<TradeDto>} the list of trade plan dto

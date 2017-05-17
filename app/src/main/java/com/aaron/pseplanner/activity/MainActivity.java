@@ -115,8 +115,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         {
             LogManager.debug(CLASS_NAME, "initTickerDtoList", "TickerList is empty, getting values from intent extras.");
 
-            Bundle extras = getIntent().getExtras();
-
             if(this.tickerDtoList == null || this.tickerDtoList.isEmpty())
             {
                 LogManager.debug(CLASS_NAME, "initTickerDtoList", "TickerList is still empty, getting values from database.");
@@ -196,13 +194,35 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 if(!this.tradeDtoList.contains(addedTradeDto))
                 {
                     this.tradeDtoList.add(addedTradeDto);
+                    this.isReturningResultHomeView = true;
                 }
 
                 LogManager.debug(CLASS_NAME, "onActivityResult", "Extra Trade: " + addedTradeDto);
-                this.isReturningResultHomeView = true;
-
-                getIntent().putParcelableArrayListExtra(DataKey.EXTRA_TRADE_LIST.toString(), this.tradeDtoList);
             }
+        }
+        else if(IntentRequestCode.VIEW_TRADE_PLAN.code() == requestCode)
+        {
+            if(data.hasExtra(DataKey.EXTRA_TRADE.toString()))
+            {
+                TradeDto removedTradeDto = data.getParcelableExtra(DataKey.EXTRA_TRADE.toString());
+
+                if(this.tradeDtoList.contains(removedTradeDto))
+                {
+                    this.tradeDtoList.remove(removedTradeDto);
+
+                    for(TickerDto dto : this.tickerDtoList)
+                    {
+                        if(removedTradeDto.getSymbol().equals(dto.getSymbol()))
+                        {
+                            dto.setHasTradePlan(false);
+                        }
+                    }
+
+                    this.isReturningResultHomeView = true;
+                    LogManager.debug(CLASS_NAME, "onActivityResult", "Extra Trade removed: " + removedTradeDto);
+                }
+            }
+
         }
     }
 
@@ -276,19 +296,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         {
             case R.id.nav_trade_plan:
             {
-                Bundle extras = getIntent().getExtras();
-                // Check if exists in intent extras
-                if(extras != null && extras.containsKey(DataKey.EXTRA_TRADE_LIST.toString()))
-                {
-                    this.tradeDtoList = getIntent().getParcelableArrayListExtra(DataKey.EXTRA_TRADE_LIST.toString());
-                }
-
                 setDefaultHomeView();
                 break;
             }
             case R.id.nav_ticker:
             {
-                this.selectedListFragment = TickerListFragment.newInstance(this.tickerDtoList);
+                this.selectedListFragment = TickerListFragment.newInstance(this.tickerDtoList, this.tradeDtoList);
                 updateFragmentContainer(this.selectedListFragment);
                 this.showToolbarMenuItems();
                 this.toolbar.setTitle(R.string.nav_ticker);

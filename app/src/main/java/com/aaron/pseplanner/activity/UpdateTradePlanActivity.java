@@ -55,7 +55,11 @@ public class UpdateTradePlanActivity extends SaveTradePlanActivity
         }
         else
         {
-            this.tradeDtoPlanToUpdate = getIntent().getParcelableExtra(DataKey.EXTRA_TRADE.toString());
+            Bundle bundle = getIntent().getExtras();
+            if(bundle != null)
+            {
+                this.tradeDtoPlanToUpdate = bundle.getParcelable(DataKey.EXTRA_TRADE.toString());
+            }
         }
 
         this.sharesEditText.setText(String.valueOf(tradeDtoPlanToUpdate.getTotalShares()));

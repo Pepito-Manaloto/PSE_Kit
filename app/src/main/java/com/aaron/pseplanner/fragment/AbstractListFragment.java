@@ -58,18 +58,6 @@ public abstract class AbstractListFragment<T extends Parcelable> extends ListFra
     }
 
     /**
-     * Saves fragment list data state to be loaded when the fragment is created once again.
-     */
-    @Override
-    public void onStop()
-    {
-        LogManager.debug(CLASS_NAME, "onStop", "");
-
-        saveListState();
-        super.onStop();
-    }
-
-    /**
      * Updates the list view on UI thread, including the last updated text view.
      *
      * @param list        the new list
@@ -113,9 +101,4 @@ public abstract class AbstractListFragment<T extends Parcelable> extends ListFra
      * Updates the list of this fragment list by getting the latest data from the database.
      */
     public abstract void updateListFromDatabase();
-
-    /**
-     * Save list data state.
-     */
-    protected abstract void saveListState();
 }

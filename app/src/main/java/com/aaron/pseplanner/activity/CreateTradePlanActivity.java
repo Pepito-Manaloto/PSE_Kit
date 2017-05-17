@@ -49,7 +49,11 @@ public class CreateTradePlanActivity extends SaveTradePlanActivity
         }
         else
         {
-            this.selectedStock = getIntent().getParcelableExtra(DataKey.EXTRA_TICKER.toString());
+            Bundle bundle = getIntent().getExtras();
+            if(bundle != null)
+            {
+                this.selectedStock = bundle.getParcelable(DataKey.EXTRA_TICKER.toString());
+            }
         }
 
         LogManager.debug(CLASS_NAME, "onCreate", this.selectedStock == null ? null : this.selectedStock.toString());

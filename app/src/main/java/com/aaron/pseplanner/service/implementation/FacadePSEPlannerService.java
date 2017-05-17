@@ -310,6 +310,22 @@ public class FacadePSEPlannerService implements PSEPlannerService
         return true;
     }
 
+    /**
+     * Delete the trade plan in the database.
+     *
+     * @param tradeDto the trade plan to delete
+     * @return true if successful, else false
+     */
+    @Override
+    public boolean deleteTradePlan(TradeDto tradeDto)
+    {
+        this.tradeDao.queryBuilder().where(TradeDao.Properties.Symbol.eq(tradeDto.getSymbol())).buildDelete().executeDeleteWithoutDetachingEntities();
+        this.tradeEntryDao.queryBuilder().where(TradeEntryDao.Properties.TradeSymbol.eq(tradeDto.getSymbol())).buildDelete().executeDeleteWithoutDetachingEntities();
+        LogManager.debug(CLASS_NAME, "deleteTradePlan", "Deleted: " + tradeDto.getSymbol());
+
+        return true;
+    }
+
     private Trade fromTradeDtoToTrade(TradeDto tradeDto, Date now)
     {
         Trade trade = new Trade();
