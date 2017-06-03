@@ -84,7 +84,7 @@ public class CreateTradePlanActivity extends SaveTradePlanActivity
         if(this.selectedStock != null)
         {
             outState.putParcelable(DataKey.EXTRA_TICKER.toString(), this.selectedStock);
-            LogManager.debug(CLASS_NAME, "onSaveInstanceState", "Stock: " + this.selectedStock);
+            LogManager.debug(CLASS_NAME, "onSaveInstanceState", "Ticker: " + this.selectedStock);
         }
     }
 
@@ -98,7 +98,7 @@ public class CreateTradePlanActivity extends SaveTradePlanActivity
     {
         Intent data = new Intent();
 
-        LogManager.debug(CLASS_NAME, "setActivityResultHome", "Result code: " + resultCode + " Stock: " + this.selectedStock);
+        LogManager.debug(CLASS_NAME, "setActivityResultHome", "Result code: " + resultCode + " Ticker: " + this.selectedStock);
 
         if(resultCode == Activity.RESULT_OK)
         {
@@ -139,37 +139,14 @@ public class CreateTradePlanActivity extends SaveTradePlanActivity
     }
 
     @Override
-    protected TradeDto getTradeToSave(long shares, BigDecimal stopLoss, BigDecimal target, long capital, Date entryDate, Date stopDate, BigDecimal riskReward, BigDecimal averagePrice, Collection<Pair<String, String>> priceWeightList)
+    protected String getSelectedSymbol()
     {
-        TradeDto tradeDto = new TradeDto();
+        return this.selectedStock.getSymbol();
+    }
 
-        BigDecimal averagePriceAfterBuy = this.calculator.getAveragePriceAfterBuy(averagePrice);
-        BigDecimal totalAmount = averagePriceAfterBuy.multiply(new BigDecimal(shares));
-        BigDecimal targetTotalAmount = this.calculator.getSellNetAmount(target, shares);
-        BigDecimal stopLossTotalAmount = this.calculator.getSellNetAmount(stopLoss, shares);
-
-        tradeDto.setSymbol(this.selectedStock.getSymbol());
-        tradeDto.setCurrentPrice(this.selectedStock.getCurrentPrice());
-        tradeDto.setAveragePrice(averagePriceAfterBuy);
-        tradeDto.setTotalAmount(totalAmount);
-        tradeDto.setTotalShares(shares);
-        tradeDto.setPriceToBreakEven(this.calculator.getPriceToBreakEven(averagePrice));
-        tradeDto.setStopLoss(stopLoss);
-        tradeDto.setLossToStopLoss(stopLossTotalAmount.subtract(totalAmount));
-        tradeDto.setTargetPrice(target);
-        tradeDto.setGainToTarget(targetTotalAmount.subtract(totalAmount));
-        tradeDto.setGainLoss(this.calculator.getGainLossAmount(averagePrice, shares, this.selectedStock.getCurrentPrice()));
-        tradeDto.setGainLossPercent(this.calculator.getPercentGainLoss(averagePrice, shares, this.selectedStock.getCurrentPrice()));
-        tradeDto.setCapital(capital);
-        tradeDto.setPercentCapital(totalAmount.divide(new BigDecimal(capital), MathContext.DECIMAL64).multiply(ONE_HUNDRED).setScale(2, BigDecimal.ROUND_CEILING));
-        tradeDto.setEntryDate(entryDate);
-        tradeDto.setStopDate(stopDate);
-        tradeDto.setHoldingPeriod(this.calculator.getDaysBetween(new Date(), entryDate));
-        tradeDto.setRiskReward(riskReward);
-
-        List<TradeEntryDto> list = priceWeightListToTradeEntryList(this.selectedStock.getSymbol(), shares, priceWeightList);
-        tradeDto.setTradeEntries(list);
-
-        return tradeDto;
+    @Override
+    protected BigDecimal getSelectedSymbolCurrentPrice()
+    {
+        return this.selectedStock.getCurrentPrice();
     }
 }

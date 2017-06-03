@@ -3,6 +3,7 @@ package com.aaron.pseplanner.adapter;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.aaron.pseplanner.bean.TradeDto;
 import com.aaron.pseplanner.fragment.TradePlanFragment;
@@ -13,7 +14,7 @@ import java.util.ArrayList;
  * Created by aaron.asuncion on 2/22/2017.
  */
 
-public class TradePlanPagerAdapter extends FragmentPagerAdapter
+public class TradePlanPagerAdapter extends FragmentStatePagerAdapter
 {
     private ArrayList<TradeDto> tradeDtoPlanList;
     private int size;
@@ -21,9 +22,9 @@ public class TradePlanPagerAdapter extends FragmentPagerAdapter
     /**
      * Default constructor.
      *
-     * @param fm            the fragment manager
+     * @param fm               the fragment manager
      * @param tradeDtoPlanList the list of trade plan
-     * @param size          the number of trade plan in the list
+     * @param size             the number of trade plan in the list
      */
     public TradePlanPagerAdapter(FragmentManager fm, ArrayList<TradeDto> tradeDtoPlanList, int size)
     {
@@ -43,5 +44,11 @@ public class TradePlanPagerAdapter extends FragmentPagerAdapter
     public int getCount()
     {
         return size;
+    }
+
+    @Override
+    public int getItemPosition(Object object)
+    {
+        return POSITION_NONE;
     }
 }

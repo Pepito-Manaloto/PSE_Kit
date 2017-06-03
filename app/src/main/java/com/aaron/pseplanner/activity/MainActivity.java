@@ -181,10 +181,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 if(addedTickerIndex != -1)
                 {
                     this.tickerDtoList.remove(addedTickerDto);
+                    this.tickerDtoList.add(addedTickerIndex, addedTickerDto);
+                }
+                else
+                {
+                    this.tickerDtoList.add(addedTickerDto);
                 }
 
                 LogManager.debug(CLASS_NAME, "onActivityResult", "Extra Ticker: " + addedTickerDto);
-                this.tickerDtoList.add(addedTickerIndex, addedTickerDto);
+
             }
 
             if(data.hasExtra(DataKey.EXTRA_TRADE.toString()))
@@ -222,7 +227,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     LogManager.debug(CLASS_NAME, "onActivityResult", "Extra Trade removed: " + removedTradeDto);
                 }
             }
-
+            else if(data.hasExtra(DataKey.EXTRA_TRADE_LIST.toString()))
+            {
+                this.tradeDtoList = data.getParcelableArrayListExtra(DataKey.EXTRA_TRADE_LIST.toString());
+                LogManager.debug(CLASS_NAME, "onActivityResult", "Extra Trade list updated.");
+            }
         }
     }
 

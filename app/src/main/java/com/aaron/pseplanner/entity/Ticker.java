@@ -13,7 +13,7 @@ import org.greenrobot.greendao.annotation.Generated;
  * Created by Aaron on 3/21/2017.
  */
 @Entity(indexes = {@Index(value = "symbol ASC", unique = true)})
-public class Stock
+public class Ticker
 {
     @Id(autoincrement = true)
     private Long id;
@@ -40,9 +40,9 @@ public class Stock
     private Date dateUpdate;
 
     @Generated(hash = 1761935474)
-    public Stock(Long id, @NotNull String symbol, @NotNull String name, long volume,
-            @NotNull String currentPrice, @NotNull String change,
-            @NotNull String percentChange, @NotNull Date dateUpdate) {
+    public Ticker(Long id, @NotNull String symbol, @NotNull String name, long volume,
+                  @NotNull String currentPrice, @NotNull String change,
+                  @NotNull String percentChange, @NotNull Date dateUpdate) {
         this.id = id;
         this.symbol = symbol;
         this.name = name;
@@ -54,7 +54,7 @@ public class Stock
     }
 
     @Generated(hash = 1902438397)
-    public Stock() {
+    public Ticker() {
     }
 
     public Long getId()

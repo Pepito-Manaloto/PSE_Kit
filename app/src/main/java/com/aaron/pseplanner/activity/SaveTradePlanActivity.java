@@ -39,6 +39,7 @@ import com.aaron.pseplanner.service.implementation.FacadePSEPlannerService;
 import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -47,6 +48,8 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import static com.aaron.pseplanner.service.CalculatorService.ONE_HUNDRED;
 
 /**
  * Abstract class for Create/Update Trade Plan Activity. Does not contain navigation views or menu items.
@@ -444,6 +447,58 @@ public abstract class SaveTradePlanActivity extends AppCompatActivity
     }
 
     /**
+     * Creates a TradeDto from the trade parameters.
+     *
+     * @param shares          the total shares
+     * @param stopLoss        the stop loss
+     * @param target          the target price
+     * @param capital         the total capital
+     * @param entryDate       the entry date
+     * @param stopDate        the time stop date
+     * @param riskReward      the risk reward ratio
+     * @param averagePrice    the average price of all tranches
+     * @param priceWeightList the price weight list of all tranches
+     * @return TradeDto
+     */
+    protected TradeDto getTradeToSave(long shares, BigDecimal stopLoss, BigDecimal target, long capital, Date entryDate, Date stopDate, BigDecimal riskReward, BigDecimal averagePrice, Collection<Pair<String, String>> priceWeightList)
+    {
+        TradeDto tradeDto = new TradeDto();
+
+        BigDecimal averagePriceAfterBuy = this.calculator.getAveragePriceAfterBuy(averagePrice);
+        BigDecimal totalAmount = averagePriceAfterBuy.multiply(new BigDecimal(shares));
+        BigDecimal targetTotalAmount = this.calculator.getSellNetAmount(target, shares);
+        BigDecimal stopLossTotalAmount = this.calculator.getSellNetAmount(stopLoss, shares);
+
+        String symbol = this.getSelectedSymbol();
+        BigDecimal currentPrice = this.getSelectedSymbolCurrentPrice();
+
+        tradeDto.setSymbol(symbol);
+        tradeDto.setCurrentPrice(currentPrice);
+        tradeDto.setAveragePrice(averagePriceAfterBuy);
+        tradeDto.setTotalAmount(totalAmount);
+        tradeDto.setTotalShares(shares);
+        tradeDto.setPriceToBreakEven(this.calculator.getPriceToBreakEven(averagePrice));
+        tradeDto.setStopLoss(stopLoss);
+        tradeDto.setLossToStopLoss(stopLossTotalAmount.subtract(totalAmount));
+        tradeDto.setTargetPrice(target);
+        tradeDto.setGainToTarget(targetTotalAmount.subtract(totalAmount));
+        tradeDto.setGainLoss(this.calculator.getGainLossAmount(averagePrice, shares, currentPrice));
+        tradeDto.setGainLossPercent(this.calculator.getPercentGainLoss(averagePrice, shares, currentPrice));
+        tradeDto.setCapital(capital);
+        tradeDto.setPercentCapital(totalAmount.divide(new BigDecimal(capital), MathContext.DECIMAL64).multiply(ONE_HUNDRED).setScale(2, BigDecimal.ROUND_CEILING));
+        tradeDto.setEntryDate(entryDate);
+        tradeDto.setStopDate(stopDate);
+        tradeDto.setHoldingPeriod(this.calculator.getDaysBetween(new Date(), entryDate));
+        tradeDto.setRiskReward(riskReward);
+
+        List<TradeEntryDto> list = priceWeightListToTradeEntryList(symbol, shares, priceWeightList);
+        tradeDto.setTradeEntries(list);
+
+        return tradeDto;
+    }
+
+
+    /**
      * Creates and show the prompt dialog if the risk-reward is less than 2.
      */
     private void createAndShowAlertDialog(final TradeDto dto)
@@ -545,5 +600,7 @@ public abstract class SaveTradePlanActivity extends AppCompatActivity
 
     protected abstract void saveTradePlan(TradeDto dto);
 
-    protected abstract TradeDto getTradeToSave(long shares, BigDecimal stopLoss, BigDecimal target, long capital, Date entryDate, Date stopDate, BigDecimal riskReward, BigDecimal averagePrice, Collection<Pair<String, String>> priceWeightList);
+    protected abstract String getSelectedSymbol();
+
+    protected abstract BigDecimal getSelectedSymbolCurrentPrice();
 }

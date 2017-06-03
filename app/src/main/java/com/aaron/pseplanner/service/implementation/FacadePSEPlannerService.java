@@ -13,7 +13,7 @@ import com.aaron.pseplanner.bean.TradeDto;
 import com.aaron.pseplanner.bean.TradeEntryDto;
 import com.aaron.pseplanner.constant.PSEPlannerPreference;
 import com.aaron.pseplanner.entity.DaoSession;
-import com.aaron.pseplanner.entity.Stock;
+import com.aaron.pseplanner.entity.Ticker;
 import com.aaron.pseplanner.entity.StockDao;
 import com.aaron.pseplanner.entity.Trade;
 import com.aaron.pseplanner.entity.TradeDao;
@@ -29,7 +29,6 @@ import com.aaron.pseplanner.service.SettingsService;
 
 import org.apache.commons.lang3.StringUtils;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -93,7 +92,6 @@ public class FacadePSEPlannerService implements PSEPlannerService
         this.sharedPreferences = activity.getSharedPreferences(PSEPlannerPreference.class.getSimpleName(), Context.MODE_PRIVATE);
         this.calculatorService = new DefaultCalculatorService();
 
-        // get the note DAO
         DaoSession daoSession = ((PSEPlannerApplication) activity.getApplication()).getDaoSession();
         this.stockDao = daoSession.getStockDao();
         this.tradeDao = daoSession.getTradeDao();
@@ -143,7 +141,7 @@ public class FacadePSEPlannerService implements PSEPlannerService
     }
 
     /**
-     * Inserts the given TickerDto list as Stock entity in the database.
+     * Inserts the given TickerDto list as Ticker entity in the database.
      *
      * @param tickerDtoList the list of TickerDto
      * @return true if successful, else false
@@ -151,18 +149,18 @@ public class FacadePSEPlannerService implements PSEPlannerService
     @Override
     public boolean insertTickerList(List<TickerDto> tickerDtoList)
     {
-        Set<Stock> stockList = this.getStockListAndUpdateLastUpdated(tickerDtoList);
+        Set<Ticker> tickerList = this.getStockListAndUpdateLastUpdated(tickerDtoList);
 
         // Bulk insert
-        this.stockDao.insertOrReplaceInTx(stockList);
+        this.stockDao.insertOrReplaceInTx(tickerList);
 
-        LogManager.debug(CLASS_NAME, "insertTickerList", "Inserted: count = " + stockList.size());
+        LogManager.debug(CLASS_NAME, "insertTickerList", "Inserted: count = " + tickerList.size());
 
         return true;
     }
 
     /**
-     * Updates the given TickerDto list as Stock entity in the database.
+     * Updates the given TickerDto list as Ticker entity in the database.
      *
      * @param tickerDtoList the list of TickerDto
      * @return true if successful, else false
@@ -170,48 +168,48 @@ public class FacadePSEPlannerService implements PSEPlannerService
     @Override
     public boolean updateTickerList(List<TickerDto> tickerDtoList)
     {
-        Set<Stock> stockList = this.getStockListAndUpdateLastUpdated(tickerDtoList);
+        Set<Ticker> tickerList = this.getStockListAndUpdateLastUpdated(tickerDtoList);
 
         // Bulk update
-        this.stockDao.updateInTx(stockList);
+        this.stockDao.updateInTx(tickerList);
 
-        LogManager.debug(CLASS_NAME, "updateTickerList", "Updated: count = " + stockList.size());
+        LogManager.debug(CLASS_NAME, "updateTickerList", "Updated: count = " + tickerList.size());
 
         return true;
     }
 
-    private Set<Stock> getStockListAndUpdateLastUpdated(List<TickerDto> tickerDtoList)
+    private Set<Ticker> getStockListAndUpdateLastUpdated(List<TickerDto> tickerDtoList)
     {
         Date lastUpdated = this.getLastUpdatedDate(PSEPlannerPreference.LAST_UPDATED_TICKER.toString());
-        Set<Stock> stockList = new HashSet<>(tickerDtoList.size());
+        Set<Ticker> tickerList = new HashSet<>(tickerDtoList.size());
 
-        // Convert each TickerDto to Stock and store in a Set
+        // Convert each TickerDto to Ticker and store in a Set
         for(TickerDto dto : tickerDtoList)
         {
-            Stock stock = this.fromTickerDtoToStock(dto, lastUpdated);
-            stockList.add(stock);
+            Ticker ticker = this.fromTickerDtoToStock(dto, lastUpdated);
+            tickerList.add(ticker);
         }
 
         this.updateLastUpdated(lastUpdated, PSEPlannerPreference.LAST_UPDATED_TICKER);
         LogManager.debug(CLASS_NAME, "getStockListAndUpdateLastUpdated", "Last updated = " + lastUpdated.toString());
 
-        return stockList;
+        return tickerList;
     }
 
     /**
-     * Retrieves the Stock list from the database and converts to TickerDto list.
+     * Retrieves the Ticker list from the database and converts to TickerDto list.
      *
      * @return {@code List<TickerDto>}
      */
     @Override
     public ArrayList<TickerDto> getTickerListFromDatabase()
     {
-        List<Stock> stockList = this.stockDao.queryBuilder().orderAsc(StockDao.Properties.Symbol).list();
-        ArrayList<TickerDto> tickerDtoList = new ArrayList<>(stockList.size());
+        List<Ticker> tickerList = this.stockDao.queryBuilder().orderAsc(StockDao.Properties.Symbol).list();
+        ArrayList<TickerDto> tickerDtoList = new ArrayList<>(tickerList.size());
 
-        for(Stock stock : stockList)
+        for(Ticker ticker : tickerList)
         {
-            tickerDtoList.add(new TickerDto(stock.getSymbol(), stock.getName(), stock.getVolume(), stock.getCurrentPrice(), stock.getChange(), stock.getPercentChange()));
+            tickerDtoList.add(new TickerDto(ticker.getSymbol(), ticker.getName(), ticker.getVolume(), ticker.getCurrentPrice(), ticker.getChange(), ticker.getPercentChange()));
         }
 
         LogManager.debug(CLASS_NAME, "getTickerListFromDatabase", "Retrieved: count = " + tickerDtoList.size());
@@ -271,13 +269,14 @@ public class FacadePSEPlannerService implements PSEPlannerService
     {
         Date now = new Date();
         this.updateLastUpdated(now, PSEPlannerPreference.LAST_UPDATED_TRADE_PLAN);
+
         Trade trade = this.fromTradeDtoToTrade(tradeDto, now);
-        List<TradeEntry> tradeEntries = this.fromTradeEntryDtoToTradeEntry(tradeDto.getTradeEntries());
+        List<TradeEntry> tradeEntries = this.addTradeEntryDtosToTradeEntryList(tradeDto.getTradeEntries(), null);
 
         this.tradeDao.insert(trade);
         this.tradeEntryDao.insertInTx(tradeEntries);
 
-        LogManager.debug(CLASS_NAME, "insertTradePlan", "Inserted: dto = " + tradeDto);
+        LogManager.debug(CLASS_NAME, "insertTradePlan", "Inserted: " + trade);
 
         return true;
     }
@@ -285,28 +284,31 @@ public class FacadePSEPlannerService implements PSEPlannerService
     /**
      * Updates the given TradeDto list as Trade entity in the database.
      *
-     * @param tradeDtoFirst the first tradeDto, ensures this method will not be called with an empty vararg
-     * @param tradeDtos     the list of TradeDto
+     * @param tradeDto the tradeDto
      * @return true if successful, else false
      */
     @Override
-    public boolean updateTradePlan(TradeDto tradeDtoFirst, TradeDto... tradeDtos)
+    public boolean updateTradePlan(final TradeDto tradeDto)
     {
         Date now = new Date();
-        Set<Trade> tradeList = new HashSet<>(tradeDtos.length);
-        tradeList.add(this.fromTradeDtoToTrade(tradeDtoFirst, now));
+        this.updateLastUpdated(now, PSEPlannerPreference.LAST_UPDATED_TRADE_PLAN);
 
-        for(TradeDto dto : tradeDtos)
+        final Trade trade = this.tradeDao.queryBuilder().where(TradeDao.Properties.Symbol.eq(tradeDto.getSymbol())).unique();
+        final List<TradeEntry> tradeEntries = this.addTradeEntryDtosToTradeEntryList(tradeDto.getTradeEntries(), null);
+
+        // Execute delete and update/insert in one transaction
+        this.tradeDao.getSession().runInTx(new Runnable()
         {
-            Trade trade = this.fromTradeDtoToTrade(dto, now);
-            tradeList.add(trade);
-        }
+            @Override
+            public void run()
+            {
+                tradeEntryDao.queryBuilder().where(TradeEntryDao.Properties.TradeSymbol.eq(tradeDto.getSymbol())).buildDelete().executeDeleteWithoutDetachingEntities();
+                tradeDao.update(trade);
+                tradeEntryDao.insertInTx(tradeEntries);
+            }
+        });
 
-        this.tradeDao.updateInTx(tradeList);
-        // TODO: update trade entries
-
-        LogManager.debug(CLASS_NAME, "updateTradePlan", "Updated: count = " + tradeList.size());
-
+        LogManager.debug(CLASS_NAME, "updateTradePlan", "Updated: " + trade);
         return true;
     }
 
@@ -358,9 +360,12 @@ public class FacadePSEPlannerService implements PSEPlannerService
         return trade;
     }
 
-    private List<TradeEntry> fromTradeEntryDtoToTradeEntry(List<TradeEntryDto> tradeEntries)
+    private List<TradeEntry> addTradeEntryDtosToTradeEntryList(List<TradeEntryDto> tradeEntries, List<TradeEntry> tradeEntryList)
     {
-        List<TradeEntry> tradeEntryList = new ArrayList<>(tradeEntries.size());
+        if(tradeEntryList == null)
+        {
+            tradeEntryList = new ArrayList<>(tradeEntries.size());
+        }
 
         int order = 0;
         for(TradeEntryDto dto : tradeEntries)
@@ -498,38 +503,38 @@ public class FacadePSEPlannerService implements PSEPlannerService
     }
 
     /**
-     * Converts TickerDto to Stock entity.
+     * Converts TickerDto to Ticker entity.
      *
      * @param dto the dto to convert
      * @param now the current datetime
-     * @return Stock the converted entity
+     * @return Ticker the converted entity
      */
-    private Stock fromTickerDtoToStock(TickerDto dto, Date now)
+    private Ticker fromTickerDtoToStock(TickerDto dto, Date now)
     {
-        Stock stock = new Stock();
+        Ticker ticker = new Ticker();
 
-        return this.fromTickerDtoToStock(stock, dto, now);
+        return this.fromTickerDtoToStock(ticker, dto, now);
     }
 
     /**
-     * Replaces the values of the Stock entity with the TickerDto.
+     * Replaces the values of the Ticker entity with the TickerDto.
      *
-     * @param stock the stock to replace values
+     * @param ticker the ticker to replace values
      * @param dto   the dto to get the values from
      * @param now   the current datetime
-     * @return Stock the passed stock with its properties replaced
+     * @return Ticker the passed ticker with its properties replaced
      */
-    private Stock fromTickerDtoToStock(Stock stock, TickerDto dto, Date now)
+    private Ticker fromTickerDtoToStock(Ticker ticker, TickerDto dto, Date now)
     {
-        stock.setSymbol(dto.getSymbol());
-        stock.setName(dto.getName());
-        stock.setVolume(dto.getVolume());
-        stock.setCurrentPrice(dto.getCurrentPrice().toPlainString());
-        stock.setChange(dto.getChange().toPlainString());
-        stock.setPercentChange(dto.getPercentChange().toPlainString());
-        stock.setDateUpdate(now);
+        ticker.setSymbol(dto.getSymbol());
+        ticker.setName(dto.getName());
+        ticker.setVolume(dto.getVolume());
+        ticker.setCurrentPrice(dto.getCurrentPrice().toPlainString());
+        ticker.setChange(dto.getChange().toPlainString());
+        ticker.setPercentChange(dto.getPercentChange().toPlainString());
+        ticker.setDateUpdate(now);
 
-        return stock;
+        return ticker;
     }
 
     /**

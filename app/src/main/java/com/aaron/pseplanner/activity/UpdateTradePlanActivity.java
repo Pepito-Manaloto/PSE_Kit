@@ -181,33 +181,14 @@ public class UpdateTradePlanActivity extends SaveTradePlanActivity
     }
 
     @Override
-    protected TradeDto getTradeToSave(long shares, BigDecimal stopLoss, BigDecimal target, long capital, Date entryDate, Date stopDate, BigDecimal riskReward, BigDecimal averagePrice, Collection<Pair<String, String>> priceWeightList)
+    protected String getSelectedSymbol()
     {
-        BigDecimal averagePriceAfterBuy = this.calculator.getAveragePriceAfterBuy(averagePrice);
-        BigDecimal totalAmount = averagePriceAfterBuy.multiply(new BigDecimal(shares));
-        BigDecimal targetTotalAmount = this.calculator.getSellNetAmount(target, shares);
-        BigDecimal stopLossTotalAmount = this.calculator.getSellNetAmount(stopLoss, shares);
+        return this.tradeDtoPlanToUpdate.getSymbol();
+    }
 
-        this.tradeDtoPlanToUpdate.setAveragePrice(averagePriceAfterBuy);
-        this.tradeDtoPlanToUpdate.setTotalAmount(totalAmount);
-        this.tradeDtoPlanToUpdate.setPriceToBreakEven(this.calculator.getPriceToBreakEven(averagePrice));
-        this.tradeDtoPlanToUpdate.setLossToStopLoss(stopLossTotalAmount.subtract(totalAmount));
-        this.tradeDtoPlanToUpdate.setGainToTarget(targetTotalAmount.subtract(totalAmount));
-        this.tradeDtoPlanToUpdate.setTotalShares(shares);
-        this.tradeDtoPlanToUpdate.setStopLoss(stopLoss);
-        this.tradeDtoPlanToUpdate.setTargetPrice(target);
-        this.tradeDtoPlanToUpdate.setGainLoss(this.calculator.getGainLossAmount(averagePriceAfterBuy, shares, this.tradeDtoPlanToUpdate.getCurrentPrice()));
-        this.tradeDtoPlanToUpdate.setGainLossPercent(this.calculator.getPercentGainLoss(averagePriceAfterBuy, shares, this.tradeDtoPlanToUpdate.getCurrentPrice()));
-        this.tradeDtoPlanToUpdate.setCapital(capital);
-        this.tradeDtoPlanToUpdate.setPercentCapital(totalAmount.divide(new BigDecimal(capital), MathContext.DECIMAL64).multiply(ONE_HUNDRED).setScale(2, BigDecimal.ROUND_CEILING));
-        this.tradeDtoPlanToUpdate.setEntryDate(entryDate);
-        this.tradeDtoPlanToUpdate.setStopDate(stopDate);
-        this.tradeDtoPlanToUpdate.setHoldingPeriod(this.calculator.getDaysBetween(new Date(), entryDate));
-        this.tradeDtoPlanToUpdate.setRiskReward(riskReward);
-
-        List<TradeEntryDto> list = priceWeightListToTradeEntryList(this.tradeDtoPlanToUpdate.getSymbol(), shares, priceWeightList);
-        this.tradeDtoPlanToUpdate.setTradeEntries(list);
-
-        return this.tradeDtoPlanToUpdate;
+    @Override
+    protected BigDecimal getSelectedSymbolCurrentPrice()
+    {
+        return this.tradeDtoPlanToUpdate.getCurrentPrice();
     }
 }
