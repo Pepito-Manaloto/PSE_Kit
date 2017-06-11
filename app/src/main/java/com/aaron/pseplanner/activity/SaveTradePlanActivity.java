@@ -162,11 +162,10 @@ public abstract class SaveTradePlanActivity extends AppCompatActivity
                         else
                         {
                             saveTradePlan(dto);
+                            setActivityResultSaveClicked(dto);
                         }
 
                         LogManager.debug(CLASS_NAME, "onCreate(saveButton)", "Saved TradePlan: " + dto);
-
-                        setActivityResultSaveClicked(dto);
                     }
                 }
             }
@@ -512,6 +511,7 @@ public abstract class SaveTradePlanActivity extends AppCompatActivity
             {
                 saveTradePlan(dto);
                 dialog.dismiss();
+                setActivityResultSaveClicked(dto);
             }
         });
         builder.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener()

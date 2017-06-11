@@ -39,10 +39,10 @@ public class Ticker
     @NotNull
     private Date dateUpdate;
 
-    @Generated(hash = 1761935474)
-    public Ticker(Long id, @NotNull String symbol, @NotNull String name, long volume,
-                  @NotNull String currentPrice, @NotNull String change,
-                  @NotNull String percentChange, @NotNull Date dateUpdate) {
+    @Generated(hash = 616569974)
+    public Ticker(Long id, @NotNull String symbol, @NotNull String name,
+            long volume, @NotNull String currentPrice, @NotNull String change,
+            @NotNull String percentChange, @NotNull Date dateUpdate) {
         this.id = id;
         this.symbol = symbol;
         this.name = name;
@@ -53,7 +53,7 @@ public class Ticker
         this.dateUpdate = dateUpdate;
     }
 
-    @Generated(hash = 1902438397)
+    @Generated(hash = 1358381819)
     public Ticker() {
     }
 

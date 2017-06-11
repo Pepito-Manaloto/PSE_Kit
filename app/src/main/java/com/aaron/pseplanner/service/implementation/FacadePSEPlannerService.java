@@ -14,7 +14,7 @@ import com.aaron.pseplanner.bean.TradeEntryDto;
 import com.aaron.pseplanner.constant.PSEPlannerPreference;
 import com.aaron.pseplanner.entity.DaoSession;
 import com.aaron.pseplanner.entity.Ticker;
-import com.aaron.pseplanner.entity.StockDao;
+import com.aaron.pseplanner.entity.TickerDao;
 import com.aaron.pseplanner.entity.Trade;
 import com.aaron.pseplanner.entity.TradeDao;
 import com.aaron.pseplanner.entity.TradeEntry;
@@ -53,7 +53,7 @@ public class FacadePSEPlannerService implements PSEPlannerService
     private CalculatorService calculatorService;
 
     private SharedPreferences sharedPreferences;
-    private StockDao stockDao;
+    private TickerDao tickerDao;
     private TradeDao tradeDao;
     private TradeEntryDao tradeEntryDao;
 
@@ -93,7 +93,7 @@ public class FacadePSEPlannerService implements PSEPlannerService
         this.calculatorService = new DefaultCalculatorService();
 
         DaoSession daoSession = ((PSEPlannerApplication) activity.getApplication()).getDaoSession();
-        this.stockDao = daoSession.getStockDao();
+        this.tickerDao = daoSession.getTickerDao();
         this.tradeDao = daoSession.getTradeDao();
         this.tradeEntryDao = daoSession.getTradeEntryDao();
     }
@@ -118,7 +118,7 @@ public class FacadePSEPlannerService implements PSEPlannerService
 
         // get the note DAO
         DaoSession daoSession = ((PSEPlannerApplication) activity.getApplication()).getDaoSession();
-        this.stockDao = daoSession.getStockDao();
+        this.tickerDao = daoSession.getTickerDao();
         this.tradeDao = daoSession.getTradeDao();
     }
 
@@ -152,7 +152,7 @@ public class FacadePSEPlannerService implements PSEPlannerService
         Set<Ticker> tickerList = this.getStockListAndUpdateLastUpdated(tickerDtoList);
 
         // Bulk insert
-        this.stockDao.insertOrReplaceInTx(tickerList);
+        this.tickerDao.insertOrReplaceInTx(tickerList);
 
         LogManager.debug(CLASS_NAME, "insertTickerList", "Inserted: count = " + tickerList.size());
 
@@ -171,7 +171,7 @@ public class FacadePSEPlannerService implements PSEPlannerService
         Set<Ticker> tickerList = this.getStockListAndUpdateLastUpdated(tickerDtoList);
 
         // Bulk update
-        this.stockDao.updateInTx(tickerList);
+        this.tickerDao.updateInTx(tickerList);
 
         LogManager.debug(CLASS_NAME, "updateTickerList", "Updated: count = " + tickerList.size());
 
@@ -204,7 +204,7 @@ public class FacadePSEPlannerService implements PSEPlannerService
     @Override
     public ArrayList<TickerDto> getTickerListFromDatabase()
     {
-        List<Ticker> tickerList = this.stockDao.queryBuilder().orderAsc(StockDao.Properties.Symbol).list();
+        List<Ticker> tickerList = this.tickerDao.queryBuilder().orderAsc(TickerDao.Properties.Symbol).list();
         ArrayList<TickerDto> tickerDtoList = new ArrayList<>(tickerList.size());
 
         for(Ticker ticker : tickerList)
@@ -244,18 +244,18 @@ public class FacadePSEPlannerService implements PSEPlannerService
     @Override
     public boolean isTickerListSavedInDatabase()
     {
-        long count = this.stockDao.count();
+        long count = this.tickerDao.count();
 
         LogManager.debug(CLASS_NAME, "isTickerListSavedInDatabase", "Retrieved: count = " + count);
 
-        return count > getExpectedMinimumTotalStocks();
+        return count >= getExpectedMinimumTotalStocks();
     }
 
     @Override
     public int getExpectedMinimumTotalStocks()
     {
-        // TODO: Need to determine current total stocks
-        return 200;
+        // TODO: Need to determine current total stocks dynamically
+        return 243;
     }
 
     /**

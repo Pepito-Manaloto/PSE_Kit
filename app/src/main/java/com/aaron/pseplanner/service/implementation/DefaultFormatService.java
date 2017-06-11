@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.graphics.Color;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.widget.TextView;
 
 import com.aaron.pseplanner.R;
@@ -25,14 +26,7 @@ public class DefaultFormatService implements FormatService
 
     public DefaultFormatService(@NonNull Activity activity)
     {
-        if(Build.VERSION.SDK_INT >= 23)
-        {
-            GREEN = activity.getColor(R.color.darkGreen);
-        }
-        else
-        {
-            GREEN = activity.getResources().getColor(R.color.darkGreen);
-        }
+        GREEN = ContextCompat.getColor(activity, R.color.darkGreen);
     }
 
     /**

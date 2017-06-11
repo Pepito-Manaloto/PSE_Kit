@@ -2,6 +2,7 @@ package com.aaron.pseplanner.bean;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -11,7 +12,7 @@ import java.util.List;
  * Created by aaron.asuncion on 12/20/2016.
  * Represents a trading plan.
  */
-public class TradeDto implements Parcelable
+public class TradeDto implements Parcelable, Comparable<TradeDto>
 {
     private Date entryDate;
     private int holdingPeriod;
@@ -444,4 +445,10 @@ public class TradeDto implements Parcelable
             return new TradeDto[size];
         }
     };
+
+    @Override
+    public int compareTo(@NonNull TradeDto t)
+    {
+        return this.symbol.compareTo(t.symbol);
+    }
 }

@@ -2,6 +2,7 @@ package com.aaron.pseplanner.bean;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 import java.math.BigDecimal;
 
@@ -9,7 +10,7 @@ import java.math.BigDecimal;
  * Created by aaron.asuncion on 12/8/2016.
  * Represents a PSE stock.
  */
-public class TickerDto implements Parcelable
+public class TickerDto implements Parcelable, Comparable<TickerDto>
 {
     private String symbol;
     private String name;
@@ -202,4 +203,10 @@ public class TickerDto implements Parcelable
             return new TickerDto[size];
         }
     };
+
+    @Override
+    public int compareTo(@NonNull TickerDto t)
+    {
+        return this.symbol.compareTo(t.getSymbol());
+    }
 }

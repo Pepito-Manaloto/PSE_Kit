@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Parcelable;
+import android.support.v4.content.ContextCompat;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -48,15 +49,7 @@ public class ListRowOnTouchChangeActivity implements View.OnTouchListener
         this.parcelableData = parcelableData;
         this.intentRequestCode = intentRequestCode;
         this.view = view;
-
-        if(android.os.Build.VERSION.SDK_INT >= 23)
-        {
-            this.highlightedColor = activity.getColor(R.color.lightSkyBlue);
-        }
-        else
-        {
-            this.highlightedColor = activity.getResources().getColor(R.color.lightSkyBlue);
-        }
+        this.highlightedColor = ContextCompat.getColor(activity, R.color.lightSkyBlue);
     }
 
     /**

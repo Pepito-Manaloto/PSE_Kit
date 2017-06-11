@@ -126,7 +126,7 @@ public class CreateTradePlanActivity extends SaveTradePlanActivity
         setResult(Activity.RESULT_OK, data);
         finish();
 
-        LogManager.debug(CLASS_NAME, "setActivityResultHome", "TradeDto result: " + dto);
+        LogManager.debug(CLASS_NAME, "setActivityResultSaveClicked", "TradeDto result: " + dto);
     }
 
     /**

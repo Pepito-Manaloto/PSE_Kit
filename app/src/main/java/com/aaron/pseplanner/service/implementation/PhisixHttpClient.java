@@ -147,6 +147,8 @@ public class PhisixHttpClient extends BaseHttpClient
                     tickerDtoList.add(convertResponsePhisixStockToTicker(phisixStock));
                 }
 
+                LogManager.debug(CLASS_NAME, "getAllTickerList", "TickerDtoList size: " + tickerDtoList.size());
+
                 return new Pair<>(tickerDtoList, phisixStockWrapper.getDateUpdated());
             }
 

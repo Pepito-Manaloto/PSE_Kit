@@ -42,6 +42,7 @@ import com.aaron.pseplanner.service.implementation.FacadePSEPlannerService;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -123,7 +124,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                 if(this.tickerDtoList.size() < this.pseService.getExpectedMinimumTotalStocks())
                 {
-                    LogManager.debug(CLASS_NAME, "initTickerDtoList", "TickerList is still empty, getting values from web api asynchronously.");
+                    LogManager.debug(CLASS_NAME, "initTickerDtoList", "TickerList is incomplete, getting values from web api asynchronously. size = " + this.tickerDtoList.size());
                     // Does not exists in both intent extra and database, then retrieve from web api.
                     new InitTickerListTask(this, this.pseService, tradeDtoList).execute();
                 }
@@ -177,6 +178,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 TickerDto addedTickerDto = data.getParcelableExtra(DataKey.EXTRA_TICKER.toString());
 
                 int addedTickerIndex = this.tickerDtoList.indexOf(addedTickerDto);
+
                 // Replace ticker dto
                 if(addedTickerIndex != -1)
                 {
@@ -189,7 +191,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }
 
                 LogManager.debug(CLASS_NAME, "onActivityResult", "Extra Ticker: " + addedTickerDto);
-
             }
 
             if(data.hasExtra(DataKey.EXTRA_TRADE.toString()))
@@ -200,6 +201,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 {
                     this.tradeDtoList.add(addedTradeDto);
                     this.isReturningResultHomeView = true;
+                    Collections.sort(this.tradeDtoList);
                 }
 
                 LogManager.debug(CLASS_NAME, "onActivityResult", "Extra Trade: " + addedTradeDto);
