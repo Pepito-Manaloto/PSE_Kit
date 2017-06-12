@@ -17,6 +17,7 @@ import com.aaron.pseplanner.bean.TickerDto;
 import com.aaron.pseplanner.constant.DataKey;
 import com.aaron.pseplanner.constant.IntentRequestCode;
 import com.aaron.pseplanner.listener.ListRowOnTouchChangeActivity;
+import com.aaron.pseplanner.service.LogManager;
 import com.aaron.pseplanner.service.implementation.DefaultFormatService;
 import com.aaron.pseplanner.service.FormatService;
 
@@ -98,6 +99,9 @@ public class TickerListAdapter extends ArrayAdapter<TickerDto>
             {
                 View.OnTouchListener listener = new ListRowOnTouchChangeActivity(activity, CreateTradePlanActivity.class, DataKey.EXTRA_TICKER, tickerDto, IntentRequestCode.CREATE_TRADE_PLAN, this.layout);
                 layout.setOnTouchListener(listener);
+
+                // Why is it when this code is not present, some tickers', with hasTradePlan = false, icon is check_icon?
+                icon.setImageResource(R.mipmap.add_button);
             }
 
             stock.setText(tickerDto.getSymbol());
