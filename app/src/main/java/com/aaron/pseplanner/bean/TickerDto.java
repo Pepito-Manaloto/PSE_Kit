@@ -10,7 +10,7 @@ import java.math.BigDecimal;
  * Created by aaron.asuncion on 12/8/2016.
  * Represents a PSE stock.
  */
-public class TickerDto implements Parcelable, Comparable<TickerDto>
+public class TickerDto implements Stock, Parcelable, Comparable<TickerDto>
 {
     private String symbol;
     private String name;
@@ -90,11 +90,13 @@ public class TickerDto implements Parcelable, Comparable<TickerDto>
         return "TickerDto{" + "symbol='" + symbol + '\'' + ", name='" + name + '\'' + ", volume=" + volume + ", currentPrice=" + currentPrice + ", change=" + change + ", percentChange=" + percentChange + ", hasTradePlan=" + hasTradePlan + '}';
     }
 
+    @Override
     public String getSymbol()
     {
         return symbol;
     }
 
+    @Override
     public void setSymbol(String symbol)
     {
         this.symbol = symbol;

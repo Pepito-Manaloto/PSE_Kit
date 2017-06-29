@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.HorizontalScrollView;
 import android.widget.TextView;
 
@@ -13,11 +12,14 @@ import com.aaron.pseplanner.activity.TradePlanActivity;
 import com.aaron.pseplanner.bean.TradeDto;
 import com.aaron.pseplanner.constant.DataKey;
 import com.aaron.pseplanner.constant.IntentRequestCode;
+import com.aaron.pseplanner.entity.Trade;
 import com.aaron.pseplanner.listener.ListRowOnTouchChangeActivity;
 import com.aaron.pseplanner.service.FormatService;
+import com.aaron.pseplanner.service.LogManager;
 import com.aaron.pseplanner.service.ViewUtils;
 import com.aaron.pseplanner.service.implementation.DefaultFormatService;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,11 +27,13 @@ import java.util.List;
  * Created by Aaron on 2/17/2017.
  * Contains all trade plans, and is responsible for converting Trade bean to a UI row in the ListView.
  */
-public class TradePlanListAdapter extends ArrayAdapter<TradeDto>
+public class TradePlanListAdapter extends FilterableArrayAdapter<TradeDto>
 {
+    public static final String CLASS_NAME = TradePlanListAdapter.class.getSimpleName();
     private Activity activity;
     private FormatService formatService;
     private ArrayList<TradeDto> tradeDtoList;
+    private ArrayList<TradeDto> tradeDtoListTemp;
 
     public TradePlanListAdapter(Activity activity, List<TradeDto> tradeDtoList)
     {
@@ -39,6 +43,7 @@ public class TradePlanListAdapter extends ArrayAdapter<TradeDto>
         this.formatService = new DefaultFormatService(activity);
         // ArrayList is used because this will be added in an intent
         this.tradeDtoList = (ArrayList<TradeDto>) tradeDtoList;
+        this.tradeDtoListTemp = new ArrayList<>(tradeDtoList);
     }
 
     /**
@@ -77,6 +82,18 @@ public class TradePlanListAdapter extends ArrayAdapter<TradeDto>
         holder.setTickerView(tradeDto, this.formatService, new ListRowOnTouchChangeActivity(this.activity, TradePlanActivity.class, DataKey.EXTRA_TRADE, tradeDto, DataKey.EXTRA_TRADE_LIST, this.tradeDtoList, IntentRequestCode.VIEW_TRADE_PLAN, holder.scroll));
 
         return convertView;
+    }
+
+    @Override
+    protected ArrayList<TradeDto> getActualList()
+    {
+        return this.tradeDtoList;
+    }
+
+    @Override
+    protected ArrayList<TradeDto> getTempList()
+    {
+        return this.tradeDtoListTemp;
     }
 
     /**

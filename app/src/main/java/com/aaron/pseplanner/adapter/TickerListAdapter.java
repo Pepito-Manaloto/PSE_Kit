@@ -4,33 +4,37 @@ import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.aaron.pseplanner.R;
 import com.aaron.pseplanner.activity.CreateTradePlanActivity;
-import com.aaron.pseplanner.activity.MainActivity;
 import com.aaron.pseplanner.activity.TradePlanActivity;
 import com.aaron.pseplanner.bean.TickerDto;
+import com.aaron.pseplanner.bean.TradeDto;
 import com.aaron.pseplanner.constant.DataKey;
 import com.aaron.pseplanner.constant.IntentRequestCode;
 import com.aaron.pseplanner.listener.ListRowOnTouchChangeActivity;
+import com.aaron.pseplanner.service.FormatService;
 import com.aaron.pseplanner.service.LogManager;
 import com.aaron.pseplanner.service.implementation.DefaultFormatService;
-import com.aaron.pseplanner.service.FormatService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by aaron.asuncion on 12/8/2016.
  * Contains all tickers, and is responsible for converting Ticker bean to a UI row in the ListView.
  */
-public class TickerListAdapter extends ArrayAdapter<TickerDto>
+public class TickerListAdapter extends FilterableArrayAdapter<TickerDto>
 {
+    public static final String CLASS_NAME = TickerListAdapter.class.getSimpleName();
     private Activity activity;
     private FormatService formatService;
+    private ArrayList<TickerDto> tickerDtoList;
+    private ArrayList<TickerDto> tickerDtoListTemp;
+
 
     public TickerListAdapter(Activity activity, List<TickerDto> tickerDtoList)
     {
@@ -38,6 +42,8 @@ public class TickerListAdapter extends ArrayAdapter<TickerDto>
 
         this.activity = activity;
         this.formatService = new DefaultFormatService(activity);
+        this.tickerDtoList = (ArrayList<TickerDto>) tickerDtoList;
+        this.tickerDtoListTemp = new ArrayList<>(tickerDtoList);
     }
 
     /**
@@ -72,6 +78,18 @@ public class TickerListAdapter extends ArrayAdapter<TickerDto>
         holder.setTickerView(tickerDto, this.formatService, this.activity);
 
         return convertView;
+    }
+
+    @Override
+    protected ArrayList<TickerDto> getActualList()
+    {
+        return this.tickerDtoList;
+    }
+
+    @Override
+    protected ArrayList<TickerDto> getTempList()
+    {
+        return this.tickerDtoListTemp;
     }
 
     /**

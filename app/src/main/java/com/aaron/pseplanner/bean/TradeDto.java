@@ -12,7 +12,7 @@ import java.util.List;
  * Created by aaron.asuncion on 12/20/2016.
  * Represents a trading plan.
  */
-public class TradeDto implements Parcelable, Comparable<TradeDto>
+public class TradeDto implements Stock, Parcelable, Comparable<TradeDto>
 {
     private Date entryDate;
     private int holdingPeriod;
@@ -181,11 +181,13 @@ public class TradeDto implements Parcelable, Comparable<TradeDto>
         this.holdingPeriod = holdingPeriod;
     }
 
+    @Override
     public String getSymbol()
     {
         return symbol;
     }
 
+    @Override
     public void setSymbol(String symbol)
     {
         this.symbol = symbol;

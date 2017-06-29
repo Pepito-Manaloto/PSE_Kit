@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.aaron.pseplanner.R;
+import com.aaron.pseplanner.adapter.FilterableArrayAdapter;
 import com.aaron.pseplanner.adapter.TradePlanListAdapter;
 import com.aaron.pseplanner.bean.TickerDto;
 import com.aaron.pseplanner.bean.TradeDto;
@@ -16,6 +17,7 @@ import com.aaron.pseplanner.bean.TradeEntryDto;
 import com.aaron.pseplanner.constant.DataKey;
 import com.aaron.pseplanner.constant.PSEPlannerPreference;
 import com.aaron.pseplanner.exception.HttpRequestException;
+import com.aaron.pseplanner.listener.SearchOnQueryTextListener;
 import com.aaron.pseplanner.service.CalculatorService;
 import com.aaron.pseplanner.service.LogManager;
 import com.aaron.pseplanner.service.implementation.DefaultCalculatorService;
@@ -120,7 +122,7 @@ public class TradePlanListFragment extends AbstractListFragment<TradeDto>
     }
 
     @Override
-    protected ArrayAdapter getArrayAdapter(List<TradeDto> tradeDtoList)
+    protected FilterableArrayAdapter<TradeDto> getArrayAdapter(List<TradeDto> tradeDtoList)
     {
         return new TradePlanListAdapter(getActivity(), tradeDtoList);
     }

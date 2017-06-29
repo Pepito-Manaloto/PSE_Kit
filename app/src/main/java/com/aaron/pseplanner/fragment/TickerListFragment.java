@@ -9,12 +9,14 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.aaron.pseplanner.R;
+import com.aaron.pseplanner.adapter.FilterableArrayAdapter;
 import com.aaron.pseplanner.adapter.TickerListAdapter;
 import com.aaron.pseplanner.bean.TickerDto;
 import com.aaron.pseplanner.bean.TradeDto;
 import com.aaron.pseplanner.constant.DataKey;
 import com.aaron.pseplanner.constant.PSEPlannerPreference;
 import com.aaron.pseplanner.exception.HttpRequestException;
+import com.aaron.pseplanner.listener.SearchOnQueryTextListener;
 import com.aaron.pseplanner.service.LogManager;
 
 import java.util.ArrayList;
@@ -109,6 +111,8 @@ public class TickerListFragment extends AbstractListFragment<TickerDto>
                 lastUpdatedTextView.setText(getActivity().getString(R.string.last_updated, this.pseService.getLastUpdated(PSEPlannerPreference.LAST_UPDATED_TICKER.toString())));
             }
         }
+
+        searchListener.setSearchListAdapater(getListAdapter());
     }
 
     /**
@@ -165,7 +169,7 @@ public class TickerListFragment extends AbstractListFragment<TickerDto>
     }
 
     @Override
-    protected ArrayAdapter getArrayAdapter(List<TickerDto> tickerDtoList)
+    protected FilterableArrayAdapter<TickerDto> getArrayAdapter(List<TickerDto> tickerDtoList)
     {
         return new TickerListAdapter(getActivity(), tickerDtoList);
     }

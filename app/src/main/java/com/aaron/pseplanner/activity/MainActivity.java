@@ -15,9 +15,11 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AutoCompleteTextView;
@@ -25,6 +27,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.aaron.pseplanner.R;
+import com.aaron.pseplanner.adapter.FilterableArrayAdapter;
 import com.aaron.pseplanner.async.InitTickerListTask;
 import com.aaron.pseplanner.async.UpdateFragmentListTask;
 import com.aaron.pseplanner.bean.TickerDto;
@@ -36,6 +39,7 @@ import com.aaron.pseplanner.fragment.CalculatorTabsFragment;
 import com.aaron.pseplanner.fragment.SettingsFragment;
 import com.aaron.pseplanner.fragment.TickerListFragment;
 import com.aaron.pseplanner.fragment.TradePlanListFragment;
+import com.aaron.pseplanner.listener.SearchOnQueryTextListener;
 import com.aaron.pseplanner.service.LogManager;
 import com.aaron.pseplanner.service.PSEPlannerService;
 import com.aaron.pseplanner.service.implementation.FacadePSEPlannerService;
@@ -62,6 +66,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private ArrayList<TradeDto> tradeDtoList;
     private PSEPlannerService pseService;
     private boolean isReturningResultHomeView;
+    private SearchOnQueryTextListener searchListener;
 
     /**
      * Initializes the navigation drawer.
@@ -70,7 +75,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      * @param savedInstanceState this Bundle is unused in this method.
      */
     @Override
-
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
@@ -95,12 +99,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         this.tickerDtoList = new ArrayList<>();
         this.tradeDtoList = this.pseService.getTradePlanListFromDatabase();
 
+        this.searchListener = new SearchOnQueryTextListener();
+
         FragmentManager fm = getSupportFragmentManager();
         Fragment fragment = fm.findFragmentById(R.id.fragment_container);
 
         if(fragment == null)
         {
-            this.selectedListFragment = new TradePlanListFragment();
+            this.selectedListFragment = TradePlanListFragment.newInstance(this.tradeDtoList);
+            this.selectedListFragment.setSearchListener(this.searchListener);
             fm.beginTransaction().add(R.id.fragment_container, this.selectedListFragment).commit();
         }
 
@@ -246,7 +253,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         getMenuInflater().inflate(R.menu.toolbar_options, menu);
         this.toolbarMenu = menu;
 
-        initializeSearchBar(menu);
+        // Initializes the search bar.
+        MenuItem myActionMenuItem = menu.findItem(R.id.menu_search);
+        SearchView searchView = (SearchView) myActionMenuItem.getActionView();
+        searchView.setQueryHint(getResources().getString(R.string.search_hint));
+        searchView.setOnQueryTextListener(this.searchListener);
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -313,6 +324,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_ticker:
             {
                 this.selectedListFragment = TickerListFragment.newInstance(this.tickerDtoList, this.tradeDtoList);
+                this.selectedListFragment.setSearchListener(this.searchListener);
                 updateFragmentContainer(this.selectedListFragment);
                 this.showToolbarMenuItems();
                 this.toolbar.setTitle(R.string.nav_ticker);
@@ -406,47 +418,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     /**
-     * Initializes the search bar.
-     */
-    protected void initializeSearchBar(Menu menu)
-    {
-        MenuItem myActionMenuItem = menu.findItem(R.id.menu_search);
-        SearchView searchView = (SearchView) myActionMenuItem.getActionView();
-        searchView.setQueryHint(getResources().getString(R.string.search_hint));
-
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener()
-        {
-            @Override
-            public boolean onQueryTextSubmit(String query)
-            {
-                LogManager.debug(CLASS_NAME, "onQueryTextSubmit", query);
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String s)
-            {
-                LogManager.debug(CLASS_NAME, "onQueryTextChange", s);
-                return false;
-            }
-        });
-
-        AutoCompleteTextView searchTextView = (AutoCompleteTextView) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
-        try
-        {
-            Field mCursorDrawableRes = TextView.class.getDeclaredField("mCursorDrawableRes");
-            mCursorDrawableRes.setAccessible(true);
-            mCursorDrawableRes.set(searchTextView, R.drawable.search_cursor); //This sets the cursor resource ID to 0 or @null which will make it visible on white background
-        }
-        catch(Exception e)
-        {
-            LogManager.error(CLASS_NAME, "initializeSearchBar", "Error setting custom search cursor.", e);
-        }
-    }
-
-    /**
      * Stops the rotating animation of the refresh menu.
      */
     protected void startRefreshAnimation(MenuItem item)
@@ -501,6 +472,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void setDefaultHomeView()
     {
         this.selectedListFragment = TradePlanListFragment.newInstance(this.tradeDtoList);
+        this.selectedListFragment.setSearchListener(this.searchListener);
         updateFragmentContainer(this.selectedListFragment);
         this.showToolbarMenuItems();
         this.toolbar.setTitle(R.string.app_name);
