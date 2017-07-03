@@ -24,6 +24,7 @@ import com.aaron.pseplanner.service.implementation.DefaultCalculatorService;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -156,6 +157,7 @@ public class TradePlanListFragment extends AbstractListFragment<TradeDto>
             }
 
             this.tradeDtoList = new ArrayList<>(this.tradesMap.values());
+            Collections.sort(this.tradeDtoList);
 
             updateListOnUiThread(this.tradeDtoList, this.formatService.formatLastUpdated(lastUpdated));
         }

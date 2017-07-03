@@ -15,6 +15,7 @@ import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
 /**
@@ -54,6 +55,7 @@ public abstract class BaseHttpClient implements HttpClient
         retrofit = new Retrofit.Builder()
                                 .baseUrl(getBaseURL())
                                 .client(client).addConverterFactory(JacksonConverterFactory.create())
+                                //.addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                                 .build();
     }
 
