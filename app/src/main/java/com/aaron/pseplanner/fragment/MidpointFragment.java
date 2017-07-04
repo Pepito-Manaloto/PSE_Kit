@@ -16,7 +16,12 @@ import org.apache.commons.lang3.StringUtils;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.text.ParseException;
+import java.util.List;
 import java.util.Locale;
+
+import butterknife.BindView;
+import butterknife.BindViews;
+import butterknife.ButterKnife;
 
 /**
  * Created by aaron.asuncion on 11/18/2016.
@@ -25,10 +30,19 @@ import java.util.Locale;
 public class MidpointFragment extends AbstractCalculatorFragment
 {
     public static final String CLASS_NAME = MidpointFragment.class.getSimpleName();
-    private EditText highEditText;
-    private EditText lowEditText;
 
-    private TextView midpointTextView;
+    @BindView(R.id.edittext_high)
+    EditText highEditText;
+
+    @BindView(R.id.edittext_low)
+    EditText lowEditText;
+
+    @BindView(R.id.textview_midpoint)
+    TextView midpointTextView;
+
+    @BindViews({R.id.edittext_high, R.id.edittext_low})
+    List<EditText> editTexts;
+
 
     /**
      * Initializes the fragment's user interface.
@@ -37,11 +51,8 @@ public class MidpointFragment extends AbstractCalculatorFragment
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState)
     {
         View view = inflateFragment(R.layout.fragment_midpoint, inflater, parent);
+        this.unbinder = ButterKnife.bind(this, view);
 
-        this.midpointTextView = (TextView) view.findViewById(R.id.textview_midpoint);
-
-        this.highEditText = (EditText) view.findViewById(R.id.edittext_high);
-        this.lowEditText = (EditText) view.findViewById(R.id.edittext_low);
         setEditTextOnFocusChangeListener(this.highEditText, this.lowEditText);
         setEditTextTextChangeListener(this.highEditText, this.lowEditText);
 
@@ -54,8 +65,8 @@ public class MidpointFragment extends AbstractCalculatorFragment
     public void onStop()
     {
         LogManager.debug(CLASS_NAME, "onStop", "");
+        ButterKnife.apply(this.editTexts, RESET_EDIT_TEXT);
 
-        this.resetEditTexts();
         super.onStop();
     }
 
@@ -95,12 +106,6 @@ public class MidpointFragment extends AbstractCalculatorFragment
         {
             this.midpointTextView.setText(R.string.default_value);
         }
-    }
-
-    private void resetEditTexts()
-    {
-        this.highEditText.setText("");
-        this.lowEditText.setText("");
     }
 
     @Override

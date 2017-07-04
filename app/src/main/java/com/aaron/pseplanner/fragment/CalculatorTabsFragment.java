@@ -13,6 +13,8 @@ import android.view.ViewGroup;
 import com.aaron.pseplanner.R;
 import com.aaron.pseplanner.service.LogManager;
 
+import butterknife.ButterKnife;
+
 /**
  * Created by Aaron on 1/16/2017.
  * Contains the calculator tabs: calculator, dividend, and midpoint.
@@ -20,15 +22,13 @@ import com.aaron.pseplanner.service.LogManager;
 public class CalculatorTabsFragment extends Fragment
 {
     public static final String CLASS_NAME = CalculatorTabsFragment.class.getSimpleName();
-    private TabLayout tabLayout;
-    private ViewPager viewPager;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.fragment_calculator_tabs, null);
-        tabLayout = (TabLayout) view.findViewById(R.id.tabs);
-        viewPager = (ViewPager) view.findViewById(R.id.viewpager);
+        final TabLayout tabLayout = ButterKnife.findById(view, R.id.tabs);
+        final ViewPager viewPager = ButterKnife.findById(view, R.id.viewpager);
 
         viewPager.setAdapter(new CalculatorTabPagerAdapter(getChildFragmentManager()));
 

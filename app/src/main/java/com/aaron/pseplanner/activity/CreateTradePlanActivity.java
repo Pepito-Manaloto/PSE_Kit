@@ -21,6 +21,8 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
+import butterknife.ButterKnife;
+
 import static com.aaron.pseplanner.service.CalculatorService.ONE_HUNDRED;
 
 /**
@@ -58,9 +60,8 @@ public class CreateTradePlanActivity extends SaveTradePlanActivity
 
         LogManager.debug(CLASS_NAME, "onCreate", this.selectedStock == null ? null : this.selectedStock.toString());
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle(R.string.title_create_trade_plan);
-        setSupportActionBar(toolbar);
+        this.toolbar.setTitle(R.string.title_create_trade_plan);
+        setSupportActionBar(this.toolbar);
 
         ActionBar actionBar = getSupportActionBar();
         if(actionBar != null)
@@ -69,8 +70,7 @@ public class CreateTradePlanActivity extends SaveTradePlanActivity
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
 
-        TextView stockLabel = (TextView) findViewById(R.id.textview_stock);
-        stockLabel.setText(this.selectedStock.getSymbol());
+        this.stockLabel.setText(this.selectedStock.getSymbol());
     }
 
     /**

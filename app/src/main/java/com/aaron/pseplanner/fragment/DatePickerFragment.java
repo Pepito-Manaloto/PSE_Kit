@@ -18,6 +18,8 @@ import org.apache.commons.lang3.time.FastDateFormat;
 import java.text.ParseException;
 import java.util.Calendar;
 
+import butterknife.ButterKnife;
+
 /**
  * Created by aaron.asuncion on 2/3/2017.
  */
@@ -57,7 +59,7 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
         LogManager.debug(CLASS_NAME, "onCreateDialog", "");
 
         int editTextId = getArguments().getInt(DataKey.EXTRA_ID.toString());
-        this.editText = (EditText) getActivity().findViewById(editTextId);
+        this.editText = ButterKnife.findById(getActivity(), editTextId);
 
         String selectedDate = this.editText.getText().toString();
 

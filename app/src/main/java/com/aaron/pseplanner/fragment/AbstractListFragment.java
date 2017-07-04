@@ -20,6 +20,9 @@ import com.aaron.pseplanner.service.implementation.FacadePSEPlannerService;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.Unbinder;
+
 /**
  * Created by Aaron on 2/17/2017.
  * Abstract ListFragment class with concrete implementation for showing/hiding fast scroll and method for updating the list adapter.
@@ -28,10 +31,13 @@ public abstract class AbstractListFragment<T extends Stock & Parcelable> extends
 {
     public static final String CLASS_NAME = AbstractListFragment.class.getSimpleName();
 
+    @BindView(R.id.textview_last_updated)
+    protected TextView lastUpdatedTextView;
+
     protected PSEPlannerService pseService;
     protected FormatService formatService;
-    protected TextView lastUpdatedTextView;
     protected SearchOnQueryTextListener searchListener;
+    protected Unbinder unbinder;
 
     /**
      * Initializes non-fragment user interface.
@@ -86,6 +92,21 @@ public abstract class AbstractListFragment<T extends Stock & Parcelable> extends
                     searchListener.setSearchListAdapater(getListAdapter());
                 }
             });
+        }
+    }
+
+    /**
+     * A Fragment may continue to exist after its Views are destroyed, you need to call .unbind() from a Fragment to release the reference to the Views (and allow the associated
+     * memory to be reclaimed).
+     */
+    @Override
+    public void onDestroyView()
+    {
+        super.onDestroyView();
+
+        if(this.unbinder != null)
+        {
+            this.unbinder.unbind();
         }
     }
 

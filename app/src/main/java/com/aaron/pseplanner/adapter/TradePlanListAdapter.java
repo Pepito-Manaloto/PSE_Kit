@@ -23,6 +23,9 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * Created by Aaron on 2/17/2017.
  * Contains all trade plans, and is responsible for converting Trade bean to a UI row in the ListView.
@@ -58,18 +61,7 @@ public class TradePlanListAdapter extends FilterableArrayAdapter<TradeDto>
         if(convertView == null)
         {
             convertView = this.activity.getLayoutInflater().inflate(R.layout.fragment_trade_plan_row, parent, false);
-
-            holder = new ViewHolder();
-            holder.stock = (TextView) convertView.findViewById(R.id.textview_stock);
-            holder.currentPrice = (TextView) convertView.findViewById(R.id.textview_current_price);
-            holder.averagePrice = (TextView) convertView.findViewById(R.id.textview_average_price);
-            holder.gainLoss = (TextView) convertView.findViewById(R.id.textview_gain_loss);
-            holder.shares = (TextView) convertView.findViewById(R.id.textview_shares);
-            holder.stopLoss = (TextView) convertView.findViewById(R.id.textview_stop_loss);
-            holder.entryDate = (TextView) convertView.findViewById(R.id.textview_entry_date);
-            holder.stopDate = (TextView) convertView.findViewById(R.id.textview_stop_date);
-            holder.holdingPeriod = (TextView) convertView.findViewById(R.id.textview_holding_period);
-            holder.scroll = (HorizontalScrollView) convertView.findViewById(R.id.horizontalscroll_list_row);
+            holder = new ViewHolder(convertView);
 
             convertView.setTag(holder);
         }
@@ -99,18 +91,42 @@ public class TradePlanListAdapter extends FilterableArrayAdapter<TradeDto>
     /**
      * Holds the references of all the views in a list row, to improve performance by preventing repeated call of findViewById().
      */
-    private static class ViewHolder
+    static class ViewHolder
     {
+        @BindView(R.id.textview_stock)
         TextView stock;
+
+        @BindView(R.id.textview_current_price)
         TextView currentPrice;
+
+        @BindView(R.id.textview_average_price)
         TextView averagePrice;
+
+        @BindView(R.id.textview_gain_loss)
         TextView gainLoss;
+
+        @BindView(R.id.textview_shares)
         TextView shares;
+
+        @BindView(R.id.textview_stop_loss)
         TextView stopLoss;
+
+        @BindView(R.id.textview_entry_date)
         TextView entryDate;
+
+        @BindView(R.id.textview_stop_date)
         TextView stopDate;
+
+        @BindView(R.id.textview_holding_period)
         TextView holdingPeriod;
+
+        @BindView(R.id.horizontalscroll_list_row)
         HorizontalScrollView scroll;
+
+        ViewHolder(View view)
+        {
+            ButterKnife.bind(this, view);
+        }
 
         void setTickerView(TradeDto tradeDto, FormatService service, View.OnTouchListener listener)
         {

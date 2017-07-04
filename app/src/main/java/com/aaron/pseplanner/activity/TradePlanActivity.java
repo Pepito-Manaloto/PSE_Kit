@@ -23,6 +23,8 @@ import com.aaron.pseplanner.service.implementation.FacadePSEPlannerService;
 
 import java.util.ArrayList;
 
+import butterknife.ButterKnife;
+
 /**
  * Created by Aaron on 2/18/2017.
  */
@@ -48,6 +50,7 @@ public class TradePlanActivity extends AppCompatActivity
         LogManager.debug(CLASS_NAME, "onCreate", "");
 
         setContentView(R.layout.activity_trade_plan);
+        ButterKnife.bind(this);
 
         if(savedInstanceState != null)
         {
@@ -82,7 +85,7 @@ public class TradePlanActivity extends AppCompatActivity
 
         LogManager.debug(CLASS_NAME, "onCreate", "selected=" + (this.selectedTradeDtoPlan == null ? null : this.selectedTradeDtoPlan.toString()));
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = ButterKnife.findById(this, R.id.toolbar);
         toolbar.setTitle(R.string.title_trade_plan);
         setSupportActionBar(toolbar);
 
@@ -93,7 +96,7 @@ public class TradePlanActivity extends AppCompatActivity
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
 
-        ViewPager viewPager = (ViewPager) findViewById(R.id.view_pager);
+        ViewPager viewPager = ButterKnife.findById(this, R.id.view_pager);
         this.pagerAdapter = new TradePlanPagerAdapter(getSupportFragmentManager(), this.tradeDtoPlanList, this.tradeDtoPlanList.size());
 
         viewPager.setAdapter(this.pagerAdapter);

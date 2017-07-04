@@ -27,6 +27,8 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
+import butterknife.ButterKnife;
+
 import static com.aaron.pseplanner.service.CalculatorService.ONE_HUNDRED;
 
 /**
@@ -73,9 +75,8 @@ public class UpdateTradePlanActivity extends SaveTradePlanActivity
 
         LogManager.debug(CLASS_NAME, "onCreate", this.tradeDtoPlanToUpdate == null ? null : this.tradeDtoPlanToUpdate.toString());
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle(R.string.title_update_trade_plan);
-        setSupportActionBar(toolbar);
+        this.toolbar.setTitle(R.string.title_update_trade_plan);
+        setSupportActionBar(this.toolbar);
 
         ActionBar actionBar = getSupportActionBar();
         if(actionBar != null)
@@ -84,9 +85,7 @@ public class UpdateTradePlanActivity extends SaveTradePlanActivity
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
 
-        TextView stockLabel = (TextView) findViewById(R.id.textview_stock);
-        stockLabel.setText(this.tradeDtoPlanToUpdate.getSymbol());
-
+        this.stockLabel.setText(this.tradeDtoPlanToUpdate.getSymbol());
         this.saveButton.setText(R.string.button_update_trade_plan);
     }
 
@@ -107,13 +106,13 @@ public class UpdateTradePlanActivity extends SaveTradePlanActivity
         {
             View entryTrancheContainer = entryTranchesLayout.getChildAt(i);
 
-            TextView labelTranche = (TextView) entryTrancheContainer.findViewById(R.id.label_tranche);
+            TextView labelTranche = ButterKnife.findById(entryTrancheContainer, R.id.label_tranche);
             labelTranche.setText(getString(R.string.label_tranche, ViewUtils.getOrdinalNumber(i)));
 
-            EditText entryPrice = (EditText) entryTrancheContainer.findViewById(R.id.edittext_entry_price);
+            EditText entryPrice = ButterKnife.findById(entryTrancheContainer, R.id.edittext_entry_price);
             entryPrice.setText(String.valueOf(tradeEntries.get(i).getEntryPrice()));
 
-            EditText trancheWeight = (EditText) entryTrancheContainer.findViewById(R.id.edittext_tranche_weight);
+            EditText trancheWeight = ButterKnife.findById(entryTrancheContainer, R.id.edittext_tranche_weight);
             trancheWeight.setText(String.valueOf(tradeEntries.get(i).getPercentWeight()));
         }
     }

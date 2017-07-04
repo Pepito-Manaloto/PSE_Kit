@@ -36,6 +36,9 @@ import com.aaron.pseplanner.service.implementation.FacadePSEPlannerService;
 
 import java.util.List;
 
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
+
 /**
  * Created by aaron.asuncion on 2/22/2017.
  */
@@ -47,6 +50,7 @@ public class TradePlanFragment extends Fragment
     private TradeDto selectedStock;
     private FormatService formatService;
     private PSEPlannerService pseService;
+    private Unbinder unbinder;
 
     /**
      * Creates a new TradePlanFragment instance and stores the passed TradeDto data as argument.
@@ -96,72 +100,73 @@ public class TradePlanFragment extends Fragment
         LogManager.debug(CLASS_NAME, "onCreateView", "");
 
         ScrollView view = (ScrollView) inflater.inflate(R.layout.fragment_trade_plan, container, false);
+        this.unbinder = ButterKnife.bind(this, view);
 
-        TextView stock = (TextView) view.findViewById(R.id.textview_stock);
+        TextView stock = ButterKnife.findById(view, R.id.textview_stock);
         stock.setText(this.selectedStock.getSymbol());
 
-        TextView entryDate = (TextView) view.findViewById(R.id.textview_entry_date);
+        TextView entryDate = ButterKnife.findById(view, R.id.textview_entry_date);
         entryDate.setText(this.formatService.formatDate(this.selectedStock.getEntryDate()));
 
-        TextView holdingPeriod = (TextView) view.findViewById(R.id.textview_holding_period);
+        TextView holdingPeriod = ButterKnife.findById(view, R.id.textview_holding_period);
         String holdingPeriodLabel = this.selectedStock.getHoldingPeriod() > 1 ? "days" : "day";
         holdingPeriod.setText(String.format("%s %s", this.selectedStock.getHoldingPeriod(), holdingPeriodLabel));
 
-        TextView currentPrice = (TextView) view.findViewById(R.id.textview_current_price);
+        TextView currentPrice = ButterKnife.findById(view, R.id.textview_current_price);
         currentPrice.setText(this.formatService.formatStockPrice(this.selectedStock.getCurrentPrice().doubleValue()));
 
-        TextView totalShares = (TextView) view.findViewById(R.id.textview_total_shares);
+        TextView totalShares = ButterKnife.findById(view, R.id.textview_total_shares);
         totalShares.setText(this.formatService.formatShares(this.selectedStock.getTotalShares()));
 
-        TextView averagePrice = (TextView) view.findViewById(R.id.textview_average_price);
+        TextView averagePrice = ButterKnife.findById(view, R.id.textview_average_price);
         averagePrice.setText(this.formatService.formatStockPrice(this.selectedStock.getAveragePrice().doubleValue()));
 
-        TextView totalAmount = (TextView) view.findViewById(R.id.textview_total_amount);
+        TextView totalAmount = ButterKnife.findById(view, R.id.textview_total_amount);
         totalAmount.setText(this.formatService.formatPrice(this.selectedStock.getTotalAmount().doubleValue()));
 
-        TextView gainLoss = (TextView) view.findViewById(R.id.textview_gain_loss);
+        TextView gainLoss = ButterKnife.findById(view, R.id.textview_gain_loss);
         String gainLossValue = ViewUtils.addPositiveSign(this.selectedStock.getGainLoss().doubleValue(), this.formatService.formatPrice(this.selectedStock.getGainLoss().doubleValue()));
         String gainLossPercentValue = ViewUtils.addPositiveSign(this.selectedStock.getGainLossPercent().doubleValue(), this.formatService.formatPercent(this.selectedStock.getGainLossPercent().doubleValue()));
         gainLoss.setText(String.format("%s (%s)", gainLossValue, gainLossPercentValue));
         this.formatService.formatTextColor(this.selectedStock.getGainLoss().doubleValue(), gainLoss);
 
-        LinearLayout entryTranchesContainer = (LinearLayout) view.findViewById(R.id.entry_tranches_container);
-        ImageView trancheImageView = (ImageView) view.findViewById(R.id.imageview_entry);
+        LinearLayout entryTranchesContainer = ButterKnife.findById(view, R.id.entry_tranches_container);
+        ImageView trancheImageView = ButterKnife.findById(view, R.id.imageview_entry);
         trancheImageView.setOnClickListener(new ImageViewOnClickHideExpand(getActivity(), trancheImageView, entryTranchesContainer));
         this.setTranchesValues(entryTranchesContainer);
 
-        TextView priceToBreakEven = (TextView) view.findViewById(R.id.textview_price_to_break_even);
+        TextView priceToBreakEven = ButterKnife.findById(view, R.id.textview_price_to_break_even);
         priceToBreakEven.setText(this.formatService.formatStockPrice(this.selectedStock.getPriceToBreakEven().doubleValue()));
 
-        TextView target = (TextView) view.findViewById(R.id.textview_target);
+        TextView target = ButterKnife.findById(view, R.id.textview_target);
         target.setText(this.formatService.formatStockPrice(this.selectedStock.getTargetPrice().doubleValue()));
 
-        TextView gainTarget = (TextView) view.findViewById(R.id.textview_gain_target);
+        TextView gainTarget = ButterKnife.findById(view, R.id.textview_gain_target);
         double gainToTargetValue = this.selectedStock.getGainToTarget().doubleValue();
         String gainToTarget = "+" + this.formatService.formatPrice(gainToTargetValue);
         gainTarget.setText(gainToTarget);
         this.formatService.formatTextColor(gainToTargetValue, gainTarget);
 
-        TextView stopLoss = (TextView) view.findViewById(R.id.textview_stop_loss);
+        TextView stopLoss = ButterKnife.findById(view, R.id.textview_stop_loss);
         stopLoss.setText(this.formatService.formatStockPrice(this.selectedStock.getStopLoss().doubleValue()));
 
-        TextView lossStopLoss = (TextView) view.findViewById(R.id.textview_loss_stop_loss);
+        TextView lossStopLoss = ButterKnife.findById(view, R.id.textview_loss_stop_loss);
         lossStopLoss.setText(this.formatService.formatPrice(this.selectedStock.getLossToStopLoss().doubleValue()));
         this.formatService.formatTextColor(this.selectedStock.getLossToStopLoss().doubleValue(), lossStopLoss);
 
-        TextView stopDate = (TextView) view.findViewById(R.id.textview_stop_date);
+        TextView stopDate = ButterKnife.findById(view, R.id.textview_stop_date);
         stopDate.setText(this.formatService.formatDate(this.selectedStock.getStopDate()));
 
-        TextView daysToStopDate = (TextView) view.findViewById(R.id.textview_days_to_stop_date);
+        TextView daysToStopDate = ButterKnife.findById(view, R.id.textview_days_to_stop_date);
         daysToStopDate.setText(String.valueOf(this.selectedStock.getDaysToStopDate()));
 
-        TextView riskReward = (TextView) view.findViewById(R.id.textview_risk_reward);
+        TextView riskReward = ButterKnife.findById(view, R.id.textview_risk_reward);
         riskReward.setText(this.formatService.formatStockPrice(this.selectedStock.getRiskReward().doubleValue()));
 
-        TextView capital = (TextView) view.findViewById(R.id.textview_capital);
+        TextView capital = ButterKnife.findById(view, R.id.textview_capital);
         capital.setText(this.formatService.formatPrice(this.selectedStock.getCapital()));
 
-        TextView percentOfCapital = (TextView) view.findViewById(R.id.textview_percent_of_capital);
+        TextView percentOfCapital = ButterKnife.findById(view, R.id.textview_percent_of_capital);
         percentOfCapital.setText(this.formatService.formatPercent(this.selectedStock.getPercentCapital().doubleValue()));
 
         return view;
@@ -178,18 +183,19 @@ public class TradePlanFragment extends Fragment
         for(TradeEntryDto entry : tradeEntries)
         {
             View entryTrancheLayout = inflater.inflate(R.layout.entry_tranche, null, false);
-            TextView labelTranche = (TextView) entryTrancheLayout.findViewById(R.id.label_tranche);
+            TextView labelTranche = ButterKnife.findById(entryTrancheLayout, R.id.label_tranche);
             labelTranche.setText(getString(R.string.label_tranche, ViewUtils.getOrdinalNumber(entryTrancheNum)));
 
-            TextView entryPrice = (TextView) entryTrancheLayout.findViewById(R.id.textview_entry_price);
+            TextView entryPrice = ButterKnife.findById(entryTrancheLayout, R.id.textview_entry_price);
             entryPrice.setText(this.formatService.formatStockPrice(entry.getEntryPrice().doubleValue()));
-            TextView shares = (TextView) entryTrancheLayout.findViewById(R.id.textview_shares);
+
+            TextView shares = ButterKnife.findById(entryTrancheLayout, R.id.textview_shares);
             shares.setText(this.formatService.formatShares(entry.getShares()));
-            TextView weight = (TextView) entryTrancheLayout.findViewById(R.id.textview_tranche_weight);
+
+            TextView weight = ButterKnife.findById(entryTrancheLayout, R.id.textview_tranche_weight);
             weight.setText(this.formatService.formatPercent(entry.getPercentWeight().doubleValue()));
 
             entryTrancheNum++;
-
             entryTranchesContainer.addView(entryTrancheLayout);
         }
     }
@@ -267,7 +273,7 @@ public class TradePlanFragment extends Fragment
         dialog.show();
 
         // Align message to center.
-        TextView messageView = (TextView) dialog.findViewById(android.R.id.message);
+        TextView messageView = ButterKnife.findById(dialog, android.R.id.message);
         if(messageView != null)
         {
             messageView.setGravity(Gravity.CENTER);
@@ -289,5 +295,20 @@ public class TradePlanFragment extends Fragment
         activity.finish();
 
         LogManager.debug(CLASS_NAME, "deleteTradePlan", "Deleted: " + this.selectedStock);
+    }
+
+    /**
+     * A Fragment may continue to exist after its Views are destroyed, you need to call .unbind() from a Fragment to release the reference to the Views (and allow the associated
+     * memory to be reclaimed).
+     */
+    @Override
+    public void onDestroyView()
+    {
+        super.onDestroyView();
+
+        if(this.unbinder != null)
+        {
+            this.unbinder.unbind();
+        }
     }
 }

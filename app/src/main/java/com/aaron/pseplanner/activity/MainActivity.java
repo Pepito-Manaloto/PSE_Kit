@@ -45,8 +45,9 @@ import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import io.reactivex.Observable;
-import io.reactivex.ObservableSource;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
@@ -60,10 +61,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public static final String CLASS_NAME = MainActivity.class.getSimpleName();
     private final AtomicBoolean isUpdating = new AtomicBoolean(false);
 
-    private DrawerLayout drawer;
-    private NavigationView navigationView;
+    @BindView(R.id.drawer_layout)
+    DrawerLayout drawer;
+
+    @BindView(R.id.nav_view)
+    NavigationView navigationView;
+
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+
     private Menu toolbarMenu;
-    private Toolbar toolbar;
     private AbstractListFragment selectedListFragment;
     private ArrayList<TickerDto> tickerDtoList;
     private ArrayList<TradeDto> tradeDtoList;
@@ -87,17 +94,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         LogManager.debug(CLASS_NAME, "onCreate", "");
 
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
 
-        this.toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(this.toolbar);
 
-        this.drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, this.drawer, this.toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         this.drawer.removeDrawerListener(toggle);
         this.drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        this.navigationView = (NavigationView) findViewById(R.id.nav_view);
         this.navigationView.setNavigationItemSelectedListener(this);
 
         this.pseService = new FacadePSEPlannerService(this);

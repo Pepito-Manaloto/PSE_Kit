@@ -13,11 +13,17 @@ import com.aaron.pseplanner.bean.BoardLot;
 import com.aaron.pseplanner.service.LogManager;
 
 import org.apache.commons.lang3.StringUtils;
+import org.w3c.dom.Text;
 
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.text.ParseException;
+import java.util.List;
 import java.util.Locale;
+
+import butterknife.BindView;
+import butterknife.BindViews;
+import butterknife.ButterKnife;
 
 /**
  * Created by aaron.asuncion on 11/18/2016.
@@ -27,13 +33,29 @@ public class DividendFragment extends AbstractCalculatorFragment
 {
     public static final String CLASS_NAME = DividendFragment.class.getSimpleName();
 
-    private EditText priceEditText;
-    private EditText sharesEditText;
-    private EditText dividendEditText;
+    @BindView(R.id.edittext_price)
+    EditText priceEditText;
 
-    private TextView yieldTextView;
-    private TextView percentYieldTextView;
-    private TextView totalAmountTextView;
+    @BindView(R.id.edittext_shares)
+    EditText sharesEditText;
+
+    @BindView(R.id.edittext_cash_dividend)
+    EditText dividendEditText;
+
+    @BindViews({R.id.edittext_price, R.id.edittext_shares, R.id.edittext_cash_dividend})
+    List<EditText> editTexts;
+
+    @BindView(R.id.textview_yield)
+    TextView yieldTextView;
+
+    @BindView(R.id.textview_dividend_percent)
+    TextView percentYieldTextView;
+
+    @BindView(R.id.textview_total_amount)
+    TextView totalAmountTextView;
+
+    @BindViews({R.id.textview_yield, R.id.textview_dividend_percent, R.id.textview_total_amount})
+    List<TextView> textViews;
 
     /**
      * Initializes the fragment's user interface.
@@ -42,14 +64,8 @@ public class DividendFragment extends AbstractCalculatorFragment
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState)
     {
         View view = inflateFragment(R.layout.fragment_dividend, inflater, parent);
+        this.unbinder = ButterKnife.bind(this, view);
 
-        this.yieldTextView = (TextView) view.findViewById(R.id.textview_yield);
-        this.percentYieldTextView = (TextView) view.findViewById(R.id.textview_dividend_percent);
-        this.totalAmountTextView = (TextView) view.findViewById(R.id.textview_total_amount);
-
-        this.priceEditText = (EditText) view.findViewById(R.id.edittext_price);
-        this.sharesEditText = (EditText) view.findViewById(R.id.edittext_shares);
-        this.dividendEditText = (EditText) view.findViewById(R.id.edittext_cash_dividend);
         setEditTextOnFocusChangeListener(this.priceEditText, this.sharesEditText, this.dividendEditText);
         setEditTextTextChangeListener(this.priceEditText, this.sharesEditText, this.dividendEditText);
 
@@ -62,8 +78,8 @@ public class DividendFragment extends AbstractCalculatorFragment
     public void onStop()
     {
         LogManager.debug(CLASS_NAME, "onStop", "");
+        ButterKnife.apply(this.editTexts, RESET_EDIT_TEXT);
 
-        this.resetEditTexts();
         super.onStop();
     }
 
@@ -109,21 +125,12 @@ public class DividendFragment extends AbstractCalculatorFragment
         }
         else
         {
-            this.yieldTextView.setText(R.string.default_value);
-            this.percentYieldTextView.setText(R.string.default_value);
-            this.totalAmountTextView.setText(R.string.default_value);
+            ButterKnife.apply(this.textViews, RESET_TEXT_VIEW);
 
             double defaultValue = Double.parseDouble(getActivity().getString(R.string.default_value));
             this.formatService.formatTextColor(defaultValue, yieldTextView);
             this.formatService.formatTextColor(defaultValue, percentYieldTextView);
         }
-    }
-
-    private void resetEditTexts()
-    {
-        this.priceEditText.setText("");
-        this.sharesEditText.setText("");
-        this.dividendEditText.setText("");
     }
 
     @Override

@@ -23,6 +23,9 @@ import com.aaron.pseplanner.service.implementation.DefaultFormatService;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * Created by aaron.asuncion on 12/8/2016.
  * Contains all tickers, and is responsible for converting Ticker bean to a UI row in the ListView.
@@ -59,14 +62,7 @@ public class TickerListAdapter extends FilterableArrayAdapter<TickerDto>
         {
             convertView = this.activity.getLayoutInflater().inflate(R.layout.fragment_ticker_row, parent, false);
 
-            holder = new ViewHolder();
-            holder.stock = (TextView) convertView.findViewById(R.id.ticker_stock_row);
-            holder.price = (TextView) convertView.findViewById(R.id.ticker_price_row);
-            holder.change = (TextView) convertView.findViewById(R.id.ticker_change_row);
-            holder.percentChange = (TextView) convertView.findViewById(R.id.ticker_percent_change_row);
-            holder.icon = (ImageView) convertView.findViewById(R.id.ticker_icon_row);
-            holder.layout = (LinearLayout) convertView.findViewById(R.id.list_row_layout);
-
+            holder = new ViewHolder(convertView);
             convertView.setTag(holder);
         }
         else
@@ -95,14 +91,30 @@ public class TickerListAdapter extends FilterableArrayAdapter<TickerDto>
     /**
      * Holds the references of all the views in a list row, to improve performance by preventing repeated call of findViewById().
      */
-    private static class ViewHolder
+    static class ViewHolder
     {
+        @BindView(R.id.ticker_stock_row)
         TextView stock;
+
+        @BindView(R.id.ticker_price_row)
         TextView price;
+
+        @BindView(R.id.ticker_change_row)
         TextView change;
+
+        @BindView(R.id.ticker_percent_change_row)
         TextView percentChange;
-        LinearLayout layout;
+
+        @BindView(R.id.ticker_icon_row)
         ImageView icon;
+
+        @BindView(R.id.list_row_layout)
+        LinearLayout layout;
+
+        ViewHolder(View view)
+        {
+            ButterKnife.bind(this, view);
+        }
 
         void setTickerView(TickerDto tickerDto, FormatService service, Activity activity)
         {

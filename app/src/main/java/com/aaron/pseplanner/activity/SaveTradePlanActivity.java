@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Pair;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -37,6 +38,7 @@ import com.aaron.pseplanner.service.implementation.DefaultCalculatorService;
 import com.aaron.pseplanner.service.implementation.FacadePSEPlannerService;
 
 import org.apache.commons.lang3.StringUtils;
+import org.w3c.dom.Text;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -49,6 +51,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 import static com.aaron.pseplanner.service.CalculatorService.ONE_HUNDRED;
 
 /**
@@ -60,16 +65,36 @@ public abstract class SaveTradePlanActivity extends AppCompatActivity
     protected CalculatorService calculator;
     protected PSEPlannerService pseService;
 
+    @BindView(R.id.edittext_shares)
     protected EditText sharesEditText;
+
+    @BindView(R.id.edittext_entry_date)
     protected EditText entryDateEditText;
+
+    @BindView(R.id.edittext_stop_date)
     protected EditText stopDateEditText;
+
+    @BindView(R.id.edittext_stop_loss)
     protected EditText stopLossEditText;
+
+    @BindView(R.id.edittext_target)
     protected EditText targetEditText;
+
+    @BindView(R.id.edittext_capital)
     protected EditText capitalEditText;
 
+    @BindView(R.id.entry_tranches_container)
     protected LinearLayout entryTranchesLayout;
     protected LayoutInflater layoutInflater;
+
+    @BindView(R.id.button_save_trade_plan)
     protected Button saveButton;
+
+    @BindView(R.id.toolbar)
+    protected Toolbar toolbar;
+
+    @BindView(R.id.textview_stock)
+    protected TextView stockLabel;
 
     /**
      * Inflates the UI.
@@ -84,24 +109,18 @@ public abstract class SaveTradePlanActivity extends AppCompatActivity
         LogManager.debug(CLASS_NAME, "onCreate", "");
 
         setContentView(R.layout.activity_save_trade_plan);
+        ButterKnife.bind(this);
 
-        sharesEditText = (EditText) findViewById(R.id.edittext_shares);
-        stopLossEditText = (EditText) findViewById(R.id.edittext_stop_loss);
-        targetEditText = (EditText) findViewById(R.id.edittext_target);
-        capitalEditText = (EditText) findViewById(R.id.edittext_capital);
         setEditTextOnFocusChangeListener(sharesEditText, stopLossEditText, targetEditText, capitalEditText);
         setEditTextTextChangeListener(sharesEditText, stopLossEditText, targetEditText, capitalEditText);
 
-        entryDateEditText = (EditText) findViewById(R.id.edittext_entry_date);
-        stopDateEditText = (EditText) findViewById(R.id.edittext_stop_date);
         setDateEditTextOnClickListener(entryDateEditText, stopDateEditText);
 
         final LayoutInflater inflater = LayoutInflater.from(this);
         this.layoutInflater = inflater;
-        this.entryTranchesLayout = (LinearLayout) findViewById(R.id.entry_tranches_container);
         addTranche(inflater, entryTranchesLayout); // Insert initial trache
 
-        Button addTrancheButton = (Button) findViewById(R.id.button_add_tranche);
+        Button addTrancheButton = ButterKnife.findById(this, R.id.button_add_tranche);
         addTrancheButton.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -111,7 +130,6 @@ public abstract class SaveTradePlanActivity extends AppCompatActivity
             }
         });
 
-        this.saveButton = (Button) findViewById(R.id.button_save_trade_plan);
         this.saveButton.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -310,8 +328,8 @@ public abstract class SaveTradePlanActivity extends AppCompatActivity
         for(int i = 0, trancheNum = 1; i < numOfTranches; i++, trancheNum++)
         {
             View entryTrancheContainer = entryTranchesLayout.getChildAt(i);
-            EditText entryPrice = (EditText) entryTrancheContainer.findViewById(R.id.edittext_entry_price);
-            EditText trancheWeight = (EditText) entryTrancheContainer.findViewById(R.id.edittext_tranche_weight);
+            EditText entryPrice = ButterKnife.findById(entryTrancheContainer, R.id.edittext_entry_price);
+            EditText trancheWeight = ButterKnife.findById(entryTrancheContainer, R.id.edittext_tranche_weight);
             String price = entryPrice.getText().toString();
             String weight = trancheWeight.getText().toString();
 
@@ -399,10 +417,10 @@ public abstract class SaveTradePlanActivity extends AppCompatActivity
         // This serves as the index of the added view
         final int numOfEntryTranche = entryTranchesLayout.getChildCount();
         entryTrancheContainer.setTag(numOfEntryTranche);
-        TextView labelTranche = (TextView) entryTrancheContainer.findViewById(R.id.label_tranche);
+        TextView labelTranche = ButterKnife.findById(entryTrancheContainer, R.id.label_tranche);
         labelTranche.setText(getString(R.string.label_tranche, ViewUtils.getOrdinalNumber(numOfEntryTranche)));
 
-        ImageView removeTranche = (ImageView) entryTrancheContainer.findViewById(R.id.imageview_remove_tranche);
+        ImageView removeTranche = ButterKnife.findById(entryTrancheContainer, R.id.imageview_remove_tranche);
         removeTranche.setOnClickListener(new View.OnClickListener()
         {
             /**
@@ -422,7 +440,7 @@ public abstract class SaveTradePlanActivity extends AppCompatActivity
                     // Update the succeeding entry tranche tag/index and title
                     View nextEntryTrancheContainer = entryTranchesLayout.getChildAt(i);
                     nextEntryTrancheContainer.setTag(i);
-                    TextView labelTranche = (TextView) nextEntryTrancheContainer.findViewById(R.id.label_tranche);
+                    TextView labelTranche = ButterKnife.findById(nextEntryTrancheContainer, R.id.label_tranche);
 
                     labelTranche.setText(getString(R.string.label_tranche, ViewUtils.getOrdinalNumber(i)));
                     // TODO: update tranche weight?
@@ -430,9 +448,9 @@ public abstract class SaveTradePlanActivity extends AppCompatActivity
             }
         });
 
-        EditText entryPrice = (EditText) entryTrancheContainer.findViewById(R.id.edittext_entry_price);
+        EditText entryPrice = ButterKnife.findById(entryTrancheContainer, R.id.edittext_entry_price);
         setEditTextTextChangeListener(entryPrice);
-        EditText trancheWeight = (EditText) entryTrancheContainer.findViewById(R.id.edittext_tranche_weight);
+        EditText trancheWeight = ButterKnife.findById(entryTrancheContainer, R.id.edittext_tranche_weight);
         if(numOfEntryTranche == 0)
         {
             trancheWeight.setText(R.string.one_hundred_value);
@@ -526,7 +544,7 @@ public abstract class SaveTradePlanActivity extends AppCompatActivity
         dialog.show();
 
         // Align message to center.
-        TextView messageView = (TextView) dialog.findViewById(android.R.id.message);
+        TextView messageView = ButterKnife.findById(dialog, android.R.id.message);
         if(messageView != null)
         {
             messageView.setGravity(Gravity.CENTER);
@@ -538,10 +556,9 @@ public abstract class SaveTradePlanActivity extends AppCompatActivity
      */
     private void setEditTextOnFocusChangeListener(EditText... editTexts)
     {
-        EditTextOnFocusChangeHideKeyboard listener = new EditTextOnFocusChangeHideKeyboard(this);
         for(EditText editText : editTexts)
         {
-            editText.setOnFocusChangeListener(listener);
+            editText.setOnFocusChangeListener(new EditTextOnFocusChangeHideKeyboard(this));
         }
     }
 

@@ -25,6 +25,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import butterknife.ButterKnife;
+
 /**
  * Created by aaron.asuncion on 11/18/2016.
  */
@@ -122,9 +124,9 @@ public class TickerListFragment extends AbstractListFragment<TickerDto>
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.list_fragment_ticker, parent, false);
-        this.lastUpdatedTextView = (TextView) view.findViewById(R.id.textview_last_updated);
-        updateListOnUiThread(this.tickerDtoList, this.pseService.getLastUpdated(PSEPlannerPreference.LAST_UPDATED_TICKER.toString()));
+        this.unbinder = ButterKnife.bind(this, view);
 
+        updateListOnUiThread(this.tickerDtoList, this.pseService.getLastUpdated(PSEPlannerPreference.LAST_UPDATED_TICKER.toString()));
         LogManager.debug(CLASS_NAME, "onCreateView", "");
 
         return view;

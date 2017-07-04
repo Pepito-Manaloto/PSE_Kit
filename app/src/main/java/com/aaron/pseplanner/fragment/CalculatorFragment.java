@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -18,7 +19,12 @@ import org.apache.commons.lang3.StringUtils;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.text.ParseException;
+import java.util.List;
 import java.util.Locale;
+
+import butterknife.BindView;
+import butterknife.BindViews;
+import butterknife.ButterKnife;
 
 /**
  * Created by aaron.asuncion on 11/18/2016.
@@ -28,29 +34,80 @@ public class CalculatorFragment extends AbstractCalculatorFragment
 {
     public static final String CLASS_NAME = CalculatorFragment.class.getSimpleName();
 
-    private EditText buyPriceEditText;
-    private EditText sharesEditText;
-    private EditText sellPriceEditText;
+    @BindView(R.id.edittext_buy_price)
+    EditText buyPriceEditText;
 
-    private TextView averagePriceText;
-    private TextView priceToBreakEvenText;
-    private TextView buyGrossAmountText;
-    private TextView buyNetAmountText;
-    private TextView additionalBrokersCommissionText;
-    private TextView additionalVatOfCommissionText;
-    private TextView additionalClearingFeeText;
-    private TextView additionalTransactionFeeText;
-    private TextView additionalTotal;
-    private TextView sellGrossAmountText;
-    private TextView sellNetAmountText;
-    private TextView deductionBrokersCommissionText;
-    private TextView deductionVatOfCommissionText;
-    private TextView deductionClearingFeeText;
-    private TextView deductionTransactionFeeText;
-    private TextView deductionSalesTax;
-    private TextView deductionTotal;
-    private TextView gainLossAmountText;
-    private TextView gainLossPercentText;
+    @BindView(R.id.edittext_shares)
+    EditText sharesEditText;
+
+    @BindView(R.id.edittext_sell_price)
+    EditText sellPriceEditText;
+
+    @BindViews({R.id.edittext_buy_price, R.id.edittext_shares, R.id.edittext_sell_price})
+    List<EditText> editTexts;
+
+    @BindView(R.id.textview_average_price)
+    TextView averagePriceText;
+
+    @BindView(R.id.textview_break_even_price)
+    TextView priceToBreakEvenText;
+
+    @BindView(R.id.textview_buy_gross_amount)
+    TextView buyGrossAmountText;
+
+    @BindView(R.id.textview_buy_net_amount)
+    TextView buyNetAmountText;
+
+    @BindView(R.id.textview_addt_brokers_commission)
+    TextView additionalBrokersCommissionText;
+
+    @BindView(R.id.textview_addt_brokers_commission_vat)
+    TextView additionalVatOfCommissionText;
+
+    @BindView(R.id.textview_addt_clearing_fee)
+    TextView additionalClearingFeeText;
+
+    @BindView(R.id.textview_addt_transaction_fee)
+    TextView additionalTransactionFeeText;
+
+    @BindView(R.id.textview_addt_total)
+    TextView additionalTotal;
+
+    @BindView(R.id.textview_sell_gross_amount)
+    TextView sellGrossAmountText;
+
+    @BindView(R.id.textview_sell_net_amount)
+    TextView sellNetAmountText;
+
+    @BindView(R.id.textview_deduct_brokers_commission)
+    TextView deductionBrokersCommissionText;
+
+    @BindView(R.id.textview_deduct_brokers_commission_vat)
+    TextView deductionVatOfCommissionText;
+
+    @BindView(R.id.textview_deduct_clearing_fee)
+    TextView deductionClearingFeeText;
+
+    @BindView(R.id.textview_deduct_transaction_fee)
+    TextView deductionTransactionFeeText;
+
+    @BindView(R.id.textview_deduct_sales_tax)
+    TextView deductionSalesTax;
+
+    @BindView(R.id.textview_deduct_total)
+    TextView deductionTotal;
+
+    @BindView(R.id.textview_gain_loss_amount)
+    TextView gainLossAmountText;
+
+    @BindView(R.id.textview_gain_loss_percent)
+    TextView gainLossPercentText;
+
+    @BindViews({R.id.textview_average_price, R.id.textview_break_even_price, R.id.textview_buy_gross_amount, R.id.textview_buy_net_amount, R.id.textview_addt_brokers_commission, R.id.textview_addt_brokers_commission_vat, R.id.textview_addt_clearing_fee, R.id.textview_addt_transaction_fee, R.id.textview_addt_total})
+    List<TextView> buyTextViews;
+
+    @BindViews({R.id.textview_sell_gross_amount, R.id.textview_sell_net_amount, R.id.textview_deduct_brokers_commission, R.id.textview_deduct_brokers_commission_vat, R.id.textview_deduct_clearing_fee, R.id.textview_deduct_transaction_fee, R.id.textview_deduct_sales_tax, R.id.textview_deduct_total, R.id.textview_gain_loss_amount, R.id.textview_gain_loss_percent})
+    List<TextView> sellTextViews;
 
     private String buyPriceStrPrevious;
     private String sharesStrPrevious;
@@ -63,38 +120,16 @@ public class CalculatorFragment extends AbstractCalculatorFragment
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState)
     {
         View view = inflateFragment(R.layout.fragment_calculator, inflater, parent);
+        this.unbinder = ButterKnife.bind(this, view);
 
-        this.averagePriceText = (TextView) view.findViewById(R.id.textview_average_price);
-        this.priceToBreakEvenText = (TextView) view.findViewById(R.id.textview_break_even_price);
-        this.buyGrossAmountText = (TextView) view.findViewById(R.id.textview_buy_gross_amount);
-        this.buyNetAmountText = (TextView) view.findViewById(R.id.textview_buy_net_amount);
-        this.additionalBrokersCommissionText = (TextView) view.findViewById(R.id.textview_addt_brokers_commission);
-        this.additionalVatOfCommissionText = (TextView) view.findViewById(R.id.textview_addt_brokers_commission_vat);
-        this.additionalClearingFeeText = (TextView) view.findViewById(R.id.textview_addt_clearing_fee);
-        this.additionalTransactionFeeText = (TextView) view.findViewById(R.id.textview_addt_transaction_fee);
-        this.additionalTotal = (TextView) view.findViewById(R.id.textview_addt_total);
-
-        this.sellGrossAmountText = (TextView) view.findViewById(R.id.textview_sell_gross_amount);
-        this.sellNetAmountText = (TextView) view.findViewById(R.id.textview_sell_net_amount);
-        this.deductionBrokersCommissionText = (TextView) view.findViewById(R.id.textview_deduct_brokers_commission);
-        this.deductionVatOfCommissionText = (TextView) view.findViewById(R.id.textview_deduct_brokers_commission_vat);
-        this.deductionClearingFeeText = (TextView) view.findViewById(R.id.textview_deduct_clearing_fee);
-        this.deductionTransactionFeeText = (TextView) view.findViewById(R.id.textview_deduct_transaction_fee);
-        this.deductionSalesTax = (TextView) view.findViewById(R.id.textview_deduct_sales_tax);
-        this.deductionTotal = (TextView) view.findViewById(R.id.textview_deduct_total);
-
-        this.gainLossAmountText = (TextView) view.findViewById(R.id.textview_gain_loss_amount);
-        this.gainLossPercentText = (TextView) view.findViewById(R.id.textview_gain_loss_percent);
-
-        this.buyPriceEditText = (EditText) view.findViewById(R.id.edittext_buy_price);
-        this.sharesEditText = (EditText) view.findViewById(R.id.edittext_shares);
-        this.sellPriceEditText = (EditText) view.findViewById(R.id.edittext_sell_price);
         setEditTextOnFocusChangeListener(this.buyPriceEditText, this.sharesEditText, this.sellPriceEditText);
         setEditTextTextChangeListener(this.buyPriceEditText, this.sharesEditText, this.sellPriceEditText);
 
-        ImageView buyNetAmountImageView = (ImageView) view.findViewById(R.id.imageview_buy_net_amount);
-        ImageView sellNetAmountImageView = (ImageView) view.findViewById(R.id.imageview_sell_net_amount);
-        this.setImageViewOnClickListener(buyNetAmountImageView, view.findViewById(R.id.additional_fees_layout), sellNetAmountImageView, view.findViewById(R.id.deduction_fees_layout));
+        ImageView buyNetAmountImageView = ButterKnife.findById(view, R.id.imageview_buy_net_amount);
+        ImageView sellNetAmountImageView = ButterKnife.findById(view, R.id.imageview_sell_net_amount);
+        GridLayout additionalFeesLayout = ButterKnife.findById(view, R.id.additional_fees_layout);
+        GridLayout deductionFeesLayout = ButterKnife.findById(view, R.id.deduction_fees_layout);
+        this.setImageViewOnClickListener(buyNetAmountImageView, additionalFeesLayout, sellNetAmountImageView, deductionFeesLayout);
 
         LogManager.debug(CLASS_NAME, "onCreateView", "");
 
@@ -106,7 +141,7 @@ public class CalculatorFragment extends AbstractCalculatorFragment
     {
         LogManager.debug(CLASS_NAME, "onStop", "");
 
-        this.resetEditTexts();
+        ButterKnife.apply(this.editTexts, RESET_EDIT_TEXT);
         super.onStop();
     }
 
@@ -255,28 +290,12 @@ public class CalculatorFragment extends AbstractCalculatorFragment
         formatService.formatTextColor(percentGainLoss.doubleValue(), gainLossPercentText);
     }
 
-    private void resetEditTexts()
-    {
-        this.buyPriceEditText.setText("");
-        this.sharesEditText.setText("");
-        this.sellPriceEditText.setText("");
-    }
-
     /**
      * Sets all text views value to 0.
      */
     private void resetAllValues()
     {
-        this.averagePriceText.setText(R.string.default_value);
-        this.priceToBreakEvenText.setText(R.string.default_value);
-        this.buyGrossAmountText.setText(R.string.default_value);
-        this.buyNetAmountText.setText(R.string.default_value);
-
-        this.additionalBrokersCommissionText.setText(R.string.default_value);
-        this.additionalVatOfCommissionText.setText(R.string.default_value);
-        this.additionalClearingFeeText.setText(R.string.default_value);
-        this.additionalTransactionFeeText.setText(R.string.default_value);
-        this.additionalTotal.setText(R.string.default_value);
+        ButterKnife.apply(this.buyTextViews, RESET_TEXT_VIEW);
         resetSellValues();
     }
 
@@ -285,16 +304,7 @@ public class CalculatorFragment extends AbstractCalculatorFragment
      */
     private void resetSellValues()
     {
-        this.sellGrossAmountText.setText(R.string.default_value);
-        this.sellNetAmountText.setText(R.string.default_value);
-        this.deductionBrokersCommissionText.setText(R.string.default_value);
-        this.deductionVatOfCommissionText.setText(R.string.default_value);
-        this.deductionClearingFeeText.setText(R.string.default_value);
-        this.deductionTransactionFeeText.setText(R.string.default_value);
-        this.deductionSalesTax.setText(R.string.default_value);
-        this.deductionTotal.setText(R.string.default_value);
-        this.gainLossAmountText.setText(R.string.default_value);
-        this.gainLossPercentText.setText(R.string.default_value);
+        ButterKnife.apply(this.sellTextViews, RESET_TEXT_VIEW);
 
         double defaultValue = Double.parseDouble(getActivity().getString(R.string.default_value));
         formatService.formatTextColor(defaultValue, gainLossAmountText);
@@ -304,7 +314,7 @@ public class CalculatorFragment extends AbstractCalculatorFragment
     /**
      * Sets the on click listener for image views. Will toggle update the image on click.
      */
-    private void setImageViewOnClickListener(ImageView buyNetImageView, View additionalLayoutContainer, ImageView sellNetImageView, View deductionsLayoutContainer)
+    private void setImageViewOnClickListener(ImageView buyNetImageView, GridLayout additionalLayoutContainer, ImageView sellNetImageView, GridLayout deductionsLayoutContainer)
     {
         buyNetImageView.setOnClickListener(new ImageViewOnClickHideExpand(this.getActivity(), buyNetImageView, additionalLayoutContainer));
         sellNetImageView.setOnClickListener(new ImageViewOnClickHideExpand(this.getActivity(), sellNetImageView, deductionsLayoutContainer));
