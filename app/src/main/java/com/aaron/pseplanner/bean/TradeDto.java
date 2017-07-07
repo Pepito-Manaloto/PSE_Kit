@@ -14,6 +14,8 @@ import java.util.List;
  */
 public class TradeDto implements Stock, Parcelable, Comparable<TradeDto>
 {
+    private Long id;
+
     private Date entryDate;
     private int holdingPeriod;
     private String symbol;
@@ -39,8 +41,9 @@ public class TradeDto implements Stock, Parcelable, Comparable<TradeDto>
     {
     }
 
-    public TradeDto(String symbol, Date entryDate, int holdingPeriod, BigDecimal currentPrice, BigDecimal averagePrice, long totalShares, BigDecimal totalAmount, BigDecimal priceToBreakEven, BigDecimal targetPrice, BigDecimal gainLoss, BigDecimal gainLossPercent, BigDecimal gainToTarget, BigDecimal lossToStopLoss, BigDecimal stopLoss, Date stopDate, int daysToStopDate, BigDecimal riskReward, long capital, BigDecimal percentCapital, List<TradeEntryDto> tradeEntries)
+    public TradeDto(Long id, String symbol, Date entryDate, int holdingPeriod, BigDecimal currentPrice, BigDecimal averagePrice, long totalShares, BigDecimal totalAmount, BigDecimal priceToBreakEven, BigDecimal targetPrice, BigDecimal gainLoss, BigDecimal gainLossPercent, BigDecimal gainToTarget, BigDecimal lossToStopLoss, BigDecimal stopLoss, Date stopDate, int daysToStopDate, BigDecimal riskReward, long capital, BigDecimal percentCapital, List<TradeEntryDto> tradeEntries)
     {
+        this.id = id;
         this.symbol = symbol;
         this.entryDate = entryDate;
         this.holdingPeriod = holdingPeriod;
@@ -63,8 +66,9 @@ public class TradeDto implements Stock, Parcelable, Comparable<TradeDto>
         this.tradeEntries = tradeEntries;
     }
 
-    public TradeDto(String symbol, Date entryDate, int holdingPeriod, double currentPrice, double averagePrice, long totalShares, double totalAmount, double priceToBreakEven, double targetPrice, double gainLoss, double gainLossPercent, long gainToTarget, double stopLoss, double lossToStopLoss, Date stopDate, int daysToStopDate, double riskReward, long capital, double percentCapital, List<TradeEntryDto> tradeEntries)
+    public TradeDto(Long id, String symbol, Date entryDate, int holdingPeriod, double currentPrice, double averagePrice, long totalShares, double totalAmount, double priceToBreakEven, double targetPrice, double gainLoss, double gainLossPercent, long gainToTarget, double stopLoss, double lossToStopLoss, Date stopDate, int daysToStopDate, double riskReward, long capital, double percentCapital, List<TradeEntryDto> tradeEntries)
     {
+        this.id = id;
         this.symbol = symbol;
         this.entryDate = entryDate;
         this.holdingPeriod = holdingPeriod;
@@ -87,8 +91,9 @@ public class TradeDto implements Stock, Parcelable, Comparable<TradeDto>
         this.tradeEntries = tradeEntries;
     }
 
-    public TradeDto(String symbol, Date entryDate, int holdingPeriod, String currentPrice, String averagePrice, long totalShares, String totalAmount, String priceToBreakEven, String targetPrice, String gainLoss, String gainLossPercent, String gainToTarget, String stopLoss, String lossToStopLoss, Date stopDate, int daysToStopDate, String riskReward, long capital, String percentCapital, List<TradeEntryDto> tradeEntries)
+    public TradeDto(Long id, String symbol, Date entryDate, int holdingPeriod, String currentPrice, String averagePrice, long totalShares, String totalAmount, String priceToBreakEven, String targetPrice, String gainLoss, String gainLossPercent, String gainToTarget, String stopLoss, String lossToStopLoss, Date stopDate, int daysToStopDate, String riskReward, long capital, String percentCapital, List<TradeEntryDto> tradeEntries)
     {
+        this.id = id;
         this.symbol = symbol;
         this.entryDate = entryDate;
         this.holdingPeriod = holdingPeriod;
@@ -159,6 +164,16 @@ public class TradeDto implements Stock, Parcelable, Comparable<TradeDto>
     public String toString()
     {
         return "TradeDto{" + "entryDate=" + entryDate + ", holdingPeriod=" + holdingPeriod + ", symbol='" + symbol + '\'' + ", currentPrice=" + currentPrice + ", averagePrice=" + averagePrice + ", totalShares=" + totalShares + ", totalAmount=" + totalAmount + ", priceToBreakEven=" + priceToBreakEven + ", targetPrice=" + targetPrice + ", gainLoss=" + gainLoss + ", gainLossPercent=" + gainLossPercent + ", gainToTarget=" + gainToTarget + ", stopLoss=" + stopLoss + ", lossToStopLoss=" + lossToStopLoss + ", stopDate=" + stopDate + ", daysToStopDate=" + daysToStopDate + ", riskReward=" + riskReward + ", capital=" + capital + ", percentCapital=" + percentCapital + ", tradeEntries=" + tradeEntries + '}';
+    }
+
+    public Long getId()
+    {
+        return id;
+    }
+
+    public void setId(Long id)
+    {
+        this.id = id;
     }
 
     public Date getEntryDate()

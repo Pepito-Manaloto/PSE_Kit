@@ -76,7 +76,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private ArrayList<TradeDto> tradeDtoList;
     private PSEPlannerService pseService;
     private boolean isReturningResultHomeView;
-    private SearchOnQueryTextListener searchListener;
     private Set<Disposable> rxSubscriptions;
     //TODO: https://www.youtube.com/watch?v=QdmkXL7XikQ
 
@@ -109,7 +108,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         this.tickerDtoList = new ArrayList<>();
         this.tradeDtoList = this.pseService.getTradePlanListFromDatabase();
 
-        this.searchListener = new SearchOnQueryTextListener();
         this.rxSubscriptions = new HashSet<>();
 
         FragmentManager fm = getSupportFragmentManager();
@@ -118,7 +116,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if(fragment == null)
         {
             this.selectedListFragment = TradePlanListFragment.newInstance(this.tradeDtoList);
-            this.selectedListFragment.setSearchListener(this.searchListener);
             fm.beginTransaction().add(R.id.fragment_container, this.selectedListFragment).commit();
         }
 
@@ -154,7 +151,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             {
                                 tickerDtoList = (ArrayList<TickerDto>) pseService.getAllTickerList().first;
                                 pseService.insertTickerList(tickerDtoList);
-
                                 LogManager.debug(CLASS_NAME, "initTickerDtoList", "Retrieved from Web API and saved to database, count: " + tickerDtoList.size());
                             }
                             else
@@ -334,7 +330,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         MenuItem myActionMenuItem = menu.findItem(R.id.menu_search);
         SearchView searchView = (SearchView) myActionMenuItem.getActionView();
         searchView.setQueryHint(getResources().getString(R.string.search_hint));
-        searchView.setOnQueryTextListener(this.searchListener);
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -401,7 +396,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_ticker:
             {
                 this.selectedListFragment = TickerListFragment.newInstance(this.tickerDtoList, this.tradeDtoList);
-                this.selectedListFragment.setSearchListener(this.searchListener);
                 updateFragmentContainer(this.selectedListFragment);
                 this.showToolbarMenuItems();
                 this.toolbar.setTitle(R.string.nav_ticker);
@@ -561,7 +555,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void setDefaultHomeView()
     {
         this.selectedListFragment = TradePlanListFragment.newInstance(this.tradeDtoList);
-        this.selectedListFragment.setSearchListener(this.searchListener);
         updateFragmentContainer(this.selectedListFragment);
         this.showToolbarMenuItems();
         this.toolbar.setTitle(R.string.app_name);

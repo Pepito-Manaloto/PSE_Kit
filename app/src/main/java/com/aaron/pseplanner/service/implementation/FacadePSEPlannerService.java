@@ -209,7 +209,8 @@ public class FacadePSEPlannerService implements PSEPlannerService
 
         for(Ticker ticker : tickerList)
         {
-            tickerDtoList.add(new TickerDto(ticker.getSymbol(), ticker.getName(), ticker.getVolume(), ticker.getCurrentPrice(), ticker.getChange(), ticker.getPercentChange()));
+            tickerDtoList.add(new TickerDto(ticker.getId(), ticker.getSymbol(), ticker.getName(), ticker.getVolume(), ticker.getCurrentPrice(), ticker.getChange(), ticker
+                    .getPercentChange()));
         }
 
         LogManager.debug(CLASS_NAME, "getTickerListFromDatabase", "Retrieved: count = " + tickerDtoList.size());
@@ -337,6 +338,7 @@ public class FacadePSEPlannerService implements PSEPlannerService
 
     private Trade fromTradeDtoToTrade(Trade trade, TradeDto tradeDto, Date now)
     {
+        trade.setId(tradeDto.getId());
         trade.setSymbol(tradeDto.getSymbol());
         trade.setCurrentPrice(tradeDto.getCurrentPrice().toPlainString());
         trade.setAveragePrice(tradeDto.getAveragePrice().toPlainString());
@@ -400,7 +402,7 @@ public class FacadePSEPlannerService implements PSEPlannerService
                 tradeEntryDtos.add(new TradeEntryDto(tradeEntry.getTradeSymbol(), tradeEntry.getEntryPrice(), tradeEntry.getShares(), tradeEntry.getPercentWeight()));
             }
 
-            tradePlanDtoList.add(new TradeDto(trade.getSymbol(), trade.getEntryDate(), trade.getHoldingPeriod(), trade.getCurrentPrice(), trade.getAveragePrice(), trade.getTotalShares(), trade.getTotalAmount(), trade.getPriceToBreakEven(), trade.getTargetPrice(), trade.getGainLoss(), trade.getGainLossPercent(), trade.getGainToTarget(), trade.getStopLoss(), trade.getLossToStopLoss(), trade.getStopDate(), trade.getDaysToStopDate(), trade.getRiskReward(), trade.getCapital(), trade.getPercentCapital(), tradeEntryDtos));
+            tradePlanDtoList.add(new TradeDto(trade.getId(), trade.getSymbol(), trade.getEntryDate(), trade.getHoldingPeriod(), trade.getCurrentPrice(), trade.getAveragePrice(), trade.getTotalShares(), trade.getTotalAmount(), trade.getPriceToBreakEven(), trade.getTargetPrice(), trade.getGainLoss(), trade.getGainLossPercent(), trade.getGainToTarget(), trade.getStopLoss(), trade.getLossToStopLoss(), trade.getStopDate(), trade.getDaysToStopDate(), trade.getRiskReward(), trade.getCapital(), trade.getPercentCapital(), tradeEntryDtos));
         }
 
         LogManager.debug(CLASS_NAME, "getTradePlanListFromDatabase", "Retrieved: count = " + tradePlanDtoList.size());
@@ -463,12 +465,13 @@ public class FacadePSEPlannerService implements PSEPlannerService
 
         boolean isWeekEnd = isWeekEnd(now);
         boolean isWeekDay = !isWeekEnd;
-        boolean lastUpdateEndOfHour = (int) lastUpdated.get(Calendar.HOUR_OF_DAY) == 15 && (int) lastUpdated.get(Calendar.MINUTE) == 20;
+        boolean lastUpdateEndOfHour = (int) lastUpdated.get(Calendar.HOUR_OF_DAY) == 15 && (int) lastUpdated.get(Calendar.MINUTE) >= 20;
         boolean lastUpdateEndOfWeek = lastUpdated.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY && lastUpdateEndOfHour;
 
         int daysDifference = this.calculatorService.getDaysBetween(lastUpdated.getTime(), now.getTime());
 
-        LogManager.debug(CLASS_NAME, "isUpToDate", "(daysDifference:" + daysDifference + " < 3 && lastUpdateEndOfWeek:" + lastUpdateEndOfWeek + " && isWeekEnd:" + isWeekEnd + ")" + " || (daysDifference:" + daysDifference + " == 0 && lastUpdateEndOfHour:" + lastUpdateEndOfHour + " && isWeekDay:" + isWeekDay + ")");
+        LogManager.debug(CLASS_NAME, "isUpToDate", "(daysDifference:" + daysDifference + " < 3 && lastUpdateEndOfWeek:" + lastUpdateEndOfWeek + " && isWeekEnd:" + isWeekEnd + ")" +
+                " || (daysDifference:" + daysDifference + " == 0 && lastUpdateEndOfHour:" + lastUpdateEndOfHour + " && isWeekDay:" + isWeekDay + ")");
 
         // (Days difference is just 2 days(sat and sun) AND lastUpdated is on Friday 3:20PM AND today is a weekend) OR
         // (There is no difference in days AND lastUpdated is 3:20PM AND today is a weekday)
@@ -520,12 +523,13 @@ public class FacadePSEPlannerService implements PSEPlannerService
      * Replaces the values of the Ticker entity with the TickerDto.
      *
      * @param ticker the ticker to replace values
-     * @param dto   the dto to get the values from
-     * @param now   the current datetime
+     * @param dto    the dto to get the values from
+     * @param now    the current datetime
      * @return Ticker the passed ticker with its properties replaced
      */
     private Ticker fromTickerDtoToStock(Ticker ticker, TickerDto dto, Date now)
     {
+        ticker.setId(dto.getId());
         ticker.setSymbol(dto.getSymbol());
         ticker.setName(dto.getName());
         ticker.setVolume(dto.getVolume());

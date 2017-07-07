@@ -265,7 +265,8 @@ public class PhisixHttpClient extends BaseHttpClient
 
     private TickerDto convertResponsePhisixStockToTicker(ResponsePhisixStock phisixStock)
     {
-        return new TickerDto(phisixStock.getSymbol(), phisixStock.getName(), phisixStock.getVolume(), BigDecimal.valueOf(phisixStock.getAmount()), this.calculatorService.getCurrentAndPreviousPriceChange(phisixStock.getAmount(), phisixStock.getPercentChange()), BigDecimal.valueOf(phisixStock.getPercentChange()));
+        // WARN: Id is null
+        return new TickerDto(null, phisixStock.getSymbol(), phisixStock.getName(), phisixStock.getVolume(), BigDecimal.valueOf(phisixStock.getAmount()), this.calculatorService.getCurrentAndPreviousPriceChange(phisixStock.getAmount(), phisixStock.getPercentChange()), BigDecimal.valueOf(phisixStock.getPercentChange()));
     }
 
     @Override

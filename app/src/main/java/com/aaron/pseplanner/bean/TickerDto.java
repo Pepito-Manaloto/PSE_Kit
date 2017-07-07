@@ -12,6 +12,8 @@ import java.math.BigDecimal;
  */
 public class TickerDto implements Stock, Parcelable, Comparable<TickerDto>
 {
+    private Long id;
+
     private String symbol;
     private String name;
     private long volume;
@@ -24,8 +26,9 @@ public class TickerDto implements Stock, Parcelable, Comparable<TickerDto>
     {
     }
 
-    public TickerDto(String symbol, String name, long volume, BigDecimal currentPrice, BigDecimal change, BigDecimal percentChange)
+    public TickerDto(Long id, String symbol, String name, long volume, BigDecimal currentPrice, BigDecimal change, BigDecimal percentChange)
     {
+        this.id = id;
         this.symbol = symbol;
         this.name = name;
         this.volume = volume;
@@ -34,8 +37,9 @@ public class TickerDto implements Stock, Parcelable, Comparable<TickerDto>
         this.percentChange = percentChange;
     }
 
-    public TickerDto(String symbol, String name, long volume, double currentPrice, double change, double percentChange)
+    public TickerDto(Long id, String symbol, String name, long volume, double currentPrice, double change, double percentChange)
     {
+        this.id = id;
         this.symbol = symbol;
         this.name = name;
         this.volume = volume;
@@ -44,8 +48,9 @@ public class TickerDto implements Stock, Parcelable, Comparable<TickerDto>
         this.percentChange = BigDecimal.valueOf(percentChange);
     }
 
-    public TickerDto(String symbol, String name, long volume, String currentPrice, String change, String percentChange)
+    public TickerDto(Long id, String symbol, String name, long volume, String currentPrice, String change, String percentChange)
     {
+        this.id = id;
         this.symbol = symbol;
         this.name = name;
         this.volume = volume;
@@ -160,6 +165,16 @@ public class TickerDto implements Stock, Parcelable, Comparable<TickerDto>
     public void setHasTradePlan(boolean hasTradePlan)
     {
         this.hasTradePlan = hasTradePlan;
+    }
+
+    public Long getId()
+    {
+        return id;
+    }
+
+    public void setId(Long id)
+    {
+        this.id = id;
     }
 
     @Override

@@ -50,6 +50,7 @@ public abstract class AbstractListFragment<T extends Stock & Parcelable> extends
 
         this.pseService = new FacadePSEPlannerService(getActivity());
         this.formatService = new DefaultFormatService(getActivity());
+        this.searchListener = new SearchOnQueryTextListener();
 
         LogManager.debug(CLASS_NAME, "onCreateView", "");
     }
@@ -108,11 +109,6 @@ public abstract class AbstractListFragment<T extends Stock & Parcelable> extends
         {
             this.unbinder.unbind();
         }
-    }
-
-    public void setSearchListener(SearchOnQueryTextListener searchListener)
-    {
-        this.searchListener = searchListener;
     }
 
     /**

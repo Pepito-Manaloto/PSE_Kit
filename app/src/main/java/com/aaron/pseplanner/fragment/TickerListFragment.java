@@ -153,23 +153,6 @@ public class TickerListFragment extends AbstractListFragment<TickerDto>
         }
     }
 
-    /**
-     * Saves ticker list state in the database.
-     */
-    @Override
-    public void onStop()
-    {
-        LogManager.debug(CLASS_NAME, "onStop", "");
-
-        if(this.tickerDtoList != null && !this.tickerDtoList.isEmpty())
-        {
-            // Save in database, because upon refresh we are only saving the updated ticker in cache
-            this.pseService.updateTickerList(this.tickerDtoList);
-        }
-
-        super.onStop();
-    }
-
     @Override
     protected FilterableArrayAdapter<TickerDto> getArrayAdapter(List<TickerDto> tickerDtoList)
     {
@@ -187,8 +170,8 @@ public class TickerListFragment extends AbstractListFragment<TickerDto>
         Pair<List<TickerDto>, Date> response = this.pseService.getAllTickerList();
         this.tickerDtoList = (ArrayList<TickerDto>) response.first;
 
-
         this.pseService.setTickerDtoListHasTradePlan(tickerDtoList, this.tradeDtoSymbols);
+        this.pseService.updateTickerList(this.tickerDtoList);
 
         updateListOnUiThread(response.first, this.formatService.formatLastUpdated(response.second));
     }
