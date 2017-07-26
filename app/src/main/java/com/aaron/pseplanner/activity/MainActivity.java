@@ -77,8 +77,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private PSEPlannerService pseService;
     private boolean isReturningResultHomeView;
     private Set<Disposable> rxSubscriptions;
-    //TODO: https://www.youtube.com/watch?v=QdmkXL7XikQ
-
+    //TODO: https://www.youtube.com/watch?v=ZWYOy8E4jWo
+    //https://stackoverflow.com/questions/38605090/rxjava-timer-that-repeats-forever-and-can-be-restarted-and-stopped-at-anytime/38607323
     /**
      * Initializes the navigation drawer.
      * Adds the current fragment in the fragment_container, uses TradePlanList as default fragment to inflate.
@@ -489,7 +489,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     /**
-     * Stops the rotating animation of the refresh menu.
+     * Starts the rotating animation of the refresh menu.
      */
     protected void startRefreshAnimation(MenuItem item)
     {
