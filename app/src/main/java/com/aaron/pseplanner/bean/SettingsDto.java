@@ -153,7 +153,7 @@ public class SettingsDto implements Parcelable
         return "SettingsDto{" + "autoRefresh=" + autoRefresh + ", refreshInterval=" + refreshInterval + ", notifyStopLoss=" + notifyStopLoss + ", notifyTargetPrice=" + notifyTargetPrice + ", notiftyTimeStop=" + notiftyTimeStop + ", notifySoundEffect=" + notifySoundEffect + ", proxyHost='" + proxyHost + '\'' + ", proxyPort=" + proxyPort + '}';
     }
 
-    protected SettingsDto(Parcel in)
+    private SettingsDto(Parcel in)
     {
         this.autoRefresh = in.readByte() != 0;
         this.refreshInterval = in.readInt();
