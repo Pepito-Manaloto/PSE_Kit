@@ -65,7 +65,7 @@ public class MidpointFragment extends AbstractCalculatorFragment
     public void onStop()
     {
         LogManager.debug(CLASS_NAME, "onStop", "");
-        ButterKnife.apply(this.editTexts, RESET_EDIT_TEXT);
+        //ButterKnife.apply(this.editTexts, RESET_EDIT_TEXT);
 
         super.onStop();
     }

@@ -5,13 +5,14 @@ import android.app.Application;
 import com.aaron.pseplanner.entity.DaoMaster;
 import com.aaron.pseplanner.entity.DaoSession;
 import com.aaron.pseplanner.service.LogManager;
+import com.squareup.leakcanary.LeakCanary;
 
 import org.greenrobot.greendao.database.Database;
 
 /**
  * Created by Aaron on 3/22/2017.
+ * Initializes LeakCanary and GreenDao
  */
-
 public class PSEPlannerApplication extends Application
 {
     /**
@@ -30,6 +31,15 @@ public class PSEPlannerApplication extends Application
     public void onCreate()
     {
         super.onCreate();
+
+        if(LeakCanary.isInAnalyzerProcess(this))
+        {
+            // This process is dedicated to LeakCanary for heap analysis.
+            // You should not init your app in this process.
+            return;
+        }
+        LeakCanary.install(this);
+        // Normal app init code...
 
         DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(this, ENCRYPTED ? DATABASE_ENCRYPTED_NAME : DATABASE_NAME);
         Database database = ENCRYPTED ? helper.getEncryptedWritableDb("") : helper.getWritableDb();

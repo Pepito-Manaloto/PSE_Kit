@@ -141,7 +141,7 @@ public class CalculatorFragment extends AbstractCalculatorFragment
     {
         LogManager.debug(CLASS_NAME, "onStop", "");
 
-        ButterKnife.apply(this.editTexts, RESET_EDIT_TEXT);
+        //ButterKnife.apply(this.editTexts, RESET_EDIT_TEXT);
         super.onStop();
     }
 
