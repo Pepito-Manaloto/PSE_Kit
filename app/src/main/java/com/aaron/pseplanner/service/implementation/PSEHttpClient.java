@@ -10,6 +10,8 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
+import io.reactivex.Single;
+
 /**
  * Created by Aaron on 2/26/2017.
  */
@@ -33,7 +35,7 @@ public class PSEHttpClient extends BaseHttpClient
     }
 
     @Override
-    public Pair<TickerDto, Date> getTicker(String symbol)
+    public Single<Pair<TickerDto, Date>> getTicker(String symbol)
     {
         return null;
     }

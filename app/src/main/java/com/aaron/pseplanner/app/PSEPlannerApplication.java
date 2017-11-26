@@ -5,6 +5,7 @@ import android.app.Application;
 import com.aaron.pseplanner.entity.DaoMaster;
 import com.aaron.pseplanner.entity.DaoSession;
 import com.aaron.pseplanner.service.LogManager;
+import com.facebook.stetho.Stetho;
 import com.squareup.leakcanary.LeakCanary;
 
 import org.greenrobot.greendao.database.Database;
@@ -39,8 +40,11 @@ public class PSEPlannerApplication extends Application
             return;
         }
         LeakCanary.install(this);
-        // Normal app init code...
 
+        // Access in Google Chrome url via -> chrome://inspect
+        Stetho.initializeWithDefaults(this);
+
+        // Normal app init code...
         DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(this, ENCRYPTED ? DATABASE_ENCRYPTED_NAME : DATABASE_NAME);
         Database database = ENCRYPTED ? helper.getEncryptedWritableDb("") : helper.getWritableDb();
         daoSession = new DaoMaster(database).newSession();

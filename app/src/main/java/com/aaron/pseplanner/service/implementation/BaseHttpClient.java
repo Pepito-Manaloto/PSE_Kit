@@ -3,6 +3,7 @@ package com.aaron.pseplanner.service.implementation;
 import android.os.Parcelable;
 
 import com.aaron.pseplanner.service.HttpClient;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -43,7 +44,7 @@ public abstract class BaseHttpClient implements HttpClient
      * @param readTimeout       read timeout in seconds for new connections
      * @param pingInterval      interval in seconds between web socket pings initiated by this client. Use this to automatically send web socket ping frames until either the web socket fails or it is closed.
      */
-    public void setRetrofit(long connectionTimeout, long readTimeout, long pingInterval)
+    private void setRetrofit(long connectionTimeout, long readTimeout, long pingInterval)
     {
         OkHttpClient client = new OkHttpClient.Builder()
                                                 .connectTimeout(connectionTimeout, TimeUnit.SECONDS)
@@ -55,7 +56,7 @@ public abstract class BaseHttpClient implements HttpClient
         retrofit = new Retrofit.Builder()
                                 .baseUrl(getBaseURL())
                                 .client(client).addConverterFactory(JacksonConverterFactory.create())
-                                //.addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                                 .build();
     }
 
@@ -68,7 +69,7 @@ public abstract class BaseHttpClient implements HttpClient
      * @param proxyHost         the proxy host name
      * @param proxyPort         the proxy port number
      */
-    public void setRetrofit(long connectionTimeout, long readTimeout, long pingInterval, String proxyHost, int proxyPort)
+    private void setRetrofit(long connectionTimeout, long readTimeout, long pingInterval, String proxyHost, int proxyPort)
     {
         OkHttpClient client = new OkHttpClient.Builder()
                                                 .connectTimeout(connectionTimeout, TimeUnit.SECONDS)
@@ -95,7 +96,7 @@ public abstract class BaseHttpClient implements HttpClient
     /**
      * Helper class for asynchronous requests.
      */
-    protected static class CallbackResult<T extends Parcelable>
+    static class CallbackResult<T extends Parcelable>
     {
         private List<T> responseList;
         private Date lastUpdated;
@@ -105,7 +106,7 @@ public abstract class BaseHttpClient implements HttpClient
         /**
          * Returns true if all async calls are successful.
          */
-        public boolean isSuccessful()
+        boolean isSuccessful()
         {
             return StringUtils.isBlank(errorMessage) || errorCode == 0;
         }
@@ -113,7 +114,7 @@ public abstract class BaseHttpClient implements HttpClient
         /**
          * Returns the number of async calls with response.
          */
-        public int responseSize()
+        int responseSize()
         {
             return responseList.size();
         }
@@ -121,7 +122,7 @@ public abstract class BaseHttpClient implements HttpClient
         /**
          * Returns the response list of the async calls.
          */
-        public List<T> getResponseList()
+        List<T> getResponseList()
         {
             return responseList;
         }
@@ -129,7 +130,7 @@ public abstract class BaseHttpClient implements HttpClient
         /**
          * Adds an async response to the response list.
          */
-        public void addResponseToList(T response)
+        void addResponseToList(T response)
         {
             if(this.responseList == null)
             {
@@ -139,37 +140,37 @@ public abstract class BaseHttpClient implements HttpClient
             this.responseList.add(response);
         }
 
-        public void setResponseList(List<T> responseList)
+        void setResponseList(List<T> responseList)
         {
             this.responseList = responseList;
         }
 
-        public Date getLastUpdated()
+        Date getLastUpdated()
         {
             return lastUpdated;
         }
 
-        public void setLastUpdated(Date lastUpdated)
+        void setLastUpdated(Date lastUpdated)
         {
             this.lastUpdated = lastUpdated;
         }
 
-        public String getErrorMessage()
+        String getErrorMessage()
         {
             return errorMessage;
         }
 
-        public void setErrorMessage(String errorMessage)
+        void setErrorMessage(String errorMessage)
         {
             this.errorMessage = errorMessage;
         }
 
-        public int getErrorCode()
+        int getErrorCode()
         {
             return errorCode;
         }
 
-        public void setErrorCode(int errorCode)
+        void setErrorCode(int errorCode)
         {
             this.errorCode = errorCode;
         }

@@ -25,7 +25,7 @@ public interface PSEService
      * @return {@code Call<List<ResponsePSEStock>>} list of response stock
      */
     @GET("stockMarket/home.html")
-    public Call<List<ResponsePSEStock>> getAllStocks(@Query("method") String method, @Query("ajax") boolean ajax);
+    Call<List<ResponsePSEStock>> getAllStocks(@Query("method") String method, @Query("ajax") boolean ajax);
 
     /**
      * Retrieves all stocks with security status, listing date, symbol, security name, company id, company name, and security id.
@@ -35,7 +35,7 @@ public interface PSEService
      * @return {@code Call<List<ResponsePSEStockInfo>>} list of response stock info
      */
     @GET("stockMarket/companyInfoSecurityProfile.html")
-    public Call<List<ResponsePSEStockInfo>> getAllStocksInfo(@Query("method") String method, @Query("ajax") boolean ajax);
+    Call<List<ResponsePSEStockInfo>> getAllStocksInfo(@Query("method") String method, @Query("ajax") boolean ajax);
 
     /**
      * Retrieves all stocks with security status, company id, symbol, company name, security id, and security name.
@@ -46,7 +46,7 @@ public interface PSEService
      * @return {@code Call<List<ResponsePSEStockInfo>>} the response stock info
      */
     @GET("stockMarket/home.html")
-    public Call<ResponsePSEStockInfo> getAllStocks(@Query("method") String method, @Query("query") String query, @Query("ajax") boolean ajax);
+    Call<ResponsePSEStockInfo> getAllStocks(@Query("method") String method, @Query("query") String query, @Query("ajax") boolean ajax);
 
     /**
      * Retrieves a stock with low, high, 52 week high, 52 week low, change close, last traded date, last traded price, % change close, previous, open, symbol, average price, and total volume.
@@ -58,5 +58,5 @@ public interface PSEService
      * @return {@code Call<ResponsePSEStock>} the response stock
      */
     @GET("stockMarket/companyInfo.html")
-    public Call<ResponsePSEStock> getStock(@Query("method") String method, @Query("company") String symbol, @Query("security") int security, @Query("ajax") boolean ajax);
+    Call<ResponsePSEStock> getStock(@Query("method") String method, @Query("company") String symbol, @Query("security") int security, @Query("ajax") boolean ajax);
 }

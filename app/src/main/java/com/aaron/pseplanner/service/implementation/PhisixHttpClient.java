@@ -17,9 +17,15 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 
+import io.reactivex.Scheduler;
+import io.reactivex.Single;
+import io.reactivex.functions.Function;
+import io.reactivex.schedulers.Schedulers;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -60,85 +66,46 @@ public class PhisixHttpClient extends BaseHttpClient
      * @param symbol the stock to retrieve
      * @return the stock converted to TickerDto object, plus the last updated date
      * @throws IllegalArgumentException if the parameter is empty
-     * @throws HttpRequestException     request is not successful
      */
     @Override
-    public Pair<TickerDto, Date> getTicker(String symbol) throws HttpRequestException
+    public Single<Pair<TickerDto, Date>> getTicker(String symbol)
     {
         if(StringUtils.isBlank(symbol))
         {
             throw new IllegalArgumentException("Symbol must not be empty");
         }
 
-        Response<ResponsePhisixStockWrapper> response = null;
+        LogManager.debug(CLASS_NAME, "getTicker", "Start");
 
-        try
+        return this.service.getStock(symbol).map(new Function<ResponsePhisixStockWrapper, Pair<TickerDto, Date>>()
         {
-            LogManager.debug(CLASS_NAME, "getTicker", "Start");
-
-            response = this.service.getStock(symbol).execute();
-
-            LogManager.debug(CLASS_NAME, "getTicker", "End");
-
-            if(response != null)
+            @Override
+            public Pair<TickerDto, Date> apply(ResponsePhisixStockWrapper phisixStockWrapper) throws Exception
             {
-                if(!response.isSuccessful() && response.errorBody() != null)
-                {
-                    LogManager.error(CLASS_NAME, "getTicker", "Error getting stock from Phisix: " + response.errorBody().string());
-                    throw new HttpRequestException(response.errorBody().string(), response.code());
-                }
-
-                ResponsePhisixStockWrapper phisixStockWrapper = response.body();
+                LogManager.debug(CLASS_NAME, "getTicker", "End");
                 ResponsePhisixStock phisixStock = phisixStockWrapper.getResponseStock();
 
                 return new Pair<>(convertResponsePhisixStockToTicker(phisixStock), phisixStockWrapper.getDateUpdated());
             }
-
-            throw new HttpRequestException("Response is null");
-        }
-        catch(IOException e)
-        {
-            LogManager.error(CLASS_NAME, "getTicker", "Error getting stock from Phisix: " + e.getCause().getClass().getSimpleName(), e);
-
-            if(response != null)
-            {
-                throw new HttpRequestException(response.message(), e, response.code());
-            }
-            else
-            {
-                throw new HttpRequestException(e);
-            }
-        }
+        });
     }
 
     /**
      * Retrieves list of stocks from Phisix.
      *
      * @return the stocks list converted to TickerDto object, plus the last updated date
-     * @throws HttpRequestException request is not successful
      */
     @Override
-    public Pair<List<TickerDto>, Date> getAllTickerList() throws HttpRequestException
+    public Single<Pair<List<TickerDto>, Date>> getAllTickerList()
     {
-        Response<ResponsePhisixStockWrapper> response = null;
+        LogManager.debug(CLASS_NAME, "getAllTickerList", "Start");
 
-        try
+        return this.service.getStock().map(new Function<ResponsePhisixStockWrapper, Pair<List<TickerDto>, Date>>()
         {
-            LogManager.debug(CLASS_NAME, "getAllTickerList", "Start");
-
-            response = this.service.getStock().execute();
-
-            LogManager.debug(CLASS_NAME, "getAllTickerList", "End");
-
-            if(response != null)
+            @Override
+            public Pair<List<TickerDto>, Date> apply(ResponsePhisixStockWrapper phisixStockWrapper) throws Exception
             {
-                if(!response.isSuccessful() && response.errorBody() != null)
-                {
-                    LogManager.error(CLASS_NAME, "getTicker", "Error getting stock from Phisix: " + response.errorBody().string());
-                    throw new HttpRequestException(response.errorBody().string(), response.code());
-                }
-
-                ResponsePhisixStockWrapper phisixStockWrapper = response.body();
+                LogManager.debug(CLASS_NAME, "getAllTickerList", "End");
                 List<ResponsePhisixStock> responseList = phisixStockWrapper.getResponsePhisixStocksList();
                 List<TickerDto> tickerDtoList = new ArrayList<>(responseList.size());
 
@@ -151,22 +118,7 @@ public class PhisixHttpClient extends BaseHttpClient
 
                 return new Pair<>(tickerDtoList, phisixStockWrapper.getDateUpdated());
             }
-
-            throw new HttpRequestException("Response is null");
-        }
-        catch(IOException e)
-        {
-            LogManager.error(CLASS_NAME, "getTicker", "Error getting stock from Phisix: " + e.getMessage(), e);
-
-            if(response != null)
-            {
-                throw new HttpRequestException(response.message(), e, response.code());
-            }
-            else
-            {
-                throw new HttpRequestException(e);
-            }
-        }
+        });
     }
 
     /**
@@ -175,92 +127,46 @@ public class PhisixHttpClient extends BaseHttpClient
      * @param symbols the stocks to retrieve
      * @return the stock converted to TickerDto object, plus the last updated date
      * @throws IllegalArgumentException if the parameter is empty
-     * @throws HttpRequestException     request is not successful
      */
     @Override
-    public Pair<List<TickerDto>, Date> getTickerList(Collection<String> symbols) throws HttpRequestException
+    public Single<Pair<List<TickerDto>, Date>> getTickerList(Collection<String> symbols)
     {
         if(symbols == null || symbols.isEmpty())
         {
             throw new IllegalArgumentException("Symbols must not be empty");
         }
 
-        int size = symbols.size();
-        final CallbackResult<TickerDto> callbackResult = new CallbackResult<>();
-        callbackResult.setResponseList(new ArrayList<TickerDto>(size));
-        // Used to wait for all async requests to finish
-        final CountDownLatch doneSignal = new CountDownLatch(size);
+        final int size = symbols.size();
+
+        Set<Single<ResponsePhisixStockWrapper>> singleSet = new HashSet<>(size);
+        for(String symbol: symbols)
+        {
+            // Each observable will run in parallel
+            Single<ResponsePhisixStockWrapper> singleObservable = this.service.getStock(symbol).subscribeOn(Schedulers.io());
+            singleSet.add(singleObservable);
+        }
 
         LogManager.debug(CLASS_NAME, "getTickerList", "Start " + size + " async calls.");
-
-        for(String symbol : symbols)
+        return Single.zip(singleSet, new Function<Object[], Pair<List<TickerDto>, Date>>()
         {
-            this.service.getStock(symbol).enqueue(new Callback<ResponsePhisixStockWrapper>()
+            @Override
+            public Pair<List<TickerDto>, Date> apply(Object[] objects) throws Exception
             {
-                @Override
-                public void onResponse(Call<ResponsePhisixStockWrapper> call, Response<ResponsePhisixStockWrapper> response)
+                List<TickerDto> tickerList = new ArrayList<>(objects.length);
+                Date lastUpdated = null;
+
+                // How to resolve this type cast?
+                ResponsePhisixStockWrapper[] phisixStockWrappers = (ResponsePhisixStockWrapper[]) objects;
+                for(ResponsePhisixStockWrapper phisixStockWrapper: phisixStockWrappers)
                 {
-                    try
-                    {
-                        if(response != null)
-                        {
-                            if(!response.isSuccessful() && response.errorBody() != null)
-                            {
-                                LogManager.error(CLASS_NAME, "getTickerList", "Error getting stock from Phisix: " + response.errorBody().string());
-                                callbackResult.setErrorMessage(response.errorBody().string());
-                                callbackResult.setErrorCode(response.code());
-                            }
-
-                            ResponsePhisixStockWrapper phisixStockWrapper = response.body();
-                            ResponsePhisixStock phisixStock = phisixStockWrapper.getResponseStock();
-
-                            callbackResult.setLastUpdated(phisixStockWrapper.getDateUpdated());
-                            callbackResult.addResponseToList(convertResponsePhisixStockToTicker(phisixStock));
-                        }
-                    }
-                    catch(IOException e)
-                    {
-                        LogManager.error(CLASS_NAME, "getTickerList", "Error getting stock from Phisix: " + e.getCause().getClass().getSimpleName(), e);
-                        callbackResult.setErrorMessage(response.message());
-                        callbackResult.setErrorCode(response.code());
-                    }
-                    finally
-                    {
-                        doneSignal.countDown();
-                    }
+                    tickerList.add(convertResponsePhisixStockToTicker(phisixStockWrapper.getResponseStock()));
+                    lastUpdated = phisixStockWrapper.getDateUpdated();
                 }
 
-                @Override
-                public void onFailure(Call<ResponsePhisixStockWrapper> call, Throwable t)
-                {
-                    LogManager.error(CLASS_NAME, "getTickerList", "Error getting stock from Phisix: " + t.getCause().getClass().getSimpleName(), t);
-                    callbackResult.setErrorMessage(t.getMessage());
-                    doneSignal.countDown();
-                }
-            });
-        }
-
-        LogManager.debug(CLASS_NAME, "getTickerList", "Done with " + size + " async calls.");
-
-        try
-        {
-            // Wait for all async requests to finish
-            doneSignal.await();
-        }
-        catch(InterruptedException e)
-        {
-            LogManager.error(CLASS_NAME, "getTickerList", "Error waiting for requests to Phisix: " + e.getCause().getClass().getSimpleName(), e);
-        }
-
-        LogManager.debug(CLASS_NAME, "getTickerList", "Done with " + size + " async calls w/ responses.");
-
-        // Throw exception is at least one failed.
-        if(!callbackResult.isSuccessful())
-        {
-            throw new HttpRequestException(callbackResult.getErrorMessage(), callbackResult.getErrorCode());
-        }
-
-        return new Pair<>(callbackResult.getResponseList(), callbackResult.getLastUpdated());
+                LogManager.debug(CLASS_NAME, "getTickerList", "Done with " + size + " async calls.");
+                return new Pair<>(tickerList, lastUpdated);
+            }
+        });
     }
 
     private TickerDto convertResponsePhisixStockToTicker(ResponsePhisixStock phisixStock)

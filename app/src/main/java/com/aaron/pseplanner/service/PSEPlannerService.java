@@ -1,19 +1,15 @@
 package com.aaron.pseplanner.service;
 
-import android.icu.text.TimeZoneNames;
-
 import com.aaron.pseplanner.bean.TickerDto;
 import com.aaron.pseplanner.bean.TradeDto;
 import com.aaron.pseplanner.constant.PSEPlannerPreference;
 
-import org.apache.commons.lang3.time.FastDateFormat;
-
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
-import java.util.TimeZone;
+
+import io.reactivex.Single;
 
 /**
  * Created by aaron.asuncion on 1/31/2017.
@@ -44,9 +40,9 @@ public interface PSEPlannerService extends HttpClient
     /**
      * Retrieves the list of tickers from the database.
      *
-     * @return {@code List<TickerDto>} the list of ticker dto
+     * @return {@code Single<ArrayList<TickerDto>>} the Single observable list of ticker dto
      */
-    ArrayList<TickerDto> getTickerListFromDatabase();
+    Single<ArrayList<TickerDto>> getTickerListFromDatabase();
 
     /**
      * Converts the collections of tradeDtos to a set of trade symbols.
@@ -61,8 +57,10 @@ public interface PSEPlannerService extends HttpClient
      *
      * @param tickerDtoList   the tickerDtoList to transform
      * @param tradeDtoSymbols the TradePlan symbols used in checking if a tickerDto hasTradePlan
+     *
+     * @return ArrayList<TickerDto> updated ticker dto list
      */
-    void setTickerDtoListHasTradePlan(Collection<TickerDto> tickerDtoList, Set<String> tradeDtoSymbols);
+    ArrayList<TickerDto> setTickerDtoListHasTradePlan(ArrayList<TickerDto> tickerDtoList, Set<String> tradeDtoSymbols);
 
     /**
      * Returns true if the ticker list is already in the database.
@@ -96,9 +94,9 @@ public interface PSEPlannerService extends HttpClient
     /**
      * Retrieves the list of trade plans from the database.
      *
-     * @return {@code List<TradeDto>} the list of trade plan dto
+     * @return {@code Single<ArrayList<TradeDto>>} the list of trade plan dto
      */
-    ArrayList<TradeDto> getTradePlanListFromDatabase();
+    Single<ArrayList<TradeDto>> getTradePlanListFromDatabase();
 
     /**
      * Checks if the market is open.

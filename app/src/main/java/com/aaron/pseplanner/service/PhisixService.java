@@ -2,7 +2,7 @@ package com.aaron.pseplanner.service;
 
 import com.aaron.pseplanner.response.Phisix.ResponsePhisixStockWrapper;
 
-import retrofit2.Call;
+import io.reactivex.Single;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
 
@@ -17,17 +17,17 @@ public interface PhisixService
     /**
      * Retrieves all stocks with dateUpdated, name, currency, amount, percentChange, volume, and symbol.
      *
-     * @return {@code Call<ResponsePhisixStockWrapper>} list of response stock
+     * @return {@code Observable<ResponsePhisixStockWrapper>} list of response stock
      */
     @GET("stocks.json")
-    public Call<ResponsePhisixStockWrapper> getStock();
+    Single<ResponsePhisixStockWrapper> getStock();
 
     /**
      * Retrieves a stock with dateUpdated, name, currency, amount, percentChange, volume, and symbol.
      *
      * @param symbol path parameter of the stock to retrieve
-     * @return {@code Call<ResponsePhisixStockWrapper>} the response stock
+     * @return {@code Observable<ResponsePhisixStockWrapper>} the response stock
      */
     @GET("stocks/{symbol}.json")
-    public Call<ResponsePhisixStockWrapper> getStock(@Path("symbol") String symbol);
+    Single<ResponsePhisixStockWrapper> getStock(@Path("symbol") String symbol);
 }

@@ -105,17 +105,20 @@ public class ListRowOnTouchChangeActivity implements View.OnTouchListener
                     this.activity.startActivityForResult(intent, this.intentRequestCode.code());
                 }
 
-                // Removes compiler warning
-                //v.performClick();
-
                 break;
             }
             default:
             {
                 this.view.setBackgroundColor(Color.WHITE);
+                // Removes compiler warning
+                v.performClick();
+
                 return false;
             }
         }
+
+        // Removes compiler warning
+        v.performClick();
 
         return true;
     }

@@ -5,31 +5,30 @@ import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.TextView;
 
 import com.aaron.pseplanner.R;
 import com.aaron.pseplanner.adapter.FilterableArrayAdapter;
 import com.aaron.pseplanner.adapter.TradePlanListAdapter;
 import com.aaron.pseplanner.bean.TickerDto;
 import com.aaron.pseplanner.bean.TradeDto;
-import com.aaron.pseplanner.bean.TradeEntryDto;
 import com.aaron.pseplanner.constant.DataKey;
 import com.aaron.pseplanner.constant.PSEPlannerPreference;
 import com.aaron.pseplanner.exception.HttpRequestException;
-import com.aaron.pseplanner.listener.SearchOnQueryTextListener;
 import com.aaron.pseplanner.service.CalculatorService;
 import com.aaron.pseplanner.service.LogManager;
 import com.aaron.pseplanner.service.implementation.DefaultCalculatorService;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 import butterknife.ButterKnife;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.observers.DisposableSingleObserver;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by aaron.asuncion on 11/18/2016.
@@ -41,7 +40,6 @@ public class TradePlanListFragment extends AbstractListFragment<TradeDto>
 
     // This storage needs to be thread-safe because this will be modified in AsyncTask
     private ConcurrentHashMap<String, TradeDto> tradesMap;
-    private ArrayList<TradeDto> tradeDtoList;
     private CalculatorService calculatorService;
 
     /**
@@ -86,7 +84,7 @@ public class TradePlanListFragment extends AbstractListFragment<TradeDto>
         }
         else
         {
-            this.tradeDtoList = this.pseService.getTradePlanListFromDatabase();
+            initTradePlanListFromDatabase();
         }
 
         this.tradesMap = new ConcurrentHashMap<>();
@@ -105,7 +103,8 @@ public class TradePlanListFragment extends AbstractListFragment<TradeDto>
         View view = inflater.inflate(R.layout.list_fragment_trade_plan, parent, false);
         this.unbinder = ButterKnife.bind(this, view);
 
-        updateListOnUiThread(this.tradeDtoList, this.pseService.getLastUpdated(PSEPlannerPreference.LAST_UPDATED_TRADE_PLAN.toString()));
+        updateListView(this.tradeDtoList, this.pseService.getLastUpdated(PSEPlannerPreference.LAST_UPDATED_TRADE_PLAN.toString()));
+
         LogManager.debug(CLASS_NAME, "onCreateView", "");
 
         return view;
@@ -138,31 +137,12 @@ public class TradePlanListFragment extends AbstractListFragment<TradeDto>
     @Override
     public void updateListFromWeb() throws HttpRequestException
     {
-        Pair<List<TickerDto>, Date> response = this.pseService.getTickerList(this.tradesMap.keySet());
+        Disposable disposable = this.pseService.getTickerList(this.tradesMap.keySet())
+                                               .subscribeOn(Schedulers.io())
+                                               .observeOn(AndroidSchedulers.mainThread())
+                                               .subscribeWith(updateListFromWebObserver());
 
-        List<TickerDto> tickerDtoList = response.first;
-        Date lastUpdated = response.second;
-
-        if(!tickerDtoList.isEmpty())
-        {
-            // Update current price of each trade plan based on ticker
-            for(TickerDto tickerDto : tickerDtoList)
-            {
-                // TODO: should consider weekend in days difference??? lastupdated will always be friday 3:20PM before market open
-                TradeDto tradeDto = this.tradesMap.get(tickerDto.getSymbol());
-                tradeDto.setCurrentPrice(tickerDto.getCurrentPrice());
-                tradeDto.setDaysToStopDate(this.calculatorService.getDaysBetween(lastUpdated, tradeDto.getStopDate()));
-                tradeDto.setHoldingPeriod(this.calculatorService.getDaysBetween(lastUpdated, tradeDto.getEntryDate()));
-                tradeDto.setGainLoss(this.calculatorService.getGainLossAmount(tradeDto.getAveragePrice(), tradeDto.getTotalShares(), tradeDto.getCurrentPrice()));
-                tradeDto.setGainLossPercent(this.calculatorService.getPercentGainLoss(tradeDto.getAveragePrice(), tradeDto.getTotalShares(), tradeDto.getCurrentPrice()));
-                tradeDto.setTotalAmount(this.calculatorService.getBuyNetAmount(tradeDto.getCurrentPrice(), tradeDto.getTotalShares()));
-            }
-
-            this.tradeDtoList = new ArrayList<>(this.tradesMap.values());
-            Collections.sort(this.tradeDtoList);
-
-            updateListOnUiThread(this.tradeDtoList, this.formatService.formatLastUpdated(lastUpdated));
-        }
+        this.compositeDisposable.add(disposable);
     }
 
     /**
@@ -171,11 +151,72 @@ public class TradePlanListFragment extends AbstractListFragment<TradeDto>
     @Override
     public void updateListFromDatabase()
     {
-        this.tradeDtoList = this.pseService.getTradePlanListFromDatabase();
+        Disposable disposable = this.pseService.getTradePlanListFromDatabase()
+                                               .subscribeOn(Schedulers.io())
+                                               .observeOn(AndroidSchedulers.mainThread())
+                                               .subscribeWith(updateListFromDatabaseObserver());
 
-        if(!this.tradeDtoList.isEmpty())
+        this.compositeDisposable.add(disposable);
+    }
+
+    private DisposableSingleObserver<Pair<List<TickerDto>, Date>> updateListFromWebObserver()
+    {
+        return new DisposableSingleObserver<Pair<List<TickerDto>, Date>>()
         {
-            updateListOnUiThread(this.tradeDtoList, this.pseService.getLastUpdated(PSEPlannerPreference.LAST_UPDATED_TRADE_PLAN.toString()));
-        }
+            @Override
+            public void onSuccess(Pair<List<TickerDto>, Date> response)
+            {
+                List<TickerDto> tickerDtoList = response.first;
+                Date lastUpdated = response.second;
+                if(!tickerDtoList.isEmpty())
+                {
+                    // Update current price of each trade plan based on ticker
+                    for(TickerDto tickerDto : tickerDtoList)
+                    {
+                        // TODO: should consider weekend in days difference??? lastupdated will always be friday 3:20PM before market open
+                        TradeDto tradeDto = tradesMap.get(tickerDto.getSymbol());
+                        tradeDto.setCurrentPrice(tickerDto.getCurrentPrice());
+                        tradeDto.setDaysToStopDate(calculatorService.getDaysBetween(lastUpdated, tradeDto.getStopDate()));
+                        tradeDto.setHoldingPeriod(calculatorService.getDaysBetween(lastUpdated, tradeDto.getEntryDate()));
+                        tradeDto.setGainLoss(calculatorService.getGainLossAmount(tradeDto.getAveragePrice(), tradeDto.getTotalShares(), tradeDto.getCurrentPrice()));
+                        tradeDto.setGainLossPercent(calculatorService.getPercentGainLoss(tradeDto.getAveragePrice(), tradeDto.getTotalShares(), tradeDto.getCurrentPrice()));
+                        tradeDto.setTotalAmount(calculatorService.getBuyNetAmount(tradeDto.getCurrentPrice(), tradeDto.getTotalShares()));
+                    }
+
+                    tradeDtoList = new ArrayList<>(tradesMap.values());
+                    Collections.sort(tradeDtoList);
+
+                    updateListView(tradeDtoList, formatService.formatLastUpdated(lastUpdated));
+                }
+            }
+
+            @Override
+            public void onError(Throwable e)
+            {
+                LogManager.debug(CLASS_NAME, "updateListFromWeb", "Error retrieving Ticker list from web.");
+            }
+        };
+    }
+
+    private DisposableSingleObserver<ArrayList<TradeDto>> updateListFromDatabaseObserver()
+    {
+        return new DisposableSingleObserver<ArrayList<TradeDto>>()
+        {
+            @Override
+            public void onSuccess(ArrayList<TradeDto> tradeDtos)
+            {
+                if(!tradeDtos.isEmpty())
+                {
+                    tradeDtoList = tradeDtos;
+                    updateListView(tradeDtoList, pseService.getLastUpdated(PSEPlannerPreference.LAST_UPDATED_TRADE_PLAN.toString()));
+                }
+            }
+
+            @Override
+            public void onError(Throwable e)
+            {
+                LogManager.debug(CLASS_NAME, "updateListFromDatabase", "Error retrieving Ticker list from database.");
+            }
+        };
     }
 }

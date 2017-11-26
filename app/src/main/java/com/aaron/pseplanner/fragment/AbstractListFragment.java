@@ -3,12 +3,12 @@ package com.aaron.pseplanner.fragment;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.app.ListFragment;
-import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.aaron.pseplanner.R;
 import com.aaron.pseplanner.adapter.FilterableArrayAdapter;
 import com.aaron.pseplanner.bean.Stock;
+import com.aaron.pseplanner.bean.TradeDto;
 import com.aaron.pseplanner.exception.HttpRequestException;
 import com.aaron.pseplanner.listener.OnScrollShowHideFastScroll;
 import com.aaron.pseplanner.listener.SearchOnQueryTextListener;
@@ -18,10 +18,16 @@ import com.aaron.pseplanner.service.PSEPlannerService;
 import com.aaron.pseplanner.service.implementation.DefaultFormatService;
 import com.aaron.pseplanner.service.implementation.FacadePSEPlannerService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.Unbinder;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.observers.DisposableSingleObserver;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by Aaron on 2/17/2017.
@@ -39,6 +45,11 @@ public abstract class AbstractListFragment<T extends Stock & Parcelable> extends
     protected SearchOnQueryTextListener searchListener;
     protected Unbinder unbinder;
 
+    protected CompositeDisposable compositeDisposable;
+
+    // Initialized in subclass
+    protected ArrayList<TradeDto> tradeDtoList;
+
     /**
      * Initializes non-fragment user interface.
      */
@@ -51,6 +62,7 @@ public abstract class AbstractListFragment<T extends Stock & Parcelable> extends
         this.pseService = new FacadePSEPlannerService(getActivity());
         this.formatService = new DefaultFormatService(getActivity());
         this.searchListener = new SearchOnQueryTextListener();
+        this.compositeDisposable = new CompositeDisposable();
 
         LogManager.debug(CLASS_NAME, "onCreateView", "");
     }
@@ -74,15 +86,15 @@ public abstract class AbstractListFragment<T extends Stock & Parcelable> extends
      * @param list        the new list
      * @param lastUpdated the last updated date
      */
-    protected void updateListOnUiThread(final List<T> list, final String lastUpdated)
+    protected void updateListView(final List<T> list, final String lastUpdated)
     {
         if(list != null && !list.isEmpty())
         {
-            this.getActivity().runOnUiThread(new Runnable()
-            {
-                @Override
-                public void run()
-                {
+//            this.getActivity().runOnUiThread(new Runnable()
+//            {
+//                @Override
+//                public void run()
+//                {
                     setListAdapter(getArrayAdapter(list));
 
                     if(lastUpdatedTextView != null)
@@ -91,9 +103,31 @@ public abstract class AbstractListFragment<T extends Stock & Parcelable> extends
                     }
 
                     searchListener.setSearchListAdapater(getListAdapter());
-                }
-            });
+//                }
+//            });
         }
+    }
+
+    protected void initTradePlanListFromDatabase()
+    {
+        Disposable disposable = this.pseService.getTradePlanListFromDatabase()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new DisposableSingleObserver<ArrayList<TradeDto>>()
+                {
+                    @Override
+                    public void onSuccess(ArrayList<TradeDto> tradeDtos)
+                    {
+                        tradeDtoList = tradeDtos;
+                    }
+
+                    @Override
+                    public void onError(Throwable e)
+                    {
+                        tradeDtoList = new ArrayList<>();
+                    }
+                });
+        this.compositeDisposable.add(disposable);
     }
 
     /**
@@ -109,6 +143,20 @@ public abstract class AbstractListFragment<T extends Stock & Parcelable> extends
         {
             this.unbinder.unbind();
         }
+    }
+
+    /**
+     * Cleanup RxJava observables.
+     */
+    @Override
+    public void onDestroy()
+    {
+        if(!this.compositeDisposable.isDisposed())
+        {
+            this.compositeDisposable.dispose();
+        }
+
+        super.onDestroy();
     }
 
     /**
