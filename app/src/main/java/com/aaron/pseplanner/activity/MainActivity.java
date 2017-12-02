@@ -90,8 +90,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     /**
      * Initializes the navigation drawer. Adds the current fragment in the fragment_container, uses TradePlanList as default fragment to inflate.
      *
-     * @param savedInstanceState
-     *            this Bundle is unused in this method.
+     * @param savedInstanceState this Bundle is unused in this method.
      */
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -105,7 +104,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         setSupportActionBar(this.toolbar);
 
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, this.drawer, this.toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, this.drawer, this.toolbar, R.string.navigation_drawer_open,
+                R.string.navigation_drawer_close);
         this.drawer.removeDrawerListener(toggle);
         this.drawer.addDrawerListener(toggle);
         toggle.syncState();
@@ -118,22 +118,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         this.compositeDisposable = new CompositeDisposable();
 
         Disposable disposable = this.pseService.getTradePlanListFromDatabase()
-                                               .subscribeOn(Schedulers.io())
-                                               .observeOn(AndroidSchedulers.mainThread())
-                                               .subscribeWith(new DisposableSingleObserver<ArrayList<TradeDto>>()
-                                               {
-                                                   @Override
-                                                   public void onSuccess(ArrayList<TradeDto> tradeDtos)
-                                                   {
-                                                       tradeDtoList = tradeDtos;
-                                                   }
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new DisposableSingleObserver<ArrayList<TradeDto>>()
+                {
+                    @Override
+                    public void onSuccess(ArrayList<TradeDto> tradeDtos)
+                    {
+                        tradeDtoList = tradeDtos;
+                    }
 
-                                                   @Override
-                                                   public void onError(Throwable e)
-                                                   {
-                                                       tradeDtoList = new ArrayList<>();
-                                                   }
-                                               });
+                    @Override
+                    public void onError(Throwable e)
+                    {
+                        tradeDtoList = new ArrayList<>();
+                    }
+                });
         this.compositeDisposable.add(disposable);
 
         FragmentManager fm = getSupportFragmentManager();
@@ -163,8 +163,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                 // Check if exists in database
                 Disposable disposable = initTickerListObservable().subscribeOn(Schedulers.io())
-                                                                  .observeOn(AndroidSchedulers.mainThread())
-                                                                  .subscribeWith(initTickerListObserver());
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeWith(initTickerListObserver());
 
                 this.compositeDisposable.add(disposable);
             }
@@ -179,49 +179,49 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private Single<ArrayList<TickerDto>> initTickerListObservable()
     {
         Single<ArrayList<TickerDto>> getAllTickerFromDatabase = pseService.getTickerListFromDatabase()
-                                                                          .subscribeOn(Schedulers.io());
+                .subscribeOn(Schedulers.io());
         Single<ArrayList<TickerDto>> getAllTickerFromWeb = pseService.getAllTickerList()
-                                                                     .subscribeOn(Schedulers.io())
-                                                                     .flatMap(new Function<Pair<List<TickerDto>, Date>, SingleSource<? extends ArrayList<TickerDto>>>()
-        {
-            @Override
-            public SingleSource<? extends ArrayList<TickerDto>> apply(Pair<List<TickerDto>, Date> pair) throws Exception
-            {
-                ArrayList<TickerDto> tickerDtoList = (ArrayList<TickerDto>) pair.first;
-                pseService.insertTickerList(tickerDtoList);
-                LogManager.debug(CLASS_NAME, "initTickerDtoList", "Retrieved from Web API and saved to database, count: " + tickerDtoList.size());
-                return Single.just(tickerDtoList);
-            }
-        });
+                .subscribeOn(Schedulers.io())
+                .flatMap(new Function<Pair<List<TickerDto>, Date>, SingleSource<? extends ArrayList<TickerDto>>>()
+                {
+                    @Override
+                    public SingleSource<? extends ArrayList<TickerDto>> apply(Pair<List<TickerDto>, Date> pair) throws Exception
+                    {
+                        ArrayList<TickerDto> tickerDtoList = (ArrayList<TickerDto>) pair.first;
+                        pseService.insertTickerList(tickerDtoList);
+                        LogManager.debug(CLASS_NAME, "initTickerDtoList", "Retrieved from Web API and saved to database, count: " + tickerDtoList.size());
+                        return Single.just(tickerDtoList);
+                    }
+                });
 
         return Single.concat(getAllTickerFromDatabase, getAllTickerFromWeb)
-                     .filter(new Predicate<ArrayList<TickerDto>>()
-                     {
-                         @Override
-                         public boolean test(ArrayList<TickerDto> tickerDtos) throws Exception
-                         {
-                             int size = tickerDtos.size();
-                             boolean isInDatabase = !tickerDtos.isEmpty() && pseService.isUpToDate(PSEPlannerPreference.LAST_UPDATED_TICKER);
-                             if(isInDatabase)
-                             {
-                                 LogManager.debug(CLASS_NAME, "initTickerDtoList", "Retrieved from database, count: " + size);
-                             }
+                .filter(new Predicate<ArrayList<TickerDto>>()
+                {
+                    @Override
+                    public boolean test(ArrayList<TickerDto> tickerDtos) throws Exception
+                    {
+                        int size = tickerDtos.size();
+                        boolean isInDatabase = !tickerDtos.isEmpty() && pseService.isUpToDate(PSEPlannerPreference.LAST_UPDATED_TICKER);
+                        if(isInDatabase)
+                        {
+                            LogManager.debug(CLASS_NAME, "initTickerDtoList", "Retrieved from database, count: " + size);
+                        }
 
-                             if(size < pseService.getExpectedMinimumTotalStocks())
-                             {
-                                 LogManager.debug(CLASS_NAME, "initTickerDtoList", "TickerList is incomplete, getting values from web api asynchronously. size = " + size);
-                                 isInDatabase = false;
-                             }
+                        if(size < pseService.getExpectedMinimumTotalStocks())
+                        {
+                            LogManager.debug(CLASS_NAME, "initTickerDtoList",
+                                    "TickerList is incomplete, getting values from web api asynchronously. size = " + size);
+                            isInDatabase = false;
+                        }
 
-                             return isInDatabase;
-                         }
-                     })
-                     .first(tickerDtoList);
+                        return isInDatabase;
+                    }
+                })
+                .first(tickerDtoList);
     }
 
     /**
-     * Returns an observer that observes init ticker list observable.
-     * OnSuccess: Sets the hasTradePlan flag of each ticker in the list and updates the fragment.
+     * Returns an observer that observes init ticker list observable. OnSuccess: Sets the hasTradePlan flag of each ticker in the list and updates the fragment.
      * OnError: Logs error.
      *
      * @return {@code DisposableSingleObserver<ArrayList<TickerDto>>}
@@ -238,7 +238,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     Set<String> tradeDtoSymbols = pseService.getTradeSymbolsFromTradeDtos(tradeDtoList);
                     tickerDtoList = pseService.setTickerDtoListHasTradePlan(tickerDtos, tradeDtoSymbols);
 
-                    // TODO: test if this works properly, hasTradePlan is updated on each ticker but here we retrieve from database which will override the updated hasTradePlan???
+                    // TODO: test if this works properly, hasTradePlan is updated on each ticker but here we retrieve from database which will override the
+                    // updated hasTradePlan???
                     // Update ticker view if it is the current selected fragment
                     if(selectedListFragment instanceof TickerListFragment)
                     {
@@ -271,8 +272,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     /**
-     * Update selected fragment here instead in onActivityResult() to avoid "IllegalStateException: Can not perform this action after
-     * onSaveInstanceState".
+     * Update selected fragment here instead in onActivityResult() to avoid "IllegalStateException: Can not perform this action after onSaveInstanceState".
      */
     @Override
     public void onPostResume()
@@ -291,12 +291,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     /**
      * Receives the result data from the previous fragment. Updates the application's state depending on the data received.
      *
-     * @param requestCode
-     *            the request code that determines the previous activity
-     * @param resultCode
-     *            the result of the previous activity or fragment
-     * @param data
-     *            the data that are returned from the previous activity or fragment
+     * @param requestCode the request code that determines the previous activity
+     * @param resultCode the result of the previous activity or fragment
+     * @param data the data that are returned from the previous activity or fragment
      */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data)
@@ -437,8 +434,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     /**
      * Sets the action of each option in the navigation drawer.
      *
-     * @param item
-     *            the selected drawer option
+     * @param item the selected drawer option
      */
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item)
@@ -499,8 +495,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     /**
      * Replaces the current fragment inside the drawer layout.
      *
-     * @param newFragment
-     *            the new fragment to show
+     * @param newFragment the new fragment to show
      */
     protected void updateFragmentContainer(Fragment newFragment)
     {
@@ -534,10 +529,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     /**
      * Sets the visibility of the items in the given menu.
      *
-     * @param menu
-     *            the menu to alter
-     * @param visible
-     *            if true shows each item of the menu, else hides all items
+     * @param menu the menu to alter
+     * @param visible if true shows each item of the menu, else hides all items
      */
     protected void setMenuItemsVisibility(Menu menu, boolean visible)
     {
@@ -569,17 +562,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     /**
      * Executes the UpdateTicker async task. Starts the refresh button animation then retrieves data from PSE.
      *
-     * @param item
-     *            the refresh button menu item
+     * @param item the refresh button menu item
      */
     protected void executeRefreshTicker(MenuItem item)
     {
         startRefreshAnimation(item);
 
         Disposable subscription = Completable.fromCallable(updateFragmentListFromWebObservable())
-                                             .subscribeOn(Schedulers.io())
-                                             .observeOn(AndroidSchedulers.mainThread())
-                                             .subscribeWith(updateFragmentListFromWebObserver());
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(updateFragmentListFromWebObserver());
 
         isUpdating.set(true);
         LogManager.debug(CLASS_NAME, "executeRefreshTicker", "Executed!");
@@ -607,9 +599,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     /**
-     * Returns an observer that observes updateFragmentListFromWeb observable.
-     * OnComplete: Stops refresh animation and update isUpdating flag to false
-     * OnError: Stops refresh animation and update isUpdating flag to false, then logs error and show in Toast
+     * Returns an observer that observes updateFragmentListFromWeb observable. OnComplete: Stops refresh animation and update isUpdating flag to false OnError:
+     * Stops refresh animation and update isUpdating flag to false, then logs error and show in Toast
      *
      * @return DisposableCompletableObserver
      */

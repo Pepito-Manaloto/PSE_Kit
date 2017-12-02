@@ -1,6 +1,7 @@
 package com.aaron.pseplanner.fragment;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,6 +42,7 @@ public class TradePlanListFragment extends AbstractListFragment<TradeDto>
     // This storage needs to be thread-safe because this will be modified in AsyncTask
     private ConcurrentHashMap<String, TradeDto> tradesMap;
     private CalculatorService calculatorService;
+    private TradePlanListAdapter tradePlanListAdapter;
 
     /**
      * Gets a new instance of TradePlanListFragment with the TradeDto list.
@@ -84,7 +86,7 @@ public class TradePlanListFragment extends AbstractListFragment<TradeDto>
         }
         else
         {
-            initTradePlanListFromDatabase();
+            this.tradeDtoList = initTradePlanListFromDatabase();
         }
 
         this.tradesMap = new ConcurrentHashMap<>();
@@ -92,6 +94,9 @@ public class TradePlanListFragment extends AbstractListFragment<TradeDto>
         {
             this.tradesMap.put(dto.getSymbol(), dto);
         }
+
+        this.tradePlanListAdapter = new TradePlanListAdapter(getActivity(), this.tradeDtoList);
+        this.setListAdapter(this.tradePlanListAdapter);
     }
 
     /**
@@ -114,7 +119,7 @@ public class TradePlanListFragment extends AbstractListFragment<TradeDto>
      * Saves current state in memory.
      */
     @Override
-    public void onSaveInstanceState(Bundle outState)
+    public void onSaveInstanceState(@NonNull Bundle outState)
     {
         super.onSaveInstanceState(outState);
 
@@ -124,9 +129,9 @@ public class TradePlanListFragment extends AbstractListFragment<TradeDto>
     }
 
     @Override
-    protected FilterableArrayAdapter<TradeDto> getArrayAdapter(List<TradeDto> tradeDtoList)
+    protected FilterableArrayAdapter<TradeDto> getArrayAdapter()
     {
-        return new TradePlanListAdapter(getActivity(), tradeDtoList);
+        return this.tradePlanListAdapter;
     }
 
     /**

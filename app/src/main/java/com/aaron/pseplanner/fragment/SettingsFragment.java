@@ -3,9 +3,9 @@ package com.aaron.pseplanner.fragment;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
@@ -102,12 +102,12 @@ public class SettingsFragment extends Fragment
      * Initializes the fragment's user interface.
      */
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState)
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.fragment_settings, parent, false);
         this.unbinder = ButterKnife.bind(this, view);
 
-        LinearLayout refreshIntervalLayout = ButterKnife.findById(view, R.id.layout_refresh_interval);
+        LinearLayout refreshIntervalLayout = view.findViewById(R.id.layout_refresh_interval);
 
         String refreshInterval = this.settingsDto.getRefreshInterval() == 0 ? this.refreshIntervalItems[0] : String.valueOf(this.settingsDto.getRefreshInterval());
         this.refreshIntervalText.setText(refreshInterval);
@@ -126,7 +126,7 @@ public class SettingsFragment extends Fragment
         this.notiftyTimeStopCheck.setChecked(this.settingsDto.isNotiftyTimeStop());
         this.notifySoundEffectCheck.setChecked(this.settingsDto.isNotifySoundEffect());
 
-        LinearLayout proxyLayout = ButterKnife.findById(view, R.id.layout_proxy);
+        LinearLayout proxyLayout = view.findViewById(R.id.layout_proxy);
         proxyLayout.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -167,7 +167,7 @@ public class SettingsFragment extends Fragment
      * Saves current state in memory.
      */
     @Override
-    public void onSaveInstanceState(Bundle outState)
+    public void onSaveInstanceState(@NonNull Bundle outState)
     {
         super.onSaveInstanceState(outState);
 
@@ -210,16 +210,16 @@ public class SettingsFragment extends Fragment
         Activity activity = getActivity();
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
 
-        View view = activity.getLayoutInflater().inflate(R.layout.dialog_proxy, null);
+        View view = LayoutInflater.from(activity).inflate(R.layout.dialog_proxy, null);
         builder.setView(view);
 
-        final EditText proxyHost = ButterKnife.findById(view, R.id.edittext_proxy_host);
+        final EditText proxyHost = view.findViewById(R.id.edittext_proxy_host);
         if(StringUtils.isNotBlank(this.settingsDto.getProxyHost()))
         {
             proxyHost.setText(this.settingsDto.getProxyHost());
         }
 
-        final EditText proxyPort = ButterKnife.findById(view, R.id.edittext_proxy_port);
+        final EditText proxyPort = view.findViewById(R.id.edittext_proxy_port);
         if(this.settingsDto.getProxyPort() > 0)
         {
             proxyPort.setText(String.valueOf(this.settingsDto.getProxyPort()));

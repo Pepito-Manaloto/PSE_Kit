@@ -1,7 +1,7 @@
 package com.aaron.pseplanner.fragment;
 
 import android.os.Bundle;
-import android.util.Log;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -117,7 +117,7 @@ public class CalculatorFragment extends AbstractCalculatorFragment
      * Initializes the fragment's user interface.
      */
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState)
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState)
     {
         View view = inflateFragment(R.layout.fragment_calculator, inflater, parent);
         this.unbinder = ButterKnife.bind(this, view);
@@ -125,10 +125,10 @@ public class CalculatorFragment extends AbstractCalculatorFragment
         setEditTextOnFocusChangeListener(this.buyPriceEditText, this.sharesEditText, this.sellPriceEditText);
         setEditTextTextChangeListener(this.buyPriceEditText, this.sharesEditText, this.sellPriceEditText);
 
-        ImageView buyNetAmountImageView = ButterKnife.findById(view, R.id.imageview_buy_net_amount);
-        ImageView sellNetAmountImageView = ButterKnife.findById(view, R.id.imageview_sell_net_amount);
-        GridLayout additionalFeesLayout = ButterKnife.findById(view, R.id.additional_fees_layout);
-        GridLayout deductionFeesLayout = ButterKnife.findById(view, R.id.deduction_fees_layout);
+        ImageView buyNetAmountImageView = view.findViewById(R.id.imageview_buy_net_amount);
+        ImageView sellNetAmountImageView = view.findViewById(R.id.imageview_sell_net_amount);
+        GridLayout additionalFeesLayout = view.findViewById(R.id.additional_fees_layout);
+        GridLayout deductionFeesLayout = view.findViewById(R.id.deduction_fees_layout);
         this.setImageViewOnClickListener(buyNetAmountImageView, additionalFeesLayout, sellNetAmountImageView, deductionFeesLayout);
 
         LogManager.debug(CLASS_NAME, "onCreateView", "");

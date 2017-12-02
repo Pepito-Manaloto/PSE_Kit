@@ -4,26 +4,14 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
-import android.support.v7.widget.Toolbar;
-import android.util.Pair;
-import android.widget.TextView;
 
 import com.aaron.pseplanner.R;
 import com.aaron.pseplanner.bean.TickerDto;
 import com.aaron.pseplanner.bean.TradeDto;
-import com.aaron.pseplanner.bean.TradeEntryDto;
 import com.aaron.pseplanner.constant.DataKey;
 import com.aaron.pseplanner.service.LogManager;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-
-import butterknife.ButterKnife;
-
-import static com.aaron.pseplanner.service.CalculatorService.ONE_HUNDRED;
 
 /**
  * Create Trade Plan Activity. Does not contain navigation views or menu items.

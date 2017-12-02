@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
-import android.support.v7.widget.Toolbar;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -16,20 +14,12 @@ import com.aaron.pseplanner.R;
 import com.aaron.pseplanner.bean.TradeDto;
 import com.aaron.pseplanner.bean.TradeEntryDto;
 import com.aaron.pseplanner.constant.DataKey;
-import com.aaron.pseplanner.entity.TradeEntry;
 import com.aaron.pseplanner.fragment.DatePickerFragment;
 import com.aaron.pseplanner.service.LogManager;
 import com.aaron.pseplanner.service.ViewUtils;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
-import java.util.Collection;
-import java.util.Date;
 import java.util.List;
-
-import butterknife.ButterKnife;
-
-import static com.aaron.pseplanner.service.CalculatorService.ONE_HUNDRED;
 
 /**
  * Update Trade Plan Activity. Does not contain navigation views or menu items.
@@ -64,7 +54,7 @@ public class UpdateTradePlanActivity extends SaveTradePlanActivity
             }
         }
 
-        this.sharesEditText.setText(String.valueOf(tradeDtoPlanToUpdate.getTotalShares()));
+        this.sharesEditText.setText(String.valueOf(tradeDtoPlanToUpdate != null ? tradeDtoPlanToUpdate.getTotalShares() : 0));
         this.entryDateEditText.setText(DatePickerFragment.DATE_FORMATTER.format(tradeDtoPlanToUpdate.getEntryDate()));
         this.stopDateEditText.setText(DatePickerFragment.DATE_FORMATTER.format(tradeDtoPlanToUpdate.getStopDate()));
         this.stopLossEditText.setText(tradeDtoPlanToUpdate.getStopLoss().toPlainString());
@@ -106,13 +96,13 @@ public class UpdateTradePlanActivity extends SaveTradePlanActivity
         {
             View entryTrancheContainer = entryTranchesLayout.getChildAt(i);
 
-            TextView labelTranche = ButterKnife.findById(entryTrancheContainer, R.id.label_tranche);
+            TextView labelTranche = entryTrancheContainer.findViewById(R.id.label_tranche);
             labelTranche.setText(getString(R.string.label_tranche, ViewUtils.getOrdinalNumber(i)));
 
-            EditText entryPrice = ButterKnife.findById(entryTrancheContainer, R.id.edittext_entry_price);
+            EditText entryPrice = entryTrancheContainer.findViewById(R.id.edittext_entry_price);
             entryPrice.setText(String.valueOf(tradeEntries.get(i).getEntryPrice()));
 
-            EditText trancheWeight = ButterKnife.findById(entryTrancheContainer, R.id.edittext_tranche_weight);
+            EditText trancheWeight = entryTrancheContainer.findViewById(R.id.edittext_tranche_weight);
             trancheWeight.setText(String.valueOf(tradeEntries.get(i).getPercentWeight()));
         }
     }

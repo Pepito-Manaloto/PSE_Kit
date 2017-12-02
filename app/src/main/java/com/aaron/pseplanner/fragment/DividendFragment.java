@@ -1,6 +1,7 @@
 package com.aaron.pseplanner.fragment;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +14,6 @@ import com.aaron.pseplanner.bean.BoardLot;
 import com.aaron.pseplanner.service.LogManager;
 
 import org.apache.commons.lang3.StringUtils;
-import org.w3c.dom.Text;
 
 import java.math.BigDecimal;
 import java.text.NumberFormat;
@@ -61,7 +61,7 @@ public class DividendFragment extends AbstractCalculatorFragment
      * Initializes the fragment's user interface.
      */
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState)
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState)
     {
         View view = inflateFragment(R.layout.fragment_dividend, inflater, parent);
         this.unbinder = ButterKnife.bind(this, view);

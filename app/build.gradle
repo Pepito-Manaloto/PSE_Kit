@@ -1,8 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'org.greenrobot.greendao'
-//apply plugin: 'com.jakewharton.butterknife'
 
-def ANDROID_VERSION = "27.0.0"
+def ANDROID_VERSION = "27.0.1"
 
 android {
     compileSdkVersion 27
@@ -36,22 +35,19 @@ android {
     }
 }
 
-def LEAKCANARY_VERSION = "1.5.2"
+def LEAKCANARY_VERSION = "1.5.4"
 def RETROFIT_VERSION = "2.3.0"
-def BUTTER_KNIFE_VERSION = "8.6.0"
+def BUTTER_KNIFE_VERSION = "8.8.1"
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     debugCompile "com.squareup.leakcanary:leakcanary-android:$LEAKCANARY_VERSION"
     releaseCompile "com.squareup.leakcanary:leakcanary-android-no-op:$LEAKCANARY_VERSION"
 
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
     compile "com.android.support:appcompat-v7:$ANDROID_VERSION"
     compile "com.android.support:design:$ANDROID_VERSION"
     compile "com.android.support:recyclerview-v7:$ANDROID_VERSION"
-    compile 'org.apache.commons:commons-lang3:3.4'
+    compile 'org.apache.commons:commons-lang3:3.7'
     compile "com.squareup.retrofit2:retrofit:$RETROFIT_VERSION"
     compile "com.squareup.retrofit2:converter-jackson:$RETROFIT_VERSION"
     compile "com.squareup.retrofit2:adapter-rxjava2:$RETROFIT_VERSION"
@@ -60,7 +56,15 @@ dependencies {
     compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
     compile "com.jakewharton:butterknife:$BUTTER_KNIFE_VERSION"
     compile 'com.facebook.stetho:stetho:1.5.0'
+
     annotationProcessor "com.jakewharton:butterknife-compiler:$BUTTER_KNIFE_VERSION"
+    compile "com.jakewharton:butterknife:$BUTTER_KNIFE_VERSION"
+
     testCompile 'org.mockito:mockito-all:1.10.19'
     testCompile 'junit:junit:4.12'
+
+    androidTestCompile('com.android.support.test.espresso:espresso-core:3.0.1', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    androidTestCompile 'com.android.support.test:runner:1.0.1'
 }

@@ -2,7 +2,6 @@ package com.aaron.pseplanner.activity;
 
 import android.app.Activity;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
@@ -25,7 +24,6 @@ import com.aaron.pseplanner.R;
 import com.aaron.pseplanner.bean.BoardLot;
 import com.aaron.pseplanner.bean.TradeDto;
 import com.aaron.pseplanner.bean.TradeEntryDto;
-import com.aaron.pseplanner.constant.DataKey;
 import com.aaron.pseplanner.fragment.DatePickerFragment;
 import com.aaron.pseplanner.listener.EditTextOnFocusChangeHideKeyboard;
 import com.aaron.pseplanner.listener.EditTextOnTextChangeAddComma;
@@ -38,7 +36,6 @@ import com.aaron.pseplanner.service.implementation.DefaultCalculatorService;
 import com.aaron.pseplanner.service.implementation.FacadePSEPlannerService;
 
 import org.apache.commons.lang3.StringUtils;
-import org.w3c.dom.Text;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -46,7 +43,6 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -120,7 +116,7 @@ public abstract class SaveTradePlanActivity extends AppCompatActivity
         this.layoutInflater = inflater;
         addTranche(inflater, entryTranchesLayout); // Insert initial trache
 
-        Button addTrancheButton = ButterKnife.findById(this, R.id.button_add_tranche);
+        Button addTrancheButton = findViewById(R.id.button_add_tranche);
         addTrancheButton.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -158,8 +154,8 @@ public abstract class SaveTradePlanActivity extends AppCompatActivity
                     {
                         BigDecimal riskReward = calculator.getRiskRewardRatio(averagePriceTotalWeight.first, target, stopLoss);
 
-                        Date entryDate = null;
-                        Date stopDate = null;
+                        Date entryDate;
+                        Date stopDate;
                         try
                         {
                             entryDate = DatePickerFragment.DATE_FORMATTER.parse(entryDateStr);
@@ -225,7 +221,6 @@ public abstract class SaveTradePlanActivity extends AppCompatActivity
     private boolean validateTradePlanInput(long shares, BigDecimal stopLoss, BigDecimal target, String entryDate, String stopDate, long capital, Map<Pair<EditText, EditText>, Pair<String, String>> priceWeightMap, Pair<BigDecimal, BigDecimal> averagePriceTotalWeight)
     {
         // Validate per tranche entry
-        int trancheNum = 0;
         for(Map.Entry<Pair<EditText, EditText>, Pair<String, String>> entry : priceWeightMap.entrySet())
         {
             Pair<EditText, EditText> editTextPair = entry.getKey();
@@ -328,8 +323,8 @@ public abstract class SaveTradePlanActivity extends AppCompatActivity
         for(int i = 0, trancheNum = 1; i < numOfTranches; i++, trancheNum++)
         {
             View entryTrancheContainer = entryTranchesLayout.getChildAt(i);
-            EditText entryPrice = ButterKnife.findById(entryTrancheContainer, R.id.edittext_entry_price);
-            EditText trancheWeight = ButterKnife.findById(entryTrancheContainer, R.id.edittext_tranche_weight);
+            EditText entryPrice = entryTrancheContainer.findViewById(R.id.edittext_entry_price);
+            EditText trancheWeight = entryTrancheContainer.findViewById(R.id.edittext_tranche_weight);
             String price = entryPrice.getText().toString();
             String weight = trancheWeight.getText().toString();
 
@@ -417,10 +412,10 @@ public abstract class SaveTradePlanActivity extends AppCompatActivity
         // This serves as the index of the added view
         final int numOfEntryTranche = entryTranchesLayout.getChildCount();
         entryTrancheContainer.setTag(numOfEntryTranche);
-        TextView labelTranche = ButterKnife.findById(entryTrancheContainer, R.id.label_tranche);
+        TextView labelTranche = entryTrancheContainer.findViewById(R.id.label_tranche);
         labelTranche.setText(getString(R.string.label_tranche, ViewUtils.getOrdinalNumber(numOfEntryTranche)));
 
-        ImageView removeTranche = ButterKnife.findById(entryTrancheContainer, R.id.imageview_remove_tranche);
+        ImageView removeTranche = entryTrancheContainer.findViewById(R.id.imageview_remove_tranche);
         removeTranche.setOnClickListener(new View.OnClickListener()
         {
             /**
@@ -440,7 +435,7 @@ public abstract class SaveTradePlanActivity extends AppCompatActivity
                     // Update the succeeding entry tranche tag/index and title
                     View nextEntryTrancheContainer = entryTranchesLayout.getChildAt(i);
                     nextEntryTrancheContainer.setTag(i);
-                    TextView labelTranche = ButterKnife.findById(nextEntryTrancheContainer, R.id.label_tranche);
+                    TextView labelTranche = entryTrancheContainer.findViewById(R.id.label_tranche);
 
                     labelTranche.setText(getString(R.string.label_tranche, ViewUtils.getOrdinalNumber(i)));
                     // TODO: update tranche weight?
@@ -448,9 +443,9 @@ public abstract class SaveTradePlanActivity extends AppCompatActivity
             }
         });
 
-        EditText entryPrice = ButterKnife.findById(entryTrancheContainer, R.id.edittext_entry_price);
+        EditText entryPrice = entryTrancheContainer.findViewById(R.id.edittext_entry_price);
         setEditTextTextChangeListener(entryPrice);
-        EditText trancheWeight = ButterKnife.findById(entryTrancheContainer, R.id.edittext_tranche_weight);
+        EditText trancheWeight = entryTrancheContainer.findViewById(R.id.edittext_tranche_weight);
         if(numOfEntryTranche == 0)
         {
             trancheWeight.setText(R.string.one_hundred_value);
@@ -544,7 +539,7 @@ public abstract class SaveTradePlanActivity extends AppCompatActivity
         dialog.show();
 
         // Align message to center.
-        TextView messageView = ButterKnife.findById(dialog, android.R.id.message);
+        TextView messageView = dialog.findViewById(android.R.id.message);
         if(messageView != null)
         {
             messageView.setGravity(Gravity.CENTER);

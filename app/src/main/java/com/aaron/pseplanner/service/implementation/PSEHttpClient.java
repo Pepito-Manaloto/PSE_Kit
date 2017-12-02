@@ -3,7 +3,6 @@ package com.aaron.pseplanner.service.implementation;
 import android.util.Pair;
 
 import com.aaron.pseplanner.bean.TickerDto;
-import com.aaron.pseplanner.exception.HttpRequestException;
 import com.aaron.pseplanner.service.PSEService;
 
 import java.util.Collection;
@@ -41,13 +40,13 @@ public class PSEHttpClient extends BaseHttpClient
     }
 
     @Override
-    public Pair<List<TickerDto>, Date> getAllTickerList()
+    public Single<Pair<List<TickerDto>, Date>> getAllTickerList()
     {
         return null;
     }
 
     @Override
-    public Pair<List<TickerDto>, Date> getTickerList(Collection<String> symbols) throws HttpRequestException
+    public Single<Pair<List<TickerDto>, Date>> getTickerList(Collection<String> symbols)
     {
         return null;
     }

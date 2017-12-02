@@ -37,6 +37,7 @@ public class TickerListFragment extends AbstractListFragment<TickerDto>
     public static final String CLASS_NAME = TickerListFragment.class.getSimpleName();
     private ArrayList<TickerDto> tickerDtoList;
     private Set<String> tradeDtoSymbols;
+    private TickerListAdapter tickerListAdapter;
 
     /**
      * Gets a new instance of TickerListFragment with the TickerDto list.
@@ -87,7 +88,7 @@ public class TickerListFragment extends AbstractListFragment<TickerDto>
         }
         else
         {
-            initTradePlanListFromDatabase();
+            this.tradeDtoList = initTradePlanListFromDatabase();
         }
 
         this.tradeDtoSymbols = this.pseService.getTradeSymbolsFromTradeDtos(this.tradeDtoList);
@@ -95,31 +96,21 @@ public class TickerListFragment extends AbstractListFragment<TickerDto>
         if(getArguments() != null && getArguments().containsKey(DataKey.EXTRA_TICKER_LIST.toString()))
         {
             this.tickerDtoList = getArguments().getParcelableArrayList(DataKey.EXTRA_TICKER_LIST.toString());
+            setTickerListAdapter();
         }
         else if(savedInstanceState != null && savedInstanceState.containsKey(DataKey.EXTRA_TICKER_LIST.toString()))
         {
             this.tickerDtoList = savedInstanceState.getParcelableArrayList(DataKey.EXTRA_TICKER_LIST.toString());
+            setTickerListAdapter();
         }
         else
         {
             Disposable disposable = this.pseService.getTickerListFromDatabase()
-                                                   .subscribeOn(Schedulers.io())
-                                                   .observeOn(AndroidSchedulers.mainThread())
+                                                   .subscribeOn(AndroidSchedulers.mainThread())
                                                    .subscribeWith(onCreateTickerListObserver());
 
             this.compositeDisposable.add(disposable);
         }
-
-//        if(this.tickerDtoList != null && !this.tickerDtoList.isEmpty())
-//        {
-//            setListAdapter(getArrayAdapter(this.tickerDtoList));
-//            if(lastUpdatedTextView != null)
-//            {
-//                lastUpdatedTextView.setText(getActivity().getString(R.string.last_updated, this.pseService.getLastUpdated(PSEPlannerPreference.LAST_UPDATED_TICKER.toString())));
-//            }
-//        }
-//
-//        searchListener.setSearchListAdapater(getListAdapter());
     }
 
     /**
@@ -160,9 +151,9 @@ public class TickerListFragment extends AbstractListFragment<TickerDto>
     }
 
     @Override
-    protected FilterableArrayAdapter<TickerDto> getArrayAdapter(List<TickerDto> tickerDtoList)
+    protected FilterableArrayAdapter<TickerDto> getArrayAdapter()
     {
-        return new TickerListAdapter(getActivity(), tickerDtoList);
+        return this.tickerListAdapter;
     }
 
     /**
@@ -192,7 +183,13 @@ public class TickerListFragment extends AbstractListFragment<TickerDto>
                                                .observeOn(AndroidSchedulers.mainThread())
                                                .subscribeWith(updateListFromDatabaseObserver());
 
-        this.compositeDisposable.add(disposable);;
+        this.compositeDisposable.add(disposable);
+    }
+
+    private void setTickerListAdapter()
+    {
+        this.tickerListAdapter = new TickerListAdapter(getActivity(), this.tickerDtoList);
+        this.setListAdapter(this.tickerListAdapter);
     }
 
     private DisposableSingleObserver<ArrayList<TickerDto>> onCreateTickerListObserver()
@@ -204,6 +201,7 @@ public class TickerListFragment extends AbstractListFragment<TickerDto>
             {
                 tickerDtoList = tickerDtos;
                 pseService.setTickerDtoListHasTradePlan(tickerDtoList, tradeDtoSymbols);
+                setTickerListAdapter();
             }
 
             @Override

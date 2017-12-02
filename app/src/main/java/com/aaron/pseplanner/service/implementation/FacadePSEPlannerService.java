@@ -174,7 +174,7 @@ public class FacadePSEPlannerService implements PSEPlannerService
         Set<Ticker> tickerList = this.getStockListAndUpdateLastUpdated(tickerDtoList);
 
         // Bulk update
-        this.tickerDao.updateInTx(tickerList);
+        this.tickerDao.insertOrReplaceInTx(tickerList);
 
         LogManager.debug(CLASS_NAME, "updateTickerList", "Updated: count = " + tickerList.size());
 

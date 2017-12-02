@@ -1,6 +1,7 @@
 package com.aaron.pseplanner.fragment;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,7 +49,7 @@ public class MidpointFragment extends AbstractCalculatorFragment
      * Initializes the fragment's user interface.
      */
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState)
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState)
     {
         View view = inflateFragment(R.layout.fragment_midpoint, inflater, parent);
         this.unbinder = ButterKnife.bind(this, view);

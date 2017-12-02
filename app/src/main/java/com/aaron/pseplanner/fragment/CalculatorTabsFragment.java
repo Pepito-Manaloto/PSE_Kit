@@ -1,6 +1,7 @@
 package com.aaron.pseplanner.fragment;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -13,8 +14,6 @@ import android.view.ViewGroup;
 import com.aaron.pseplanner.R;
 import com.aaron.pseplanner.service.LogManager;
 
-import butterknife.ButterKnife;
-
 /**
  * Created by Aaron on 1/16/2017.
  * Contains the calculator tabs: calculator, dividend, and midpoint.
@@ -24,11 +23,11 @@ public class CalculatorTabsFragment extends Fragment
     public static final String CLASS_NAME = CalculatorTabsFragment.class.getSimpleName();
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.fragment_calculator_tabs, null);
-        final TabLayout tabLayout = ButterKnife.findById(view, R.id.tabs);
-        final ViewPager viewPager = ButterKnife.findById(view, R.id.viewpager);
+        final TabLayout tabLayout = view.findViewById(R.id.tabs);
+        final ViewPager viewPager = view.findViewById(R.id.viewpager);
 
         viewPager.setAdapter(new CalculatorTabPagerAdapter(getChildFragmentManager()));
 

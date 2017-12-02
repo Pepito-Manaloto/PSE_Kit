@@ -23,11 +23,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.Unbinder;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.observers.DisposableSingleObserver;
-import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by Aaron on 2/17/2017.
@@ -90,44 +86,22 @@ public abstract class AbstractListFragment<T extends Stock & Parcelable> extends
     {
         if(list != null && !list.isEmpty())
         {
-//            this.getActivity().runOnUiThread(new Runnable()
-//            {
-//                @Override
-//                public void run()
-//                {
-                    setListAdapter(getArrayAdapter(list));
+            getArrayAdapter().update(list);
+            if(lastUpdatedTextView != null)
+            {
+                lastUpdatedTextView.setText(getActivity().getString(R.string.last_updated, lastUpdated));
+            }
 
-                    if(lastUpdatedTextView != null)
-                    {
-                        lastUpdatedTextView.setText(getActivity().getString(R.string.last_updated, lastUpdated));
-                    }
-
-                    searchListener.setSearchListAdapater(getListAdapter());
-//                }
-//            });
+            searchListener.setSearchListAdapater(getListAdapter());
         }
     }
 
-    protected void initTradePlanListFromDatabase()
+    /**
+     * Should only be called in onCreate(). Blocks and executes on the main thread.
+     */
+    protected ArrayList<TradeDto> initTradePlanListFromDatabase()
     {
-        Disposable disposable = this.pseService.getTradePlanListFromDatabase()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(new DisposableSingleObserver<ArrayList<TradeDto>>()
-                {
-                    @Override
-                    public void onSuccess(ArrayList<TradeDto> tradeDtos)
-                    {
-                        tradeDtoList = tradeDtos;
-                    }
-
-                    @Override
-                    public void onError(Throwable e)
-                    {
-                        tradeDtoList = new ArrayList<>();
-                    }
-                });
-        this.compositeDisposable.add(disposable);
+        return this.pseService.getTradePlanListFromDatabase().blockingGet();
     }
 
     /**
@@ -176,7 +150,7 @@ public abstract class AbstractListFragment<T extends Stock & Parcelable> extends
      *
      * @return ArrayAdapter
      */
-    protected abstract FilterableArrayAdapter<T> getArrayAdapter(List<T> list);
+    protected abstract FilterableArrayAdapter<T> getArrayAdapter();
 
     /**
      * Updates the list of this fragment list by getting the latest data through http request.

@@ -55,7 +55,23 @@ public abstract class FilterableArrayAdapter<T extends Stock> extends ArrayAdapt
             }
         }
 
+        notifyDataSetChanged();
         LogManager.debug(this.className, "filter", "New list size -> " + this.getActualList().size());
+    }
+
+    /**
+     * Updates the list.
+     *
+     * @param list
+     *            the list to replace the current
+     */
+    public void update(@NonNull List<T> list)
+    {
+        ArrayList<T> actualList = getActualList();
+        actualList.clear();
+        actualList.addAll(list);
+
+        notifyDataSetChanged();
     }
 
     /**

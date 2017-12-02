@@ -3,7 +3,6 @@ package com.aaron.pseplanner.service.implementation;
 import android.util.Pair;
 
 import com.aaron.pseplanner.bean.TickerDto;
-import com.aaron.pseplanner.exception.HttpRequestException;
 import com.aaron.pseplanner.response.Phisix.ResponsePhisixStock;
 import com.aaron.pseplanner.response.Phisix.ResponsePhisixStockWrapper;
 import com.aaron.pseplanner.service.CalculatorService;
@@ -12,7 +11,6 @@ import com.aaron.pseplanner.service.PhisixService;
 
 import org.apache.commons.lang3.StringUtils;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -20,15 +18,10 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.CountDownLatch;
 
-import io.reactivex.Scheduler;
 import io.reactivex.Single;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 /**
  * Created by Aaron on 2/26/2017.
@@ -133,7 +126,7 @@ public class PhisixHttpClient extends BaseHttpClient
     {
         if(symbols == null || symbols.isEmpty())
         {
-            throw new IllegalArgumentException("Symbols must not be empty");
+            throw new IllegalArgumentException("No trade plan/s to update");
         }
 
         final int size = symbols.size();
