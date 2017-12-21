@@ -22,6 +22,7 @@ public interface FormatService
 
     String STOCK_PRICE_FORMAT = "#,###.####";
     String PRICE_FORMAT = "#,###.##";
+    String PERCENT_FORMAT = "#,###.##";
     String SHARES_FORMAT = "#,###";
 
     /**

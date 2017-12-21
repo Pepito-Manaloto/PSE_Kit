@@ -2,16 +2,12 @@ package com.aaron.pseplanner.service.implementation;
 
 import android.app.Activity;
 import android.graphics.Color;
-import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.widget.TextView;
 
 import com.aaron.pseplanner.R;
-import com.aaron.pseplanner.constant.Constants;
 import com.aaron.pseplanner.service.FormatService;
-
-import org.apache.commons.lang3.time.FastDateFormat;
 
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
@@ -53,16 +49,16 @@ public class DefaultFormatService implements FormatService
     @Override
     public String formatPercent(double number)
     {
-        return format(number, PRICE_FORMAT, RoundingMode.DOWN) + "%";
+        return format(number, PERCENT_FORMAT, RoundingMode.DOWN) + "%";
     }
 
     /**
-     * Formats the given number, removes any decimal point/s.
+     * Formats the given number, removes any decimal point/s and negative sign.
      */
     @Override
     public String formatShares(long number)
     {
-        return format(number, SHARES_FORMAT, RoundingMode.DOWN);
+        return format(Math.abs(number), SHARES_FORMAT, RoundingMode.DOWN);
     }
 
     /**
@@ -71,36 +67,27 @@ public class DefaultFormatService implements FormatService
     @Override
     public void formatTextColor(double price, TextView text)
     {
-        if(price > 0)
+        if(text != null)
         {
-            text.setTextColor(GREEN);
+            if(price > 0)
+            {
+                text.setTextColor(GREEN);
+            }
+            else if(price < 0)
+            {
+                text.setTextColor(Color.RED);
+            }
+            else
+            {
+                text.setTextColor(Color.BLACK);
+            }
         }
-        else if(price < 0)
-        {
-            text.setTextColor(Color.RED);
-        }
-        else
-        {
-            text.setTextColor(Color.BLACK);
-        }
-    }
-
-    /**
-     * Formats the date to 'MMMM dd, yyyy' pattern.
-     *
-     * @param date the Date to format
-     * @return formatted date string
-     */
-    @Override
-    public String formatDate(Date date)
-    {
-        return DATE_FORMATTER.format(date);
     }
 
     /**
      * Formats the given number with the given format.
      */
-    protected String format(double number, String format, RoundingMode mode)
+    private String format(double number, String format, RoundingMode mode)
     {
         if(number == 0)
         {
@@ -114,6 +101,23 @@ public class DefaultFormatService implements FormatService
     }
 
     /**
+     * Formats the date to 'MMMM dd, yyyy' pattern.
+     *
+     * @param date the Date to format
+     * @return formatted date string
+     */
+    @Override
+    public String formatDate(Date date)
+    {
+        if(date == null)
+        {
+            return "";
+        }
+
+        return DATE_FORMATTER.format(date);
+    }
+
+    /**
      * Formats the date to 'MMMM dd, EEEE hh:mm:ss a' pattern.
      *
      * @param date the Date to format
@@ -122,6 +126,11 @@ public class DefaultFormatService implements FormatService
     @Override
     public String formatLastUpdated(Date date)
     {
+        if(date == null)
+        {
+            return "";
+        }
+
         return DATE_FORMATTER_LAST_UPDATED.format(date);
     }
 }

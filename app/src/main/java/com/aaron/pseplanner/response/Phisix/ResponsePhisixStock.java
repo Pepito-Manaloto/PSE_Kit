@@ -23,8 +23,9 @@ public class ResponsePhisixStock
      * Setter.
      */
     @JsonCreator
-    public ResponsePhisixStock(@JsonProperty("name") String name, @JsonProperty("price") ResponsePrice price, @JsonProperty("percent_change") double percentChange,
-                               @JsonProperty("volume") long volume, @JsonProperty("symbol") String symbol)
+    public ResponsePhisixStock(@JsonProperty("name") String name, @JsonProperty("price") ResponsePrice price,
+            @JsonProperty("percent_change") double percentChange,
+            @JsonProperty("volume") long volume, @JsonProperty("symbol") String symbol)
     {
         this.name = name;
         this.currency = price.getCurrency();
@@ -101,6 +102,7 @@ public class ResponsePhisixStock
     @Override
     public String toString()
     {
-        return "ResponsePhisixStock{" + "name='" + name + '\'' + ", currency='" + currency + '\'' + ", amount=" + amount + ", percentChange=" + percentChange + ", volume=" + volume + ", symbol='" + symbol + '\'' + '}';
+        return "ResponsePhisixStock{" + "name='" + name + '\'' + ", currency='" + currency + '\'' + ", amount=" + amount + ", percentChange=" + percentChange
+                + ", volume=" + volume + ", symbol='" + symbol + '\'' + '}';
     }
 }

@@ -3,7 +3,6 @@ package com.aaron.pseplanner.service.implementation;
 import android.os.Parcelable;
 
 import com.aaron.pseplanner.service.HttpClient;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -96,6 +95,7 @@ public abstract class BaseHttpClient implements HttpClient
     /**
      * Helper class for asynchronous requests.
      */
+    @Deprecated
     static class CallbackResult<T extends Parcelable>
     {
         private List<T> responseList;

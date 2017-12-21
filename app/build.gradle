@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'org.greenrobot.greendao'
 
-def ANDROID_VERSION = "27.0.1"
+def ANDROID_VERSION = "27.0.2"
 
 android {
     compileSdkVersion 27
@@ -38,24 +38,37 @@ android {
 def LEAKCANARY_VERSION = "1.5.4"
 def RETROFIT_VERSION = "2.3.0"
 def BUTTER_KNIFE_VERSION = "8.8.1"
+def RX_BINDING_VERSION = "2.0.0"
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    debugCompile "com.squareup.leakcanary:leakcanary-android:$LEAKCANARY_VERSION"
-    releaseCompile "com.squareup.leakcanary:leakcanary-android-no-op:$LEAKCANARY_VERSION"
 
     compile "com.android.support:appcompat-v7:$ANDROID_VERSION"
     compile "com.android.support:design:$ANDROID_VERSION"
     compile "com.android.support:recyclerview-v7:$ANDROID_VERSION"
+
+//    compile "com.jakewharton.rxbinding2:rxbinding:$RX_BINDING_VERSION"
+//    compile "com.jakewharton.rxbinding2:rxbinding-support-v4:$RX_BINDING_VERSION"
+//    compile "com.jakewharton.rxbinding2:rxbinding-appcompat-v7:$RX_BINDING_VERSION"
+//    compile "com.jakewharton.rxbinding2:rxbinding-design:$RX_BINDING_VERSION"
+//    compile "com.jakewharton.rxbinding2:rxbinding-recyclerview-v7:$RX_BINDING_VERSION"
+
     compile 'org.apache.commons:commons-lang3:3.7'
+
     compile "com.squareup.retrofit2:retrofit:$RETROFIT_VERSION"
     compile "com.squareup.retrofit2:converter-jackson:$RETROFIT_VERSION"
     compile "com.squareup.retrofit2:adapter-rxjava2:$RETROFIT_VERSION"
+
     compile 'org.greenrobot:greendao:3.2.2'
+
     compile 'io.reactivex.rxjava2:rxjava:2.1.1'
     compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
+
     compile "com.jakewharton:butterknife:$BUTTER_KNIFE_VERSION"
+
     compile 'com.facebook.stetho:stetho:1.5.0'
+    debugCompile "com.squareup.leakcanary:leakcanary-android:$LEAKCANARY_VERSION"
+    releaseCompile "com.squareup.leakcanary:leakcanary-android-no-op:$LEAKCANARY_VERSION"
 
     annotationProcessor "com.jakewharton:butterknife-compiler:$BUTTER_KNIFE_VERSION"
     compile "com.jakewharton:butterknife:$BUTTER_KNIFE_VERSION"

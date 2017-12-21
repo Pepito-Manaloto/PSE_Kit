@@ -2,6 +2,7 @@ package com.aaron.pseplanner.service;
 
 import android.text.InputFilter;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 
 /**
@@ -18,34 +19,36 @@ public final class ViewUtils
     /**
      * Retrieves the edit text's android:maxLength.
      *
-     * @param filters     the InputFilters
+     * @param filters the InputFilters
      * @param callerClass the caller class name
      * @return int the EditText max length
      */
     public static int getEditTextMaxLength(InputFilter[] filters, String callerClass)
     {
-        for(InputFilter filter : filters)
+        if(filters != null)
         {
-            if(filter instanceof InputFilter.LengthFilter)
+            for(InputFilter filter : filters)
             {
-                if(android.os.Build.VERSION.SDK_INT >= 21)
+                if(filter instanceof InputFilter.LengthFilter)
                 {
-                    return ((InputFilter.LengthFilter) filter).getMax();
-                }
-                else
-                {
-                    try
+                    if(android.os.Build.VERSION.SDK_INT >= 21)
                     {
-                        return (int) FieldUtils.readField(filter, "mMax", true);
+                        return ((InputFilter.LengthFilter) filter).getMax();
                     }
-                    catch(IllegalAccessException e)
+                    else
                     {
-                        LogManager.error(callerClass, "getEditTextMaxLength", "Error retrieving EditText's maxLength.", e);
+                        try
+                        {
+                            return (int) FieldUtils.readField(filter, "mMax", true);
+                        }
+                        catch(IllegalAccessException e)
+                        {
+                            LogManager.error(callerClass, "getEditTextMaxLength", "Error retrieving EditText's maxLength.", e);
+                        }
                     }
                 }
             }
         }
-
         return 0;
     }
 
@@ -54,13 +57,13 @@ public final class ViewUtils
      *
      * @param num the non-negative input number
      * @return the ordinal number
-     * @throws IllegalArgumentException if the
+     * @throws IllegalArgumentException if the parameter is less than zero
      */
     public static String getOrdinalNumber(int num)
     {
         if(num < 0)
         {
-            throw new IllegalArgumentException("Number cannot be less than zero.");
+            throw new IllegalArgumentException("Number cannot be less than zero");
         }
 
         switch(num)
@@ -81,16 +84,18 @@ public final class ViewUtils
      * Adds '+' if the number is positive.
      *
      * @param number the number to check
-     * @param text   the text to append the sign
+     * @param text the text to append the sign
      * @return text with number sign appended
      */
     public static String addPositiveSign(double number, String text)
     {
-        if(number > 0)
+        if(StringUtils.isNotBlank(text))
         {
-            text = "+" + text;
+            if(number > 0)
+            {
+                text = "+" + text;
+            }
         }
-
         return text;
     }
 }
