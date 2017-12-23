@@ -3,8 +3,6 @@ package com.aaron.pseplanner.bean;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.util.Objects;
-
 /**
  * Created by aaron.asuncion on 4/12/2017.
  */

@@ -12,12 +12,10 @@ import com.aaron.pseplanner.R;
 import com.aaron.pseplanner.activity.CreateTradePlanActivity;
 import com.aaron.pseplanner.activity.TradePlanActivity;
 import com.aaron.pseplanner.bean.TickerDto;
-import com.aaron.pseplanner.bean.TradeDto;
 import com.aaron.pseplanner.constant.DataKey;
 import com.aaron.pseplanner.constant.IntentRequestCode;
 import com.aaron.pseplanner.listener.ListRowOnTouchChangeActivity;
 import com.aaron.pseplanner.service.FormatService;
-import com.aaron.pseplanner.service.LogManager;
 import com.aaron.pseplanner.service.implementation.DefaultFormatService;
 
 import java.util.ArrayList;

@@ -3,8 +3,8 @@ package com.aaron.pseplanner.service.implementation;
 import android.util.Pair;
 
 import com.aaron.pseplanner.bean.TickerDto;
-import com.aaron.pseplanner.response.Phisix.ResponsePhisixStock;
-import com.aaron.pseplanner.response.Phisix.ResponsePhisixStockWrapper;
+import com.aaron.pseplanner.response.phisix.ResponsePhisixStock;
+import com.aaron.pseplanner.response.phisix.ResponsePhisixStockWrapper;
 import com.aaron.pseplanner.service.CalculatorService;
 import com.aaron.pseplanner.service.LogManager;
 import com.aaron.pseplanner.service.PhisixService;

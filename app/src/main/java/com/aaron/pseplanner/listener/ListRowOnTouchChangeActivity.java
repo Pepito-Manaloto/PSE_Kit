@@ -20,7 +20,6 @@ import java.util.ArrayList;
  */
 public class ListRowOnTouchChangeActivity implements View.OnTouchListener
 {
-    private float historicX;
     private Activity activity;
     private Class<? extends Activity> activityClass;
     private DataKey extraKey;
@@ -79,18 +78,20 @@ public class ListRowOnTouchChangeActivity implements View.OnTouchListener
     @Override
     public boolean onTouch(View v, MotionEvent event)
     {
+        double historicX = 0;
+
         switch(event.getAction())
         {
             case MotionEvent.ACTION_DOWN:
             {
                 this.view.setBackgroundColor(this.highlightedColor);
-                this.historicX = event.getX();
+                historicX = event.getX();
                 break;
             }
             case MotionEvent.ACTION_UP:
             {
                 this.view.setBackgroundColor(Color.WHITE);
-                boolean touchMovedLessThan15Pixels = Math.abs(this.historicX - event.getX()) < 15;
+                boolean touchMovedLessThan15Pixels = Math.abs(historicX - event.getX()) < 15;
 
                 if(touchMovedLessThan15Pixels)
                 {

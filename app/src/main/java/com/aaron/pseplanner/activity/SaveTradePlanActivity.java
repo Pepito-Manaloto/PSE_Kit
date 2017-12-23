@@ -319,8 +319,7 @@ public abstract class SaveTradePlanActivity extends AppCompatActivity
     {
         int numOfTranches = entryTranchesLayout.getChildCount();
         Map<Pair<EditText, EditText>, Pair<String, String>> map = new LinkedHashMap<>(numOfTranches);
-
-        for(int i = 0, trancheNum = 1; i < numOfTranches; i++, trancheNum++)
+        for(int i = 0; i < numOfTranches; i++)
         {
             View entryTrancheContainer = entryTranchesLayout.getChildAt(i);
             EditText entryPrice = entryTrancheContainer.findViewById(R.id.edittext_entry_price);

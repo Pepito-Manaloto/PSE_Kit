@@ -1,4 +1,4 @@
-package com.aaron.pseplanner.response.Phisix;
+package com.aaron.pseplanner.response.phisix;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;

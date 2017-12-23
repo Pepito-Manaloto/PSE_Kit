@@ -1,6 +1,6 @@
 package com.aaron.pseplanner.service;
 
-import com.aaron.pseplanner.response.Phisix.ResponsePhisixStockWrapper;
+import com.aaron.pseplanner.response.phisix.ResponsePhisixStockWrapper;
 
 import io.reactivex.Single;
 import retrofit2.http.GET;

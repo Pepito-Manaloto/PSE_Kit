@@ -12,14 +12,11 @@ import com.aaron.pseplanner.activity.TradePlanActivity;
 import com.aaron.pseplanner.bean.TradeDto;
 import com.aaron.pseplanner.constant.DataKey;
 import com.aaron.pseplanner.constant.IntentRequestCode;
-import com.aaron.pseplanner.entity.Trade;
 import com.aaron.pseplanner.listener.ListRowOnTouchChangeActivity;
 import com.aaron.pseplanner.service.FormatService;
-import com.aaron.pseplanner.service.LogManager;
 import com.aaron.pseplanner.service.ViewUtils;
 import com.aaron.pseplanner.service.implementation.DefaultFormatService;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,23 +54,25 @@ public class TradePlanListAdapter extends FilterableArrayAdapter<TradeDto>
     public View getView(int position, View convertView, @NonNull ViewGroup parent)
     {
         ViewHolder holder;
+        View listRowView;
 
         if(convertView == null)
         {
-            convertView = this.activity.getLayoutInflater().inflate(R.layout.fragment_trade_plan_row, parent, false);
-            holder = new ViewHolder(convertView);
+            listRowView = this.activity.getLayoutInflater().inflate(R.layout.fragment_trade_plan_row, parent, false);
+            holder = new ViewHolder(listRowView);
 
-            convertView.setTag(holder);
+            listRowView.setTag(holder);
         }
         else
         {
+            listRowView = convertView;
             holder = (ViewHolder) convertView.getTag();
         }
 
         TradeDto tradeDto = getItem(position);
         holder.setTickerView(tradeDto, this.formatService, new ListRowOnTouchChangeActivity(this.activity, TradePlanActivity.class, DataKey.EXTRA_TRADE, tradeDto, DataKey.EXTRA_TRADE_LIST, this.tradeDtoList, IntentRequestCode.VIEW_TRADE_PLAN, holder.scroll));
 
-        return convertView;
+        return listRowView;
     }
 
     @Override

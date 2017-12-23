@@ -76,7 +76,8 @@ public final class ViewUtils
                 return "3rd";
             // Increment by one, because we start at 0.
             default:
-                return ++num + "th";
+                int ordinal = num + 1;
+                return ordinal + "th";
         }
     }
 
@@ -89,13 +90,12 @@ public final class ViewUtils
      */
     public static String addPositiveSign(double number, String text)
     {
-        if(StringUtils.isNotBlank(text))
+        String newText = text;
+        if(StringUtils.isNotBlank(newText) && number > 0)
         {
-            if(number > 0)
-            {
-                text = "+" + text;
-            }
+            newText = "+" + newText;
         }
-        return text;
+
+        return newText;
     }
 }

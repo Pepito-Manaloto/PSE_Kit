@@ -20,7 +20,6 @@ import com.aaron.pseplanner.service.ViewUtils;
 import com.aaron.pseplanner.service.implementation.DefaultCalculatorService;
 import com.aaron.pseplanner.service.implementation.DefaultFormatService;
 
-import butterknife.BindString;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 

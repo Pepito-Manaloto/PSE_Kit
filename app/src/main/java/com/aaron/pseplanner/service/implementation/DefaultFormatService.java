@@ -18,11 +18,11 @@ import java.util.Date;
  */
 public class DefaultFormatService implements FormatService
 {
-    private static int GREEN;
+    private int green;
 
     public DefaultFormatService(@NonNull Activity activity)
     {
-        GREEN = ContextCompat.getColor(activity, R.color.darkGreen);
+        green = ContextCompat.getColor(activity, R.color.darkGreen);
     }
 
     /**
@@ -71,7 +71,7 @@ public class DefaultFormatService implements FormatService
         {
             if(price > 0)
             {
-                text.setTextColor(GREEN);
+                text.setTextColor(green);
             }
             else if(price < 0)
             {

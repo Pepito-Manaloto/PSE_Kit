@@ -1,7 +1,7 @@
 package com.aaron.pseplanner.service;
 
-import com.aaron.pseplanner.response.PSE.ResponsePSEStock;
-import com.aaron.pseplanner.response.PSE.ResponsePSEStockInfo;
+import com.aaron.pseplanner.response.pse.ResponsePSEStock;
+import com.aaron.pseplanner.response.pse.ResponsePSEStockInfo;
 
 import java.util.List;
 

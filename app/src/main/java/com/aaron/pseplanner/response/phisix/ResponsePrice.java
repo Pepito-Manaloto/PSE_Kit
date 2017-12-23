@@ -1,4 +1,4 @@
-package com.aaron.pseplanner.response.Phisix;
+package com.aaron.pseplanner.response.phisix;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -13,7 +13,7 @@ class ResponsePrice
     private String currency;
     private double amount;
 
-    String getCurrency()
+    public String getCurrency()
     {
         return currency;
     }
@@ -23,7 +23,7 @@ class ResponsePrice
         this.currency = currency;
     }
 
-    double getAmount()
+    public double getAmount()
     {
         return amount;
     }

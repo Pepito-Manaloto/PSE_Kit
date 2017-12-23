@@ -125,7 +125,7 @@ public class CalculatorTabsFragment extends Fragment
          * Returns the corresponding fragment of the selected tab.
          */
         @Override
-        public android.support.v4.app.Fragment getItem(int position)
+        public Fragment getItem(int position)
         {
             return Tab.getFragment(position);
         }

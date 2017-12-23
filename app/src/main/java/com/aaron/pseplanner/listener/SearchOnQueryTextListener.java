@@ -1,14 +1,9 @@
 package com.aaron.pseplanner.listener;
 
 import android.support.v7.widget.SearchView;
-import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
 
-import com.aaron.pseplanner.activity.MainActivity;
 import com.aaron.pseplanner.adapter.FilterableArrayAdapter;
 import com.aaron.pseplanner.service.LogManager;
-
-import java.util.List;
 
 /**
  * Created by Aaron on 6/18/2017.

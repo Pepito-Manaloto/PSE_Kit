@@ -8,7 +8,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.WakefulBroadcastReceiver;
 
 import com.aaron.pseplanner.R;
-import com.aaron.pseplanner.activity.MainActivity;
 import com.aaron.pseplanner.service.LogManager;
 
 /**

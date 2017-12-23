@@ -50,5 +50,6 @@ public class OnScrollShowHideFastScroll implements AbsListView.OnScrollListener
     @Override
     public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount)
     {
+        // No Action
     }
 }

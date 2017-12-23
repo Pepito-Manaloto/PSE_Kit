@@ -3,7 +3,6 @@ package com.aaron.pseplanner.service;
 import android.util.Pair;
 
 import com.aaron.pseplanner.bean.TickerDto;
-import com.aaron.pseplanner.exception.HttpRequestException;
 
 import java.util.Collection;
 import java.util.Date;
