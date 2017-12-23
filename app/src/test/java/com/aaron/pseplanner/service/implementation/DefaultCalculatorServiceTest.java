@@ -100,7 +100,7 @@ public class DefaultCalculatorServiceTest
     @Test
     public void testGetDividendYield()
     {
-        assertEquals(221163.80, service.getDividendYield(89_540, new BigDecimal(2.47)).doubleValue(), DELTA);
+        assertEquals(221163.80, service.getDividendYield(89_540, new BigDecimal("2.47")).doubleValue(), DELTA);
     }
 
     @Test
@@ -121,14 +121,14 @@ public class DefaultCalculatorServiceTest
     @Test
     public void testGetStockbrokersCommission()
     {
-        BigDecimal commission = service.getStockbrokersCommission(new BigDecimal("4_546_902")).setScale(2, BigDecimal.ROUND_HALF_EVEN);
+        BigDecimal commission = service.getStockbrokersCommission(new BigDecimal("4546902")).setScale(2, BigDecimal.ROUND_HALF_EVEN);
         assertEquals(11_367.26, commission.doubleValue(), DELTA);
     }
 
     @Test
     public void testGetVatOfCommission()
     {
-        BigDecimal commission = service.getStockbrokersCommission(new BigDecimal("4_546_902")).setScale(2, BigDecimal.ROUND_HALF_EVEN);
+        BigDecimal commission = service.getStockbrokersCommission(new BigDecimal("4546902")).setScale(2, BigDecimal.ROUND_HALF_EVEN);
         BigDecimal commissionVat = service.getVatOfCommission(commission).setScale(2, BigDecimal.ROUND_HALF_EVEN);
         assertEquals(1_364.07, commissionVat.doubleValue(), DELTA);
     }
@@ -136,21 +136,21 @@ public class DefaultCalculatorServiceTest
     @Test
     public void testGetClearingFee()
     {
-        BigDecimal clearingFee = service.getClearingFee(new BigDecimal("4_546_902")).setScale(2, BigDecimal.ROUND_HALF_EVEN);
+        BigDecimal clearingFee = service.getClearingFee(new BigDecimal("4546902")).setScale(2, BigDecimal.ROUND_HALF_EVEN);
         assertEquals(454.69, clearingFee.doubleValue(), DELTA);
     }
 
     @Test
     public void testGetTransactionFee()
     {
-        BigDecimal transactionFee = service.getTransactionFee(new BigDecimal("4_546_902")).setScale(2, BigDecimal.ROUND_HALF_EVEN);
+        BigDecimal transactionFee = service.getTransactionFee(new BigDecimal("4546902")).setScale(2, BigDecimal.ROUND_HALF_EVEN);
         assertEquals(227.35, transactionFee.doubleValue(), DELTA);
     }
 
     @Test
     public void testGetSalesTax()
     {
-        BigDecimal salesTax = service.getSalesTax(new BigDecimal("4_546_902")).setScale(2, BigDecimal.ROUND_HALF_EVEN);
+        BigDecimal salesTax = service.getSalesTax(new BigDecimal("4546902")).setScale(2, BigDecimal.ROUND_HALF_EVEN);
         assertEquals(22_734.51, salesTax.doubleValue(), DELTA);
     }
 

@@ -55,23 +55,25 @@ public class TickerListAdapter extends FilterableArrayAdapter<TickerDto>
     public View getView(int position, View convertView, @NonNull ViewGroup parent)
     {
         ViewHolder holder;
+        View listRowView;
 
         if(convertView == null)
         {
-            convertView = this.activity.getLayoutInflater().inflate(R.layout.fragment_ticker_row, parent, false);
+            listRowView = this.activity.getLayoutInflater().inflate(R.layout.fragment_ticker_row, parent, false);
 
-            holder = new ViewHolder(convertView);
-            convertView.setTag(holder);
+            holder = new ViewHolder(listRowView);
+            listRowView.setTag(holder);
         }
         else
         {
+            listRowView = convertView;
             holder = (ViewHolder) convertView.getTag();
         }
 
         TickerDto tickerDto = getItem(position);
         holder.setTickerView(tickerDto, this.formatService, this.activity);
 
-        return convertView;
+        return listRowView;
     }
 
     @Override
@@ -88,6 +90,7 @@ public class TickerListAdapter extends FilterableArrayAdapter<TickerDto>
 
     /**
      * Holds the references of all the views in a list row, to improve performance by preventing repeated call of findViewById().
+     * Cannot be private to be able to use butterknife.
      */
     static class ViewHolder
     {
@@ -109,12 +112,12 @@ public class TickerListAdapter extends FilterableArrayAdapter<TickerDto>
         @BindView(R.id.list_row_layout)
         LinearLayout layout;
 
-        ViewHolder(View view)
+        private ViewHolder(View view)
         {
             ButterKnife.bind(this, view);
         }
 
-        void setTickerView(TickerDto tickerDto, FormatService service, Activity activity)
+        private void setTickerView(TickerDto tickerDto, FormatService service, Activity activity)
         {
             if(tickerDto.isHasTradePlan())
             {

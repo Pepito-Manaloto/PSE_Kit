@@ -89,6 +89,7 @@ public class TradePlanListAdapter extends FilterableArrayAdapter<TradeDto>
 
     /**
      * Holds the references of all the views in a list row, to improve performance by preventing repeated call of findViewById().
+     * Cannot be private to be able to use butterknife.
      */
     static class ViewHolder
     {
@@ -122,12 +123,12 @@ public class TradePlanListAdapter extends FilterableArrayAdapter<TradeDto>
         @BindView(R.id.horizontalscroll_list_row)
         HorizontalScrollView scroll;
 
-        ViewHolder(View view)
+        private ViewHolder(View view)
         {
             ButterKnife.bind(this, view);
         }
 
-        void setTickerView(TradeDto tradeDto, FormatService service, View.OnTouchListener listener)
+        private void setTickerView(TradeDto tradeDto, FormatService service, View.OnTouchListener listener)
         {
             scroll.setOnTouchListener(listener);
             stock.setText(tradeDto.getSymbol());

@@ -34,6 +34,7 @@ public class DefaultFormatServiceTest
     public void init()
     {
         Activity activity = mock(Activity.class);
+        when(activity.getColor(anyInt())).thenReturn(GREEN);
         Resources resources = mock(Resources.class);
         when(activity.getResources()).thenReturn(resources);
         when(resources.getColor(anyInt())).thenReturn(GREEN);
