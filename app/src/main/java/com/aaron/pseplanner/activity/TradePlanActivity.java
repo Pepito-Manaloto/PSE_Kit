@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -41,8 +42,7 @@ public class TradePlanActivity extends AppCompatActivity
     /**
      * Inflates the UI.
      *
-     * @param savedInstanceState
-     *            stores the current state: tradeDtoPlanList and selectedTradeDtoPlan
+     * @param savedInstanceState stores the current state: tradeDtoPlanList and selectedTradeDtoPlan
      */
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -57,54 +57,82 @@ public class TradePlanActivity extends AppCompatActivity
 
         if(savedInstanceState != null)
         {
-            this.tradeDtoPlanList = savedInstanceState.getParcelableArrayList(DataKey.EXTRA_TRADE_LIST.toString());
-            this.selectedTradeDtoPlan = savedInstanceState.getParcelable(DataKey.EXTRA_TRADE.toString());
+            setSelectedTradePlanAndListFromBundle(savedInstanceState);
         }
         else
         {
-            // Check if coming from TickerListFragment
             final TickerDto ticker = getIntent().getParcelableExtra(DataKey.EXTRA_TICKER.toString());
-            if(ticker != null)
-            {
-                PSEPlannerService pseService = new FacadePSEPlannerService(this);
+            boolean isPreviousIntentFromTickerListFragment = ticker != null;
 
-                this.tradeDtoPlanList = pseService.getTradePlanListFromDatabase().blockingGet();
-                for(TradeDto dto : this.tradeDtoPlanList)
-                {
-                    if(ticker.getSymbol().equals(dto.getSymbol()))
-                    {
-                        this.selectedTradeDtoPlan = dto;
-                        break;
-                    }
-                }
+            if(isPreviousIntentFromTickerListFragment)
+            {
+                setSelectedTradePlanAndListFromDatabase(ticker);
             }
             else
             {
-                this.tradeDtoPlanList = getIntent().getParcelableArrayListExtra(DataKey.EXTRA_TRADE_LIST.toString());
-                this.selectedTradeDtoPlan = getIntent().getParcelableExtra(DataKey.EXTRA_TRADE.toString());
+                setSelectedTradePlanAndListFromIntent(getIntent());
             }
         }
 
-        LogManager.debug(CLASS_NAME, "onCreate", "selected=" + (this.selectedTradeDtoPlan == null ? null : this.selectedTradeDtoPlan.toString()));
+        String selectedTradePlanString = this.selectedTradeDtoPlan == null ? null : this.selectedTradeDtoPlan.toString();
+        LogManager.debug(CLASS_NAME, "onCreate", "selected=" + selectedTradePlanString);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle(R.string.title_trade_plan);
+        setUpActionBar(toolbar);
+
+        this.pagerAdapter = new TradePlanPagerAdapter(getSupportFragmentManager(), this.tradeDtoPlanList, this.tradeDtoPlanList.size());
+        setUpViewPager(this.pagerAdapter);
+
+        this.tradePlanListUpdated = false;
+    }
+
+    private void setSelectedTradePlanAndListFromBundle(Bundle savedInstanceState)
+    {
+        this.tradeDtoPlanList = savedInstanceState.getParcelableArrayList(DataKey.EXTRA_TRADE_LIST.toString());
+        this.selectedTradeDtoPlan = savedInstanceState.getParcelable(DataKey.EXTRA_TRADE.toString());
+    }
+
+    private void setSelectedTradePlanAndListFromDatabase(TickerDto ticker)
+    {
+        PSEPlannerService pseService = new FacadePSEPlannerService(this);
+
+        this.tradeDtoPlanList = pseService.getTradePlanListFromDatabase().blockingGet();
+        for(TradeDto dto : this.tradeDtoPlanList)
+        {
+            if(ticker.getSymbol().equals(dto.getSymbol()))
+            {
+                this.selectedTradeDtoPlan = dto;
+                break;
+            }
+        }
+    }
+
+    private void setSelectedTradePlanAndListFromIntent(Intent intent)
+    {
+        this.tradeDtoPlanList = intent.getParcelableArrayListExtra(DataKey.EXTRA_TRADE_LIST.toString());
+        this.selectedTradeDtoPlan = intent.getParcelableExtra(DataKey.EXTRA_TRADE.toString());
+    }
+
+    private void setUpActionBar(Toolbar toolbar)
+    {
         setSupportActionBar(toolbar);
 
         ActionBar actionBar = getSupportActionBar();
         if(actionBar != null)
         {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setDisplayShowHomeEnabled(true);
         }
+    }
+
+    private void setUpViewPager(PagerAdapter pagerAdapter)
+    {
+        int indexOfSelectedTradePlan = getIndexOfTradeDtoInTradeDtoList(this.selectedTradeDtoPlan);
 
         ViewPager viewPager = findViewById(R.id.view_pager);
-        this.pagerAdapter = new TradePlanPagerAdapter(getSupportFragmentManager(), this.tradeDtoPlanList, this.tradeDtoPlanList.size());
-
-        viewPager.setAdapter(this.pagerAdapter);
-        viewPager.setCurrentItem(this.tradeDtoPlanList.indexOf(this.selectedTradeDtoPlan));
-
-        this.tradePlanListUpdated = false;
+        viewPager.setAdapter(pagerAdapter);
+        viewPager.setCurrentItem(indexOfSelectedTradePlan);
     }
 
     /**
@@ -115,7 +143,8 @@ public class TradePlanActivity extends AppCompatActivity
     {
         super.onSaveInstanceState(outState);
 
-        if(this.tradeDtoPlanList != null && !this.tradeDtoPlanList.isEmpty())
+        boolean tradeDtoPlanListNotEmpty = this.tradeDtoPlanList != null && !this.tradeDtoPlanList.isEmpty();
+        if(tradeDtoPlanListNotEmpty)
         {
             outState.putParcelableArrayList(DataKey.EXTRA_TRADE_LIST.toString(), this.tradeDtoPlanList);
         }
@@ -130,12 +159,9 @@ public class TradePlanActivity extends AppCompatActivity
     /**
      * Receives the result data from the previous fragment. Updates the application's state depending on the data received.
      *
-     * @param requestCode
-     *            the request code that determines the previous activity
-     * @param resultCode
-     *            the result of the previous activity or fragment
-     * @param data
-     *            the data that are returned from the previous activity or fragment
+     * @param requestCode the request code that determines the previous activity
+     * @param resultCode the result of the previous activity or fragment
+     * @param data the data that are returned from the previous activity or fragment
      */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data)
@@ -147,17 +173,35 @@ public class TradePlanActivity extends AppCompatActivity
 
         LogManager.debug(CLASS_NAME, "onActivityResult", "requestCode=" + requestCode + " resultCode=" + resultCode);
 
-        if(IntentRequestCode.UPDATE_TRADE_PLAN.code() == requestCode && data.hasExtra(DataKey.EXTRA_TRADE.toString()))
+        boolean requestFromUpdateTradePlan = IntentRequestCode.UPDATE_TRADE_PLAN.code() == requestCode;
+        boolean requestHasExtraTrade = data.hasExtra(DataKey.EXTRA_TRADE.toString());
+
+        if(requestFromUpdateTradePlan && requestHasExtraTrade)
         {
-            int index = this.tradeDtoPlanList.indexOf(this.selectedTradeDtoPlan);
+            int index = getIndexOfTradeDtoInTradeDtoList(this.selectedTradeDtoPlan);
+            TradeDto newlySelectedTradeDtoPlan = data.getParcelableExtra(DataKey.EXTRA_TRADE.toString());
 
-            this.selectedTradeDtoPlan = data.getParcelableExtra(DataKey.EXTRA_TRADE.toString());
-            LogManager.debug(CLASS_NAME, "onActivityResult", "Extra Trade: " + this.selectedTradeDtoPlan);
-
-            this.tradeDtoPlanList.set(index, this.selectedTradeDtoPlan);
-            this.pagerAdapter.notifyDataSetChanged();
-            this.tradePlanListUpdated = true;
+            updateSelectedTradeDtoPlanAndList(newlySelectedTradeDtoPlan, index);
+            notifyChangeAndSetUpdated();
         }
+    }
+
+    private int getIndexOfTradeDtoInTradeDtoList(TradeDto tradeDto)
+    {
+        return this.tradeDtoPlanList.indexOf(tradeDto);
+    }
+
+    private void updateSelectedTradeDtoPlanAndList(TradeDto newlySelectedTradeDtoPlan, int index)
+    {
+        LogManager.debug(CLASS_NAME, "setNewSelectedTradeDtoPlanInList", "Extra Trade: " + newlySelectedTradeDtoPlan);
+        this.selectedTradeDtoPlan = newlySelectedTradeDtoPlan;
+        this.tradeDtoPlanList.set(index, newlySelectedTradeDtoPlan);
+    }
+
+    private void notifyChangeAndSetUpdated()
+    {
+        this.pagerAdapter.notifyDataSetChanged();
+        this.tradePlanListUpdated = true;
     }
 
     /**
@@ -170,7 +214,7 @@ public class TradePlanActivity extends AppCompatActivity
         {
             case android.R.id.home:
             {
-                this.setActivityResult();
+                this.setActivityResultWithExtraTradeDtoPlanList();
                 return super.onOptionsItemSelected(item);
             }
             default:
@@ -200,11 +244,11 @@ public class TradePlanActivity extends AppCompatActivity
     @Override
     public void onBackPressed()
     {
-        this.setActivityResult();
+        this.setActivityResultWithExtraTradeDtoPlanList();
         super.onBackPressed();
     }
 
-    private void setActivityResult()
+    private void setActivityResultWithExtraTradeDtoPlanList()
     {
         if(this.tradePlanListUpdated)
         {
