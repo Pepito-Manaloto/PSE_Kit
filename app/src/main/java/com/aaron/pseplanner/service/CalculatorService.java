@@ -200,7 +200,7 @@ public interface CalculatorService
      * @param percentChange the percent change
      * @return BigDecimal the amount change from the previous price
      */
-    BigDecimal getCurrentAndPreviousPriceChange(double currentPrice, double percentChange);
+    BigDecimal getChangeBetweenCurrentAndPreviousPrice(double currentPrice, double percentChange);
 
     /**
      * Gets the previous price based on the current price and percent change.

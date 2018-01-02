@@ -306,38 +306,23 @@ public class DefaultCalculatorService implements CalculatorService
      * @return BigDecimal the amount change from the previous price
      * @throws IllegalArgumentException if the parameters are not positive
      */
-    @Deprecated
     @Override
-    public BigDecimal getCurrentAndPreviousPriceChange(double currentPrice, double percentChange)
+    public BigDecimal getChangeBetweenCurrentAndPreviousPrice(double currentPrice, double percentChange)
     {
-        if(currentPrice <= 0 || percentChange <= 0)
+        if(currentPrice <= 0 || percentChange < 0)
         {
             throw new IllegalArgumentException("Inputs to be calculated must be greater than zero");
         }
 
-        // Absolute value, so that result will always be negative, then computing for change will always add amount
-        BigDecimal percentChangeToDivide = BigDecimal.valueOf(percentChange).abs();
-        BigDecimal bdAmount = BigDecimal.valueOf(currentPrice);
-        BigDecimal change;
-
-        percentChangeToDivide = percentChangeToDivide.divide(ONE_HUNDRED, MathContext.DECIMAL64).subtract(BigDecimal.ONE);
-
-        // This will always result in a negative value, because the abs value of percentChange is used
-        change = bdAmount.divide(percentChangeToDivide, MathContext.DECIMAL64).add(bdAmount);
-
-        if(percentChange > 0)
-        {
-            // Remove negative sign, because the percent change is positive
-            return change.abs();
-        }
-        else if(percentChange < 0)
-        {
-            return change;
-        }
-        else
+        if(percentChange == 0)
         {
             return BigDecimal.ZERO;
         }
+
+        BigDecimal currentPriceBigDecimal = new BigDecimal(currentPrice);
+        BigDecimal previousPrice = getPreviousPrice(currentPrice, percentChange);
+
+        return currentPriceBigDecimal.subtract(previousPrice);
     }
 
     /**
@@ -348,28 +333,30 @@ public class DefaultCalculatorService implements CalculatorService
      * @return BigDecimal the previous price
      * @throws IllegalArgumentException if the parameters are not positive
      */
-    @Deprecated
     @Override
     public BigDecimal getPreviousPrice(double currentPrice, double percentChange)
     {
-        if(currentPrice <= 0 || percentChange <= 0)
+        if(currentPrice <= 0 || percentChange < 0)
         {
             throw new IllegalArgumentException("Inputs to be calculated must be greater than zero");
         }
 
-        BigDecimal change = getCurrentAndPreviousPriceChange(currentPrice, percentChange);
-        BigDecimal previousAmount = BigDecimal.valueOf(currentPrice);
-
-        if(percentChange > 0)
+        if(percentChange == 0)
         {
-            previousAmount = previousAmount.add(change);
-        }
-        else
-        {
-            previousAmount = previousAmount.subtract(change);
+            return BigDecimal.ZERO;
         }
 
-        return previousAmount;
+        BigDecimal oppositePercentChange = getOppositePercentChange(percentChange);
+        BigDecimal currentPriceBigDecimal = BigDecimal.valueOf(currentPrice);
+
+        return currentPriceBigDecimal.multiply(oppositePercentChange);
+    }
+
+    private BigDecimal getOppositePercentChange(double percentChange)
+    {
+        BigDecimal percentChangeToDivide = BigDecimal.valueOf(percentChange);
+        BigDecimal percentDecimal = percentChangeToDivide.divide(ONE_HUNDRED, MathContext.DECIMAL64);
+        return BigDecimal.ONE.subtract(percentDecimal);
     }
 
     /**

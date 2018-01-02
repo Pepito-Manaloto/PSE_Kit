@@ -155,6 +155,20 @@ public class DefaultCalculatorServiceTest
     }
 
     @Test
+    public void testGetChangeBetweenCurrentAndPreviousPrice()
+    {
+        BigDecimal change = service.getChangeBetweenCurrentAndPreviousPrice(13.5, 8.47).setScale(2, BigDecimal.ROUND_HALF_EVEN);
+        assertEquals(1.14, change.doubleValue(), DELTA);
+    }
+
+    @Test
+    public void testGetPreviousPrice()
+    {
+        BigDecimal previous = service.getPreviousPrice(13.5, 8.47).setScale(2, BigDecimal.ROUND_HALF_EVEN);
+        assertEquals(12.36, previous.doubleValue(), DELTA);
+    }
+
+    @Test
     public void testGetDaysBetween()
     {
         assertEquals(59, service.getDaysBetween(UnitTestUtils.newDate(2017, 12, 31), UnitTestUtils.newDate(2018, 2, 28)));

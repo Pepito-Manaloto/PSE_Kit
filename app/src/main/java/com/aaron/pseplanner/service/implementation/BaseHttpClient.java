@@ -19,6 +19,11 @@ public abstract class BaseHttpClient implements HttpClient
 {
     protected static Retrofit retrofit;
 
+    public BaseHttpClient()
+    {
+        setRetrofit(DEFAUT_TIMEOUT, DEFAUT_TIMEOUT, DEFAUT_TIMEOUT);
+    }
+
     public BaseHttpClient(long connectionTimeout, long readTimeout, long pingInterval)
     {
         setRetrofit(connectionTimeout, readTimeout, pingInterval);

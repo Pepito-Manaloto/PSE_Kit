@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-class ResponsePrice
+public class ResponsePrice
 {
     private String currency;
     private double amount;

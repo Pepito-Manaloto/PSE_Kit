@@ -74,7 +74,9 @@ public class TickerDto implements Stock, Parcelable, Comparable<TickerDto>
 
         TickerDto tickerDto = (TickerDto) o;
 
-        return getVolume() == tickerDto.getVolume() && getCurrentPrice().equals(tickerDto.getCurrentPrice()) && getChange().equals(tickerDto.getChange()) && getPercentChange().equals(tickerDto.getPercentChange()) && getSymbol().equals(tickerDto.getSymbol()) && getName().equals(tickerDto.getName());
+        return getVolume() == tickerDto.getVolume() && getCurrentPrice().equals(tickerDto.getCurrentPrice()) && getChange().equals(tickerDto.getChange())
+                && getPercentChange().equals(tickerDto.getPercentChange()) && getSymbol().equals(tickerDto.getSymbol())
+                && getName().equals(tickerDto.getName());
     }
 
     @Override
@@ -92,7 +94,8 @@ public class TickerDto implements Stock, Parcelable, Comparable<TickerDto>
     @Override
     public String toString()
     {
-        return "TickerDto{" + "symbol='" + symbol + '\'' + ", name='" + name + '\'' + ", volume=" + volume + ", currentPrice=" + currentPrice + ", change=" + change + ", percentChange=" + percentChange + ", hasTradePlan=" + hasTradePlan + '}';
+        return "TickerDto{" + "symbol='" + symbol + '\'' + ", name='" + name + '\'' + ", volume=" + volume + ", currentPrice=" + currentPrice + ", change="
+                + change + ", percentChange=" + percentChange + ", hasTradePlan=" + hasTradePlan + '}';
     }
 
     @Override
