@@ -33,6 +33,16 @@ public class PhisixHttpClient extends BaseHttpClient
     private PhisixService service;
     private CalculatorService calculatorService;
 
+    public PhisixHttpClient()
+    {
+        super();
+
+        this.service = retrofit.create(PhisixService.class);
+        this.calculatorService = new DefaultCalculatorService();
+
+        LogManager.debug(CLASS_NAME, "PhisixHttpClient", "Initialized with default timeouts and without proxy.");
+    }
+
     public PhisixHttpClient(long connectionTimeout, long readTimeout, long pingInterval)
     {
         super(connectionTimeout, readTimeout, pingInterval);
@@ -78,7 +88,7 @@ public class PhisixHttpClient extends BaseHttpClient
                 LogManager.debug(CLASS_NAME, "getTicker", "End");
                 ResponsePhisixStock phisixStock = phisixStockWrapper.getResponseStock();
 
-                return new Pair<>(convertResponsePhisixStockToTicker(phisixStock), phisixStockWrapper.getDateUpdated());
+                return Pair.create(convertResponsePhisixStockToTicker(phisixStock), phisixStockWrapper.getDateUpdated());
             }
         });
     }
@@ -109,7 +119,7 @@ public class PhisixHttpClient extends BaseHttpClient
 
                 LogManager.debug(CLASS_NAME, "getAllTickerList", "TickerDtoList size: " + tickerDtoList.size());
 
-                return new Pair<>(tickerDtoList, phisixStockWrapper.getDateUpdated());
+                return Pair.create(tickerDtoList, phisixStockWrapper.getDateUpdated());
             }
         });
     }
@@ -132,7 +142,7 @@ public class PhisixHttpClient extends BaseHttpClient
         final int size = symbols.size();
 
         Set<Single<ResponsePhisixStockWrapper>> singleSet = new HashSet<>(size);
-        for(String symbol: symbols)
+        for(String symbol : symbols)
         {
             // Each observable will run in parallel
             Single<ResponsePhisixStockWrapper> singleObservable = this.service.getStock(symbol).subscribeOn(Schedulers.io());
@@ -148,24 +158,27 @@ public class PhisixHttpClient extends BaseHttpClient
                 List<TickerDto> tickerList = new ArrayList<>(objects.length);
                 Date lastUpdated = null;
 
-                // How to resolve this type cast?
-                ResponsePhisixStockWrapper[] phisixStockWrappers = (ResponsePhisixStockWrapper[]) objects;
-                for(ResponsePhisixStockWrapper phisixStockWrapper: phisixStockWrappers)
+                for(Object object : objects)
                 {
+                    // TODO: How to resolve this type cast?
+                    ResponsePhisixStockWrapper phisixStockWrapper = (ResponsePhisixStockWrapper) object;
                     tickerList.add(convertResponsePhisixStockToTicker(phisixStockWrapper.getResponseStock()));
                     lastUpdated = phisixStockWrapper.getDateUpdated();
                 }
 
                 LogManager.debug(CLASS_NAME, "getTickerList", "Done with " + size + " async calls.");
-                return new Pair<>(tickerList, lastUpdated);
+                return Pair.create(tickerList, lastUpdated);
             }
         });
     }
 
     private TickerDto convertResponsePhisixStockToTicker(ResponsePhisixStock phisixStock)
     {
+        BigDecimal change = this.calculatorService.getChangeBetweenCurrentAndPreviousPrice(phisixStock.getAmount(), phisixStock.getPercentChange());
+
         // WARN: Id is null
-        return new TickerDto(null, phisixStock.getSymbol(), phisixStock.getName(), phisixStock.getVolume(), BigDecimal.valueOf(phisixStock.getAmount()), this.calculatorService.getCurrentAndPreviousPriceChange(phisixStock.getAmount(), phisixStock.getPercentChange()), BigDecimal.valueOf(phisixStock.getPercentChange()));
+        return new TickerDto(null, phisixStock.getSymbol(), phisixStock.getName(), phisixStock.getVolume(), BigDecimal.valueOf(phisixStock.getAmount()), change,
+                BigDecimal.valueOf(phisixStock.getPercentChange()));
     }
 
     @Override

@@ -573,14 +573,6 @@ public class DefaultCalculatorServiceTestException
     }
 
     @Test
-    public void getCurrentAndPreviousPriceChangeTestNegativeSecond()
-    {
-        expectedException.expect(IllegalArgumentException.class);
-        expectedException.expectMessage("Inputs to be calculated must be greater than zero");
-        this.service.getChangeBetweenCurrentAndPreviousPrice(10, -1);
-    }
-
-    @Test
     public void getCurrentAndPreviousPriceChangeTestNegativeBoth()
     {
         expectedException.expect(IllegalArgumentException.class);
@@ -602,14 +594,6 @@ public class DefaultCalculatorServiceTestException
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("Inputs to be calculated must be greater than zero");
         this.service.getPreviousPrice(-1, 10);
-    }
-
-    @Test
-    public void getPreviousPriceTestNegativeSecond()
-    {
-        expectedException.expect(IllegalArgumentException.class);
-        expectedException.expectMessage("Inputs to be calculated must be greater than zero");
-        this.service.getPreviousPrice(10, -1);
     }
 
     @Test

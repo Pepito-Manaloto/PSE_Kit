@@ -41,7 +41,12 @@ public class DefaultSettingsService implements SettingsService
     @Override
     public SettingsDto getSettings()
     {
-        if(this.sharedPreferences.contains(PSEPlannerPreference.AUTO_REFRESH.toString()) && this.sharedPreferences.contains(PSEPlannerPreference.REFRESH_INTERVAL.toString()) && this.sharedPreferences.contains(PSEPlannerPreference.NOTIFY_TARGET_PRICE.toString()) && this.sharedPreferences.contains(PSEPlannerPreference.NOTIFY_STOP_LOSS.toString()) && this.sharedPreferences.contains(PSEPlannerPreference.NOTIFY_TIME_STOP.toString()) && this.sharedPreferences.contains(PSEPlannerPreference.NOTIFY_SOUND_EFFECT.toString()))
+        if(this.sharedPreferences.contains(PSEPlannerPreference.AUTO_REFRESH.toString())
+                && this.sharedPreferences.contains(PSEPlannerPreference.REFRESH_INTERVAL.toString())
+                && this.sharedPreferences.contains(PSEPlannerPreference.NOTIFY_TARGET_PRICE.toString())
+                && this.sharedPreferences.contains(PSEPlannerPreference.NOTIFY_STOP_LOSS.toString())
+                && this.sharedPreferences.contains(PSEPlannerPreference.NOTIFY_TIME_STOP.toString())
+                && this.sharedPreferences.contains(PSEPlannerPreference.NOTIFY_SOUND_EFFECT.toString()))
         {
             boolean autoRefresh = this.sharedPreferences.getBoolean(PSEPlannerPreference.AUTO_REFRESH.toString(), false);
             int interval = this.sharedPreferences.getInt(PSEPlannerPreference.REFRESH_INTERVAL.toString(), 30);

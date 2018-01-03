@@ -1,6 +1,7 @@
 package com.aaron.pseplanner.app;
 
 import android.app.Application;
+import android.os.Build;
 
 import com.aaron.pseplanner.entity.DaoMaster;
 import com.aaron.pseplanner.entity.DaoSession;
@@ -33,16 +34,19 @@ public class PSEPlannerApplication extends Application
     {
         super.onCreate();
 
-        if(LeakCanary.isInAnalyzerProcess(this))
+        if(!isRoboUnitTest())
         {
-            // This process is dedicated to LeakCanary for heap analysis.
-            // You should not init your app in this process.
-            return;
-        }
-        LeakCanary.install(this);
+            if(LeakCanary.isInAnalyzerProcess(this))
+            {
+                // This process is dedicated to LeakCanary for heap analysis.
+                // You should not init your app in this process.
+                return;
+            }
+            LeakCanary.install(this);
 
-        // Access in Google Chrome url via -> chrome://inspect
-        Stetho.initializeWithDefaults(this);
+            // Access in Google Chrome url via -> chrome://inspect
+            Stetho.initializeWithDefaults(this);
+        }
 
         // Normal app init code...
         initDaoSession();
@@ -61,10 +65,15 @@ public class PSEPlannerApplication extends Application
         LogManager.debug(CLASS_NAME, "onCreate", "Initialized GreenDao database and session.");
     }
 
-    private void debugOn()
+    public static void debugOn()
     {
         QueryBuilder.LOG_SQL = true;
         QueryBuilder.LOG_VALUES = true;
+    }
+
+    public static boolean isRoboUnitTest()
+    {
+        return "robolectric".equals(Build.FINGERPRINT);
     }
 
     public DaoSession getDaoSession()

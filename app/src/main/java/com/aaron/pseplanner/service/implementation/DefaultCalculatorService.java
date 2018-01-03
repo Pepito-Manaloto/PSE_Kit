@@ -309,7 +309,7 @@ public class DefaultCalculatorService implements CalculatorService
     @Override
     public BigDecimal getChangeBetweenCurrentAndPreviousPrice(double currentPrice, double percentChange)
     {
-        if(currentPrice <= 0 || percentChange < 0)
+        if(currentPrice <= 0)
         {
             throw new IllegalArgumentException("Inputs to be calculated must be greater than zero");
         }
@@ -336,7 +336,7 @@ public class DefaultCalculatorService implements CalculatorService
     @Override
     public BigDecimal getPreviousPrice(double currentPrice, double percentChange)
     {
-        if(currentPrice <= 0 || percentChange < 0)
+        if(currentPrice <= 0)
         {
             throw new IllegalArgumentException("Inputs to be calculated must be greater than zero");
         }

@@ -162,6 +162,20 @@ public class DefaultCalculatorServiceTest
     }
 
     @Test
+    public void testGetChangeBetweenCurrentAndPreviousPriceNegative()
+    {
+        BigDecimal change = service.getChangeBetweenCurrentAndPreviousPrice(13.5, -8.47).setScale(2, BigDecimal.ROUND_HALF_EVEN);
+        assertEquals(-1.14, change.doubleValue(), DELTA);
+    }
+
+    @Test
+    public void testGetPreviousPriceNegative()
+    {
+        BigDecimal previous = service.getPreviousPrice(13.5, -8.47).setScale(2, BigDecimal.ROUND_HALF_EVEN);
+        assertEquals(14.64, previous.doubleValue(), DELTA);
+    }
+
+    @Test
     public void testGetPreviousPrice()
     {
         BigDecimal previous = service.getPreviousPrice(13.5, 8.47).setScale(2, BigDecimal.ROUND_HALF_EVEN);
