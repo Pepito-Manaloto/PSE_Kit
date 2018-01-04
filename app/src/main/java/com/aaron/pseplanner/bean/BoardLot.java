@@ -49,11 +49,22 @@ public enum BoardLot
      */
     public static boolean isValidBoardLot(BigDecimal price, long shares)
     {
+        boolean sharesLessThanHighestBoardlotMinimumShares = shares < FIVE_THOUSAND.getMinimumShares();
+        boolean priceIsNullOrLessThanEqualToZero = price == null || price.signum() <= 0;
+
+        if(priceIsNullOrLessThanEqualToZero || sharesLessThanHighestBoardlotMinimumShares)
+        {
+            return false;
+        }
+
         for(BoardLot bl : BoardLot.values())
         {
             if(bl.priceWithinRange(price))
             {
-                return shares % bl.getMinimumShares() == 0;
+                boolean sharesIsValidMinimumShares = shares % bl.getMinimumShares() == 0;
+                boolean priceIsValidFluctuation = price.remainder(bl.getPriceFluctuation()).compareTo(BigDecimal.ZERO) == 0;
+
+                return sharesIsValidMinimumShares && priceIsValidFluctuation;
             }
         }
 
@@ -68,7 +79,7 @@ public enum BoardLot
      */
     public boolean priceWithinRange(BigDecimal price)
     {
-        return price.compareTo(getLowerRange()) >= 0 && price.compareTo(getUpperRange()) <= 0;
+        return price != null && price.compareTo(getLowerRange()) >= 0 && price.compareTo(getUpperRange()) <= 0;
     }
 
     public BigDecimal getLowerRange()

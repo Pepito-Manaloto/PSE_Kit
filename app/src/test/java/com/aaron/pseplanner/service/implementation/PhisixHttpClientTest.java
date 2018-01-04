@@ -33,7 +33,7 @@ public class PhisixHttpClientTest extends AbstractHttpClientTest
     private PhisixHttpClient client;
 
     @Test
-    public void testGetTicker()
+    public void getTickerTest()
     {
         Date dateUpdated = UnitTestUtils.newDateTime(2018, 5, 17, 9, 45, 21);
         String name = "Alsons Consolidated Resource";
@@ -52,7 +52,7 @@ public class PhisixHttpClientTest extends AbstractHttpClientTest
     }
 
     @Test
-    public void testGetTickerNullSymbol()
+    public void getTickerTestNullSymbol()
     {
         Date dateUpdated = UnitTestUtils.newDateTime(2018, 5, 17, 9, 45, 21);
         String name = "Alsons Consolidated Resource";
@@ -69,7 +69,7 @@ public class PhisixHttpClientTest extends AbstractHttpClientTest
     }
 
     @Test
-    public void testGetTickerEmptySymbol()
+    public void getTickerTestEmptySymbol()
     {
         Date dateUpdated = UnitTestUtils.newDateTime(2018, 5, 17, 9, 45, 21);
         String name = "Alsons Consolidated Resource";
@@ -86,7 +86,7 @@ public class PhisixHttpClientTest extends AbstractHttpClientTest
     }
 
     @Test
-    public void testGetAllTickerList()
+    public void getAllTickerListTest()
     {
         Date dateUpdated = UnitTestUtils.newDateTime(2018, 5, 17, 9, 45, 21);
         List<String> nameList = Arrays.asList("Alsons Consolidated Resource", "Calata Corporation", "Eagle Cement Corporation", "Philippine National Bank",
@@ -107,7 +107,7 @@ public class PhisixHttpClientTest extends AbstractHttpClientTest
     }
 
     @Test
-    public void testGetTickerList()
+    public void getTickerListTest()
     {
         Date dateUpdated = UnitTestUtils.newDateTime(2018, 5, 17, 9, 45, 21);
         List<String> nameList = Arrays.asList("Alsons Consolidated Resource", "Calata Corporation", "Eagle Cement Corporation", "Philippine National Bank",
@@ -129,7 +129,7 @@ public class PhisixHttpClientTest extends AbstractHttpClientTest
     }
 
     @Test
-    public void testGetTickerListEmptySymbol()
+    public void getTickerListTestEmptySymbol()
     {
         Date dateUpdated = UnitTestUtils.newDateTime(2018, 5, 17, 9, 45, 21);
         List<String> nameList = Arrays.asList("Alsons Consolidated Resource", "Calata Corporation", "Eagle Cement Corporation", "Philippine National Bank",
@@ -148,7 +148,7 @@ public class PhisixHttpClientTest extends AbstractHttpClientTest
     }
 
     @Test
-    public void testGetTickerListNullSymbol()
+    public void getTickerListTestNullSymbol()
     {
         Date dateUpdated = UnitTestUtils.newDateTime(2018, 5, 17, 9, 45, 21);
         List<String> nameList = Arrays.asList("Alsons Consolidated Resource", "Calata Corporation", "Eagle Cement Corporation", "Philippine National Bank",
