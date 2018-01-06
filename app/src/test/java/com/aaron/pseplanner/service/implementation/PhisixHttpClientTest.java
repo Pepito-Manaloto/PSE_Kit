@@ -33,7 +33,7 @@ public class PhisixHttpClientTest extends AbstractHttpClientTest
     private PhisixHttpClient client;
 
     @Test
-    public void getTickerTest()
+    public void givenAStock_whenGetTickerWithTheStockSymbol_thenTheStockShouldBeReturned()
     {
         Date dateUpdated = UnitTestUtils.newDateTime(2018, 5, 17, 9, 45, 21);
         String name = "Alsons Consolidated Resource";
@@ -52,7 +52,7 @@ public class PhisixHttpClientTest extends AbstractHttpClientTest
     }
 
     @Test
-    public void getTickerTestNullSymbol()
+    public void givenAStock_whenGetTickerWithNullSymbol_thenIllegalArgumentExceptionIsThrownWithMessage()
     {
         Date dateUpdated = UnitTestUtils.newDateTime(2018, 5, 17, 9, 45, 21);
         String name = "Alsons Consolidated Resource";
@@ -69,7 +69,7 @@ public class PhisixHttpClientTest extends AbstractHttpClientTest
     }
 
     @Test
-    public void getTickerTestEmptySymbol()
+    public void givenAStock_whenGetTickerWithEmptySymbol_thenIllegalArgumentExceptionIsThrownWithMessage()
     {
         Date dateUpdated = UnitTestUtils.newDateTime(2018, 5, 17, 9, 45, 21);
         String name = "Alsons Consolidated Resource";
@@ -86,7 +86,7 @@ public class PhisixHttpClientTest extends AbstractHttpClientTest
     }
 
     @Test
-    public void getAllTickerListTest()
+    public void givenAListOfStocks_whenGetAllTickers_thenTheListOfStocksShouldBeReturned()
     {
         Date dateUpdated = UnitTestUtils.newDateTime(2018, 5, 17, 9, 45, 21);
         List<String> nameList = Arrays.asList("Alsons Consolidated Resource", "Calata Corporation", "Eagle Cement Corporation", "Philippine National Bank",
@@ -107,7 +107,7 @@ public class PhisixHttpClientTest extends AbstractHttpClientTest
     }
 
     @Test
-    public void getTickerListTest()
+    public void givenAListOfStocks_whenGetTickerListWithTheListOfStockSymbols_thenTheListOfStocksShouldBeReturned()
     {
         Date dateUpdated = UnitTestUtils.newDateTime(2018, 5, 17, 9, 45, 21);
         List<String> nameList = Arrays.asList("Alsons Consolidated Resource", "Calata Corporation", "Eagle Cement Corporation", "Philippine National Bank",
@@ -129,7 +129,7 @@ public class PhisixHttpClientTest extends AbstractHttpClientTest
     }
 
     @Test
-    public void getTickerListTestEmptySymbol()
+    public void givenAListOfStocks_whenGetTickerListWithEmptyList_thenIllegalArgumentExceptionIsThrownWithMessage()
     {
         Date dateUpdated = UnitTestUtils.newDateTime(2018, 5, 17, 9, 45, 21);
         List<String> nameList = Arrays.asList("Alsons Consolidated Resource", "Calata Corporation", "Eagle Cement Corporation", "Philippine National Bank",
@@ -148,7 +148,7 @@ public class PhisixHttpClientTest extends AbstractHttpClientTest
     }
 
     @Test
-    public void getTickerListTestNullSymbol()
+    public void givenAListOfStocks_whenGetTickerListWithNullList_thenIllegalArgumentExceptionIsThrownWithMessage()
     {
         Date dateUpdated = UnitTestUtils.newDateTime(2018, 5, 17, 9, 45, 21);
         List<String> nameList = Arrays.asList("Alsons Consolidated Resource", "Calata Corporation", "Eagle Cement Corporation", "Philippine National Bank",

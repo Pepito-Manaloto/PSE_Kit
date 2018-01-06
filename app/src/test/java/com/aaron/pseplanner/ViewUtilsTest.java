@@ -23,7 +23,7 @@ public class ViewUtilsTest
     public ExpectedException expectedException = ExpectedException.none();
 
     @Test
-    public void getEditTextMaxLengthTest() throws Exception
+    public void givenEditText_whenGetEditTextMaxLength_thenShouldReturnMaxLength() throws Exception
     {
         UnitTestUtils.setFinalStatic(Build.VERSION.class.getField("SDK_INT"), Short.MAX_VALUE);
 
@@ -38,7 +38,7 @@ public class ViewUtilsTest
     }
 
     @Test
-    public void getOrdinalNumberTestNegative()
+    public void givenNegativeNumber_whenGetOrdinalNumber_thenShouldThrowIllegalArgumentExceptionWithMessage()
     {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("Number cannot be less than zero");
@@ -46,25 +46,25 @@ public class ViewUtilsTest
     }
 
     @Test
-    public void getOrdinalNumberTestZero()
+    public void givenNumberZero_whenGetOrdinalNumber_thenShouldReturnFirstOrdinalNumber()
     {
         assertEquals("1st", ViewUtils.getOrdinalNumber(0));
     }
 
     @Test
-    public void getOrdinalNumberTestOne()
+    public void givenNumberOne_whenGetOrdinalNumber_thenShouldReturnSecondOrdinalNumber()
     {
         assertEquals("2nd", ViewUtils.getOrdinalNumber(1));
     }
 
     @Test
-    public void getOrdinalNumberTestTwo()
+    public void givenNumberThree_whenGetOrdinalNumber_thenShouldReturnThirdOrdinalNumber()
     {
         assertEquals("3rd", ViewUtils.getOrdinalNumber(2));
     }
 
     @Test
-    public void getOrdinalNumberTest_GreaterThanTwo()
+    public void givenNumbersFromThreeToNinetyNine_whenGetOrdinalNumber_thenShouldReturnCorrectOrdinalNumbers()
     {
         for(int i = 3; i < 100; i++)
         {
@@ -74,21 +74,21 @@ public class ViewUtilsTest
     }
 
     @Test
-    public void addPositiveSignTestZero()
+    public void givenZeroNumberAndText_whenCallingAddPositiveSign_thenShouldReturnUnchangedText()
     {
         String text = "123";
         assertEquals(text, ViewUtils.addPositiveSign(0, text));
     }
 
     @Test
-    public void addPositiveSignTestNegative()
+    public void givenNegativeNumberAndText_whenCallingAddPositiveSign_thenShouldReturnUnchangedText()
     {
         String text = "123";
         assertEquals(text, ViewUtils.addPositiveSign(-1, text));
     }
 
     @Test
-    public void addPositiveSignTest()
+    public void givenPositiveNumberAndText_whenCallingAddPositiveSign_thenShouldReturnTextWithPlusSignAppended()
     {
         String text = "123";
         assertEquals("+" + text, ViewUtils.addPositiveSign(10, text));

@@ -90,11 +90,6 @@ public class SettingsFragment extends Fragment
             this.settingsDto = this.service.getSettings();
         }
 
-        if(this.settingsDto == null)
-        {
-            this.settingsDto = new SettingsDto();
-        }
-
         LogManager.debug(CLASS_NAME, "onCreate", "");
     }
 

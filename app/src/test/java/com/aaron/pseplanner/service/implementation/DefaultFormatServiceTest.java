@@ -43,79 +43,79 @@ public class DefaultFormatServiceTest
     }
 
     @Test
-    public void formatPriceTestZero()
+    public void givenZeroPrice_whenFormatPrice_thenShouldReturnZero()
     {
         assertEquals("0", this.service.formatPrice(0));
     }
 
     @Test
-    public void formatPriceTestNegative()
+    public void givenNegativePrice_whenFormatPrice_thenShouldReturnNegativePriceRoundedDownToTwoDecimalPlacesWithCommas()
     {
-        assertEquals("-10,000,456.12", this.service.formatPrice(-10000456.12934678));
+        assertEquals("-10,000,456.12", this.service.formatPrice(-10_000_456.12934678));
     }
 
     @Test
-    public void formatPriceTestPositive()
+    public void givenPositivePrice_whenFormatPrice_thenShouldReturnPriceRoundedDownToTwoDecimalPlacesWithCommas()
     {
-        assertEquals("10,000,456.12", this.service.formatPrice(10000456.12934678));
+        assertEquals("10,000,456.12", this.service.formatPrice(10_000_456.12934678));
     }
 
     @Test
-    public void formatStockPriceTestZero()
+    public void givenZeroPrice_whenFormatStockPrice_thenShouldReturnZero()
     {
         assertEquals("0", this.service.formatStockPrice(0));
     }
 
     @Test
-    public void formatStockPriceTestNegative()
+    public void givenNegativePrice_whenFormatStockPrice_thenShouldReturnNegativePriceRoundedDownToFourDecimalPlacesWithCommas()
     {
         assertEquals("-10,000.1234", this.service.formatStockPrice(-10000.12349678));
     }
 
     @Test
-    public void formatStockPriceTestPositive()
+    public void givenPositivePrice_whenFormatStockPrice_thenShouldReturnPriceRoundedDownToFourDecimalPlacesWithCommas()
     {
         assertEquals("10,000.1234", this.service.formatStockPrice(10000.12349678));
     }
 
     @Test
-    public void formatPercentTestZero()
+    public void givenZeroPercent_whenFormatPercent_thenShouldReturnZeroNumberWithPercentSignAppended()
     {
         assertEquals("0%", this.service.formatPercent(0));
     }
 
     @Test
-    public void formatPercentTestNegative()
+    public void givenNegativePercent_whenFormatPercent_thenShouldReturnTheNegativeNumberRoundedDownToTwoDecimalPlacesWithPercentSignAppended()
     {
         assertEquals("-10.12%", this.service.formatPercent(-10.12934678));
     }
 
     @Test
-    public void formatPercentTestPositive()
+    public void givenPositivePercent_whenFormatPercent_thenShouldReturnTheNegativeNumberRoundedDownToTwoDecimalPlacesWithPercentSignAppended()
     {
         assertEquals("10.12%", this.service.formatPercent(10.12934678));
     }
 
     @Test
-    public void formatSharesTestZero()
+    public void givenZeroShares_whenFormatShares_thenShouldReturnZeroShares()
     {
         assertEquals("0", this.service.formatShares(0));
     }
 
     @Test
-    public void formatSharesTestNegative()
+    public void givenNegativeShares_whenFormatShares_thenShouldReturnTheNegativeSharesWithCommas()
     {
         assertEquals("3,120,000,456", this.service.formatShares(-3120000456L));
     }
 
     @Test
-    public void formatSharesTestPositive()
+    public void givenPositiveShares_whenFormatShares_thenShouldReturnTheNegativeSharesWithCommas()
     {
         assertEquals("3,120,000,456", this.service.formatShares(3120000456L));
     }
 
     @Test
-    public void formatTextColorTestZero()
+    public void givenTextViewAndZeroPrice_whenFormatTextColor_thenSetTextColorIsCalledOnceWithBlackParameter()
     {
         TextView view = mock(TextView.class);
 
@@ -124,7 +124,7 @@ public class DefaultFormatServiceTest
     }
 
     @Test
-    public void formatTextColorTestPositive()
+    public void givenTextViewAndPositivePrice_whenFormatTextColor_thenSetTextColorIsCalledOnceWithGreenParameter()
     {
         TextView view = mock(TextView.class);
 
@@ -133,7 +133,7 @@ public class DefaultFormatServiceTest
     }
 
     @Test
-    public void formatTextColorTestNegative()
+    public void givenTextViewAndNegativePrice_whenFormatTextColor_thenSetTextColorIsCalledOnceWithRedParameter()
     {
         TextView view = mock(TextView.class);
 
@@ -142,28 +142,28 @@ public class DefaultFormatServiceTest
     }
 
     @Test
-    public void formatDateTest()
+    public void givenDate_whenFormatDate_thenShouldReturnFormattedDate()
     {
         Date date = UnitTestUtils.newDate(2000, 12, 25);
         assertEquals("December 25, 2000", this.service.formatDate(date));
     }
 
     @Test
-    public void formatLastUpdatedTest()
+    public void givenDate_whenFormatLastUpdated_thenShouldReturnFormattedDate()
     {
         Date date = UnitTestUtils.newDateTime(2018, 11, 15, 14, 33, 52);
         assertEquals("November 15, Thursday 02:33:52 PM", this.service.formatLastUpdated(date));
     }
 
     @Test
-    public void formatLastUpdatedTest_LosAngelesTimezone()
+    public void givenDateInLosAngelesAmericaTimeZone_whenFormatLastUpdated_thenShouldReturnFormattedDateInManilaPhilippinesTimeZone()
     {
         Date date = UnitTestUtils.newDateTime(2018, 4, 22, 10, 6, 11, TimeZone.getTimeZone("America/Los_Angeles"));
         assertEquals("April 23, Monday 01:06:11 AM", this.service.formatLastUpdated(date));
     }
 
     @Test
-    public void formatLastUpdatedTest_SydneyTimezone()
+    public void givenDateInSydneyAustraliaTimeZone_whenFormatLastUpdated_thenShouldReturnFormattedDateInManilaPhilippinesTimeZone()
     {
         Date date = UnitTestUtils.newDateTime(2018, 2, 1, 2, 57, 8, TimeZone.getTimeZone("Australia/Sydney"));
         assertEquals("January 31, Wednesday 11:57:08 PM", this.service.formatLastUpdated(date));

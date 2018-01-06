@@ -1,6 +1,5 @@
 package com.aaron.pseplanner.service.implementation;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
@@ -17,25 +16,28 @@ public class DefaultSettingsService implements SettingsService
 {
     private SharedPreferences sharedPreferences;
 
-    public DefaultSettingsService(@NonNull Activity activity)
+    public DefaultSettingsService(@NonNull Context context)
     {
-        this.sharedPreferences = activity.getSharedPreferences(PSEPlannerPreference.class.getSimpleName(), Context.MODE_PRIVATE);
+        this.sharedPreferences = context.getSharedPreferences(PSEPlannerPreference.class.getSimpleName(), Context.MODE_PRIVATE);
     }
 
     @Override
     public void saveSettings(SettingsDto dto)
     {
-        SharedPreferences.Editor editor = this.sharedPreferences.edit();
-        editor.putBoolean(PSEPlannerPreference.AUTO_REFRESH.toString(), dto.isAutoRefresh());
-        editor.putInt(PSEPlannerPreference.REFRESH_INTERVAL.toString(), dto.getRefreshInterval());
-        editor.putBoolean(PSEPlannerPreference.NOTIFY_TARGET_PRICE.toString(), dto.isNotifyTargetPrice());
-        editor.putBoolean(PSEPlannerPreference.NOTIFY_STOP_LOSS.toString(), dto.isNotifyStopLoss());
-        editor.putBoolean(PSEPlannerPreference.NOTIFY_TIME_STOP.toString(), dto.isNotiftyTimeStop());
-        editor.putBoolean(PSEPlannerPreference.NOTIFY_SOUND_EFFECT.toString(), dto.isNotifySoundEffect());
-        editor.putString(PSEPlannerPreference.PROXY_HOST.toString(), dto.getProxyHost());
-        editor.putInt(PSEPlannerPreference.PROXY_PORT.toString(), dto.getProxyPort());
+        if(dto != null)
+        {
+            SharedPreferences.Editor editor = this.sharedPreferences.edit();
+            editor.putBoolean(PSEPlannerPreference.AUTO_REFRESH.toString(), dto.isAutoRefresh());
+            editor.putInt(PSEPlannerPreference.REFRESH_INTERVAL.toString(), dto.getRefreshInterval());
+            editor.putBoolean(PSEPlannerPreference.NOTIFY_TARGET_PRICE.toString(), dto.isNotifyTargetPrice());
+            editor.putBoolean(PSEPlannerPreference.NOTIFY_STOP_LOSS.toString(), dto.isNotifyStopLoss());
+            editor.putBoolean(PSEPlannerPreference.NOTIFY_TIME_STOP.toString(), dto.isNotiftyTimeStop());
+            editor.putBoolean(PSEPlannerPreference.NOTIFY_SOUND_EFFECT.toString(), dto.isNotifySoundEffect());
+            editor.putString(PSEPlannerPreference.PROXY_HOST.toString(), dto.getProxyHost());
+            editor.putInt(PSEPlannerPreference.PROXY_PORT.toString(), dto.getProxyPort());
 
-        editor.apply();
+            editor.apply();
+        }
     }
 
     @Override
@@ -60,6 +62,6 @@ public class DefaultSettingsService implements SettingsService
             return new SettingsDto(autoRefresh, interval, targetPrice, stopLoss, timeStop, soundEffect, proxyHost, proxyPort);
         }
 
-        return null;
+        return new SettingsDto();
     }
 }

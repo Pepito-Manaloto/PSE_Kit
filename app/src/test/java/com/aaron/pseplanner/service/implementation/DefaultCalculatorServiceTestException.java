@@ -29,7 +29,7 @@ public class DefaultCalculatorServiceTestException
     }
 
     @Test
-    public void getBuyGrossAmountTestNull()
+    public void givenNullBuyPriceAndShares_whenGetBuyGrossAmount_thenShouldThrowIllegalArgumentExceptionWithMessage()
     {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("Inputs to be calculated must be greater than zero");
@@ -37,7 +37,7 @@ public class DefaultCalculatorServiceTestException
     }
 
     @Test
-    public void getBuyGrossAmountTestZero()
+    public void givenZeroBuyPriceAndShares_whenGetBuyGrossAmount_thenShouldThrowIllegalArgumentExceptionWithMessage()
     {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("Inputs to be calculated must be greater than zero");
@@ -45,7 +45,7 @@ public class DefaultCalculatorServiceTestException
     }
 
     @Test
-    public void getBuyGrossAmountTestNegative()
+    public void givenNegativeBuyPriceAndShares_whenGetBuyGrossAmount_thenShouldThrowIllegalArgumentExceptionWithMessage()
     {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("Inputs to be calculated must be greater than zero");
@@ -53,7 +53,7 @@ public class DefaultCalculatorServiceTestException
     }
 
     @Test
-    public void getBuyGrossAmountTestSharesZero()
+    public void givenBuyPriceAndZeroShares_whenGetBuyGrossAmount_thenShouldThrowIllegalArgumentExceptionWithMessage()
     {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("Shares must be greater than zero");
@@ -61,7 +61,7 @@ public class DefaultCalculatorServiceTestException
     }
 
     @Test
-    public void getBuyGrossAmountTestSharesNegative()
+    public void givenBuyPriceAndNegativeShares_whenGetBuyGrossAmount_thenShouldThrowIllegalArgumentExceptionWithMessage()
     {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("Shares must be greater than zero");
@@ -69,7 +69,7 @@ public class DefaultCalculatorServiceTestException
     }
 
     @Test
-    public void getBuyNetAmountTestNull()
+    public void givenNullBuyPriceAndShares_whenGetBuyNetAmount_thenShouldThrowIllegalArgumentExceptionWithMessage()
     {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("Inputs to be calculated must be greater than zero");
@@ -77,7 +77,7 @@ public class DefaultCalculatorServiceTestException
     }
 
     @Test
-    public void getBuyNetAmountTestZero()
+    public void givenZeroBuyPriceAndShares_whenGetBuyNetAmount_thenShouldThrowIllegalArgumentExceptionWithMessage()
     {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("Inputs to be calculated must be greater than zero");
@@ -85,7 +85,7 @@ public class DefaultCalculatorServiceTestException
     }
 
     @Test
-    public void getBuyNetAmountTestNegative()
+    public void givenNegativeBuyPriceAndShares_whenGetBuyNetAmount_thenShouldThrowIllegalArgumentExceptionWithMessage()
     {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("Inputs to be calculated must be greater than zero");
@@ -93,7 +93,7 @@ public class DefaultCalculatorServiceTestException
     }
 
     @Test
-    public void getBuyNetAmountTestSharesZero()
+    public void givenBuyPriceAndZeroShares_whenGetBuyNetAmount_thenShouldThrowIllegalArgumentExceptionWithMessage()
     {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("Shares must be greater than zero");
@@ -101,7 +101,7 @@ public class DefaultCalculatorServiceTestException
     }
 
     @Test
-    public void getBuyNetAmountTestSharesNegative()
+    public void givenBuyPriceAndNegativeShares_whenGetBuyNetAmount_thenShouldThrowIllegalArgumentExceptionWithMessage()
     {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("Shares must be greater than zero");
@@ -109,7 +109,7 @@ public class DefaultCalculatorServiceTestException
     }
 
     @Test
-    public void getAveragePriceAfterBuyTestNull()
+    public void givenNullBuyPrice_whenGetAveragePriceAfterBuy_thenShouldThrowIllegalArgumentExceptionWithMessage()
     {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("Inputs to be calculated must be greater than zero");
@@ -117,7 +117,7 @@ public class DefaultCalculatorServiceTestException
     }
 
     @Test
-    public void getAveragePriceAfterBuyTestZero()
+    public void givenZeroBuyPrice_whenGetAveragePriceAfterBuy_thenShouldThrowIllegalArgumentExceptionWithMessage()
     {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("Inputs to be calculated must be greater than zero");
@@ -125,7 +125,7 @@ public class DefaultCalculatorServiceTestException
     }
 
     @Test
-    public void getAveragePriceAfterBuyTestNegative()
+    public void givenNegativeBuyPrice_whenGetAveragePriceAfterBuy_thenShouldThrowIllegalArgumentExceptionWithMessage()
     {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("Inputs to be calculated must be greater than zero");
@@ -133,7 +133,7 @@ public class DefaultCalculatorServiceTestException
     }
 
     @Test
-    public void getPriceToBreakEvenTestNull()
+    public void givenNullBuyPrice_whenGetPriceToBreakEven_thenShouldThrowIllegalArgumentExceptionWithMessage()
     {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("Inputs to be calculated must be greater than zero");
@@ -141,7 +141,7 @@ public class DefaultCalculatorServiceTestException
     }
 
     @Test
-    public void getPriceToBreakEvenTestZero()
+    public void givenZeroBuyPrice_whenGetPriceToBreakEven_thenShouldThrowIllegalArgumentExceptionWithMessage()
     {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("Inputs to be calculated must be greater than zero");
@@ -149,7 +149,7 @@ public class DefaultCalculatorServiceTestException
     }
 
     @Test
-    public void getPriceToBreakEvenTestNegative()
+    public void givenNegativeBuyPrice_whenGetPriceToBreakEven_thenShouldThrowIllegalArgumentExceptionWithMessage()
     {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("Inputs to be calculated must be greater than zero");
@@ -157,7 +157,7 @@ public class DefaultCalculatorServiceTestException
     }
 
     @Test
-    public void getSellGrossAmountTestNull()
+    public void givenNullSellPriceAndShares_whenGetSellGrossAmount_thenShouldThrowIllegalArgumentExceptionWithMessage()
     {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("Inputs to be calculated must be greater than zero");
@@ -165,7 +165,7 @@ public class DefaultCalculatorServiceTestException
     }
 
     @Test
-    public void getSellGrossAmountTestZero()
+    public void givenZeroSellPriceAndShares_whenGetSellGrossAmount_thenShouldThrowIllegalArgumentExceptionWithMessage()
     {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("Inputs to be calculated must be greater than zero");
@@ -173,7 +173,7 @@ public class DefaultCalculatorServiceTestException
     }
 
     @Test
-    public void getSellGrossAmountTestNegative()
+    public void givenNegativeSellPriceAndShares_whenGetSellGrossAmount_thenShouldThrowIllegalArgumentExceptionWithMessage()
     {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("Inputs to be calculated must be greater than zero");
@@ -181,7 +181,7 @@ public class DefaultCalculatorServiceTestException
     }
 
     @Test
-    public void getSellGrossAmountTestSharesZero()
+    public void givenSellPriceAndZeroShares_whenGetSellGrossAmount_thenShouldThrowIllegalArgumentExceptionWithMessage()
     {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("Shares must be greater than zero");
@@ -189,7 +189,7 @@ public class DefaultCalculatorServiceTestException
     }
 
     @Test
-    public void getSellGrossAmountTestSharesNegative()
+    public void givenSellPriceAndNegativeShares_whenGetSellGrossAmount_thenShouldThrowIllegalArgumentExceptionWithMessage()
     {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("Shares must be greater than zero");
@@ -197,7 +197,7 @@ public class DefaultCalculatorServiceTestException
     }
 
     @Test
-    public void getSellNetAmountTestNull()
+    public void givenNullSellPriceAndShares_whenGetSellNetAmount_thenShouldThrowIllegalArgumentExceptionWithMessage()
     {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("Inputs to be calculated must be greater than zero");
@@ -205,7 +205,7 @@ public class DefaultCalculatorServiceTestException
     }
 
     @Test
-    public void getSellNetAmountTestZero()
+    public void givenZeroSellPriceAndShares_whenGetSellNetAmount_thenShouldThrowIllegalArgumentExceptionWithMessage()
     {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("Inputs to be calculated must be greater than zero");
@@ -213,7 +213,7 @@ public class DefaultCalculatorServiceTestException
     }
 
     @Test
-    public void getSellNetAmountTestNegative()
+    public void givenNegativeSellPriceAndShares_whenGetSellNetAmount_thenShouldThrowIllegalArgumentExceptionWithMessage()
     {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("Inputs to be calculated must be greater than zero");
@@ -221,7 +221,7 @@ public class DefaultCalculatorServiceTestException
     }
 
     @Test
-    public void getSellNetAmountTestSharesZero()
+    public void givenSellPriceAndZeroShares_whenGetSellNetAmount_thenShouldThrowIllegalArgumentExceptionWithMessage()
     {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("Shares must be greater than zero");
@@ -229,7 +229,7 @@ public class DefaultCalculatorServiceTestException
     }
 
     @Test
-    public void getSellNetAmountTestSharesNegative()
+    public void givenSellPriceAndNegativeShares_whenGetSellNetAmount_thenShouldThrowIllegalArgumentExceptionWithMessage()
     {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("Shares must be greater than zero");
@@ -237,7 +237,7 @@ public class DefaultCalculatorServiceTestException
     }
 
     @Test
-    public void getGainLossAmountTestNull()
+    public void givenBuyPriceAndSharesAndNullSellPrice_whenGetGainLossAmount_thenShouldThrowIllegalArgumentExceptionWithMessage()
     {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("Inputs to be calculated must be greater than zero");
@@ -245,7 +245,7 @@ public class DefaultCalculatorServiceTestException
     }
 
     @Test
-    public void getGainLossAmountTestZero()
+    public void givenBuyPriceAndSharesAndZeroSellPrice_whenGetGainLossAmount_thenShouldThrowIllegalArgumentExceptionWithMessage()
     {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("Inputs to be calculated must be greater than zero");
@@ -253,7 +253,7 @@ public class DefaultCalculatorServiceTestException
     }
 
     @Test
-    public void getGainLossAmountTestNegative()
+    public void givenBuyPriceAndSharesAndNegativeSellPrice_whenGetGainLossAmount_thenShouldThrowIllegalArgumentExceptionWithMessage()
     {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("Inputs to be calculated must be greater than zero");
@@ -261,7 +261,7 @@ public class DefaultCalculatorServiceTestException
     }
 
     @Test
-    public void getGainLossAmountTestSharesZero()
+    public void givenBuyPriceAndZeroSharesAndSellPrice_whenGetGainLossAmount_thenShouldThrowIllegalArgumentExceptionWithMessage()
     {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("Shares must be greater than zero");
@@ -269,7 +269,7 @@ public class DefaultCalculatorServiceTestException
     }
 
     @Test
-    public void getGainLossAmountTestSharesNegative()
+    public void givenBuyPriceAndNegativeSharesAndSellPrice_whenGetGainLossAmount_thenShouldThrowIllegalArgumentExceptionWithMessage()
     {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("Shares must be greater than zero");
@@ -277,7 +277,7 @@ public class DefaultCalculatorServiceTestException
     }
 
     @Test
-    public void getPercentGainLossTestNull()
+    public void givenBuyPriceAndSharesAndNullSellPrice_whenGetPercentGainLoss_thenShouldThrowIllegalArgumentExceptionWithMessage()
     {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("Inputs to be calculated must be greater than zero");
@@ -285,7 +285,7 @@ public class DefaultCalculatorServiceTestException
     }
 
     @Test
-    public void getPercentGainLossTestZero()
+    public void givenBuyPriceAndSharesAndZeroSellPrice_whenGetPercentGainLoss_thenShouldThrowIllegalArgumentExceptionWithMessage()
     {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("Inputs to be calculated must be greater than zero");
@@ -293,7 +293,7 @@ public class DefaultCalculatorServiceTestException
     }
 
     @Test
-    public void getPercentGainLossTestNegative()
+    public void givenBuyPriceAndSharesAndNegativeSellPrice_whenGetPercentGainLoss_thenShouldThrowIllegalArgumentExceptionWithMessage()
     {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("Inputs to be calculated must be greater than zero");
@@ -301,7 +301,7 @@ public class DefaultCalculatorServiceTestException
     }
 
     @Test
-    public void getPercentGainLossTestSharesZero()
+    public void givenBuyPriceAndZeroSharesAndSellPrice_whenGetPercentGainLoss_thenShouldThrowIllegalArgumentExceptionWithMessage()
     {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("Shares must be greater than zero");
@@ -309,7 +309,7 @@ public class DefaultCalculatorServiceTestException
     }
 
     @Test
-    public void getPercentGainLossTestSharesNegative()
+    public void givenBuyPriceAndNegativeSharesAndSellPrice_whenGetPercentGainLoss_thenShouldThrowIllegalArgumentExceptionWithMessage()
     {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("Shares must be greater than zero");
@@ -317,7 +317,7 @@ public class DefaultCalculatorServiceTestException
     }
 
     @Test
-    public void getRiskRewardRatioTestNull()
+    public void givenEntryPriceAndTargetPriceAndNullCutlossPrice_whenGetRiskRewardRatio_thenShouldThrowIllegalArgumentExceptionWithMessage()
     {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("Inputs to be calculated must be greater than zero");
@@ -325,7 +325,7 @@ public class DefaultCalculatorServiceTestException
     }
 
     @Test
-    public void getRiskRewardRatioTestZero()
+    public void givenEntryPriceAndTargetPriceAndZeroCutlossPrice_whenGetRiskRewardRatio_thenShouldThrowIllegalArgumentExceptionWithMessage()
     {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("Inputs to be calculated must be greater than zero");
@@ -333,7 +333,7 @@ public class DefaultCalculatorServiceTestException
     }
 
     @Test
-    public void getRiskRewardRatioTestNegative()
+    public void givenEntryPriceAndTargetPriceAndNegativeCutlossPrice_whenGetRiskRewardRatio_thenShouldThrowIllegalArgumentExceptionWithMessage()
     {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("Inputs to be calculated must be greater than zero");
@@ -341,7 +341,7 @@ public class DefaultCalculatorServiceTestException
     }
 
     @Test
-    public void getDividendYieldTestNull()
+    public void givenSharesAndNullCashDividend_whenGetDividendYield_thenShouldThrowIllegalArgumentExceptionWithMessage()
     {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("Inputs to be calculated must be greater than zero");
@@ -349,7 +349,7 @@ public class DefaultCalculatorServiceTestException
     }
 
     @Test
-    public void getDividendYieldTestZero()
+    public void givenSharesAndZeroCashDividend_whenGetDividendYield_thenShouldThrowIllegalArgumentExceptionWithMessage()
     {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("Inputs to be calculated must be greater than zero");
@@ -357,7 +357,7 @@ public class DefaultCalculatorServiceTestException
     }
 
     @Test
-    public void getDividendYieldTestNegative()
+    public void givenSharesAndNegativeCashDividend_whenGetDividendYield_thenShouldThrowIllegalArgumentExceptionWithMessage()
     {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("Inputs to be calculated must be greater than zero");
@@ -365,7 +365,7 @@ public class DefaultCalculatorServiceTestException
     }
 
     @Test
-    public void getDividendYieldTestSharesZero()
+    public void givenZeroSharesAndCashDividend_whenGetDividendYield_thenShouldThrowIllegalArgumentExceptionWithMessage()
     {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("Shares must be greater than zero");
@@ -373,7 +373,7 @@ public class DefaultCalculatorServiceTestException
     }
 
     @Test
-    public void getDividendYieldTestSharesNegative()
+    public void givenNegativeSharesAndCashDividend_whenGetDividendYield_thenShouldThrowIllegalArgumentExceptionWithMessage()
     {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("Shares must be greater than zero");
@@ -381,7 +381,7 @@ public class DefaultCalculatorServiceTestException
     }
 
     @Test
-    public void getPercentDividendYieldTestNull()
+    public void givenPriceAndSharesAndNullCashDividend_whenGetPercentDividendYield_thenShouldThrowIllegalArgumentExceptionWithMessage()
     {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("Inputs to be calculated must be greater than zero");
@@ -389,7 +389,7 @@ public class DefaultCalculatorServiceTestException
     }
 
     @Test
-    public void getPercentDividendYieldTestZero()
+    public void givenPriceAndSharesAndZeroCashDividend_whenGetPercentDividendYield_thenShouldThrowIllegalArgumentExceptionWithMessage()
     {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("Inputs to be calculated must be greater than zero");
@@ -397,7 +397,7 @@ public class DefaultCalculatorServiceTestException
     }
 
     @Test
-    public void getPercentDividendYieldTestNegative()
+    public void givenPriceAndSharesAndNegativeCashDividend_whenGetPercentDividendYield_thenShouldThrowIllegalArgumentExceptionWithMessage()
     {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("Inputs to be calculated must be greater than zero");
@@ -405,7 +405,7 @@ public class DefaultCalculatorServiceTestException
     }
 
     @Test
-    public void getPercentDividendYieldTestSharesZero()
+    public void givenPriceAndZeroSharesAndCashDividend_whenGetPercentDividendYield_thenShouldThrowIllegalArgumentExceptionWithMessage()
     {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("Shares must be greater than zero");
@@ -413,7 +413,7 @@ public class DefaultCalculatorServiceTestException
     }
 
     @Test
-    public void getPercentDividendYieldTestSharesNegative()
+    public void givenPriceAndNegativeSharesAndCashDividend_whenGetPercentDividendYield_thenShouldThrowIllegalArgumentExceptionWithMessage()
     {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("Shares must be greater than zero");
@@ -421,7 +421,7 @@ public class DefaultCalculatorServiceTestException
     }
 
     @Test
-    public void getMidpointTestNull()
+    public void givenHighAndNullLow_whenGetMidpoint_thenShouldThrowIllegalArgumentExceptionWithMessage()
     {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("Inputs to be calculated must be greater than zero");
@@ -429,7 +429,7 @@ public class DefaultCalculatorServiceTestException
     }
 
     @Test
-    public void getMidpointTestZero()
+    public void givenHighAndZeroLow_whenGetMidpoint_thenShouldThrowIllegalArgumentExceptionWithMessage()
     {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("Inputs to be calculated must be greater than zero");
@@ -437,7 +437,7 @@ public class DefaultCalculatorServiceTestException
     }
 
     @Test
-    public void getMidpointTestNegative()
+    public void givenHighAndNegativeLow_whenGetMidpoint_thenShouldThrowIllegalArgumentExceptionWithMessage()
     {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("Inputs to be calculated must be greater than zero");
@@ -445,7 +445,7 @@ public class DefaultCalculatorServiceTestException
     }
 
     @Test
-    public void getStockbrokersCommissionTestNull()
+    public void givenNullGrossAmount_whenGetStockbrokersCommission_thenShouldThrowIllegalArgumentExceptionWithMessage()
     {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("Inputs to be calculated must be greater than zero");
@@ -453,7 +453,7 @@ public class DefaultCalculatorServiceTestException
     }
 
     @Test
-    public void getStockbrokersCommissionTestZero()
+    public void givenZeroGrossAmount_whenGetStockbrokersCommission_thenShouldThrowIllegalArgumentExceptionWithMessage()
     {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("Inputs to be calculated must be greater than zero");
@@ -461,7 +461,7 @@ public class DefaultCalculatorServiceTestException
     }
 
     @Test
-    public void getStockbrokersCommissionTestNegative()
+    public void givenNegativeGrossAmount_whenGetStockbrokersCommission_thenShouldThrowIllegalArgumentExceptionWithMessage()
     {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("Inputs to be calculated must be greater than zero");
@@ -469,7 +469,7 @@ public class DefaultCalculatorServiceTestException
     }
 
     @Test
-    public void getVatOfCommissionTestNull()
+    public void givenNullStockBrokersCommission_whenGetVatOfCommission_thenShouldThrowIllegalArgumentExceptionWithMessage()
     {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("Inputs to be calculated must be greater than zero");
@@ -477,7 +477,7 @@ public class DefaultCalculatorServiceTestException
     }
 
     @Test
-    public void getVatOfCommissionTestZero()
+    public void givenZeroStockBrokersCommission_whenGetVatOfCommission_thenShouldThrowIllegalArgumentExceptionWithMessage()
     {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("Inputs to be calculated must be greater than zero");
@@ -485,7 +485,7 @@ public class DefaultCalculatorServiceTestException
     }
 
     @Test
-    public void getVatOfCommissionTestNegative()
+    public void givenNegativeStockBrokersCommission_whenGetVatOfCommission_thenShouldThrowIllegalArgumentExceptionWithMessage()
     {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("Inputs to be calculated must be greater than zero");
@@ -493,7 +493,7 @@ public class DefaultCalculatorServiceTestException
     }
 
     @Test
-    public void getClearingFeeTestNull()
+    public void givenNullGrossAmount_whenGetClearingFee_thenShouldThrowIllegalArgumentExceptionWithMessage()
     {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("Inputs to be calculated must be greater than zero");
@@ -501,7 +501,7 @@ public class DefaultCalculatorServiceTestException
     }
 
     @Test
-    public void getClearingFeeTestZero()
+    public void givenZeroGrossAmount_whenGetClearingFee_thenShouldThrowIllegalArgumentExceptionWithMessage()
     {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("Inputs to be calculated must be greater than zero");
@@ -509,7 +509,7 @@ public class DefaultCalculatorServiceTestException
     }
 
     @Test
-    public void getClearingFeeTestNegative()
+    public void givenNegativeGrossAmount_whenGetClearingFee_thenShouldThrowIllegalArgumentExceptionWithMessage()
     {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("Inputs to be calculated must be greater than zero");
@@ -517,7 +517,7 @@ public class DefaultCalculatorServiceTestException
     }
 
     @Test
-    public void getTransactionFeeTestNull()
+    public void givenNullGrossAmount_whenGetTransactionFee_thenShouldThrowIllegalArgumentExceptionWithMessage()
     {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("Inputs to be calculated must be greater than zero");
@@ -525,7 +525,7 @@ public class DefaultCalculatorServiceTestException
     }
 
     @Test
-    public void getTransactionFeeTestZero()
+    public void givenZeroGrossAmount_whenGetTransactionFee_thenShouldThrowIllegalArgumentExceptionWithMessage()
     {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("Inputs to be calculated must be greater than zero");
@@ -533,7 +533,7 @@ public class DefaultCalculatorServiceTestException
     }
 
     @Test
-    public void getTransactionFeeTestNegative()
+    public void givenNegativeGrossAmount_whenGetTransactionFee_thenShouldThrowIllegalArgumentExceptionWithMessage()
     {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("Inputs to be calculated must be greater than zero");
@@ -541,7 +541,7 @@ public class DefaultCalculatorServiceTestException
     }
 
     @Test
-    public void getSalesTaxTestNull()
+    public void givenNullGrossAmount_whenGetSalesTax_thenShouldThrowIllegalArgumentExceptionWithMessage()
     {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("Inputs to be calculated must be greater than zero");
@@ -549,7 +549,7 @@ public class DefaultCalculatorServiceTestException
     }
 
     @Test
-    public void getSalesTaxTestZero()
+    public void givenZeroGrossAmount_whenGetSalesTax_thenShouldThrowIllegalArgumentExceptionWithMessage()
     {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("Inputs to be calculated must be greater than zero");
@@ -557,7 +557,7 @@ public class DefaultCalculatorServiceTestException
     }
 
     @Test
-    public void getSalesTaxTestNegative()
+    public void givenNegativeGrossAmount_whenGetSalesTax_thenShouldThrowIllegalArgumentExceptionWithMessage()
     {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("Inputs to be calculated must be greater than zero");
@@ -565,7 +565,7 @@ public class DefaultCalculatorServiceTestException
     }
 
     @Test
-    public void getCurrentAndPreviousPriceChangeTestNegativeFirst()
+    public void givenNegativeCurrentPriceAndPercentChange_whenGetChangeBetweenCurrentAndPreviousPrice_thenShouldThrowIllegalArgumentExceptionWithMessage()
     {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("Inputs to be calculated must be greater than zero");
@@ -573,7 +573,7 @@ public class DefaultCalculatorServiceTestException
     }
 
     @Test
-    public void getCurrentAndPreviousPriceChangeTestNegativeBoth()
+    public void givenNegativeCurrentPriceAndNegativePercentChange_whenGetChangeBetweenCurrentAndPreviousPrice_thenShouldThrowIllegalArgumentExceptionWithMessage()
     {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("Inputs to be calculated must be greater than zero");
@@ -581,7 +581,7 @@ public class DefaultCalculatorServiceTestException
     }
 
     @Test
-    public void getPreviousPriceTestZeroFirst()
+    public void givenZeroCurrentPriceAndPercentChange_whenGetPreviousPrice_thenShouldThrowIllegalArgumentExceptionWithMessage()
     {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("Inputs to be calculated must be greater than zero");
@@ -589,7 +589,7 @@ public class DefaultCalculatorServiceTestException
     }
 
     @Test
-    public void getPreviousPriceTestNegativeFirst()
+    public void givenNegativeCurrentPriceAndPercentChange_whenGetPreviousPrice_thenShouldThrowIllegalArgumentExceptionWithMessage()
     {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("Inputs to be calculated must be greater than zero");
@@ -597,15 +597,7 @@ public class DefaultCalculatorServiceTestException
     }
 
     @Test
-    public void getPreviousPriceTestNegativeBoth()
-    {
-        expectedException.expect(IllegalArgumentException.class);
-        expectedException.expectMessage("Inputs to be calculated must be greater than zero");
-        this.service.getPreviousPrice(-1, -1);
-    }
-
-    @Test
-    public void getDaysBetweenNullBoth()
+    public void givenNullDate1AndNullDate2_whenGetDaysBetween_thenShouldThrowIllegalArgumentExceptionWithMessage()
     {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("Dates to compare must not be null");
@@ -613,7 +605,7 @@ public class DefaultCalculatorServiceTestException
     }
 
     @Test
-    public void getDaysBetweenNullFirst()
+    public void givenNullDate1AndDate2_whenGetDaysBetween_thenShouldThrowIllegalArgumentExceptionWithMessage()
     {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("Dates to compare must not be null");
@@ -621,7 +613,7 @@ public class DefaultCalculatorServiceTestException
     }
 
     @Test
-    public void getDaysBetweenNullSecond()
+    public void givenDate1AndNullDate2_whenGetDaysBetween_thenShouldThrowIllegalArgumentExceptionWithMessage()
     {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("Dates to compare must not be null");

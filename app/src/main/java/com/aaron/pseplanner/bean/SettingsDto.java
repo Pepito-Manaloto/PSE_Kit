@@ -22,7 +22,8 @@ public class SettingsDto implements Parcelable
     {
     }
 
-    public SettingsDto(boolean autoRefresh, int refreshInterval, boolean notifyStopLoss, boolean notifyTargetPrice, boolean notiftyTimeStop, boolean notifySoundEffect, String proxyHost, int proxyPort)
+    public SettingsDto(boolean autoRefresh, int refreshInterval, boolean notifyStopLoss, boolean notifyTargetPrice, boolean notiftyTimeStop,
+            boolean notifySoundEffect, String proxyHost, int proxyPort)
     {
         this.autoRefresh = autoRefresh;
         this.refreshInterval = refreshInterval;
@@ -128,7 +129,9 @@ public class SettingsDto implements Parcelable
         }
 
         SettingsDto that = (SettingsDto) o;
-        return isAutoRefresh() == that.isAutoRefresh() && getRefreshInterval() == that.getRefreshInterval() && isNotifyStopLoss() == that.isNotifyStopLoss() && isNotifyTargetPrice() == that.isNotifyTargetPrice() && isNotiftyTimeStop() == that.isNotiftyTimeStop() && isNotifySoundEffect() == that.isNotifySoundEffect() && getProxyPort() == that.getProxyPort() && getProxyHost().equals(that.getProxyHost());
+        return isAutoRefresh() == that.isAutoRefresh() && getRefreshInterval() == that.getRefreshInterval() && isNotifyStopLoss() == that.isNotifyStopLoss()
+                && isNotifyTargetPrice() == that.isNotifyTargetPrice() && isNotiftyTimeStop() == that.isNotiftyTimeStop()
+                && isNotifySoundEffect() == that.isNotifySoundEffect() && getProxyPort() == that.getProxyPort() && getProxyHost().equals(that.getProxyHost());
     }
 
     @Override
@@ -148,7 +151,9 @@ public class SettingsDto implements Parcelable
     @Override
     public String toString()
     {
-        return "SettingsDto{" + "autoRefresh=" + autoRefresh + ", refreshInterval=" + refreshInterval + ", notifyStopLoss=" + notifyStopLoss + ", notifyTargetPrice=" + notifyTargetPrice + ", notiftyTimeStop=" + notiftyTimeStop + ", notifySoundEffect=" + notifySoundEffect + ", proxyHost='" + proxyHost + '\'' + ", proxyPort=" + proxyPort + '}';
+        return "SettingsDto{" + "autoRefresh=" + autoRefresh + ", refreshInterval=" + refreshInterval + ", notifyStopLoss=" + notifyStopLoss
+                + ", notifyTargetPrice=" + notifyTargetPrice + ", notiftyTimeStop=" + notiftyTimeStop + ", notifySoundEffect=" + notifySoundEffect
+                + ", proxyHost='" + proxyHost + '\'' + ", proxyPort=" + proxyPort + '}';
     }
 
     private SettingsDto(Parcel in)

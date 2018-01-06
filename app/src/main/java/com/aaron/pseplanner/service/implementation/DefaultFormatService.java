@@ -26,39 +26,39 @@ public class DefaultFormatService implements FormatService
     }
 
     /**
-     * Formats the given number, adding commas and rounding down to 4 decimal places.
+     * Formats the given stock price, adding commas and rounding down to 4 decimal places.
      */
     @Override
-    public String formatStockPrice(double number)
+    public String formatStockPrice(double stockPrice)
     {
-        return format(number, STOCK_PRICE_FORMAT, RoundingMode.DOWN);
+        return format(stockPrice, STOCK_PRICE_FORMAT, RoundingMode.DOWN);
     }
 
     /**
-     * Formats the given number, adding commas and rounding up to 2 decimal places.
+     * Formats the given price, adding commas and rounding up to 2 decimal places.
      */
     @Override
-    public String formatPrice(double number)
+    public String formatPrice(double price)
     {
-        return format(number, PRICE_FORMAT, RoundingMode.DOWN);
+        return format(price, PRICE_FORMAT, RoundingMode.DOWN);
     }
 
     /**
-     * Formats the given number, adding percent and rounding up to 2 decimal places.
+     * Formats the given percent, adding percent and rounding up to 2 decimal places.
      */
     @Override
-    public String formatPercent(double number)
+    public String formatPercent(double percent)
     {
-        return format(number, PERCENT_FORMAT, RoundingMode.DOWN) + "%";
+        return format(percent, PERCENT_FORMAT, RoundingMode.DOWN) + "%";
     }
 
     /**
-     * Formats the given number, removes any decimal point/s and negative sign.
+     * Formats the given shares, removes any decimal point/s and negative sign.
      */
     @Override
-    public String formatShares(long number)
+    public String formatShares(long shares)
     {
-        return format(Math.abs(number), SHARES_FORMAT, RoundingMode.DOWN);
+        return format(Math.abs(shares), SHARES_FORMAT, RoundingMode.DOWN);
     }
 
     /**

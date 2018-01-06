@@ -28,17 +28,17 @@ public interface FormatService
     /**
      * Formats the stock price.
      */
-    String formatStockPrice(double number);
+    String formatStockPrice(double stockPrice);
 
     /**
      * Formats the price.
      */
-    String formatPrice(double number);
+    String formatPrice(double price);
 
     /**
      * Formats the percent.
      */
-    String formatPercent(double number);
+    String formatPercent(double percent);
 
     /**
      * Formats the shares.
@@ -56,9 +56,7 @@ public interface FormatService
     String formatDate(Date date);
 
     /**
-     * Formats the given date.
-     * Pattern: MMMM dd, EEEE hh:mm:ss a
-     * Timezone: Manila, Philippines
+     * Formats the given date. Pattern: MMMM dd, EEEE hh:mm:ss a Timezone: Manila, Philippines
      *
      * @param lastUpdated the date to format
      * @return String the last updated formatted date
