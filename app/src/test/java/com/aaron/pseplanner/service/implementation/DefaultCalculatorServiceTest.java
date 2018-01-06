@@ -13,6 +13,7 @@ import static org.junit.Assert.assertEquals;
 
 /**
  * Test for CalculatorService.
+ * Reference: https://www.abcapitalsecurities.com.ph/AbCapital/index.php/support/trading-calculator
  */
 public class DefaultCalculatorServiceTest
 {

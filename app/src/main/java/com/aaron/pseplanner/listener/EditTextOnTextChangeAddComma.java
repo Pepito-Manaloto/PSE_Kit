@@ -13,7 +13,7 @@ import static com.aaron.pseplanner.service.implementation.DefaultFormatService.S
 /**
  * Created by Aaron on 12/3/2016.
  * Adds commas on the inputted number in the EditText.
- * Can be decorated by providing a TextWatcher, which will be called first before this class.
+ * Can be decorated with another TextWatcher, which will be called first before this class.
  */
 public class EditTextOnTextChangeAddComma implements TextWatcher
 {
@@ -35,12 +35,7 @@ public class EditTextOnTextChangeAddComma implements TextWatcher
 
     public EditTextOnTextChangeAddComma(EditText editText, int maxIntegerDigits, TextWatcher textWatcher)
     {
-        this.editText = editText;
-        this.formatter = new DecimalFormat(STOCK_PRICE_FORMAT);
-
-        // Divide by three because there would be a comma for every 3 digits
-        this.max = maxIntegerDigits - ((maxIntegerDigits / 3) - (maxIntegerDigits % 3 == 0 ? 1 : 0));
-        this.formatter.setMaximumIntegerDigits(this.max);
+        this(editText, maxIntegerDigits);
         this.textWatcher = textWatcher;
     }
 

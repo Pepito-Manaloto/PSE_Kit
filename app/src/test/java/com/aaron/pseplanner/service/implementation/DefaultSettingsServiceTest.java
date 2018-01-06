@@ -9,7 +9,6 @@ import com.aaron.pseplanner.constant.PSEPlannerPreference;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.robolectric.RuntimeEnvironment;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -26,7 +25,7 @@ public class DefaultSettingsServiceTest extends RobolectricTest
     @Before
     public void beforeTest()
     {
-        service = new DefaultSettingsService(RuntimeEnvironment.application.getApplicationContext());
+        service = new DefaultSettingsService(getContext());
     }
 
     @Test
@@ -187,6 +186,6 @@ public class DefaultSettingsServiceTest extends RobolectricTest
 
     private SharedPreferences getSharedPreferences()
     {
-        return RuntimeEnvironment.application.getSharedPreferences(PSEPlannerPreference.class.getSimpleName(), Context.MODE_PRIVATE);
+        return getContext().getSharedPreferences(PSEPlannerPreference.class.getSimpleName(), Context.MODE_PRIVATE);
     }
 }
