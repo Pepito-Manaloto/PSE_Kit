@@ -22,8 +22,8 @@ public interface CalculatorService
     // 0.005%
     BigDecimal PSE_TRANSACTION_FEE = BigDecimal.valueOf(0.00005);
 
-    // 0.5%
-    BigDecimal SALES_TAX = BigDecimal.valueOf(0.005);
+    // 0.6%
+    BigDecimal SALES_TAX = BigDecimal.valueOf(0.006);
 
     // 0.295%
     BigDecimal TOTAL_BUY_FEE = STOCK_BROKERS_COMMISSION.add(STOCK_BROKERS_COMMISSION.multiply(VAT)).add(CLEARING_FEE).add(PSE_TRANSACTION_FEE);
@@ -31,8 +31,10 @@ public interface CalculatorService
     // 0.795%
     BigDecimal TOTAL_SELL_FEE = TOTAL_BUY_FEE.add(SALES_TAX);
 
-    // 1.09%
+    // 1.19%
     BigDecimal TOTAL_BUY_SELL_FEE = TOTAL_BUY_FEE.add(TOTAL_SELL_FEE);
+
+
 
     BigDecimal MINIMUM_COMMISSION = BigDecimal.valueOf(20);
 

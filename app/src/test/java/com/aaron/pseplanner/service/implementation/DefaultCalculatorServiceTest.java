@@ -57,7 +57,7 @@ public class DefaultCalculatorServiceTest
     {
         BigDecimal buyPrice = new BigDecimal("11.28");
 
-        assertEquals(11.4029, service.getPriceToBreakEven(buyPrice).doubleValue(), DELTA);
+        assertEquals(11.414232, service.getPriceToBreakEven(buyPrice).doubleValue(), DELTA);
     }
 
     @Test
@@ -75,7 +75,7 @@ public class DefaultCalculatorServiceTest
         BigDecimal sellPrice = new BigDecimal("248.8");
         long shares = 1250;
 
-        assertEquals(308_527.55, service.getSellNetAmount(sellPrice, shares).doubleValue(), DELTA);
+        assertEquals(308_216.55, service.getSellNetAmount(sellPrice, shares).doubleValue(), DELTA);
     }
 
     @Test
@@ -85,7 +85,7 @@ public class DefaultCalculatorServiceTest
         long shares = 4_938_000;
         BigDecimal sellPrice = new BigDecimal("1.48");
 
-        assertEquals(663_225.2489, service.getGainLossAmount(buyPrice, shares, sellPrice).doubleValue(), DELTA);
+        assertEquals(655_917.009, service.getGainLossAmount(buyPrice, shares, sellPrice).doubleValue(), DELTA);
     }
 
     @Test
@@ -95,7 +95,7 @@ public class DefaultCalculatorServiceTest
         long shares = 4_938_000;
         BigDecimal sellPrice = new BigDecimal("1.29");
 
-        assertEquals(-267_535.9020, service.getGainLossAmount(buyPrice, shares, sellPrice).doubleValue(), DELTA);
+        assertEquals(-273_905.922, service.getGainLossAmount(buyPrice, shares, sellPrice).doubleValue(), DELTA);
     }
 
     @Test
@@ -107,7 +107,7 @@ public class DefaultCalculatorServiceTest
 
         BigDecimal percentGainLossBigDecimal = service.getPercentGainLoss(buyPrice, shares, sellPrice);
         double percentGainLoss = getDoubleRoundedDownDecimalToTwoPlaces(percentGainLossBigDecimal);
-        assertEquals(10.06, percentGainLoss, DELTA);
+        assertEquals(9.95, percentGainLoss, DELTA);
     }
 
     @Test
@@ -119,7 +119,7 @@ public class DefaultCalculatorServiceTest
 
         BigDecimal percentGainLossBigDecimal = service.getPercentGainLoss(buyPrice, shares, sellPrice);
         double percentGainLoss = getDoubleRoundedDownDecimalToTwoPlaces(percentGainLossBigDecimal);
-        assertEquals(-4.06, percentGainLoss, DELTA);
+        assertEquals(-4.15, percentGainLoss, DELTA);
     }
 
     @Test
@@ -131,7 +131,7 @@ public class DefaultCalculatorServiceTest
 
         BigDecimal riskRewardRatioBigDecimal = service.getRiskRewardRatio(entryPrice, targetPrice, cutlossPrice);
         double riskRewardRatio = getDoubleRoundedDownDecimalToTwoPlaces(riskRewardRatioBigDecimal);
-        assertEquals(3.38, riskRewardRatio, DELTA);
+        assertEquals(3.33, riskRewardRatio, DELTA);
     }
 
     @Test
@@ -221,7 +221,7 @@ public class DefaultCalculatorServiceTest
 
         BigDecimal salesTaxBigDecimal = service.getSalesTax(grossAmount);
         double salesTax = getDoubleRoundedDownDecimalToTwoPlaces(salesTaxBigDecimal);
-        assertEquals(22_734.51, salesTax, DELTA);
+        assertEquals(27_281.41, salesTax, DELTA);
     }
 
     @Test
