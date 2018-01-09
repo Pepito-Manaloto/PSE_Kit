@@ -17,6 +17,11 @@ import static com.aaron.pseplanner.service.implementation.DefaultFormatService.S
  */
 public class EditTextOnTextChangeAddComma implements TextWatcher
 {
+    private static final String DECIMAL_NUMBER_WITH_ONLY_ZERO_DECIMAL_POINT_PATTERN = "\\d+\\.0*";
+    private static final String COMMA = ",";
+    private static final int DECIMAL_POINT = '.';
+    private static final int NUMBER_OF_DIGITS_PER_COMMA = 3;
+
     private EditText editText;
     private final DecimalFormat formatter;
     private int max;
@@ -28,8 +33,7 @@ public class EditTextOnTextChangeAddComma implements TextWatcher
         this.editText = editText;
         this.formatter = new DecimalFormat(STOCK_PRICE_FORMAT);
 
-        // Divide by three because there would be a comma for every 3 digits
-        this.max = maxIntegerDigits - ((maxIntegerDigits / 3) - (maxIntegerDigits % 3 == 0 ? 1 : 0));
+        this.max = computeMaximumInputDigits(maxIntegerDigits);
         this.formatter.setMaximumIntegerDigits(this.max);
     }
 
@@ -37,6 +41,22 @@ public class EditTextOnTextChangeAddComma implements TextWatcher
     {
         this(editText, maxIntegerDigits);
         this.textWatcher = textWatcher;
+    }
+
+    private int computeMaximumInputDigits(int maxLength)
+    {
+        // If digits is divisible by NUMBER_OF_DIGITS_PER_COMMA, then reduce the number of commas by 1.
+        // Because there must be at least one digit preceeding a comma.
+        /*
+          Equation is defined by: (let maxInputDigits = x)
+          1) maxLength = x + ((x / numberOfDigitsPerComma) - commasSubtrahend)
+          2) maxLength = x + ((x / 3) - 1) --> x + 1/3x, which is 4/3x
+          3) maxLength = 4/3x - 1
+          4) 4/3x = maxLength + 1
+          5) (3/4) * 4/3x = maxLength + 1 * (3/4) --> cancel out
+          6) x = (3 * maxLength + 1) / 4
+         */
+        return (NUMBER_OF_DIGITS_PER_COMMA * (maxLength + 1)) / 4;
     }
 
     @Override
@@ -47,9 +67,14 @@ public class EditTextOnTextChangeAddComma implements TextWatcher
             textWatcher.beforeTextChanged(s, start, count, after);
         }
 
-        if(exceedsMaxLength(s.toString()))
+        setOldInput(s.toString());
+    }
+
+    private void setOldInput(String text)
+    {
+        if(exceedsMaxLength(text))
         {
-            oldInput = s.toString();
+            oldInput = text;
         }
         else
         {
@@ -65,7 +90,7 @@ public class EditTextOnTextChangeAddComma implements TextWatcher
             textWatcher.onTextChanged(s, start, before, count);
         }
 
-        /** No implementation. */
+        /* No implementation. */
     }
 
     /**
@@ -85,29 +110,46 @@ public class EditTextOnTextChangeAddComma implements TextWatcher
         {
             int cursorPosition = this.editText.getSelectionStart();
 
-            // remove all commas if it is previously formatted
-            input = StringUtils.replace(input, ",", "");
-            if(oldInput.length() <= 0 || !exceedsMaxLength(input))
-            {
-                this.editText.setText(formatNumber(input));
-            }
-            else
-            {
-                // If oldInput has content, then max length is reached. Set oldInput to stop additional inputs.
-                this.editText.setText(this.oldInput);
-            }
+            updateEditText(input);
+            updateEditTextCursor(cursorPosition);
+        }
+    }
 
-            int editTextLength = this.editText.getText().length();
-            if(cursorPosition >= (editTextLength - 1))
-            {
-                // place the cursor at the end of text
-                this.editText.setSelection(editTextLength);
-            }
-            else // TODO: Some scenarios not covered, like what?
-            {
-                // retain cursor position, if this is not present the cursor will move to 0th position
-                this.editText.setSelection(cursorPosition);
-            }
+    private String removeAllCommas(String input)
+    {
+        return StringUtils.replace(input, COMMA, "");
+    }
+
+    private void updateEditText(String input)
+    {
+        boolean oldInputIsEmpty = oldInput == null || oldInput.length() <= 0;
+        boolean oldInputIsEmptyOrInputDoesNotExceedMaxLength = oldInputIsEmpty || !exceedsMaxLength(input);
+
+        if(oldInputIsEmptyOrInputDoesNotExceedMaxLength)
+        {
+            this.editText.setText(formatNumber(input));
+        }
+        else
+        {
+            // If oldInput has content, then max length is reached. Set oldInput to stop additional inputs.
+            this.editText.setText(this.oldInput);
+        }
+    }
+
+    private void updateEditTextCursor(int cursorPosition)
+    {
+        int editTextLength = this.editText.getText().length();
+        boolean cursorPositionExceedsInputLength = cursorPosition >= (editTextLength - 1);
+
+        if(cursorPositionExceedsInputLength)
+        {
+            // place the cursor at the end of text
+            this.editText.setSelection(editTextLength);
+        }
+        else // TODO: Some scenarios not covered, like what?
+        {
+            // retain cursor position, if this is not present the cursor will move to 0th position
+            this.editText.setSelection(cursorPosition);
         }
     }
 
@@ -116,9 +158,18 @@ public class EditTextOnTextChangeAddComma implements TextWatcher
      */
     private boolean exceedsMaxLength(String input)
     {
+        String inputWithoutCommas = removeAllCommas(input);
+        int wholeNumberCount = getWholeNumberCount(inputWithoutCommas);
+
+        return wholeNumberCount > this.max;
+    }
+
+    private int getWholeNumberCount(String input)
+    {
         int wholeNumberCount;
-        int decimalIndex = input.indexOf('.');
-        if(decimalIndex != -1)
+        int decimalIndex = input.indexOf(DECIMAL_POINT);
+        boolean decimalPointDoesNotExist = decimalIndex != -1;
+        if(decimalPointDoesNotExist)
         {
             wholeNumberCount = input.substring(0, decimalIndex).length();
         }
@@ -127,7 +178,7 @@ public class EditTextOnTextChangeAddComma implements TextWatcher
             wholeNumberCount = input.length();
         }
 
-        return wholeNumberCount > this.max;
+        return wholeNumberCount;
     }
 
     /**
@@ -138,8 +189,8 @@ public class EditTextOnTextChangeAddComma implements TextWatcher
         String formattedInput = input;
         try
         {
-            // stop formatting if period or 0 decimal value is inputted.
-            if(!input.matches("\\d+\\.0*"))
+            // Stop formatting if period or 0 decimal value is inputted.
+            if(!input.matches(DECIMAL_NUMBER_WITH_ONLY_ZERO_DECIMAL_POINT_PATTERN))
             {
                 double number = Double.parseDouble(input);
                 formattedInput = this.formatter.format(number);

@@ -34,19 +34,21 @@ public class PSEPlannerApplication extends Application
     {
         super.onCreate();
 
-        if(!isRoboUnitTest())
+        if(isRoboUnitTest())
         {
-            if(LeakCanary.isInAnalyzerProcess(this))
-            {
-                // This process is dedicated to LeakCanary for heap analysis.
-                // You should not init your app in this process.
-                return;
-            }
-            LeakCanary.install(this);
-
-            // Access in Google Chrome url via -> chrome://inspect
-            Stetho.initializeWithDefaults(this);
+            return;
         }
+
+        if(LeakCanary.isInAnalyzerProcess(this))
+        {
+            // This process is dedicated to LeakCanary for heap analysis.
+            // You should not init your app in this process.
+            return;
+        }
+        LeakCanary.install(this);
+
+        // Access in Google Chrome url via -> chrome://inspect
+        Stetho.initializeWithDefaults(this);
 
         // Normal app init code...
         initDaoSession();

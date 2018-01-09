@@ -12,6 +12,26 @@ import java.util.TimeZone;
 
 public final class UnitTestUtils
 {
+    public static <T> void setPrivateField(T object, String fieldName, Object value) throws Exception
+    {
+        Field field = setPrivateFieldAccessible(object, fieldName);
+        field.set(object, value);
+    }
+
+    public static <T> Object getPrivateField(T object, String fieldName) throws Exception
+    {
+        Field field = setPrivateFieldAccessible(object, fieldName);
+        return field.get(object);
+    }
+
+    public static <T> Field setPrivateFieldAccessible(T object, String fieldName) throws Exception
+    {
+        Field field = object.getClass().getDeclaredField(fieldName);
+        field.setAccessible(true);
+
+        return field;
+    }
+
     public static void setFinalStatic(Field field, Object newValue) throws Exception
     {
         field.setAccessible(true);

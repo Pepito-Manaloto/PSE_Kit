@@ -42,28 +42,32 @@ public abstract class FilterableArrayAdapter<T extends Stock> extends ArrayAdapt
         }
         else
         {
-            String symbol;
-
-            for(T dto : this.getTempList())
-            {
-                symbol = dto.getSymbol().toLowerCase();
-
-                if(symbol.startsWith(searched))
-                {
-                    this.getActualList().add(dto);
-                }
-            }
+            addFilteredStockToActualList(searched);
         }
 
         notifyDataSetChanged();
         LogManager.debug(this.className, "filter", "New list size -> " + this.getActualList().size());
     }
 
+    private void addFilteredStockToActualList(String searched)
+    {
+        String symbol;
+
+        for(T dto : this.getTempList())
+        {
+            symbol = dto.getSymbol().toLowerCase();
+
+            if(symbol.startsWith(searched))
+            {
+                this.getActualList().add(dto);
+            }
+        }
+    }
+
     /**
      * Updates the list.
      *
-     * @param list
-     *            the list to replace the current
+     * @param list the list to replace the current
      */
     public void update(@NonNull List<T> list)
     {
