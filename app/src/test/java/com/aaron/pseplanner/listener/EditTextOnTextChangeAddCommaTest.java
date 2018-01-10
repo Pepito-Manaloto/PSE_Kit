@@ -84,7 +84,7 @@ public class EditTextOnTextChangeAddCommaTest extends RobolectricTest
     public void givenListenerAndMaxLengthAndOldInputAndInputExceedsMaxLength_whenAfterTextChanged_thenInputShouldBeEqualToTheOldInputAndCursorPositionAtTheEndOfText()
             throws Exception
     {
-        int cursorPosition = 3;
+        int cursorPosition = 17;
         int maxLength = 16;
         String oldInput = "123,456,789,012";
         String input = "6,435,462,252,014";
@@ -170,10 +170,10 @@ public class EditTextOnTextChangeAddCommaTest extends RobolectricTest
     public void givenDecoratedListenerAndMaxLengthAndOldInputAndInputExceedsMaxLength_whenAfterTextChanged_thenInputShouldBeEqualToTheOldInputAndCursorPositionAtTheEndOfTextAndTheDecoratorIsInvokedOnce()
             throws Exception
     {
-        int cursorPosition = 3;
+        int cursorPosition = 13;
         int maxLength = 10;
         String oldInput = "56,789,012";
-        String input = "594276921";
+        String input = "9,594,276,921";
         EditText editText = createEditText(input, cursorPosition);
 
         givenDecoratedListenerAndMaxLength(editText, maxLength);
@@ -289,6 +289,7 @@ public class EditTextOnTextChangeAddCommaTest extends RobolectricTest
 
     private void thenCursorPositionAtTheEndOfText(EditText editText)
     {
+        assertEquals(editText.getText().toString().length(), editText.getSelectionEnd());
     }
 
     private void thenTheDecoratorBeforeTextChangedIsInvokedOnce()
