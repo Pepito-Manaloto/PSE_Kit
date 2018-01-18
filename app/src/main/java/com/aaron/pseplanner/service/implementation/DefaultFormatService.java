@@ -1,6 +1,6 @@
 package com.aaron.pseplanner.service.implementation;
 
-import android.app.Activity;
+import android.content.Context;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
@@ -20,9 +20,9 @@ public class DefaultFormatService implements FormatService
 {
     private int green;
 
-    public DefaultFormatService(@NonNull Activity activity)
+    public DefaultFormatService(@NonNull Context context)
     {
-        green = ContextCompat.getColor(activity, R.color.darkGreen);
+        green = ContextCompat.getColor(context, R.color.darkGreen);
     }
 
     /**

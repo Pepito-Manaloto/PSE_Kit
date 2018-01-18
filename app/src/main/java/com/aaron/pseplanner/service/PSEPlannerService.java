@@ -3,6 +3,8 @@ package com.aaron.pseplanner.service;
 import com.aaron.pseplanner.bean.TickerDto;
 import com.aaron.pseplanner.bean.TradeDto;
 import com.aaron.pseplanner.constant.PSEPlannerPreference;
+import com.aaron.pseplanner.entity.Ticker;
+import com.aaron.pseplanner.entity.Trade;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -30,12 +32,12 @@ public interface PSEPlannerService extends HttpClient
     /**
      * Inserts the list ticker dto in the database.
      */
-    boolean insertTickerList(List<TickerDto> tickerDtoList);
+    Collection<Ticker> insertTickerList(List<TickerDto> tickerDtoList);
 
     /**
      * Updates the list of ticker dto in the database.
      */
-    boolean updateTickerList(List<TickerDto> tickerDtoList);
+    Collection<Ticker> updateTickerList(List<TickerDto> tickerDtoList);
 
     /**
      * Retrieves the list of tickers from the database.
@@ -78,18 +80,30 @@ public interface PSEPlannerService extends HttpClient
 
     /**
      * Inserts the trade dto in the database.
+     * 
+     * @param tradeDto the TradeDto to insert
+     *
+     * @return the inserted Trade
      */
-    boolean insertTradePlan(TradeDto tradeDto);
+    Trade insertTradePlan(TradeDto tradeDto);
 
     /**
      * Updates the list of trade dto in the database.
+     *
+     * @param tradeDto the TradeDto to update
+     *
+     * @return the updated Trade
      */
-    boolean updateTradePlan(TradeDto tradeDtoFirst);
+    Trade updateTradePlan(TradeDto tradeDto);
 
     /**
      * Deletes the trade dto in the database.
+     *
+     * @param tradeDto the TradeDto to delete
+     *
+     * @return the deleted Trade symbol
      */
-    boolean deleteTradePlan(TradeDto tradeDto);
+     String deleteTradePlan(TradeDto tradeDto);
 
     /**
      * Retrieves the list of trade plans from the database.

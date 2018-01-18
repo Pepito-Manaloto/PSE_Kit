@@ -15,7 +15,7 @@ import org.greenrobot.greendao.query.QueryBuilder;
 /**
  * Created by Aaron on 3/22/2017. Initializes LeakCanary and GreenDao
  */
-public class PSEPlannerApplication extends Application
+public class PSEPlannerApplication extends Application implements DaoSessionCreator
 {
     /**
      * A flag to show how easily you can switch from standard SQLite to the encrypted SQLCipher.
@@ -33,11 +33,6 @@ public class PSEPlannerApplication extends Application
     public void onCreate()
     {
         super.onCreate();
-
-        if(isRoboUnitTest())
-        {
-            return;
-        }
 
         if(LeakCanary.isInAnalyzerProcess(this))
         {
@@ -78,6 +73,7 @@ public class PSEPlannerApplication extends Application
         return "robolectric".equals(Build.FINGERPRINT);
     }
 
+    @Override
     public DaoSession getDaoSession()
     {
         return daoSession;

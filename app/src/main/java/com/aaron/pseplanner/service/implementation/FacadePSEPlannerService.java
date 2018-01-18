@@ -6,7 +6,7 @@ import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.util.Pair;
 
-import com.aaron.pseplanner.app.PSEPlannerApplication;
+import com.aaron.pseplanner.app.DaoSessionCreator;
 import com.aaron.pseplanner.bean.SettingsDto;
 import com.aaron.pseplanner.bean.TickerDto;
 import com.aaron.pseplanner.bean.TradeDto;
@@ -49,6 +49,15 @@ public class FacadePSEPlannerService implements PSEPlannerService
     public static final String CLASS_NAME = FacadePSEPlannerService.class.getSimpleName();
     private static final Date EPOCH_DATE = new Date(0);
 
+    private static final int MORNING_OPENING_HOUR = 9;
+    private static final int MORNING_OPENING_MINUTE = 30;
+    private static final int LUNCH_HOUR = 12;
+    private static final int LUNCH_MINUTE = 0;
+    private static final int AFTERNOON_OPENING_HOUR = 13;
+    private static final int AFTERNOON_OPENING_MINUTE = 30;
+    private static final int AFTERNOON_CLOSING_HOUR = 15;
+    private static final int AFTERNOON_CLOSING_MINUTE = 30;
+
     private HttpClient phisixHttpClient;
     private HttpClient pseHttpClient;
     private FormatService formatService;
@@ -60,10 +69,33 @@ public class FacadePSEPlannerService implements PSEPlannerService
     private TradeDao tradeDao;
     private TradeEntryDao tradeEntryDao;
 
-    public FacadePSEPlannerService(@NonNull Activity activity)
+    public FacadePSEPlannerService(@NonNull Context context)
+    {
+        this.settingsService = new DefaultSettingsService(context);
+        SettingsDto settings = this.settingsService.getSettings();
+        initHttpClient(settings);
+
+        this.formatService = new DefaultFormatService(context);
+        this.sharedPreferences = context.getSharedPreferences(PSEPlannerPreference.class.getSimpleName(), Context.MODE_PRIVATE);
+        this.calculatorService = new DefaultCalculatorService();
+
+        initDAO(context);
+    }
+
+    public FacadePSEPlannerService(@NonNull Activity activity, long connectionTimeout, long readTimeout, long pingInterval)
     {
         this.settingsService = new DefaultSettingsService(activity);
         SettingsDto settings = this.settingsService.getSettings();
+        initHttpClient(connectionTimeout, readTimeout, pingInterval, settings.getProxyHost(), settings.getProxyPort());
+
+        this.formatService = new DefaultFormatService(activity);
+        this.sharedPreferences = activity.getSharedPreferences(PSEPlannerPreference.class.getSimpleName(), Context.MODE_PRIVATE);
+
+        initDAO(activity);
+    }
+
+    private void initHttpClient(SettingsDto settings)
+    {
         long timeout;
         String proxyHost = null;
         int proxyPort = 0;
@@ -80,49 +112,29 @@ public class FacadePSEPlannerService implements PSEPlannerService
             timeout = DEFAUT_TIMEOUT - 1;
         }
 
-        if(StringUtils.isNotBlank(proxyHost) && proxyPort > 0)
-        {
-            this.phisixHttpClient = new PhisixHttpClient(timeout, timeout, timeout, proxyHost, proxyPort);
-            this.pseHttpClient = new PSEHttpClient(timeout, timeout, timeout, proxyHost, proxyPort);
-        }
-        else
-        {
-            this.phisixHttpClient = new PhisixHttpClient(timeout, timeout, timeout);
-            this.pseHttpClient = new PSEHttpClient(timeout, timeout, timeout);
-        }
-
-        this.formatService = new DefaultFormatService(activity);
-        this.sharedPreferences = activity.getSharedPreferences(PSEPlannerPreference.class.getSimpleName(), Context.MODE_PRIVATE);
-        this.calculatorService = new DefaultCalculatorService();
-
-        DaoSession daoSession = ((PSEPlannerApplication) activity.getApplication()).getDaoSession();
-        this.tickerDao = daoSession.getTickerDao();
-        this.tradeDao = daoSession.getTradeDao();
-        this.tradeEntryDao = daoSession.getTradeEntryDao();
+        initHttpClient(timeout, timeout, timeout, proxyHost, proxyPort);
     }
 
-    public FacadePSEPlannerService(@NonNull Activity activity, long connectionTimeout, long readTimeout, long pingInterval)
+    private void initHttpClient(long connectionTimeout, long readTimeout, long pingInterval, String proxyHost, int proxyPort)
     {
-        this.settingsService = new DefaultSettingsService(activity);
-        SettingsDto settings = this.settingsService.getSettings();
-        if(StringUtils.isNotBlank(settings.getProxyHost()) && settings.getProxyPort() > 0)
+        if(StringUtils.isNotBlank(proxyHost) && proxyPort > 0)
         {
-            this.phisixHttpClient = new PhisixHttpClient(connectionTimeout, readTimeout, pingInterval, settings.getProxyHost(), settings.getProxyPort());
-            this.pseHttpClient = new PSEHttpClient(connectionTimeout, readTimeout, pingInterval, settings.getProxyHost(), settings.getProxyPort());
+            this.phisixHttpClient = new PhisixHttpClient(connectionTimeout, readTimeout, pingInterval, proxyHost, proxyPort);
+            this.pseHttpClient = new PSEHttpClient(connectionTimeout, readTimeout, pingInterval, proxyHost, proxyPort);
         }
         else
         {
             this.phisixHttpClient = new PhisixHttpClient(connectionTimeout, readTimeout, pingInterval);
             this.pseHttpClient = new PSEHttpClient(connectionTimeout, readTimeout, pingInterval);
         }
+    }
 
-        this.formatService = new DefaultFormatService(activity);
-        this.sharedPreferences = activity.getSharedPreferences(PSEPlannerPreference.class.getSimpleName(), Context.MODE_PRIVATE);
-
-        // get the note DAO
-        DaoSession daoSession = ((PSEPlannerApplication) activity.getApplication()).getDaoSession();
+    private void initDAO(Context context)
+    {
+        DaoSession daoSession = ((DaoSessionCreator) context.getApplicationContext()).getDaoSession();
         this.tickerDao = daoSession.getTickerDao();
         this.tradeDao = daoSession.getTradeDao();
+        this.tradeEntryDao = daoSession.getTradeEntryDao();
     }
 
     /**
@@ -146,10 +158,10 @@ public class FacadePSEPlannerService implements PSEPlannerService
      * Inserts the given TickerDto list as Ticker entity in the database.
      *
      * @param tickerDtoList the list of TickerDto
-     * @return true if successful, else false
+     * @return the inserted Ticker list
      */
     @Override
-    public boolean insertTickerList(List<TickerDto> tickerDtoList)
+    public Set<Ticker> insertTickerList(List<TickerDto> tickerDtoList)
     {
         Set<Ticker> tickerList = this.getStockListAndUpdateLastUpdated(tickerDtoList);
 
@@ -158,17 +170,17 @@ public class FacadePSEPlannerService implements PSEPlannerService
 
         LogManager.debug(CLASS_NAME, "insertTickerList", "Inserted: count = " + tickerList.size());
 
-        return true;
+        return tickerList;
     }
 
     /**
      * Updates the given TickerDto list as Ticker entity in the database.
      *
      * @param tickerDtoList the list of TickerDto
-     * @return true if successful, else false
+     * @return the updated Ticker list
      */
     @Override
-    public boolean updateTickerList(List<TickerDto> tickerDtoList)
+    public Set<Ticker> updateTickerList(List<TickerDto> tickerDtoList)
     {
         Set<Ticker> tickerList = this.getStockListAndUpdateLastUpdated(tickerDtoList);
 
@@ -177,23 +189,28 @@ public class FacadePSEPlannerService implements PSEPlannerService
 
         LogManager.debug(CLASS_NAME, "updateTickerList", "Updated: count = " + tickerList.size());
 
-        return true;
+        return tickerList;
     }
 
     private Set<Ticker> getStockListAndUpdateLastUpdated(List<TickerDto> tickerDtoList)
     {
         Date lastUpdated = this.getLastUpdatedDate(PSEPlannerPreference.LAST_UPDATED_TICKER.toString());
-        Set<Ticker> tickerList = new HashSet<>(tickerDtoList.size());
+        Set<Ticker> tickerList = fromTickerDtoListToTickerList(tickerDtoList, lastUpdated);
 
-        // Convert each TickerDto to Ticker and store in a Set
+        this.updateLastUpdatedSharedPreference(lastUpdated, PSEPlannerPreference.LAST_UPDATED_TICKER);
+        LogManager.debug(CLASS_NAME, "getStockListAndUpdateLastUpdated", "Last updated = " + lastUpdated.toString());
+
+        return tickerList;
+    }
+
+    private Set<Ticker> fromTickerDtoListToTickerList(List<TickerDto> tickerDtoList, Date lastUpdated)
+    {
+        Set<Ticker> tickerList = new HashSet<>(tickerDtoList.size());
         for(TickerDto dto : tickerDtoList)
         {
             Ticker ticker = this.fromTickerDtoToStock(dto, lastUpdated);
             tickerList.add(ticker);
         }
-
-        this.updateLastUpdatedSharedPreference(lastUpdated, PSEPlannerPreference.LAST_UPDATED_TICKER);
-        LogManager.debug(CLASS_NAME, "getStockListAndUpdateLastUpdated", "Last updated = " + lastUpdated.toString());
 
         return tickerList;
     }
@@ -214,24 +231,31 @@ public class FacadePSEPlannerService implements PSEPlannerService
                 return tickerDao.queryBuilder().orderAsc(TickerDao.Properties.Symbol).list();
             }
         })
-                .map(new Function<List<Ticker>, ArrayList<TickerDto>>()
-                {
-                    @Override
-                    public ArrayList<TickerDto> apply(List<Ticker> tickerList) throws Exception
-                    {
-                        ArrayList<TickerDto> tickerDtoList = new ArrayList<>(tickerList.size());
+        .map(new Function<List<Ticker>, ArrayList<TickerDto>>()
+        {
+            @Override
+            public ArrayList<TickerDto> apply(List<Ticker> tickerList) throws Exception
+            {
+                ArrayList<TickerDto> tickerDtoList = fromTickerListToTickerDtoList(tickerList);
 
-                        for(Ticker ticker : tickerList)
-                        {
-                            tickerDtoList.add(new TickerDto(ticker.getId(), ticker.getSymbol(), ticker.getName(), ticker.getVolume(), ticker.getCurrentPrice(),
-                                    ticker.getChange(), ticker.getPercentChange()));
-                        }
+                LogManager.debug(CLASS_NAME, "getTickerListFromDatabase", "Retrieved: count = " + tickerDtoList.size());
 
-                        LogManager.debug(CLASS_NAME, "getTickerListFromDatabase", "Retrieved: count = " + tickerDtoList.size());
+                return tickerDtoList;
+            }
+        });
+    }
 
-                        return tickerDtoList;
-                    }
-                });
+    private ArrayList<TickerDto> fromTickerListToTickerDtoList(List<Ticker> tickerList)
+    {
+        ArrayList<TickerDto> tickerDtoList = new ArrayList<>(tickerList.size());
+
+        for(Ticker ticker : tickerList)
+        {
+            tickerDtoList.add(new TickerDto(ticker.getId(), ticker.getSymbol(), ticker.getName(), ticker.getVolume(), ticker.getCurrentPrice(),
+                    ticker.getChange(), ticker.getPercentChange()));
+        }
+
+        return tickerDtoList;
     }
 
     @Override
@@ -281,39 +305,37 @@ public class FacadePSEPlannerService implements PSEPlannerService
      * Inserts the given TradeDto as Trade entity in the database.
      *
      * @param tradeDto the TradeDto
-     * @return true if successful, else false
+     * @return the inserted Trade
      */
     @Override
-    public boolean insertTradePlan(TradeDto tradeDto)
+    public Trade insertTradePlan(TradeDto tradeDto)
     {
-        Date now = new Date();
-        this.updateLastUpdatedSharedPreference(now, PSEPlannerPreference.LAST_UPDATED_TRADE_PLAN);
+        updateLastUpdatedSharedPreferenceNow(PSEPlannerPreference.LAST_UPDATED_TRADE_PLAN);
 
-        Trade trade = this.fromTradeDtoToTrade(tradeDto);
-        List<TradeEntry> tradeEntries = this.addTradeEntryDtosToTradeEntryList(tradeDto.getTradeEntries(), null);
-
+        Trade trade = fromTradeDtoToTrade(tradeDto);
         this.tradeDao.insert(trade);
+
+        List<TradeEntry> tradeEntries = fromTradeEntryDtoListToTradeEntryList(tradeDto.getTradeEntries());
         this.tradeEntryDao.insertInTx(tradeEntries);
 
         LogManager.debug(CLASS_NAME, "insertTradePlan", "Inserted: " + trade);
 
-        return true;
+        return trade;
     }
 
     /**
      * Updates the given TradeDto list as Trade entity in the database.
      *
      * @param tradeDto the tradeDto
-     * @return true if successful, else false
+     * @return the updated Trade
      */
     @Override
-    public boolean updateTradePlan(final TradeDto tradeDto)
+    public Trade updateTradePlan(final TradeDto tradeDto)
     {
-        Date now = new Date();
-        this.updateLastUpdatedSharedPreference(now, PSEPlannerPreference.LAST_UPDATED_TRADE_PLAN);
+        updateLastUpdatedSharedPreferenceNow(PSEPlannerPreference.LAST_UPDATED_TRADE_PLAN);
 
         final Trade trade = this.tradeDao.queryBuilder().where(TradeDao.Properties.Symbol.eq(tradeDto.getSymbol())).unique();
-        final List<TradeEntry> tradeEntries = this.addTradeEntryDtosToTradeEntryList(tradeDto.getTradeEntries(), null);
+        final List<TradeEntry> tradeEntries = this.fromTradeEntryDtoListToTradeEntryList(tradeDto.getTradeEntries());
 
         // Execute delete and update/insert in one transaction
         this.tradeDao.getSession().runInTx(new Runnable()
@@ -321,15 +343,37 @@ public class FacadePSEPlannerService implements PSEPlannerService
             @Override
             public void run()
             {
-                tradeEntryDao.queryBuilder().where(TradeEntryDao.Properties.TradeSymbol.eq(tradeDto.getSymbol())).buildDelete()
-                        .executeDeleteWithoutDetachingEntities();
+                // DELETE FROM TRADE_ENTRY WHERE tradeSymbol = tradeDto.symbol
+                tradeEntryDao.queryBuilder().where(TradeEntryDao.Properties.TradeSymbol.eq(tradeDto.getSymbol()))
+                        .buildDelete().executeDeleteWithoutDetachingEntities();
                 tradeDao.update(trade);
                 tradeEntryDao.insertInTx(tradeEntries);
             }
         });
 
         LogManager.debug(CLASS_NAME, "updateTradePlan", "Updated: " + trade);
-        return true;
+        return trade;
+    }
+
+    private List<TradeEntry> fromTradeEntryDtoListToTradeEntryList(List<TradeEntryDto> tradeEntries)
+    {
+        List<TradeEntry> updatedTradeEntryList = new ArrayList<>(tradeEntries.size());
+
+        int order = 0;
+        for(TradeEntryDto dto : tradeEntries)
+        {
+            TradeEntry entry = new TradeEntry();
+            entry.setTradeSymbol(dto.getSymbol());
+            entry.setShares(dto.getShares());
+            entry.setEntryPrice(dto.getEntryPrice().toPlainString());
+            entry.setPercentWeight(dto.getPercentWeight().toPlainString());
+            entry.setOrder(order);
+            order++;
+
+            updatedTradeEntryList.add(entry);
+        }
+
+        return updatedTradeEntryList;
     }
 
     /**
@@ -339,25 +383,24 @@ public class FacadePSEPlannerService implements PSEPlannerService
      * @return true if successful, else false
      */
     @Override
-    public boolean deleteTradePlan(TradeDto tradeDto)
+    public String deleteTradePlan(TradeDto tradeDto)
     {
-        this.tradeDao.queryBuilder().where(TradeDao.Properties.Symbol.eq(tradeDto.getSymbol())).buildDelete().executeDeleteWithoutDetachingEntities();
-        this.tradeEntryDao.queryBuilder().where(TradeEntryDao.Properties.TradeSymbol.eq(tradeDto.getSymbol())).buildDelete()
-                .executeDeleteWithoutDetachingEntities();
-        LogManager.debug(CLASS_NAME, "deleteTradePlan", "Deleted: " + tradeDto.getSymbol());
+        String symbol = tradeDto.getSymbol();
 
-        return true;
+        // DELETE FROM TRADE WHERE symbol = tradeDto.symbol
+        this.tradeDao.queryBuilder().where(TradeDao.Properties.Symbol.eq(symbol))
+                .buildDelete().executeDeleteWithoutDetachingEntities();
+        // DELETE FROM TRADE_ENTRY WHERE tradeSymbol = tradeDto.symbol
+        this.tradeEntryDao.queryBuilder().where(TradeEntryDao.Properties.TradeSymbol.eq(symbol))
+                .buildDelete().executeDeleteWithoutDetachingEntities();
+        LogManager.debug(CLASS_NAME, "deleteTradePlan", "Deleted: " + symbol);
+
+        return symbol;
     }
 
     private Trade fromTradeDtoToTrade(TradeDto tradeDto)
     {
         Trade trade = new Trade();
-
-        return this.fromTradeDtoToTrade(trade, tradeDto);
-    }
-
-    private Trade fromTradeDtoToTrade(Trade trade, TradeDto tradeDto)
-    {
         trade.setId(tradeDto.getId());
         trade.setSymbol(tradeDto.getSymbol());
         trade.setCurrentPrice(tradeDto.getCurrentPrice().toPlainString());
@@ -382,31 +425,6 @@ public class FacadePSEPlannerService implements PSEPlannerService
         return trade;
     }
 
-    private List<TradeEntry> addTradeEntryDtosToTradeEntryList(List<TradeEntryDto> tradeEntries, List<TradeEntry> tradeEntryList)
-    {
-        List<TradeEntry> updatedTradeEntryList = tradeEntryList;
-        if(updatedTradeEntryList == null)
-        {
-            updatedTradeEntryList = new ArrayList<>(tradeEntries.size());
-        }
-
-        int order = 0;
-        for(TradeEntryDto dto : tradeEntries)
-        {
-            TradeEntry entry = new TradeEntry();
-            entry.setTradeSymbol(dto.getSymbol());
-            entry.setShares(dto.getShares());
-            entry.setEntryPrice(dto.getEntryPrice().toPlainString());
-            entry.setPercentWeight(dto.getPercentWeight().toPlainString());
-            entry.setOrder(order);
-            order++;
-
-            updatedTradeEntryList.add(entry);
-        }
-
-        return updatedTradeEntryList;
-    }
-
     @Override
     public Single<ArrayList<TradeDto>> getTradePlanListFromDatabase()
     {
@@ -423,33 +441,45 @@ public class FacadePSEPlannerService implements PSEPlannerService
                     @Override
                     public ArrayList<TradeDto> apply(List<Trade> tradePlanList) throws Exception
                     {
-                        ArrayList<TradeDto> tradePlanDtoList = new ArrayList<>(tradePlanList.size());
-
-                        for(Trade trade : tradePlanList)
-                        {
-                            List<TradeEntry> tradeEntryList = trade.getTradeEntries();
-
-                            List<TradeEntryDto> tradeEntryDtos = new ArrayList<>(tradeEntryList.size());
-                            for(TradeEntry tradeEntry : tradeEntryList)
-                            {
-                                tradeEntryDtos.add(new TradeEntryDto(tradeEntry.getTradeSymbol(), tradeEntry.getEntryPrice(),
-                                        tradeEntry.getShares(), tradeEntry.getPercentWeight()));
-                            }
-
-                            tradePlanDtoList.add(new TradeDto(trade.getId(), trade.getSymbol(), trade.getEntryDate(), trade.getHoldingPeriod(),
-                                    trade.getCurrentPrice(), trade.getAveragePrice(), trade.getTotalShares(),
-                                    trade.getTotalAmount(), trade.getPriceToBreakEven(), trade.getTargetPrice(),
-                                    trade.getGainLoss(), trade.getGainLossPercent(), trade.getGainToTarget(),
-                                    trade.getStopLoss(), trade.getLossToStopLoss(), trade.getStopDate(),
-                                    trade.getDaysToStopDate(), trade.getRiskReward(), trade.getCapital(),
-                                    trade.getPercentCapital(), tradeEntryDtos));
-                        }
+                        ArrayList<TradeDto> tradePlanDtoList = fromTradeListToTradeDtoList(tradePlanList);
 
                         LogManager.debug(CLASS_NAME, "getTradePlanListFromDatabase", "Retrieved: count = " + tradePlanDtoList.size());
 
                         return tradePlanDtoList;
                     }
                 });
+    }
+
+    private ArrayList<TradeDto> fromTradeListToTradeDtoList(List<Trade> tradePlanList)
+    {
+        ArrayList<TradeDto> tradePlanDtoList = new ArrayList<>(tradePlanList.size());
+
+        for(Trade trade : tradePlanList)
+        {
+            List<TradeEntryDto> tradeEntryDtos = fromTradeEntryListToTradeEntryDtoList(trade.getTradeEntries());
+
+            tradePlanDtoList.add(new TradeDto(trade.getId(), trade.getSymbol(), trade.getEntryDate(), trade.getHoldingPeriod(),
+                    trade.getCurrentPrice(), trade.getAveragePrice(), trade.getTotalShares(),
+                    trade.getTotalAmount(), trade.getPriceToBreakEven(), trade.getTargetPrice(),
+                    trade.getGainLoss(), trade.getGainLossPercent(), trade.getGainToTarget(),
+                    trade.getStopLoss(), trade.getLossToStopLoss(), trade.getStopDate(),
+                    trade.getDaysToStopDate(), trade.getRiskReward(), trade.getCapital(),
+                    trade.getPercentCapital(), tradeEntryDtos));
+        }
+
+        return tradePlanDtoList;
+    }
+
+    private List<TradeEntryDto> fromTradeEntryListToTradeEntryDtoList(List<TradeEntry> tradeEntryList)
+    {
+        List<TradeEntryDto> tradeEntryDtos = new ArrayList<>(tradeEntryList.size());
+        for(TradeEntry tradeEntry : tradeEntryList)
+        {
+            tradeEntryDtos.add(new TradeEntryDto(tradeEntry.getTradeSymbol(), tradeEntry.getEntryPrice(),
+                    tradeEntry.getShares(), tradeEntry.getPercentWeight()));
+        }
+
+        return tradeEntryDtos;
     }
 
     private boolean isWeekEnd(Calendar calendar)
@@ -460,16 +490,31 @@ public class FacadePSEPlannerService implements PSEPlannerService
     private boolean isTradingHours(Calendar calendar)
     {
         int hourOfDay = calendar.get(Calendar.HOUR_OF_DAY);
-        int minuteOfHour = calendar.get(Calendar.MINUTE);
+        int minutes = calendar.get(Calendar.MINUTE);
 
-        boolean morningOpeningHour = hourOfDay == 9 && minuteOfHour >= 30;
-        boolean morningHour = (morningOpeningHour || hourOfDay >= 10) && hourOfDay <= 12;
-        boolean afternoonOpeningHour = hourOfDay == 13 && minuteOfHour >= 30;
-        boolean afternoonClosingHour = hourOfDay == 15 && minuteOfHour <= 20;
-        boolean afternoonHour = afternoonOpeningHour || hourOfDay == 14 || afternoonClosingHour;
+        boolean morningHour = isMorningHour(hourOfDay, minutes);
+        boolean afternoonHour = isAfternoonHour(hourOfDay, minutes);
 
         // Hour of day is between 9:30AM and 12PM AND between 1:30PM and 3:30PM
         return morningHour && afternoonHour;
+    }
+
+    private boolean isMorningHour(int hourOfDay, int minutes)
+    {
+        boolean morningOpeningHour = hourOfDay == MORNING_OPENING_HOUR && minutes >= MORNING_OPENING_MINUTE;
+        boolean morningBetweenHour = hourOfDay > MORNING_OPENING_HOUR && hourOfDay < LUNCH_HOUR;
+        boolean morningClosingHour = hourOfDay == LUNCH_HOUR && minutes == LUNCH_MINUTE;
+
+        return morningOpeningHour || morningBetweenHour || morningClosingHour;
+    }
+
+    private boolean isAfternoonHour(int hourOfDay, int minutes)
+    {
+        boolean afternoonOpeningHour = hourOfDay == AFTERNOON_OPENING_HOUR && minutes >= AFTERNOON_OPENING_MINUTE;
+        boolean afternoonBetweenHour = hourOfDay > AFTERNOON_OPENING_HOUR && hourOfDay < AFTERNOON_CLOSING_HOUR;
+        boolean afternoonClosingHour = hourOfDay == AFTERNOON_CLOSING_HOUR && minutes <= AFTERNOON_CLOSING_MINUTE;
+
+        return afternoonOpeningHour || afternoonBetweenHour || afternoonClosingHour;
     }
 
     /**
@@ -505,7 +550,8 @@ public class FacadePSEPlannerService implements PSEPlannerService
 
         boolean isWeekEnd = isWeekEnd(now);
         boolean isWeekDay = !isWeekEnd;
-        boolean lastUpdateEndOfHour = (int) lastUpdated.get(Calendar.HOUR_OF_DAY) == 15 && (int) lastUpdated.get(Calendar.MINUTE) >= 20;
+        boolean lastUpdateEndOfHour = lastUpdated.get(Calendar.HOUR_OF_DAY) == AFTERNOON_CLOSING_HOUR
+                && lastUpdated.get(Calendar.MINUTE) >= AFTERNOON_CLOSING_MINUTE;
         boolean lastUpdateEndOfWeek = lastUpdated.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY && lastUpdateEndOfHour;
 
         int daysDifference = this.calculatorService.getDaysBetween(lastUpdated.getTime(), now.getTime());
@@ -514,8 +560,9 @@ public class FacadePSEPlannerService implements PSEPlannerService
                 "(daysDifference:" + daysDifference + " < 3 && lastUpdateEndOfWeek:" + lastUpdateEndOfWeek + " && isWeekEnd:" + isWeekEnd + ")" +
                         " || (daysDifference:" + daysDifference + " == 0 && lastUpdateEndOfHour:" + lastUpdateEndOfHour + " && isWeekDay:" + isWeekDay + ")");
 
-        // (Days difference is just 2 days(sat and sun) AND lastUpdated is on Friday 3:20PM AND today is a weekend) OR
-        // (There is no difference in days AND lastUpdated is 3:20PM AND today is a weekday)
+        // (Days difference is just 2 days(sat and sun) AND lastUpdated is on Friday 3:30PM AND today is a weekend) OR
+        // (There is no difference in days AND lastUpdated is 3:30PM AND today is a weekday)
+        // TODO: refactor complex boolean
         return (daysDifference < 3 && lastUpdateEndOfWeek && isWeekEnd) || (daysDifference == 0 && lastUpdateEndOfHour && isWeekDay);
     }
 
@@ -571,20 +618,6 @@ public class FacadePSEPlannerService implements PSEPlannerService
     private Ticker fromTickerDtoToStock(TickerDto dto, Date now)
     {
         Ticker ticker = new Ticker();
-
-        return this.fromTickerDtoToStock(ticker, dto, now);
-    }
-
-    /**
-     * Replaces the values of the Ticker entity with the TickerDto.
-     *
-     * @param ticker the ticker to replace values
-     * @param dto the dto to get the values from
-     * @param now the current datetime
-     * @return Ticker the passed ticker with its properties replaced
-     */
-    private Ticker fromTickerDtoToStock(Ticker ticker, TickerDto dto, Date now)
-    {
         ticker.setId(dto.getId());
         ticker.setSymbol(dto.getSymbol());
         ticker.setName(dto.getName());
@@ -595,6 +628,15 @@ public class FacadePSEPlannerService implements PSEPlannerService
         ticker.setDateUpdate(now);
 
         return ticker;
+    }
+
+    /**
+     * Updates the last updated in the shared preferences with the current datetime.
+     */
+    private void updateLastUpdatedSharedPreferenceNow(PSEPlannerPreference preference)
+    {
+        Date now = new Date();
+        updateLastUpdatedSharedPreference(now, preference);
     }
 
     /**
