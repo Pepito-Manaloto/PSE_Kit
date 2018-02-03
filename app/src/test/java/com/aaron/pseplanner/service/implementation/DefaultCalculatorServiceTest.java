@@ -1,6 +1,6 @@
 package com.aaron.pseplanner.service.implementation;
 
-import com.aaron.pseplanner.UnitTestUtils;
+import com.aaron.pseplanner.test.utils.UnitTestUtils;
 import com.aaron.pseplanner.service.CalculatorService;
 
 import org.junit.Before;
@@ -297,11 +297,11 @@ public class DefaultCalculatorServiceTest
     }
 
     @Test
-    public void givenDate1AndDate2SameDateDifferentTime_whenGetDaysBetween_thenShouldReturnOneDay()
+    public void givenDate1AndDate2SameDateDifferentTime_whenGetDaysBetween_thenShouldReturnZeroDays()
     {
         Date date1 = UnitTestUtils.newDateTime(2018, 1, 1, 1, 1, 1);
         Date date2 = UnitTestUtils.newDate(2018, 1, 1);
-        assertEquals(1, service.getDaysBetween(date1, date2));
+        assertEquals(0, service.getDaysBetween(date1, date2));
     }
 
     @Test

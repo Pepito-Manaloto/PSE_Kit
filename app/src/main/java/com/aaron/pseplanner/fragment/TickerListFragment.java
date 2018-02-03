@@ -242,9 +242,10 @@ public class TickerListFragment extends AbstractListFragment<TickerDto>
             public void onSuccess(Pair<List<TickerDto>, Date> pair)
             {
                 tickerDtoList = (ArrayList<TickerDto>) pair.first;
+                Date lastUpdated = pair.second;
 
                 pseService.setTickerDtoListHasTradePlan(tickerDtoList, tradeDtoSymbols);
-                pseService.updateTickerList(tickerDtoList);
+                pseService.updateTickerList(tickerDtoList, lastUpdated);
 
                 updateListView(tickerDtoList, formatService.formatLastUpdated(pair.second));
             }

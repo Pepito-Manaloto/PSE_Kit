@@ -6,7 +6,7 @@ import android.graphics.Color;
 import android.widget.TextView;
 
 import com.aaron.pseplanner.R;
-import com.aaron.pseplanner.UnitTestUtils;
+import com.aaron.pseplanner.test.utils.UnitTestUtils;
 import com.aaron.pseplanner.service.FormatService;
 
 import org.junit.Before;

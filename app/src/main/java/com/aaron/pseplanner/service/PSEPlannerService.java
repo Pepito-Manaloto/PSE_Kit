@@ -8,6 +8,7 @@ import com.aaron.pseplanner.entity.Trade;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -32,12 +33,12 @@ public interface PSEPlannerService extends HttpClient
     /**
      * Inserts the list ticker dto in the database.
      */
-    Collection<Ticker> insertTickerList(List<TickerDto> tickerDtoList);
+    Collection<Ticker> insertTickerList(List<TickerDto> tickerDtoList, Date lastUpdated);
 
     /**
      * Updates the list of ticker dto in the database.
      */
-    Collection<Ticker> updateTickerList(List<TickerDto> tickerDtoList);
+    Collection<Ticker> updateTickerList(List<TickerDto> tickerDtoList, Date lastUpdated);
 
     /**
      * Retrieves the list of tickers from the database.

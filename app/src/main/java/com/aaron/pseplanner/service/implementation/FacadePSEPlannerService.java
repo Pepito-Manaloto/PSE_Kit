@@ -31,6 +31,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -64,6 +65,7 @@ public class FacadePSEPlannerService implements PSEPlannerService
     private SettingsService settingsService;
     private CalculatorService calculatorService;
 
+    private CalendarWrapper calendarWrapper;
     private SharedPreferences sharedPreferences;
     private TickerDao tickerDao;
     private TradeDao tradeDao;
@@ -78,6 +80,7 @@ public class FacadePSEPlannerService implements PSEPlannerService
         this.formatService = new DefaultFormatService(context);
         this.sharedPreferences = context.getSharedPreferences(PSEPlannerPreference.class.getSimpleName(), Context.MODE_PRIVATE);
         this.calculatorService = new DefaultCalculatorService();
+        this.calendarWrapper = CalendarWrapper.newInstance();
 
         initDAO(context);
     }
@@ -90,6 +93,7 @@ public class FacadePSEPlannerService implements PSEPlannerService
 
         this.formatService = new DefaultFormatService(activity);
         this.sharedPreferences = activity.getSharedPreferences(PSEPlannerPreference.class.getSimpleName(), Context.MODE_PRIVATE);
+        this.calendarWrapper = CalendarWrapper.newInstance();
 
         initDAO(activity);
     }
@@ -158,43 +162,55 @@ public class FacadePSEPlannerService implements PSEPlannerService
      * Inserts the given TickerDto list as Ticker entity in the database.
      *
      * @param tickerDtoList the list of TickerDto
+     * @param lastUpdated the last updated
+     *
      * @return the inserted Ticker list
      */
     @Override
-    public Set<Ticker> insertTickerList(List<TickerDto> tickerDtoList)
+    public Set<Ticker> insertTickerList(List<TickerDto> tickerDtoList, Date lastUpdated)
     {
-        Set<Ticker> tickerList = this.getStockListAndUpdateLastUpdated(tickerDtoList);
+        Set<Ticker> tickerSet = insertUpdateTickerList(tickerDtoList, lastUpdated);
 
-        // Bulk insert
-        this.tickerDao.insertOrReplaceInTx(tickerList);
+        LogManager.debug(CLASS_NAME, "insertTickerList", "Inserted: count = " + tickerSet.size());
 
-        LogManager.debug(CLASS_NAME, "insertTickerList", "Inserted: count = " + tickerList.size());
-
-        return tickerList;
+        return tickerSet;
     }
 
     /**
      * Updates the given TickerDto list as Ticker entity in the database.
      *
      * @param tickerDtoList the list of TickerDto
+     * @param lastUpdated the last updated
+     *
      * @return the updated Ticker list
      */
     @Override
-    public Set<Ticker> updateTickerList(List<TickerDto> tickerDtoList)
+    public Set<Ticker> updateTickerList(List<TickerDto> tickerDtoList, Date lastUpdated)
     {
-        Set<Ticker> tickerList = this.getStockListAndUpdateLastUpdated(tickerDtoList);
+        Set<Ticker> tickerSet = insertUpdateTickerList(tickerDtoList, lastUpdated);
 
-        // Bulk update
-        this.tickerDao.insertOrReplaceInTx(tickerList);
+        LogManager.debug(CLASS_NAME, "updateTickerList", "Updated: count = " + tickerSet.size());
 
-        LogManager.debug(CLASS_NAME, "updateTickerList", "Updated: count = " + tickerList.size());
-
-        return tickerList;
+        return tickerSet;
     }
 
-    private Set<Ticker> getStockListAndUpdateLastUpdated(List<TickerDto> tickerDtoList)
+    private Set<Ticker> insertUpdateTickerList(List<TickerDto> tickerDtoList, Date lastUpdated)
     {
-        Date lastUpdated = this.getLastUpdatedDate(PSEPlannerPreference.LAST_UPDATED_TICKER.toString());
+        if(tickerDtoList == null || tickerDtoList.isEmpty())
+        {
+            return Collections.emptySet();
+        }
+
+        Set<Ticker> tickerSet = this.getStockListAndUpdateLastUpdated(tickerDtoList, lastUpdated);
+
+        // Bulk update
+        this.tickerDao.insertOrReplaceInTx(tickerSet);
+
+        return tickerSet;
+    }
+
+    private Set<Ticker> getStockListAndUpdateLastUpdated(List<TickerDto> tickerDtoList, Date lastUpdated)
+    {
         Set<Ticker> tickerList = fromTickerDtoListToTickerList(tickerDtoList, lastUpdated);
 
         this.updateLastUpdatedSharedPreference(lastUpdated, PSEPlannerPreference.LAST_UPDATED_TICKER);
@@ -305,17 +321,25 @@ public class FacadePSEPlannerService implements PSEPlannerService
      * Inserts the given TradeDto as Trade entity in the database.
      *
      * @param tradeDto the TradeDto
+     *
+     * @throws IllegalArgumentException if tradeDto is null
      * @return the inserted Trade
      */
     @Override
-    public Trade insertTradePlan(TradeDto tradeDto)
+    public Trade insertTradePlan(final TradeDto tradeDto) throws IllegalArgumentException
     {
+        if(tradeDto == null)
+        {
+            throw new IllegalArgumentException("TradeDto must not be null.");
+        }
+
         updateLastUpdatedSharedPreferenceNow(PSEPlannerPreference.LAST_UPDATED_TRADE_PLAN);
 
         Trade trade = fromTradeDtoToTrade(tradeDto);
         this.tradeDao.insert(trade);
 
         List<TradeEntry> tradeEntries = fromTradeEntryDtoListToTradeEntryList(tradeDto.getTradeEntries());
+        trade.setTradeEntriesTransient(tradeEntries);
         this.tradeEntryDao.insertInTx(tradeEntries);
 
         LogManager.debug(CLASS_NAME, "insertTradePlan", "Inserted: " + trade);
@@ -327,11 +351,18 @@ public class FacadePSEPlannerService implements PSEPlannerService
      * Updates the given TradeDto list as Trade entity in the database.
      *
      * @param tradeDto the tradeDto
+     *
+     * @throws IllegalArgumentException if tradeDto is null
      * @return the updated Trade
      */
     @Override
-    public Trade updateTradePlan(final TradeDto tradeDto)
+    public Trade updateTradePlan(final TradeDto tradeDto) throws IllegalArgumentException
     {
+        if(tradeDto == null)
+        {
+            throw new IllegalArgumentException("TradeDto must not be null.");
+        }
+
         updateLastUpdatedSharedPreferenceNow(PSEPlannerPreference.LAST_UPDATED_TRADE_PLAN);
 
         final Trade trade = this.tradeDao.queryBuilder().where(TradeDao.Properties.Symbol.eq(tradeDto.getSymbol())).unique();
@@ -380,11 +411,18 @@ public class FacadePSEPlannerService implements PSEPlannerService
      * Delete the trade plan in the database.
      *
      * @param tradeDto the trade plan to delete
+     *
+     * @throws IllegalArgumentException if tradeDto is null
      * @return true if successful, else false
      */
     @Override
-    public String deleteTradePlan(TradeDto tradeDto)
+    public String deleteTradePlan(final TradeDto tradeDto) throws IllegalArgumentException
     {
+        if(tradeDto == null)
+        {
+            throw new IllegalArgumentException("TradeDto must not be null.");
+        }
+
         String symbol = tradeDto.getSymbol();
 
         // DELETE FROM TRADE WHERE symbol = tradeDto.symbol
@@ -482,6 +520,24 @@ public class FacadePSEPlannerService implements PSEPlannerService
         return tradeEntryDtos;
     }
 
+    /**
+     * Checks if the market is open. Monday to Friday, 9:30AM - 12:00PM and 1:30PM - 3:20PM
+     *
+     * @return true is market is open, else false
+     */
+    @Override
+    public boolean isMarketOpen()
+    {
+        Calendar cal = calendarWrapper.newCalendar(FormatService.MANILA_TIMEZONE);
+
+        boolean isWeekday = !isWeekEnd(cal);
+        boolean isTradingHours = isTradingHours(cal);
+
+        LogManager.debug(CLASS_NAME, "isMarketOpen", "isWeekday:" + isWeekday + " && isTradingHours:" + isTradingHours);
+
+        return isWeekday && isTradingHours;
+    }
+
     private boolean isWeekEnd(Calendar calendar)
     {
         return calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY || calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY;
@@ -496,43 +552,24 @@ public class FacadePSEPlannerService implements PSEPlannerService
         boolean afternoonHour = isAfternoonHour(hourOfDay, minutes);
 
         // Hour of day is between 9:30AM and 12PM AND between 1:30PM and 3:30PM
-        return morningHour && afternoonHour;
+        return morningHour || afternoonHour;
     }
 
     private boolean isMorningHour(int hourOfDay, int minutes)
     {
         boolean morningOpeningHour = hourOfDay == MORNING_OPENING_HOUR && minutes >= MORNING_OPENING_MINUTE;
         boolean morningBetweenHour = hourOfDay > MORNING_OPENING_HOUR && hourOfDay < LUNCH_HOUR;
-        boolean morningClosingHour = hourOfDay == LUNCH_HOUR && minutes == LUNCH_MINUTE;
 
-        return morningOpeningHour || morningBetweenHour || morningClosingHour;
+        return morningOpeningHour || morningBetweenHour;
     }
 
     private boolean isAfternoonHour(int hourOfDay, int minutes)
     {
         boolean afternoonOpeningHour = hourOfDay == AFTERNOON_OPENING_HOUR && minutes >= AFTERNOON_OPENING_MINUTE;
         boolean afternoonBetweenHour = hourOfDay > AFTERNOON_OPENING_HOUR && hourOfDay < AFTERNOON_CLOSING_HOUR;
-        boolean afternoonClosingHour = hourOfDay == AFTERNOON_CLOSING_HOUR && minutes <= AFTERNOON_CLOSING_MINUTE;
+        boolean afternoonClosingHour = hourOfDay == AFTERNOON_CLOSING_HOUR && minutes < AFTERNOON_CLOSING_MINUTE;
 
         return afternoonOpeningHour || afternoonBetweenHour || afternoonClosingHour;
-    }
-
-    /**
-     * Checks if the market is open. Monday to Friday, 9:30AM - 12:00PM and 1:30PM - 3:20PM
-     *
-     * @return true is market is open, else false
-     */
-    @Override
-    public boolean isMarketOpen()
-    {
-        Calendar cal = Calendar.getInstance(FormatService.MANILA_TIMEZONE);
-
-        boolean isWeekday = !isWeekEnd(cal);
-        boolean isTradingHours = isTradingHours(cal);
-
-        LogManager.debug(CLASS_NAME, "isMarketOpen", "isWeekday:" + isWeekday + " && isTradingHours:" + isTradingHours);
-
-        return isWeekday && isTradingHours;
     }
 
     /**
@@ -546,7 +583,8 @@ public class FacadePSEPlannerService implements PSEPlannerService
     {
         Calendar lastUpdated = Calendar.getInstance(FormatService.MANILA_TIMEZONE);
         lastUpdated.setTime(this.getLastUpdatedDate(preference.toString()));
-        Calendar now = Calendar.getInstance(FormatService.MANILA_TIMEZONE);
+        // Use wrapper here to be able to mock current time
+        Calendar now = calendarWrapper.newCalendar(FormatService.MANILA_TIMEZONE);
 
         boolean isWeekEnd = isWeekEnd(now);
         boolean isWeekDay = !isWeekEnd;
@@ -560,10 +598,12 @@ public class FacadePSEPlannerService implements PSEPlannerService
                 "(daysDifference:" + daysDifference + " < 3 && lastUpdateEndOfWeek:" + lastUpdateEndOfWeek + " && isWeekEnd:" + isWeekEnd + ")" +
                         " || (daysDifference:" + daysDifference + " == 0 && lastUpdateEndOfHour:" + lastUpdateEndOfHour + " && isWeekDay:" + isWeekDay + ")");
 
-        // (Days difference is just 2 days(sat and sun) AND lastUpdated is on Friday 3:30PM AND today is a weekend) OR
-        // (There is no difference in days AND lastUpdated is 3:30PM AND today is a weekday)
-        // TODO: refactor complex boolean
-        return (daysDifference < 3 && lastUpdateEndOfWeek && isWeekEnd) || (daysDifference == 0 && lastUpdateEndOfHour && isWeekDay);
+        // Days difference is just 2 days(sat and sun) AND lastUpdated is on Friday 3:30PM AND today is a weekend
+        boolean lastUpdatedJustBeforeWeekend = daysDifference < 3 && lastUpdateEndOfWeek && isWeekEnd;
+        // There is no difference in days AND lastUpdated is 3:30PM AND today is a weekday
+        boolean lastUpdatedEndOfDayOnAWeekday = daysDifference == 0 && lastUpdateEndOfHour && isWeekDay;
+
+        return lastUpdatedJustBeforeWeekend || lastUpdatedEndOfDayOnAWeekday;
     }
 
     @Override
@@ -665,7 +705,7 @@ public class FacadePSEPlannerService implements PSEPlannerService
         }
         else
         {
-            lastUpdated = EPOCH_DATE; // Shouldn't happen because shared preference is set in onCreate of MainActivity
+            lastUpdated = EPOCH_DATE;
         }
 
         return lastUpdated;

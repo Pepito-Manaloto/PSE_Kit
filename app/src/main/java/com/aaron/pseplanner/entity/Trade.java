@@ -1,6 +1,8 @@
 package com.aaron.pseplanner.entity;
 
+import org.greenrobot.greendao.DaoException;
 import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Index;
 import org.greenrobot.greendao.annotation.JoinProperty;
@@ -11,9 +13,6 @@ import org.greenrobot.greendao.annotation.Unique;
 
 import java.util.Date;
 import java.util.List;
-
-import org.greenrobot.greendao.annotation.Generated;
-import org.greenrobot.greendao.DaoException;
 
 /**
  * Created by Aaron on 3/21/2017.
@@ -346,6 +345,11 @@ public class Trade
             }
         }
         return tradeEntries;
+    }
+
+    public void setTradeEntriesTransient(List<TradeEntry> tradeEntries)
+    {
+        this.tradeEntries = tradeEntries;
     }
 
     /** Resets a to-many relationship, making the next get call to query for a fresh result. */

@@ -7,6 +7,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by aaron.asuncion on 12/19/2016.
@@ -377,7 +378,7 @@ public class DefaultCalculatorService implements CalculatorService
 
         long time1 = date1.getTime();
         long time2 = date2.getTime();
-        double diff;
+        long diff;
 
         if(time1 > time2)
         {
@@ -392,8 +393,7 @@ public class DefaultCalculatorService implements CalculatorService
             return 0;
         }
 
-        // Convert milliseconds difference to day and round up
-        return (int) Math.ceil(diff / DAY_IN_MILLISECONDS);
+        return (int) TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
     }
 
     private boolean isNonPositiveBigDecimal(BigDecimal bigDecimal)

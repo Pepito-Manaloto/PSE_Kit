@@ -188,7 +188,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     public SingleSource<? extends ArrayList<TickerDto>> apply(Pair<List<TickerDto>, Date> pair) throws Exception
                     {
                         ArrayList<TickerDto> tickerDtoList = (ArrayList<TickerDto>) pair.first;
-                        pseService.insertTickerList(tickerDtoList);
+                        Date lastUpdated = pair.second;
+
+                        pseService.insertTickerList(tickerDtoList, lastUpdated);
                         LogManager.debug(CLASS_NAME, "initTickerDtoList", "Retrieved from Web API and saved to database, count: " + tickerDtoList.size());
                         return Single.just(tickerDtoList);
                     }

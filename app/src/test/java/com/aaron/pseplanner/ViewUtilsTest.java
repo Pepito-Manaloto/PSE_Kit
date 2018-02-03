@@ -5,6 +5,7 @@ import android.text.InputFilter;
 import android.widget.EditText;
 
 import com.aaron.pseplanner.service.ViewUtils;
+import com.aaron.pseplanner.test.utils.UnitTestUtils;
 
 import org.junit.Rule;
 import org.junit.Test;

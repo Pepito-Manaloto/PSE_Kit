@@ -11,8 +11,8 @@ import com.aaron.pseplanner.RobolectricTest;
 import org.junit.Test;
 import org.robolectric.Robolectric;
 
-import static com.aaron.pseplanner.UnitTestUtils.getPrivateField;
-import static com.aaron.pseplanner.UnitTestUtils.setPrivateField;
+import static com.aaron.pseplanner.test.utils.UnitTestUtils.getPrivateField;
+import static com.aaron.pseplanner.test.utils.UnitTestUtils.setPrivateField;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;

@@ -1,7 +1,10 @@
-package com.aaron.pseplanner;
+package com.aaron.pseplanner.test.utils;
+
+import org.apache.commons.lang3.RandomUtils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
@@ -63,5 +66,31 @@ public final class UnitTestUtils
         GregorianCalendar date = (GregorianCalendar) GregorianCalendar.getInstance(timezone);
         date.set(year, month - 1, day, hour, minute, second);
         return date.getTime();
+    }
+
+    public static Date newTime(int hour, int minute, int second, DayOfWeek dayOfWeek)
+    {
+        GregorianCalendar date = (GregorianCalendar) GregorianCalendar.getInstance();
+        date.set(Calendar.DAY_OF_WEEK, dayOfWeek.getValue());
+        date.set(Calendar.HOUR_OF_DAY, hour);
+        date.set(Calendar.MINUTE, minute);
+        date.set(Calendar.SECOND, second);
+
+        return date.getTime();
+    }
+
+    public static int randomSecondOrMinute()
+    {
+        return RandomUtils.nextInt(0, 60);
+    }
+
+    public static int randomSecondOrMinuteMin30()
+    {
+        return RandomUtils.nextInt(30, 60);
+    }
+
+    public static int randomSecondOrMinuteMax29()
+    {
+        return RandomUtils.nextInt(0, 30);
     }
 }
