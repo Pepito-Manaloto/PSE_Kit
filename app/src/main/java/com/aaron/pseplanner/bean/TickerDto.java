@@ -26,37 +26,9 @@ public class TickerDto implements Stock, Parcelable, Comparable<TickerDto>
     {
     }
 
-    public TickerDto(Long id, String symbol, String name, long volume, BigDecimal currentPrice, BigDecimal change, BigDecimal percentChange)
+    public TickerDto(String symbol)
     {
-        this.id = id;
         this.symbol = symbol;
-        this.name = name;
-        this.volume = volume;
-        this.currentPrice = currentPrice;
-        this.change = change;
-        this.percentChange = percentChange;
-    }
-
-    public TickerDto(Long id, String symbol, String name, long volume, double currentPrice, double change, double percentChange)
-    {
-        this.id = id;
-        this.symbol = symbol;
-        this.name = name;
-        this.volume = volume;
-        this.currentPrice = BigDecimal.valueOf(currentPrice);
-        this.change = BigDecimal.valueOf(change);
-        this.percentChange = BigDecimal.valueOf(percentChange);
-    }
-
-    public TickerDto(Long id, String symbol, String name, long volume, String currentPrice, String change, String percentChange)
-    {
-        this.id = id;
-        this.symbol = symbol;
-        this.name = name;
-        this.volume = volume;
-        this.currentPrice = new BigDecimal(currentPrice);
-        this.change = new BigDecimal(change);
-        this.percentChange = new BigDecimal(percentChange);
     }
 
     @Override
@@ -105,9 +77,10 @@ public class TickerDto implements Stock, Parcelable, Comparable<TickerDto>
     }
 
     @Override
-    public void setSymbol(String symbol)
+    public TickerDto setSymbol(String symbol)
     {
         this.symbol = symbol;
+        return this;
     }
 
     public String getName()
@@ -115,9 +88,10 @@ public class TickerDto implements Stock, Parcelable, Comparable<TickerDto>
         return name;
     }
 
-    public void setName(String name)
+    public TickerDto setName(String name)
     {
         this.name = name;
+        return this;
     }
 
     public long getVolume()
@@ -125,9 +99,10 @@ public class TickerDto implements Stock, Parcelable, Comparable<TickerDto>
         return volume;
     }
 
-    public void setVolume(long volume)
+    public TickerDto setVolume(long volume)
     {
         this.volume = volume;
+        return this;
     }
 
     public BigDecimal getCurrentPrice()
@@ -135,9 +110,10 @@ public class TickerDto implements Stock, Parcelable, Comparable<TickerDto>
         return currentPrice;
     }
 
-    public void setCurrentPrice(BigDecimal currentPrice)
+    public TickerDto setCurrentPrice(BigDecimal currentPrice)
     {
         this.currentPrice = currentPrice;
+        return this;
     }
 
     public BigDecimal getChange()
@@ -145,9 +121,10 @@ public class TickerDto implements Stock, Parcelable, Comparable<TickerDto>
         return change;
     }
 
-    public void setChange(BigDecimal change)
+    public TickerDto setChange(BigDecimal change)
     {
         this.change = change;
+        return this;
     }
 
     public BigDecimal getPercentChange()
@@ -155,9 +132,10 @@ public class TickerDto implements Stock, Parcelable, Comparable<TickerDto>
         return percentChange;
     }
 
-    public void setPercentChange(BigDecimal percentChange)
+    public TickerDto setPercentChange(BigDecimal percentChange)
     {
         this.percentChange = percentChange;
+        return this;
     }
 
     public boolean isHasTradePlan()
@@ -165,9 +143,10 @@ public class TickerDto implements Stock, Parcelable, Comparable<TickerDto>
         return hasTradePlan;
     }
 
-    public void setHasTradePlan(boolean hasTradePlan)
+    public TickerDto setHasTradePlan(boolean hasTradePlan)
     {
         this.hasTradePlan = hasTradePlan;
+        return this;
     }
 
     public Long getId()
@@ -175,9 +154,10 @@ public class TickerDto implements Stock, Parcelable, Comparable<TickerDto>
         return id;
     }
 
-    public void setId(Long id)
+    public TickerDto setId(Long id)
     {
         this.id = id;
+        return this;
     }
 
     @Override

@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * Created by Aaron on 3/21/2017.
  */
-@Entity(indexes = {@Index(value = "symbol", unique = true)})
+@Entity(indexes = { @Index(value = "symbol", unique = true) })
 public class Trade
 {
     @Id(autoincrement = true)
@@ -78,7 +78,7 @@ public class Trade
     @NotNull
     private String percentCapital;
 
-    @ToMany(joinProperties = {@JoinProperty(name = "symbol", referencedName = "tradeSymbol")})
+    @ToMany(joinProperties = { @JoinProperty(name = "symbol", referencedName = "tradeSymbol") })
     @OrderBy("order ASC")
     private List<TradeEntry> tradeEntries;
 
@@ -98,7 +98,8 @@ public class Trade
             @NotNull String gainLossPercent, @NotNull String gainToTarget,
             @NotNull String lossToStopLoss, @NotNull String stopLoss, @NotNull Date stopDate,
             int daysToStopDate, @NotNull String riskReward, long capital,
-            @NotNull String percentCapital) {
+            @NotNull String percentCapital)
+    {
         this.id = id;
         this.entryDate = entryDate;
         this.holdingPeriod = holdingPeriod;
@@ -122,7 +123,8 @@ public class Trade
     }
 
     @Generated(hash = 1773414334)
-    public Trade() {
+    public Trade()
+    {
     }
 
     public Long getId()
@@ -130,9 +132,10 @@ public class Trade
         return this.id;
     }
 
-    public void setId(Long id)
+    public Trade setId(Long id)
     {
         this.id = id;
+        return this;
     }
 
     public Date getEntryDate()
@@ -140,9 +143,10 @@ public class Trade
         return this.entryDate;
     }
 
-    public void setEntryDate(@NotNull Date entryDate)
+    public Trade setEntryDate(@NotNull Date entryDate)
     {
         this.entryDate = entryDate;
+        return this;
     }
 
     public int getHoldingPeriod()
@@ -150,9 +154,10 @@ public class Trade
         return this.holdingPeriod;
     }
 
-    public void setHoldingPeriod(int holdingPeriod)
+    public Trade setHoldingPeriod(int holdingPeriod)
     {
         this.holdingPeriod = holdingPeriod;
+        return this;
     }
 
     public String getSymbol()
@@ -160,9 +165,10 @@ public class Trade
         return this.symbol;
     }
 
-    public void setSymbol(@NotNull String symbol)
+    public Trade setSymbol(@NotNull String symbol)
     {
         this.symbol = symbol;
+        return this;
     }
 
     public String getCurrentPrice()
@@ -170,9 +176,10 @@ public class Trade
         return this.currentPrice;
     }
 
-    public void setCurrentPrice(@NotNull String currentPrice)
+    public Trade setCurrentPrice(@NotNull String currentPrice)
     {
         this.currentPrice = currentPrice;
+        return this;
     }
 
     public String getAveragePrice()
@@ -180,9 +187,10 @@ public class Trade
         return this.averagePrice;
     }
 
-    public void setAveragePrice(@NotNull String averagePrice)
+    public Trade setAveragePrice(@NotNull String averagePrice)
     {
         this.averagePrice = averagePrice;
+        return this;
     }
 
     public long getTotalShares()
@@ -190,9 +198,10 @@ public class Trade
         return this.totalShares;
     }
 
-    public void setTotalShares(long totalShares)
+    public Trade setTotalShares(long totalShares)
     {
         this.totalShares = totalShares;
+        return this;
     }
 
     public String getTotalAmount()
@@ -200,9 +209,10 @@ public class Trade
         return this.totalAmount;
     }
 
-    public void setTotalAmount(@NotNull String totalAmount)
+    public Trade setTotalAmount(@NotNull String totalAmount)
     {
         this.totalAmount = totalAmount;
+        return this;
     }
 
     public String getPriceToBreakEven()
@@ -210,9 +220,10 @@ public class Trade
         return this.priceToBreakEven;
     }
 
-    public void setPriceToBreakEven(@NotNull String priceToBreakEven)
+    public Trade setPriceToBreakEven(@NotNull String priceToBreakEven)
     {
         this.priceToBreakEven = priceToBreakEven;
+        return this;
     }
 
     public String getTargetPrice()
@@ -220,9 +231,10 @@ public class Trade
         return this.targetPrice;
     }
 
-    public void setTargetPrice(@NotNull String targetPrice)
+    public Trade setTargetPrice(@NotNull String targetPrice)
     {
         this.targetPrice = targetPrice;
+        return this;
     }
 
     public String getGainLoss()
@@ -230,9 +242,10 @@ public class Trade
         return this.gainLoss;
     }
 
-    public void setGainLoss(@NotNull String gainLoss)
+    public Trade setGainLoss(@NotNull String gainLoss)
     {
         this.gainLoss = gainLoss;
+        return this;
     }
 
     public String getGainLossPercent()
@@ -240,9 +253,10 @@ public class Trade
         return this.gainLossPercent;
     }
 
-    public void setGainLossPercent(@NotNull String gainLossPercent)
+    public Trade setGainLossPercent(@NotNull String gainLossPercent)
     {
         this.gainLossPercent = gainLossPercent;
+        return this;
     }
 
     public String getGainToTarget()
@@ -250,9 +264,10 @@ public class Trade
         return this.gainToTarget;
     }
 
-    public void setGainToTarget(String gainToTarget)
+    public Trade setGainToTarget(String gainToTarget)
     {
         this.gainToTarget = gainToTarget;
+        return this;
     }
 
     public String getLossToStopLoss()
@@ -260,9 +275,10 @@ public class Trade
         return this.lossToStopLoss;
     }
 
-    public void setLossToStopLoss(@NotNull String lossToStopLoss)
+    public Trade setLossToStopLoss(@NotNull String lossToStopLoss)
     {
         this.lossToStopLoss = lossToStopLoss;
+        return this;
     }
 
     public String getStopLoss()
@@ -270,9 +286,10 @@ public class Trade
         return this.stopLoss;
     }
 
-    public void setStopLoss(@NotNull String stopLoss)
+    public Trade setStopLoss(@NotNull String stopLoss)
     {
         this.stopLoss = stopLoss;
+        return this;
     }
 
     public Date getStopDate()
@@ -280,9 +297,10 @@ public class Trade
         return this.stopDate;
     }
 
-    public void setStopDate(@NotNull Date stopDate)
+    public Trade setStopDate(@NotNull Date stopDate)
     {
         this.stopDate = stopDate;
+        return this;
     }
 
     public int getDaysToStopDate()
@@ -290,9 +308,10 @@ public class Trade
         return this.daysToStopDate;
     }
 
-    public void setDaysToStopDate(int daysToStopDate)
+    public Trade setDaysToStopDate(int daysToStopDate)
     {
         this.daysToStopDate = daysToStopDate;
+        return this;
     }
 
     public String getRiskReward()
@@ -300,9 +319,10 @@ public class Trade
         return this.riskReward;
     }
 
-    public void setRiskReward(@NotNull String riskReward)
+    public Trade setRiskReward(@NotNull String riskReward)
     {
         this.riskReward = riskReward;
+        return this;
     }
 
     public long getCapital()
@@ -310,9 +330,10 @@ public class Trade
         return this.capital;
     }
 
-    public void setCapital(long capital)
+    public Trade setCapital(long capital)
     {
         this.capital = capital;
+        return this;
     }
 
     public String getPercentCapital()
@@ -320,9 +341,10 @@ public class Trade
         return this.percentCapital;
     }
 
-    public void setPercentCapital(@NotNull String percentCapital)
+    public Trade setPercentCapital(@NotNull String percentCapital)
     {
         this.percentCapital = percentCapital;
+        return this;
     }
 
     /**
@@ -330,16 +352,21 @@ public class Trade
      * Changes to to-many relations are not persisted, make changes to the target entity.
      */
     @Generated(hash = 1790216817)
-    public List<TradeEntry> getTradeEntries() {
-        if (tradeEntries == null) {
+    public List<TradeEntry> getTradeEntries()
+    {
+        if(tradeEntries == null)
+        {
             final DaoSession daoSession = this.daoSession;
-            if (daoSession == null) {
+            if(daoSession == null)
+            {
                 throw new DaoException("Entity is detached from DAO context");
             }
             TradeEntryDao targetDao = daoSession.getTradeEntryDao();
             List<TradeEntry> tradeEntriesNew = targetDao._queryTrade_TradeEntries(symbol);
-            synchronized (this) {
-                if (tradeEntries == null) {
+            synchronized(this)
+            {
+                if(tradeEntries == null)
+                {
                     tradeEntries = tradeEntriesNew;
                 }
             }
@@ -347,14 +374,16 @@ public class Trade
         return tradeEntries;
     }
 
-    public void setTradeEntriesTransient(List<TradeEntry> tradeEntries)
+    public Trade setTradeEntriesTransient(List<TradeEntry> tradeEntries)
     {
         this.tradeEntries = tradeEntries;
+        return this;
     }
 
     /** Resets a to-many relationship, making the next get call to query for a fresh result. */
     @Generated(hash = 1183466938)
-    public synchronized void resetTradeEntries() {
+    public synchronized void resetTradeEntries()
+    {
         tradeEntries = null;
     }
 
@@ -363,8 +392,10 @@ public class Trade
      * Entity must attached to an entity context.
      */
     @Generated(hash = 128553479)
-    public void delete() {
-        if (myDao == null) {
+    public void delete()
+    {
+        if(myDao == null)
+        {
             throw new DaoException("Entity is detached from DAO context");
         }
         myDao.delete(this);
@@ -375,8 +406,10 @@ public class Trade
      * Entity must attached to an entity context.
      */
     @Generated(hash = 1942392019)
-    public void refresh() {
-        if (myDao == null) {
+    public void refresh()
+    {
+        if(myDao == null)
+        {
             throw new DaoException("Entity is detached from DAO context");
         }
         myDao.refresh(this);
@@ -387,8 +420,10 @@ public class Trade
      * Entity must attached to an entity context.
      */
     @Generated(hash = 713229351)
-    public void update() {
-        if (myDao == null) {
+    public void update()
+    {
+        if(myDao == null)
+        {
             throw new DaoException("Entity is detached from DAO context");
         }
         myDao.update(this);

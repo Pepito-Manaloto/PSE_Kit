@@ -114,7 +114,12 @@ public abstract class AbstractHttpClientTest extends RobolectricTest
     protected TickerDto createTickerDto(String symbol, String name, long volume, double amount, double percentChange)
     {
         BigDecimal change = calculatorService.getChangeBetweenCurrentAndPreviousPrice(amount, percentChange);
-        return new TickerDto(null, symbol, name, volume, BigDecimal.valueOf(amount), change, BigDecimal.valueOf(percentChange));
+        return new TickerDto(symbol)
+                .setName(name)
+                .setVolume(volume)
+                .setCurrentPrice(BigDecimal.valueOf(amount))
+                .setChange(change)
+                .setPercentChange(BigDecimal.valueOf(percentChange));
     }
 
     protected Pair<List<TickerDto>, Date> thenTheResponseAre(List<String> symbolList, List<String> nameList, List<Long> volumeList, List<Double> amountList,

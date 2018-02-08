@@ -23,6 +23,8 @@ import io.reactivex.Single;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
+import static com.aaron.pseplanner.service.BeanEntityUtils.fromResponsePhisixStockToTickerDto;
+
 /**
  * Created by Aaron on 2/26/2017.
  */
@@ -177,8 +179,7 @@ public class PhisixHttpClient extends BaseHttpClient
         BigDecimal change = this.calculatorService.getChangeBetweenCurrentAndPreviousPrice(phisixStock.getAmount(), phisixStock.getPercentChange());
 
         // WARN: Id is null
-        return new TickerDto(null, phisixStock.getSymbol(), phisixStock.getName(), phisixStock.getVolume(), BigDecimal.valueOf(phisixStock.getAmount()), change,
-                BigDecimal.valueOf(phisixStock.getPercentChange()));
+        return fromResponsePhisixStockToTickerDto(phisixStock, change);
     }
 
     @Override

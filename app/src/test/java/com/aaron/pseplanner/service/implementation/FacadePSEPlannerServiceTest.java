@@ -21,7 +21,6 @@ import com.aaron.pseplanner.service.HttpClient;
 import com.aaron.pseplanner.test.utils.DayOfWeek;
 
 import org.apache.commons.lang3.RandomStringUtils;
-import org.apache.commons.lang3.RandomUtils;
 import org.greenrobot.greendao.AbstractDaoSession;
 import org.greenrobot.greendao.query.DeleteQuery;
 import org.greenrobot.greendao.query.QueryBuilder;
@@ -48,7 +47,7 @@ import io.reactivex.Single;
 import io.reactivex.functions.Predicate;
 import io.reactivex.observers.TestObserver;
 
-import static com.aaron.pseplanner.test.utils.UnitTestUtils.newDate;
+import static com.aaron.pseplanner.test.utils.BeanEntityBuilderTestUtils.*;
 import static com.aaron.pseplanner.test.utils.UnitTestUtils.newDateTime;
 import static com.aaron.pseplanner.test.utils.UnitTestUtils.newTime;
 import static com.aaron.pseplanner.test.utils.UnitTestUtils.randomSecondOrMinute;
@@ -142,14 +141,7 @@ public class FacadePSEPlannerServiceTest extends AbstractHttpClientTest
     @Test
     public void givenTickerDtoList_whenInsertTickerList_thenTickerDtoListConvertedToTickerSetAndIsInsertedAndLastUpdatedRefreshed()
     {
-        List<String> nameList = Arrays.asList("Alsons Consolidated Resource", "Calata Corporation", "Eagle Cement Corporation", "Philippine National Bank",
-                "Wilcon Depot, Inc.");
-        List<String> symbolList = Arrays.asList("ACR", "CAL", "EAGLE", "PNB", "WLCON");
-        List<Double> percentChangeList = Arrays.asList(13.89, -29.12, 0.10, 3.93, 37.05);
-        List<Long> volumeList = Arrays.asList(1_719_000L, 380_000L, 153_400L, 19_800L, 730_000L);
-        List<Double> amountList = Arrays.asList(1.35, 2.31, 14.44, 57.15, 8.03);
-
-        List<TickerDto> tickerDtoList = givenTickerDtoList(nameList, symbolList, percentChangeList, volumeList, amountList);
+        List<TickerDto> tickerDtoList = givenTickerDtoList();
 
         Set<Ticker> tickerSet = whenInsertTickerList(tickerDtoList, LAST_UPDATED);
 
@@ -167,14 +159,7 @@ public class FacadePSEPlannerServiceTest extends AbstractHttpClientTest
     @Test
     public void givenTickerDtoList_whenUpdateTickerList_thenTickerDtoListConvertedToTickerSetAndIsInsertedAndLastUpdatedRefreshed()
     {
-        List<String> nameList = Arrays.asList("Alsons Consolidated Resource", "Calata Corporation", "Eagle Cement Corporation", "Philippine National Bank",
-                "Wilcon Depot, Inc.");
-        List<String> symbolList = Arrays.asList("ACR", "CAL", "EAGLE", "PNB", "WLCON");
-        List<Double> percentChangeList = Arrays.asList(13.89, -29.12, 0.10, 3.93, 37.05);
-        List<Long> volumeList = Arrays.asList(1_719_000L, 380_000L, 153_400L, 19_800L, 730_000L);
-        List<Double> amountList = Arrays.asList(1.35, 2.31, 14.44, 57.15, 8.03);
-
-        List<TickerDto> tickerDtoList = givenTickerDtoList(nameList, symbolList, percentChangeList, volumeList, amountList);
+        List<TickerDto> tickerDtoList = givenTickerDtoList();
 
         Set<Ticker> tickerSet = whenUpdateTickerList(tickerDtoList, LAST_UPDATED);
 
@@ -192,34 +177,7 @@ public class FacadePSEPlannerServiceTest extends AbstractHttpClientTest
     @Test
     public void givenTradeDtoList_whenGetTradeSymbolsFromTradeDtos_thenTradeSymbolsFromTradeDtoListShouldBeReturned()
     {
-        // Note values are random and does not reflect correct computation
-        List<Long> id = Arrays.asList(1L, 2L, 3L, 4L, 5L);
-        List<String> symbol = Arrays.asList("ACR", "CHP", "HOUSE", "PCOR", "VUL");
-        List<Date> entryDate = Arrays.asList(newDate(2018, 5, 13), newDate(2018, 6, 15),
-                newDate(2018, 8, 19), newDate(2018, 10, 25), newDate(2018, 12, 7));
-        List<Integer> holdingPeriod = Arrays.asList(5, 17, 28, 31, 71);
-        List<String> currentPrice = Arrays.asList("1.31", "4.64", "6.29", "9.1", "0.82");
-        List<String> averagePrice = Arrays.asList("1.32", "4.68", "6.56", "9.21", "0.828");
-        List<Long> totalShares = Arrays.asList(3_000_000L, 1_454_000L, 420_000L, 51_000L, 8_900_000L);
-        List<String> totalAmount = Arrays.asList("12345", "5678", "7942", "7526", "2299");
-        List<String> priceToBreakEven = Arrays.asList("1.33", "4.75", "6.66", "9.31", "0.84");
-        List<String> targetPrice = Arrays.asList("1.43", "5.75", "7.66", "11.31", "0.94");
-        List<String> gainLoss = Arrays.asList("8785676", "-5684674", "252342", "-45465", "5464564");
-        List<String> gainLossPercent = Arrays.asList("-235", "74.75", "68.66", "-97.31", "60.84");
-        List<String> gainToTarget = Arrays.asList("7685457", "-7857754", "23246", "878768", "-789696");
-        List<String> stopLoss = Arrays.asList("1.13", "4.35", "6.16", "9.0", "0.80");
-        List<String> lossToStopLoss = Arrays.asList("653435", "763452", "635435", "67587", "6787868");
-        List<Date> stopDate = Arrays.asList(newDate(2018, 6, 13), newDate(2018, 7, 15),
-                newDate(2018, 9, 19), newDate(2018, 11, 25), newDate(2019, 1, 7));
-        List<Integer> daysToStopDate = Arrays.asList(30, 30, 30, 30, 30);
-        List<String> riskReward = Arrays.asList("3.43", "2", "4.5", "2.64", "1.9");
-        List<Long> capital = Arrays.asList(10_000_000L, 80_000_000L, 5_000_000L, 3_000_000L, 14_000_000L);
-        List<String> percentCapital = Arrays.asList("30", "5.85", "8.67", "84.05", "100");
-        List<List<TradeEntryDto>> tradeEntries = createTradeEntryDtos(symbol, currentPrice, totalShares, gainLossPercent);
-
-        Collection<TradeDto> tradeDtoList = givenTradeDtoList(id, symbol, entryDate, holdingPeriod, currentPrice, averagePrice, totalShares,
-                totalAmount, priceToBreakEven, targetPrice, gainLoss, gainLossPercent, gainToTarget, stopLoss, lossToStopLoss, stopDate,
-                daysToStopDate, riskReward, capital, percentCapital, tradeEntries);
+        Collection<TradeDto> tradeDtoList = givenTradeDtoList();
 
         Set<String> tradeSymbols = whenGetTradeSymbolsFromTradeDtos(tradeDtoList);
 
@@ -229,14 +187,7 @@ public class FacadePSEPlannerServiceTest extends AbstractHttpClientTest
     @Test
     public void givenTickerListDtoAndTradeSymbols_whenSetTickerDtoListHasTradePlan_thenTickerListFoundInTradeSymbolsShouldHaveHasTradePlanSetToTrue()
     {
-        List<String> nameList = Arrays.asList("Alsons Consolidated Resource", "Calata Corporation", "Eagle Cement Corporation", "Philippine National Bank",
-                "Wilcon Depot, Inc.");
-        List<String> symbolList = Arrays.asList("ACR", "CAL", "EAGLE", "PNB", "WLCON");
-        List<Double> percentChangeList = Arrays.asList(13.89, -29.12, 0.10, 3.93, 37.05);
-        List<Long> volumeList = Arrays.asList(1_719_000L, 380_000L, 153_400L, 19_800L, 730_000L);
-        List<Double> amountList = Arrays.asList(1.35, 2.31, 14.44, 57.15, 8.03);
-
-        ArrayList<TickerDto> tickerDtoList = (ArrayList<TickerDto>) givenTickerDtoList(nameList, symbolList, percentChangeList, volumeList, amountList);
+        ArrayList<TickerDto> tickerDtoList = (ArrayList<TickerDto>) givenTickerDtoList();
         Set<String> tradeSymbols = givenTradeSymbols("CAL", "PNB", "WLCON");
 
         ArrayList<TickerDto> updatedTickerDtoList = whenSetTickerDtoListHasTradePlan(tickerDtoList, tradeSymbols);
@@ -285,13 +236,8 @@ public class FacadePSEPlannerServiceTest extends AbstractHttpClientTest
     public void givenTradeDto_whenInsertTradePlan_thenTradeDtoConvertedToTradeAndIsInsertedAndLastUpdatedRefreshed()
     {
         String symbol = "PIP";
-        List<String> entryPrice = Arrays.asList("3.1", "3.3", "3.5");
-        List<Long> shares = Arrays.asList(3_000_000L, 1_454_000L, 420_000L);
-        List<String> percentWeight = Arrays.asList("33.34", "33.33", "33.33");
-        List<TradeEntryDto> tradeEntries = createTradeEntryDto(symbol, entryPrice, shares, percentWeight);
-        TradeDto tradeDto = givenTradeDto(9L, symbol, newDate(2018, 7, 19), 20, "3.3", "3.309", 26_300L,
-                "73123", "3.35", "3.98", "-15354", "-9.24", "5456", "3.21", "0",
-                newDate(2018, 10, 19), 39, "2.98", 10_200_100, "42.38", tradeEntries);
+        List<TradeEntryDto> tradeEntries = givenTradeEntryDto(symbol);
+        TradeDto tradeDto = givenTradeDto(symbol, tradeEntries);
 
         Trade trade = whenInsertTradePlan(tradeDto);
 
@@ -310,13 +256,8 @@ public class FacadePSEPlannerServiceTest extends AbstractHttpClientTest
     public void givenTradeDto_whenUpdateTradePlan_thenTradeDtoIsUpdatedAndLastUpdatedRefreshed()
     {
         String symbol = "PIP";
-        List<String> entryPrice = Arrays.asList("3.1", "3.3", "3.5");
-        List<Long> shares = Arrays.asList(3_000_000L, 1_454_000L, 420_000L);
-        List<String> percentWeight = Arrays.asList("33.34", "33.33", "33.33");
-        List<TradeEntryDto> tradeEntries = createTradeEntryDto(symbol, entryPrice, shares, percentWeight);
-        TradeDto tradeDto = givenTradeDto(9L, symbol, newDate(2018, 7, 19), 20, "3.3", "3.309", 26_300L,
-                "73123", "3.35", "3.98", "-15354", "-9.24", "5456", "3.21", "0",
-                newDate(2018, 10, 19), 39, "2.98", 10_200_100, "42.38", tradeEntries);
+        List<TradeEntryDto> tradeEntries = givenTradeEntryDto(symbol);
+        TradeDto tradeDto = givenTradeDto(symbol, tradeEntries);
 
         whenUpdateTradePlan(tradeDto);
 
@@ -335,13 +276,8 @@ public class FacadePSEPlannerServiceTest extends AbstractHttpClientTest
     public void givenTradeDto_whenDeleteTradePlan_thenTradeDtoIsDeleted()
     {
         String symbol = "PIP";
-        List<String> entryPrice = Arrays.asList("3.1", "3.3", "3.5");
-        List<Long> shares = Arrays.asList(3_000_000L, 1_454_000L, 420_000L);
-        List<String> percentWeight = Arrays.asList("33.34", "33.33", "33.33");
-        List<TradeEntryDto> tradeEntries = createTradeEntryDto(symbol, entryPrice, shares, percentWeight);
-        TradeDto tradeDto = givenTradeDto(9L, symbol, newDate(2018, 7, 19), 20, "3.3", "3.309", 26_300L,
-                "73123", "3.35", "3.98", "-15354", "-9.24", "5456", "3.21", "0",
-                newDate(2018, 10, 19), 39, "2.98", 10_200_100, "42.38", tradeEntries);
+        List<TradeEntryDto> tradeEntries = givenTradeEntryDto(symbol);
+        TradeDto tradeDto = givenTradeDto(symbol, tradeEntries);
 
         String deletedTrade = whenDeleteTradePlan(tradeDto);
 
@@ -593,15 +529,7 @@ public class FacadePSEPlannerServiceTest extends AbstractHttpClientTest
     @Test
     public void givenTickerListInDatabase_whenGetTickerListFromDatabase_thenShouldReturnConvertedTickerDtoList()
     {
-        List<String> nameList = Arrays.asList("Alsons Consolidated Resource", "Calata Corporation", "Eagle Cement Corporation", "Philippine National Bank",
-                "Wilcon Depot, Inc.");
-        List<String> symbolList = Arrays.asList("ACR", "CAL", "EAGLE", "PNB", "WLCON");
-        List<String> changeList = Arrays.asList("13422.89", "-24789.12", "76790.10", "33.93", "387.05");
-        List<String> percentChangeList = Arrays.asList("13.89", "-29.12", "0.10", "3.93", "37.05");
-        List<Long> volumeList = Arrays.asList(1_719_000L, 380_000L, 153_400L, 19_800L, 730_000L);
-        List<String> currentPriceList = Arrays.asList("1.35", "2.31", "14.44", "57.15", "8.03");
-
-        ArrayList<Ticker> tickerList = givenTickerList(symbolList, nameList, volumeList, currentPriceList, changeList, percentChangeList);
+        ArrayList<Ticker> tickerList = givenTickerList();
         givenTickerListInDatabase(tickerList);
 
         TestObserver<ArrayList<TickerDto>> result = whenGetTickerListFromDatabase();
@@ -623,34 +551,10 @@ public class FacadePSEPlannerServiceTest extends AbstractHttpClientTest
     @Test
     public void givenTradePlanListInDatabase_whenGetTradePlanListFromDatabase_thenShouldReturnConvertedTradePlanDtoList()
     {
-        // Note values are random and does not reflect correct computation
-        List<Long> id = Arrays.asList(1L, 2L, 3L, 4L, 5L);
         List<String> symbol = Arrays.asList("ACR", "CHP", "HOUSE", "PCOR", "VUL");
-        List<Date> entryDate = Arrays.asList(newDate(2018, 5, 13), newDate(2018, 6, 15),
-                newDate(2018, 8, 19), newDate(2018, 10, 25), newDate(2018, 12, 7));
-        List<Integer> holdingPeriod = Arrays.asList(5, 17, 28, 31, 71);
-        List<String> currentPrice = Arrays.asList("1.31", "4.64", "6.29", "9.1", "0.82");
-        List<String> averagePrice = Arrays.asList("1.32", "4.68", "6.56", "9.21", "0.828");
-        List<Long> totalShares = Arrays.asList(3_000_000L, 1_454_000L, 420_000L, 51_000L, 8_900_000L);
-        List<String> totalAmount = Arrays.asList("12345", "5678", "7942", "7526", "2299");
-        List<String> priceToBreakEven = Arrays.asList("1.33", "4.75", "6.66", "9.31", "0.84");
-        List<String> targetPrice = Arrays.asList("1.43", "5.75", "7.66", "11.31", "0.94");
-        List<String> gainLoss = Arrays.asList("8785676", "-5684674", "252342", "-45465", "5464564");
-        List<String> gainLossPercent = Arrays.asList("-235", "74.75", "68.66", "-97.31", "60.84");
-        List<String> gainToTarget = Arrays.asList("7685457", "-7857754", "23246", "878768", "-789696");
-        List<String> stopLoss = Arrays.asList("1.13", "4.35", "6.16", "9.0", "0.80");
-        List<String> lossToStopLoss = Arrays.asList("653435", "763452", "635435", "67587", "6787868");
-        List<Date> stopDate = Arrays.asList(newDate(2018, 6, 13), newDate(2018, 7, 15),
-                newDate(2018, 9, 19), newDate(2018, 11, 25), newDate(2019, 1, 7));
-        List<Integer> daysToStopDate = Arrays.asList(30, 30, 30, 30, 30);
-        List<String> riskReward = Arrays.asList("3.43", "2", "4.5", "2.64", "1.9");
-        List<Long> capital = Arrays.asList(10_000_000L, 80_000_000L, 5_000_000L, 3_000_000L, 14_000_000L);
-        List<String> percentCapital = Arrays.asList("30", "5.85", "8.67", "84.05", "100");
-        List<List<TradeEntry>> tradeEntries = createTradeEntryList(symbol, currentPrice, totalShares, gainLossPercent);
+        List<List<TradeEntry>> tradeEntries = givenTradeEntryList(symbol);
 
-        ArrayList<Trade> tradePlanList = givenTradePlanList(id, symbol, entryDate, holdingPeriod, currentPrice, averagePrice, totalShares,
-                totalAmount, priceToBreakEven, targetPrice, gainLoss, gainLossPercent, gainToTarget, stopLoss, lossToStopLoss, stopDate,
-                daysToStopDate, riskReward, capital, percentCapital, tradeEntries);
+        ArrayList<Trade> tradePlanList = givenTradeList(symbol, tradeEntries);
         givenTradePlanListInDatabase(tradePlanList);
 
         TestObserver<ArrayList<TradeDto>> testObserver = whenGetTradePlanListFromDatabase();
@@ -711,64 +615,6 @@ public class FacadePSEPlannerServiceTest extends AbstractHttpClientTest
         thenLastUpdatedRefreshed(getLastUpdatedTickerPreference(), new Date());
     }
 
-    /**
-     * Only looks at the second parameter to determine the number of TradeDto.
-     */
-    private Collection<TradeDto> givenTradeDtoList(List<Long> id, List<String> symbol, List<Date> entryDate, List<Integer> holdingPeriod,
-            List<String> currentPrice, List<String> averagePrice, List<Long> totalShares, List<String> totalAmount, List<String> priceToBreakEven,
-            List<String> targetPrice, List<String> gainLoss, List<String> gainLossPercent, List<String> gainToTarget, List<String> stopLoss,
-            List<String> lossToStopLoss, List<Date> stopDate, List<Integer> daysToStopDate, List<String> riskReward, List<Long> capital,
-            List<String> percentCapital, List<List<TradeEntryDto>> tradeEntries)
-    {
-        int size = symbol.size();
-        Collection<TradeDto> tradeDtos = new ArrayList<>(size);
-
-        for(int i = 0; i < size; i++)
-        {
-            tradeDtos.add(givenTradeDto(id.get(i), symbol.get(i), entryDate.get(i), holdingPeriod.get(i), currentPrice.get(i), averagePrice.get(i),
-                    totalShares.get(i), totalAmount.get(i), priceToBreakEven.get(i), targetPrice.get(i), gainLoss.get(i), gainLossPercent.get(i),
-                    gainToTarget.get(i), stopLoss.get(i), lossToStopLoss.get(i), stopDate.get(i), daysToStopDate.get(i), riskReward.get(i),
-                    capital.get(i), percentCapital.get(i), tradeEntries.get(i)));
-        }
-
-        return tradeDtos;
-    }
-
-    private TradeDto givenTradeDto(Long id, String symbol, Date entryDate, int holdingPeriod, String currentPrice, String averagePrice, long totalShares,
-            String totalAmount, String priceToBreakEven, String targetPrice, String gainLoss, String gainLossPercent, String gainToTarget, String stopLoss,
-            String lossToStopLoss, Date stopDate, int daysToStopDate, String riskReward, long capital, String percentCapital, List<TradeEntryDto> tradeEntries)
-    {
-        return new TradeDto(id, symbol, entryDate, holdingPeriod, currentPrice, averagePrice, totalShares, totalAmount, priceToBreakEven, targetPrice,
-                gainLoss, gainLossPercent, gainToTarget, stopLoss, lossToStopLoss, stopDate, daysToStopDate, riskReward, capital, percentCapital, tradeEntries);
-    }
-
-    private List<TradeEntryDto> createTradeEntryDto(String symbol, List<String> entryPrice, List<Long> shares, List<String> percentWeight)
-    {
-        int size = entryPrice.size();
-        List<TradeEntryDto> list = new ArrayList<>(size);
-        for(int i = 0; i < size; i++)
-        {
-            list.add(new TradeEntryDto(symbol, entryPrice.get(i), shares.get(i), percentWeight.get(i)));
-        }
-
-        return list;
-    }
-
-    private List<List<TradeEntryDto>> createTradeEntryDtos(List<String> symbolList, List<String> entryPriceList, List<Long> sharesList,
-            List<String> percentWeightList)
-    {
-        int size = symbolList.size();
-        List<List<TradeEntryDto>> listOfList = new ArrayList<>(size);
-
-        for(String symbol : symbolList)
-        {
-            List<TradeEntryDto> list = createTradeEntryDto(symbol, entryPriceList, sharesList, percentWeightList);
-            listOfList.add(list);
-        }
-
-        return listOfList;
-    }
-
     private void givenLastUpdated(String preference)
     {
         givenLastUpdated(preference, LAST_UPDATED.getTime());
@@ -786,20 +632,6 @@ public class FacadePSEPlannerServiceTest extends AbstractHttpClientTest
     private SharedPreferences getSharedPreferences()
     {
         return getContext().getSharedPreferences(PSEPlannerPreference.class.getSimpleName(), Context.MODE_PRIVATE);
-    }
-
-    private List<TickerDto> givenTickerDtoList(List<String> nameList, List<String> symbolList, List<Double> percentChangeList, List<Long> volumeList,
-            List<Double> amountList)
-    {
-        int size = nameList.size();
-        List<TickerDto> list = new ArrayList<>(size);
-
-        for(int i = 0; i < size; i++)
-        {
-            list.add(createTickerDto(symbolList.get(i), nameList.get(i), volumeList.get(i), amountList.get(i), percentChangeList.get(i)));
-        }
-
-        return list;
     }
 
     private void givenTickerCount(long maxValue)
@@ -874,21 +706,6 @@ public class FacadePSEPlannerServiceTest extends AbstractHttpClientTest
         givenWeekend(DayOfWeek.SATURDAY);
     }
 
-    public ArrayList<Ticker> givenTickerList(List<String> symbolList, List<String> nameList, List<Long> volumeList, List<String> currentPriceList,
-            List<String> changeList, List<String> percentChangeList)
-    {
-        int size = nameList.size();
-        ArrayList<Ticker> list = new ArrayList<>(size);
-
-        for(int i = 0; i < size; i++)
-        {
-            list.add(createTicker(i, symbolList.get(i), nameList.get(i), volumeList.get(i), currentPriceList.get(i), changeList.get(i),
-                    percentChangeList.get(i)));
-        }
-
-        return list;
-    }
-
     public void givenTickerListInDatabase(List<Ticker> tickerList)
     {
         QueryBuilder<?> queryBuilder = mock(QueryBuilder.class);
@@ -899,73 +716,9 @@ public class FacadePSEPlannerServiceTest extends AbstractHttpClientTest
         Mockito.<List<?>> when(queryBuilderOrderAsc.list()).thenReturn(tickerList);
     }
 
-    private Ticker createTicker(int id, String symbol, String name, Long volume, String currentPrice, String change, String percentChange)
-    {
-        Date randomDate = newDate(RandomUtils.nextInt(2000, 2020), RandomUtils.nextInt(1, 13), RandomUtils.nextInt(1, 31));
-        return new Ticker((long) id, symbol, name, volume, currentPrice, change, percentChange, randomDate);
-    }
-
     public void givenTradePlanListInDatabase(List<Trade> tradePlanList)
     {
         when(tradeDao.loadAll()).thenReturn(tradePlanList);
-    }
-
-    private ArrayList<Trade> givenTradePlanList(List<Long> id, List<String> symbol, List<Date> entryDate, List<Integer> holdingPeriod,
-            List<String> currentPrice, List<String> averagePrice, List<Long> totalShares, List<String> totalAmount, List<String> priceToBreakEven,
-            List<String> targetPrice, List<String> gainLoss, List<String> gainLossPercent, List<String> gainToTarget, List<String> stopLoss,
-            List<String> lossToStopLoss, List<Date> stopDate, List<Integer> daysToStopDate, List<String> riskReward, List<Long> capital,
-            List<String> percentCapital, List<List<TradeEntry>> tradeEntries)
-    {
-        int size = symbol.size();
-        ArrayList<Trade> tradePlanList = new ArrayList<>(size);
-
-        for(int i = 0; i < size; i++)
-        {
-            tradePlanList.add(givenTradePlan(id.get(i), symbol.get(i), entryDate.get(i), holdingPeriod.get(i), currentPrice.get(i), averagePrice.get(i),
-                    totalShares.get(i), totalAmount.get(i), priceToBreakEven.get(i), targetPrice.get(i), gainLoss.get(i), gainLossPercent.get(i),
-                    gainToTarget.get(i), stopLoss.get(i), lossToStopLoss.get(i), stopDate.get(i), daysToStopDate.get(i), riskReward.get(i),
-                    capital.get(i), percentCapital.get(i), tradeEntries.get(i)));
-        }
-
-        return tradePlanList;
-    }
-
-    private Trade givenTradePlan(Long id, String symbol, Date entryDate, int holdingPeriod, String currentPrice, String averagePrice, long totalShares,
-            String totalAmount, String priceToBreakEven, String targetPrice, String gainLoss, String gainLossPercent, String gainToTarget, String stopLoss,
-            String lossToStopLoss, Date stopDate, int daysToStopDate, String riskReward, long capital, String percentCapital, List<TradeEntry> tradeEntries)
-    {
-        Trade trade = new Trade(id, entryDate, holdingPeriod, symbol, currentPrice, averagePrice, totalShares, totalAmount, priceToBreakEven, targetPrice,
-                gainLoss, gainLossPercent, gainToTarget, lossToStopLoss, stopLoss, stopDate, daysToStopDate, riskReward, capital, percentCapital);
-        trade.setTradeEntriesTransient(tradeEntries);
-
-        return trade;
-    }
-
-    private List<TradeEntry> createTradeEntry(String symbol, List<String> entryPrice, List<Long> shares, List<String> percentWeight)
-    {
-        int size = entryPrice.size();
-        List<TradeEntry> list = new ArrayList<>(size);
-        for(int i = 0; i < size; i++)
-        {
-            list.add(new TradeEntry((long) i, symbol, entryPrice.get(i), shares.get(i), percentWeight.get(i), i));
-        }
-
-        return list;
-    }
-
-    private List<List<TradeEntry>> createTradeEntryList(List<String> symbolList, List<String> entryPriceList, List<Long> sharesList,
-            List<String> percentWeightList)
-    {
-        int size = symbolList.size();
-        List<List<TradeEntry>> listOfList = new ArrayList<>(size);
-
-        for(String symbol : symbolList)
-        {
-            List<TradeEntry> list = createTradeEntry(symbol, entryPriceList, sharesList, percentWeightList);
-            listOfList.add(list);
-        }
-
-        return listOfList;
     }
 
     private String whenGetLastUpdated(String preference)
@@ -1031,7 +784,7 @@ public class FacadePSEPlannerServiceTest extends AbstractHttpClientTest
         Single<Pair<List<TickerDto>, Date>> returnValue = Single.just(pair);
         when(httpClient.getTickerList(anyCollectionOf(String.class))).thenReturn(returnValue);
 
-        service.getTickerList(Collections.<String>emptyList()).subscribe();
+        service.getTickerList(Collections.<String> emptyList()).subscribe();
     }
 
     private void whenGetAllTickerList()

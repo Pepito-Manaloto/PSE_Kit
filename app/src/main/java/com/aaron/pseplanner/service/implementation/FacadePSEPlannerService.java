@@ -41,6 +41,9 @@ import java.util.concurrent.Callable;
 import io.reactivex.Single;
 import io.reactivex.functions.Function;
 
+import static com.aaron.pseplanner.service.BeanEntityUtils.fromTickerListToTickerDtoList;
+import static com.aaron.pseplanner.service.BeanEntityUtils.fromTradeListToTradeDtoList;
+
 /**
  * Created by aaron.asuncion on 1/31/2017.
  */
@@ -53,14 +56,13 @@ public class FacadePSEPlannerService implements PSEPlannerService
     private static final int MORNING_OPENING_HOUR = 9;
     private static final int MORNING_OPENING_MINUTE = 30;
     private static final int LUNCH_HOUR = 12;
-    private static final int LUNCH_MINUTE = 0;
     private static final int AFTERNOON_OPENING_HOUR = 13;
     private static final int AFTERNOON_OPENING_MINUTE = 30;
     private static final int AFTERNOON_CLOSING_HOUR = 15;
     private static final int AFTERNOON_CLOSING_MINUTE = 30;
 
     private HttpClient phisixHttpClient;
-    private HttpClient pseHttpClient;
+    //private HttpClient pseHttpClient;
     private FormatService formatService;
     private SettingsService settingsService;
     private CalculatorService calculatorService;
@@ -124,12 +126,12 @@ public class FacadePSEPlannerService implements PSEPlannerService
         if(StringUtils.isNotBlank(proxyHost) && proxyPort > 0)
         {
             this.phisixHttpClient = new PhisixHttpClient(connectionTimeout, readTimeout, pingInterval, proxyHost, proxyPort);
-            this.pseHttpClient = new PSEHttpClient(connectionTimeout, readTimeout, pingInterval, proxyHost, proxyPort);
+            //this.pseHttpClient = new PSEHttpClient(connectionTimeout, readTimeout, pingInterval, proxyHost, proxyPort);
         }
         else
         {
             this.phisixHttpClient = new PhisixHttpClient(connectionTimeout, readTimeout, pingInterval);
-            this.pseHttpClient = new PSEHttpClient(connectionTimeout, readTimeout, pingInterval);
+            //this.pseHttpClient = new PSEHttpClient(connectionTimeout, readTimeout, pingInterval);
         }
     }
 
@@ -259,19 +261,6 @@ public class FacadePSEPlannerService implements PSEPlannerService
                 return tickerDtoList;
             }
         });
-    }
-
-    private ArrayList<TickerDto> fromTickerListToTickerDtoList(List<Ticker> tickerList)
-    {
-        ArrayList<TickerDto> tickerDtoList = new ArrayList<>(tickerList.size());
-
-        for(Ticker ticker : tickerList)
-        {
-            tickerDtoList.add(new TickerDto(ticker.getId(), ticker.getSymbol(), ticker.getName(), ticker.getVolume(), ticker.getCurrentPrice(),
-                    ticker.getChange(), ticker.getPercentChange()));
-        }
-
-        return tickerDtoList;
     }
 
     @Override
@@ -486,38 +475,6 @@ public class FacadePSEPlannerService implements PSEPlannerService
                         return tradePlanDtoList;
                     }
                 });
-    }
-
-    private ArrayList<TradeDto> fromTradeListToTradeDtoList(List<Trade> tradePlanList)
-    {
-        ArrayList<TradeDto> tradePlanDtoList = new ArrayList<>(tradePlanList.size());
-
-        for(Trade trade : tradePlanList)
-        {
-            List<TradeEntryDto> tradeEntryDtos = fromTradeEntryListToTradeEntryDtoList(trade.getTradeEntries());
-
-            tradePlanDtoList.add(new TradeDto(trade.getId(), trade.getSymbol(), trade.getEntryDate(), trade.getHoldingPeriod(),
-                    trade.getCurrentPrice(), trade.getAveragePrice(), trade.getTotalShares(),
-                    trade.getTotalAmount(), trade.getPriceToBreakEven(), trade.getTargetPrice(),
-                    trade.getGainLoss(), trade.getGainLossPercent(), trade.getGainToTarget(),
-                    trade.getStopLoss(), trade.getLossToStopLoss(), trade.getStopDate(),
-                    trade.getDaysToStopDate(), trade.getRiskReward(), trade.getCapital(),
-                    trade.getPercentCapital(), tradeEntryDtos));
-        }
-
-        return tradePlanDtoList;
-    }
-
-    private List<TradeEntryDto> fromTradeEntryListToTradeEntryDtoList(List<TradeEntry> tradeEntryList)
-    {
-        List<TradeEntryDto> tradeEntryDtos = new ArrayList<>(tradeEntryList.size());
-        for(TradeEntry tradeEntry : tradeEntryList)
-        {
-            tradeEntryDtos.add(new TradeEntryDto(tradeEntry.getTradeSymbol(), tradeEntry.getEntryPrice(),
-                    tradeEntry.getShares(), tradeEntry.getPercentWeight()));
-        }
-
-        return tradeEntryDtos;
     }
 
     /**

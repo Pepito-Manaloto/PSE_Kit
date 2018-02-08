@@ -88,9 +88,10 @@ public class TradeEntryDto implements Parcelable
         return percentWeight;
     }
 
-    public void setPercentWeight(BigDecimal percentWeight)
+    public TradeEntryDto setPercentWeight(BigDecimal percentWeight)
     {
         this.percentWeight = percentWeight;
+        return this;
     }
 
     public String getSymbol()
@@ -98,9 +99,10 @@ public class TradeEntryDto implements Parcelable
         return symbol;
     }
 
-    public void setSymbol(String symbol)
+    public TradeEntryDto setSymbol(String symbol)
     {
         this.symbol = symbol;
+        return this;
     }
 
     public BigDecimal getEntryPrice()
@@ -108,9 +110,10 @@ public class TradeEntryDto implements Parcelable
         return entryPrice;
     }
 
-    public void setEntryPrice(BigDecimal entryPrice)
+    public TradeEntryDto setEntryPrice(BigDecimal entryPrice)
     {
         this.entryPrice = entryPrice;
+        return this;
     }
 
     public long getShares()
@@ -118,9 +121,10 @@ public class TradeEntryDto implements Parcelable
         return shares;
     }
 
-    public void setShares(long shares)
+    public TradeEntryDto setShares(long shares)
     {
         this.shares = shares;
+        return this;
     }
 
     /**

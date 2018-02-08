@@ -141,9 +141,10 @@ public class TickerListAdapter extends FilterableArrayAdapter<TickerDto>
             String percentChangeText = service.formatStockPrice(tickerDto.getPercentChange().doubleValue()) + "%";
             percentChange.setText(percentChangeText);
 
-            service.formatTextColor(tickerDto.getChange().doubleValue(), price);
-            service.formatTextColor(tickerDto.getChange().doubleValue(), change);
-            service.formatTextColor(tickerDto.getChange().doubleValue(), percentChange);
+            double changeDouble = tickerDto.getChange().doubleValue();
+            service.formatTextColor(changeDouble, price);
+            service.formatTextColor(changeDouble, change);
+            service.formatTextColor(changeDouble, percentChange);
         }
     }
 }

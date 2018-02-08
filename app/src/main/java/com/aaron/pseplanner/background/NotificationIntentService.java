@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.support.v4.content.WakefulBroadcastReceiver;
 
-import com.aaron.pseplanner.R;
 import com.aaron.pseplanner.service.LogManager;
 
 /**
@@ -55,7 +54,7 @@ public class NotificationIntentService extends IntentService
                 Activity activity = null;
                 String title = null;
                 String body = null;
-                int notificationId = this.notificationUtils.notify(activity, R.mipmap.ic_launcher, title, body);
+                //int notificationId = this.notificationUtils.notify(activity, R.mipmap.ic_launcher, title, body);
             }
         }
         finally

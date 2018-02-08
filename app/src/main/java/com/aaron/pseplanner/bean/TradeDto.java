@@ -41,79 +41,9 @@ public class TradeDto implements Stock, Parcelable, Comparable<TradeDto>
     {
     }
 
-    public TradeDto(Long id, String symbol, Date entryDate, int holdingPeriod, BigDecimal currentPrice, BigDecimal averagePrice, long totalShares, BigDecimal totalAmount, BigDecimal priceToBreakEven, BigDecimal targetPrice, BigDecimal gainLoss, BigDecimal gainLossPercent, BigDecimal gainToTarget, BigDecimal lossToStopLoss, BigDecimal stopLoss, Date stopDate, int daysToStopDate, BigDecimal riskReward, long capital, BigDecimal percentCapital, List<TradeEntryDto> tradeEntries)
+    public TradeDto(String symbol)
     {
-        this.id = id;
         this.symbol = symbol;
-        this.entryDate = entryDate;
-        this.holdingPeriod = holdingPeriod;
-        this.currentPrice = currentPrice;
-        this.averagePrice = averagePrice;
-        this.totalShares = totalShares;
-        this.totalAmount = totalAmount;
-        this.priceToBreakEven = priceToBreakEven;
-        this.targetPrice = targetPrice;
-        this.gainLoss = gainLoss;
-        this.gainLossPercent = gainLossPercent;
-        this.gainToTarget = gainToTarget;
-        this.lossToStopLoss = lossToStopLoss;
-        this.stopLoss = stopLoss;
-        this.stopDate = stopDate;
-        this.daysToStopDate = daysToStopDate;
-        this.riskReward = riskReward;
-        this.capital = capital;
-        this.percentCapital = percentCapital;
-        this.tradeEntries = tradeEntries;
-    }
-
-    public TradeDto(Long id, String symbol, Date entryDate, int holdingPeriod, double currentPrice, double averagePrice, long totalShares, double totalAmount, double priceToBreakEven, double targetPrice, double gainLoss, double gainLossPercent, long gainToTarget, double stopLoss, double lossToStopLoss, Date stopDate, int daysToStopDate, double riskReward, long capital, double percentCapital, List<TradeEntryDto> tradeEntries)
-    {
-        this.id = id;
-        this.symbol = symbol;
-        this.entryDate = entryDate;
-        this.holdingPeriod = holdingPeriod;
-        this.currentPrice = BigDecimal.valueOf(currentPrice);
-        this.averagePrice = BigDecimal.valueOf(averagePrice);
-        this.totalShares = totalShares;
-        this.totalAmount = BigDecimal.valueOf(totalAmount);
-        this.priceToBreakEven = BigDecimal.valueOf(priceToBreakEven);
-        this.targetPrice = BigDecimal.valueOf(targetPrice);
-        this.gainLoss = BigDecimal.valueOf(gainLoss);
-        this.gainLossPercent = BigDecimal.valueOf(gainLossPercent);
-        this.gainToTarget = BigDecimal.valueOf(gainToTarget);
-        this.stopLoss = BigDecimal.valueOf(stopLoss);
-        this.lossToStopLoss = BigDecimal.valueOf(lossToStopLoss);
-        this.stopDate = stopDate;
-        this.daysToStopDate = daysToStopDate;
-        this.riskReward = BigDecimal.valueOf(riskReward);
-        this.capital = capital;
-        this.percentCapital = BigDecimal.valueOf(percentCapital);
-        this.tradeEntries = tradeEntries;
-    }
-
-    public TradeDto(Long id, String symbol, Date entryDate, int holdingPeriod, String currentPrice, String averagePrice, long totalShares, String totalAmount, String priceToBreakEven, String targetPrice, String gainLoss, String gainLossPercent, String gainToTarget, String stopLoss, String lossToStopLoss, Date stopDate, int daysToStopDate, String riskReward, long capital, String percentCapital, List<TradeEntryDto> tradeEntries)
-    {
-        this.id = id;
-        this.symbol = symbol;
-        this.entryDate = entryDate;
-        this.holdingPeriod = holdingPeriod;
-        this.currentPrice = new BigDecimal(currentPrice);
-        this.averagePrice = new BigDecimal(averagePrice);
-        this.totalShares = totalShares;
-        this.totalAmount = new BigDecimal(totalAmount);
-        this.priceToBreakEven = new BigDecimal(priceToBreakEven);
-        this.targetPrice = new BigDecimal(targetPrice);
-        this.gainLoss = new BigDecimal(gainLoss);
-        this.gainLossPercent = new BigDecimal(gainLossPercent);
-        this.gainToTarget = new BigDecimal(gainToTarget);
-        this.stopLoss = new BigDecimal(stopLoss);
-        this.lossToStopLoss = new BigDecimal(lossToStopLoss);
-        this.stopDate = stopDate;
-        this.daysToStopDate = daysToStopDate;
-        this.riskReward = new BigDecimal(riskReward);
-        this.capital = capital;
-        this.percentCapital = new BigDecimal(percentCapital);
-        this.tradeEntries = tradeEntries;
     }
 
     @Override
@@ -131,7 +61,13 @@ public class TradeDto implements Stock, Parcelable, Comparable<TradeDto>
 
         TradeDto tradeDto = (TradeDto) o;
 
-        return currentPrice.equals(tradeDto.currentPrice) && averagePrice.equals(tradeDto.averagePrice) && totalShares == tradeDto.totalShares && totalAmount.equals(tradeDto.totalAmount) && priceToBreakEven.equals(tradeDto.priceToBreakEven) && targetPrice.equals(tradeDto.targetPrice) && gainLoss.equals(tradeDto.gainLoss) && gainLossPercent.equals(tradeDto.gainLossPercent) && gainToTarget.equals(tradeDto.gainToTarget) && stopLoss.equals(tradeDto.stopLoss) && lossToStopLoss.equals(tradeDto.lossToStopLoss) && daysToStopDate == tradeDto.daysToStopDate && riskReward.equals(tradeDto.riskReward) && capital == tradeDto.capital && percentCapital.equals(tradeDto.percentCapital) && entryDate.equals(tradeDto.entryDate) && holdingPeriod == tradeDto.holdingPeriod && symbol.equals(tradeDto.symbol) && stopDate.equals(tradeDto.stopDate) && tradeEntries.equals(tradeDto.tradeEntries);
+        return currentPrice.equals(tradeDto.currentPrice) && averagePrice.equals(tradeDto.averagePrice) && totalShares == tradeDto.totalShares
+                && totalAmount.equals(tradeDto.totalAmount) && priceToBreakEven.equals(tradeDto.priceToBreakEven) && targetPrice.equals(tradeDto.targetPrice)
+                && gainLoss.equals(tradeDto.gainLoss) && gainLossPercent.equals(tradeDto.gainLossPercent) && gainToTarget.equals(tradeDto.gainToTarget)
+                && stopLoss.equals(tradeDto.stopLoss) && lossToStopLoss.equals(tradeDto.lossToStopLoss) && daysToStopDate == tradeDto.daysToStopDate
+                && riskReward.equals(tradeDto.riskReward) && capital == tradeDto.capital && percentCapital.equals(tradeDto.percentCapital)
+                && entryDate.equals(tradeDto.entryDate) && holdingPeriod == tradeDto.holdingPeriod && symbol.equals(tradeDto.symbol)
+                && stopDate.equals(tradeDto.stopDate) && tradeEntries.equals(tradeDto.tradeEntries);
     }
 
     @Override
@@ -163,7 +99,11 @@ public class TradeDto implements Stock, Parcelable, Comparable<TradeDto>
     @Override
     public String toString()
     {
-        return "TradeDto{" + "entryDate=" + entryDate + ", holdingPeriod=" + holdingPeriod + ", symbol='" + symbol + '\'' + ", currentPrice=" + currentPrice + ", averagePrice=" + averagePrice + ", totalShares=" + totalShares + ", totalAmount=" + totalAmount + ", priceToBreakEven=" + priceToBreakEven + ", targetPrice=" + targetPrice + ", gainLoss=" + gainLoss + ", gainLossPercent=" + gainLossPercent + ", gainToTarget=" + gainToTarget + ", stopLoss=" + stopLoss + ", lossToStopLoss=" + lossToStopLoss + ", stopDate=" + stopDate + ", daysToStopDate=" + daysToStopDate + ", riskReward=" + riskReward + ", capital=" + capital + ", percentCapital=" + percentCapital + ", tradeEntries=" + tradeEntries + '}';
+        return "TradeDto{" + "entryDate=" + entryDate + ", holdingPeriod=" + holdingPeriod + ", symbol='" + symbol + '\'' + ", currentPrice=" + currentPrice
+                + ", averagePrice=" + averagePrice + ", totalShares=" + totalShares + ", totalAmount=" + totalAmount + ", priceToBreakEven=" + priceToBreakEven
+                + ", targetPrice=" + targetPrice + ", gainLoss=" + gainLoss + ", gainLossPercent=" + gainLossPercent + ", gainToTarget=" + gainToTarget
+                + ", stopLoss=" + stopLoss + ", lossToStopLoss=" + lossToStopLoss + ", stopDate=" + stopDate + ", daysToStopDate=" + daysToStopDate
+                + ", riskReward=" + riskReward + ", capital=" + capital + ", percentCapital=" + percentCapital + ", tradeEntries=" + tradeEntries + '}';
     }
 
     public Long getId()
@@ -171,9 +111,10 @@ public class TradeDto implements Stock, Parcelable, Comparable<TradeDto>
         return id;
     }
 
-    public void setId(Long id)
+    public TradeDto setId(Long id)
     {
         this.id = id;
+        return this;
     }
 
     public Date getEntryDate()
@@ -181,9 +122,10 @@ public class TradeDto implements Stock, Parcelable, Comparable<TradeDto>
         return entryDate;
     }
 
-    public void setEntryDate(Date entryDate)
+    public TradeDto setEntryDate(Date entryDate)
     {
         this.entryDate = entryDate;
+        return this;
     }
 
     public int getHoldingPeriod()
@@ -191,9 +133,10 @@ public class TradeDto implements Stock, Parcelable, Comparable<TradeDto>
         return holdingPeriod;
     }
 
-    public void setHoldingPeriod(int holdingPeriod)
+    public TradeDto setHoldingPeriod(int holdingPeriod)
     {
         this.holdingPeriod = holdingPeriod;
+        return this;
     }
 
     @Override
@@ -203,9 +146,10 @@ public class TradeDto implements Stock, Parcelable, Comparable<TradeDto>
     }
 
     @Override
-    public void setSymbol(String symbol)
+    public TradeDto setSymbol(String symbol)
     {
         this.symbol = symbol;
+        return this;
     }
 
     public BigDecimal getCurrentPrice()
@@ -213,9 +157,10 @@ public class TradeDto implements Stock, Parcelable, Comparable<TradeDto>
         return currentPrice;
     }
 
-    public void setCurrentPrice(BigDecimal currentPrice)
+    public TradeDto setCurrentPrice(BigDecimal currentPrice)
     {
         this.currentPrice = currentPrice;
+        return this;
     }
 
     public BigDecimal getAveragePrice()
@@ -223,9 +168,10 @@ public class TradeDto implements Stock, Parcelable, Comparable<TradeDto>
         return averagePrice;
     }
 
-    public void setAveragePrice(BigDecimal averagePrice)
+    public TradeDto setAveragePrice(BigDecimal averagePrice)
     {
         this.averagePrice = averagePrice;
+        return this;
     }
 
     public long getTotalShares()
@@ -233,9 +179,10 @@ public class TradeDto implements Stock, Parcelable, Comparable<TradeDto>
         return totalShares;
     }
 
-    public void setTotalShares(long totalShares)
+    public TradeDto setTotalShares(long totalShares)
     {
         this.totalShares = totalShares;
+        return this;
     }
 
     public BigDecimal getTotalAmount()
@@ -243,9 +190,10 @@ public class TradeDto implements Stock, Parcelable, Comparable<TradeDto>
         return totalAmount;
     }
 
-    public void setTotalAmount(BigDecimal totalAmount)
+    public TradeDto setTotalAmount(BigDecimal totalAmount)
     {
         this.totalAmount = totalAmount;
+        return this;
     }
 
     public BigDecimal getPriceToBreakEven()
@@ -253,9 +201,10 @@ public class TradeDto implements Stock, Parcelable, Comparable<TradeDto>
         return priceToBreakEven;
     }
 
-    public void setPriceToBreakEven(BigDecimal priceToBreakEven)
+    public TradeDto setPriceToBreakEven(BigDecimal priceToBreakEven)
     {
         this.priceToBreakEven = priceToBreakEven;
+        return this;
     }
 
     public BigDecimal getTargetPrice()
@@ -263,9 +212,10 @@ public class TradeDto implements Stock, Parcelable, Comparable<TradeDto>
         return targetPrice;
     }
 
-    public void setTargetPrice(BigDecimal targetPrice)
+    public TradeDto setTargetPrice(BigDecimal targetPrice)
     {
         this.targetPrice = targetPrice;
+        return this;
     }
 
     public BigDecimal getGainLossPercent()
@@ -273,9 +223,10 @@ public class TradeDto implements Stock, Parcelable, Comparable<TradeDto>
         return gainLossPercent;
     }
 
-    public void setGainLossPercent(BigDecimal gainLossPercent)
+    public TradeDto setGainLossPercent(BigDecimal gainLossPercent)
     {
         this.gainLossPercent = gainLossPercent;
+        return this;
     }
 
     public BigDecimal getGainLoss()
@@ -283,9 +234,10 @@ public class TradeDto implements Stock, Parcelable, Comparable<TradeDto>
         return gainLoss;
     }
 
-    public void setGainLoss(BigDecimal gainLoss)
+    public TradeDto setGainLoss(BigDecimal gainLoss)
     {
         this.gainLoss = gainLoss;
+        return this;
     }
 
     public BigDecimal getGainToTarget()
@@ -293,9 +245,10 @@ public class TradeDto implements Stock, Parcelable, Comparable<TradeDto>
         return gainToTarget;
     }
 
-    public void setGainToTarget(BigDecimal gainToTarget)
+    public TradeDto setGainToTarget(BigDecimal gainToTarget)
     {
         this.gainToTarget = gainToTarget;
+        return this;
     }
 
     public BigDecimal getStopLoss()
@@ -303,9 +256,10 @@ public class TradeDto implements Stock, Parcelable, Comparable<TradeDto>
         return stopLoss;
     }
 
-    public void setStopLoss(BigDecimal stopLoss)
+    public TradeDto setStopLoss(BigDecimal stopLoss)
     {
         this.stopLoss = stopLoss;
+        return this;
     }
 
     public BigDecimal getLossToStopLoss()
@@ -313,9 +267,10 @@ public class TradeDto implements Stock, Parcelable, Comparable<TradeDto>
         return lossToStopLoss;
     }
 
-    public void setLossToStopLoss(BigDecimal lossToStopLoss)
+    public TradeDto setLossToStopLoss(BigDecimal lossToStopLoss)
     {
         this.lossToStopLoss = lossToStopLoss;
+        return this;
     }
 
     public Date getStopDate()
@@ -323,9 +278,10 @@ public class TradeDto implements Stock, Parcelable, Comparable<TradeDto>
         return stopDate;
     }
 
-    public void setStopDate(Date stopDate)
+    public TradeDto setStopDate(Date stopDate)
     {
         this.stopDate = stopDate;
+        return this;
     }
 
     public int getDaysToStopDate()
@@ -333,9 +289,10 @@ public class TradeDto implements Stock, Parcelable, Comparable<TradeDto>
         return daysToStopDate;
     }
 
-    public void setDaysToStopDate(int daysToStopDate)
+    public TradeDto setDaysToStopDate(int daysToStopDate)
     {
         this.daysToStopDate = daysToStopDate;
+        return this;
     }
 
     public BigDecimal getRiskReward()
@@ -343,9 +300,10 @@ public class TradeDto implements Stock, Parcelable, Comparable<TradeDto>
         return riskReward;
     }
 
-    public void setRiskReward(BigDecimal riskReward)
+    public TradeDto setRiskReward(BigDecimal riskReward)
     {
         this.riskReward = riskReward;
+        return this;
     }
 
     public long getCapital()
@@ -353,9 +311,10 @@ public class TradeDto implements Stock, Parcelable, Comparable<TradeDto>
         return capital;
     }
 
-    public void setCapital(long capital)
+    public TradeDto setCapital(long capital)
     {
         this.capital = capital;
+        return this;
     }
 
     public BigDecimal getPercentCapital()
@@ -363,9 +322,10 @@ public class TradeDto implements Stock, Parcelable, Comparable<TradeDto>
         return percentCapital;
     }
 
-    public void setPercentCapital(BigDecimal percentCapital)
+    public TradeDto setPercentCapital(BigDecimal percentCapital)
     {
         this.percentCapital = percentCapital;
+        return this;
     }
 
     public List<TradeEntryDto> getTradeEntries()
@@ -373,9 +333,10 @@ public class TradeDto implements Stock, Parcelable, Comparable<TradeDto>
         return tradeEntries;
     }
 
-    public void setTradeEntries(List<TradeEntryDto> tradeEntries)
+    public TradeDto setTradeEntries(List<TradeEntryDto> tradeEntries)
     {
         this.tradeEntries = tradeEntries;
+        return this;
     }
 
     /**

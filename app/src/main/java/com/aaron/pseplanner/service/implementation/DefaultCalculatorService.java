@@ -320,7 +320,7 @@ public class DefaultCalculatorService implements CalculatorService
             return BigDecimal.ZERO;
         }
 
-        BigDecimal currentPriceBigDecimal = new BigDecimal(currentPrice);
+        BigDecimal currentPriceBigDecimal = BigDecimal.valueOf(currentPrice);
         BigDecimal previousPrice = getPreviousPrice(currentPrice, percentChange);
 
         return currentPriceBigDecimal.subtract(previousPrice);

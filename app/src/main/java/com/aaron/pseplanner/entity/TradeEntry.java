@@ -30,9 +30,9 @@ public class TradeEntry
     private int order;
 
     @Generated(hash = 1533414364)
-    public TradeEntry(Long id, @NotNull String tradeSymbol,
-            @NotNull String entryPrice, long shares, @NotNull String percentWeight,
-            int order) {
+    public TradeEntry(Long id, @NotNull String tradeSymbol, @NotNull String entryPrice, long shares,
+            @NotNull String percentWeight, int order)
+    {
         this.id = id;
         this.tradeSymbol = tradeSymbol;
         this.entryPrice = entryPrice;
@@ -42,7 +42,8 @@ public class TradeEntry
     }
 
     @Generated(hash = 1778071108)
-    public TradeEntry() {
+    public TradeEntry()
+    {
     }
 
     public Long getId()
@@ -50,9 +51,10 @@ public class TradeEntry
         return id;
     }
 
-    public void setId(Long id)
+    public TradeEntry setId(Long id)
     {
         this.id = id;
+        return this;
     }
 
     public String getTradeSymbol()
@@ -60,9 +62,10 @@ public class TradeEntry
         return tradeSymbol;
     }
 
-    public void setTradeSymbol(@NotNull String tradeSymbol)
+    public TradeEntry setTradeSymbol(@NotNull String tradeSymbol)
     {
         this.tradeSymbol = tradeSymbol;
+        return this;
     }
 
     public String getEntryPrice()
@@ -70,9 +73,10 @@ public class TradeEntry
         return entryPrice;
     }
 
-    public void setEntryPrice(@NotNull String entryPrice)
+    public TradeEntry setEntryPrice(@NotNull String entryPrice)
     {
         this.entryPrice = entryPrice;
+        return this;
     }
 
     public long getShares()
@@ -80,9 +84,10 @@ public class TradeEntry
         return shares;
     }
 
-    public void setShares(long shares)
+    public TradeEntry setShares(long shares)
     {
         this.shares = shares;
+        return this;
     }
 
     public String getPercentWeight()
@@ -90,9 +95,10 @@ public class TradeEntry
         return percentWeight;
     }
 
-    public void setPercentWeight(@NotNull String percentWeight)
+    public TradeEntry setPercentWeight(@NotNull String percentWeight)
     {
         this.percentWeight = percentWeight;
+        return this;
     }
 
     public int getOrder()
@@ -100,8 +106,9 @@ public class TradeEntry
         return order;
     }
 
-    public void setOrder(int order)
+    public TradeEntry setOrder(int order)
     {
         this.order = order;
+        return this;
     }
 }

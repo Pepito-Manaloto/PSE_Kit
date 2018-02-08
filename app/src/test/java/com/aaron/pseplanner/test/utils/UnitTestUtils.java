@@ -15,6 +15,10 @@ import java.util.TimeZone;
 
 public final class UnitTestUtils
 {
+    private UnitTestUtils()
+    {
+    }
+
     public static <T> void setPrivateField(T object, String fieldName, Object value) throws Exception
     {
         Field field = setPrivateFieldAccessible(object, fieldName);
@@ -79,6 +83,11 @@ public final class UnitTestUtils
         return date.getTime();
     }
 
+    public static Date randomDate()
+    {
+        return newDate(RandomUtils.nextInt(1990, 2020), RandomUtils.nextInt(1, 13), RandomUtils.nextInt(1, 28));
+    }
+
     public static int randomSecondOrMinute()
     {
         return RandomUtils.nextInt(0, 60);
@@ -92,5 +101,12 @@ public final class UnitTestUtils
     public static int randomSecondOrMinuteMax29()
     {
         return RandomUtils.nextInt(0, 30);
+    }
+
+    public static String randomNumericString(int count)
+    {
+        double random = RandomUtils.nextDouble(0.001, count);
+
+        return String.valueOf(random);
     }
 }

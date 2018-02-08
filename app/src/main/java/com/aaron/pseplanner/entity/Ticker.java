@@ -1,18 +1,18 @@
 package com.aaron.pseplanner.entity;
 
 import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Index;
 import org.greenrobot.greendao.annotation.NotNull;
 import org.greenrobot.greendao.annotation.Unique;
 
 import java.util.Date;
-import org.greenrobot.greendao.annotation.Generated;
 
 /**
  * Created by Aaron on 3/21/2017.
  */
-@Entity(indexes = {@Index(value = "symbol ASC", unique = true)})
+@Entity(indexes = { @Index(value = "symbol ASC", unique = true) })
 public class Ticker
 {
     @Id(autoincrement = true)
@@ -40,9 +40,9 @@ public class Ticker
     private Date dateUpdate;
 
     @Generated(hash = 616569974)
-    public Ticker(Long id, @NotNull String symbol, @NotNull String name,
-            long volume, @NotNull String currentPrice, @NotNull String change,
-            @NotNull String percentChange, @NotNull Date dateUpdate) {
+    public Ticker(Long id, @NotNull String symbol, @NotNull String name, long volume, @NotNull String currentPrice,
+            @NotNull String change, @NotNull String percentChange, @NotNull Date dateUpdate)
+    {
         this.id = id;
         this.symbol = symbol;
         this.name = name;
@@ -54,7 +54,8 @@ public class Ticker
     }
 
     @Generated(hash = 1358381819)
-    public Ticker() {
+    public Ticker()
+    {
     }
 
     public Long getId()
@@ -62,9 +63,10 @@ public class Ticker
         return id;
     }
 
-    public void setId(Long id)
+    public Ticker setId(Long id)
     {
         this.id = id;
+        return this;
     }
 
     public String getSymbol()
@@ -72,9 +74,10 @@ public class Ticker
         return symbol;
     }
 
-    public void setSymbol(@NotNull String symbol)
+    public Ticker setSymbol(@NotNull String symbol)
     {
         this.symbol = symbol;
+        return this;
     }
 
     public String getName()
@@ -82,9 +85,10 @@ public class Ticker
         return name;
     }
 
-    public void setName(@NotNull String name)
+    public Ticker setName(@NotNull String name)
     {
         this.name = name;
+        return this;
     }
 
     public long getVolume()
@@ -92,9 +96,10 @@ public class Ticker
         return volume;
     }
 
-    public void setVolume(long volume)
+    public Ticker setVolume(long volume)
     {
         this.volume = volume;
+        return this;
     }
 
     public String getCurrentPrice()
@@ -102,9 +107,10 @@ public class Ticker
         return currentPrice;
     }
 
-    public void setCurrentPrice(@NotNull String currentPrice)
+    public Ticker setCurrentPrice(@NotNull String currentPrice)
     {
         this.currentPrice = currentPrice;
+        return this;
     }
 
     public String getChange()
@@ -112,9 +118,10 @@ public class Ticker
         return change;
     }
 
-    public void setChange(@NotNull String change)
+    public Ticker setChange(@NotNull String change)
     {
         this.change = change;
+        return this;
     }
 
     public String getPercentChange()
@@ -122,9 +129,10 @@ public class Ticker
         return percentChange;
     }
 
-    public void setPercentChange(@NotNull String percentChange)
+    public Ticker setPercentChange(@NotNull String percentChange)
     {
         this.percentChange = percentChange;
+        return this;
     }
 
     public Date getDateUpdate()
@@ -132,8 +140,9 @@ public class Ticker
         return dateUpdate;
     }
 
-    public void setDateUpdate(@NotNull Date dateUpdate)
+    public Ticker setDateUpdate(@NotNull Date dateUpdate)
     {
         this.dateUpdate = dateUpdate;
+        return this;
     }
 }
