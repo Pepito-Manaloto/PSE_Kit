@@ -2,7 +2,6 @@ package com.aaron.pseplanner.service;
 
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by aaron.asuncion on 12/19/2016.
@@ -34,15 +33,13 @@ public interface CalculatorService
     // 1.19%
     BigDecimal TOTAL_BUY_SELL_FEE = TOTAL_BUY_FEE.add(TOTAL_SELL_FEE);
 
-
-
     BigDecimal MINIMUM_COMMISSION = BigDecimal.valueOf(20);
 
     BigDecimal ONE_HUNDRED = new BigDecimal("100");
 
     BigDecimal TWO = new BigDecimal("2");
 
-    long DAY_IN_MILLISECONDS = TimeUnit.DAYS.toMillis(1);
+    int MAX_WEIGHT = 100;
 
     /**
      * Gets the buy gross amount of a stock trade.
@@ -95,7 +92,6 @@ public interface CalculatorService
      * @return BigDecimal
      */
     BigDecimal getSellNetAmount(BigDecimal sellPrice, long shares);
-
 
     /**
      * Gets the gain/loss amount of a stock trade.

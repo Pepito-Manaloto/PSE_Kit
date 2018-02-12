@@ -104,11 +104,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         setSupportActionBar(this.toolbar);
 
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, this.drawer, this.toolbar, R.string.navigation_drawer_open,
-                R.string.navigation_drawer_close);
-        this.drawer.removeDrawerListener(toggle);
-        this.drawer.addDrawerListener(toggle);
-        toggle.syncState();
+        initializeDrawer();
 
         this.navigationView.setNavigationItemSelectedListener(this);
 
@@ -145,7 +141,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             fm.beginTransaction().add(R.id.fragment_container, this.selectedListFragment).commit();
         }
 
-        this.initTickerDtoList();
+        initTickerDtoList();
+    }
+
+    private void initializeDrawer()
+    {
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, this.drawer, this.toolbar, R.string.navigation_drawer_open,
+                R.string.navigation_drawer_close);
+        this.drawer.removeDrawerListener(toggle);
+        this.drawer.addDrawerListener(toggle);
+        toggle.syncState();
     }
 
     /**
@@ -153,21 +158,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      */
     private void initTickerDtoList()
     {
-        if(this.tickerDtoList.isEmpty())
+        if(this.tickerDtoList == null || this.tickerDtoList.isEmpty())
         {
-            LogManager.debug(CLASS_NAME, "initTickerDtoList", "TickerList is empty, getting values from intent extras.");
+            LogManager.debug(CLASS_NAME, "initTickerDtoList", "TickerList is still empty, getting values from database.");
 
-            if(this.tickerDtoList == null || this.tickerDtoList.isEmpty())
-            {
-                LogManager.debug(CLASS_NAME, "initTickerDtoList", "TickerList is still empty, getting values from database.");
+            // Check if exists in database
+            Disposable disposable = initTickerListObservable().subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeWith(initTickerListObserver());
 
-                // Check if exists in database
-                Disposable disposable = initTickerListObservable().subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribeWith(initTickerListObserver());
-
-                this.compositeDisposable.add(disposable);
-            }
+            this.compositeDisposable.add(disposable);
         }
     }
 
@@ -309,67 +309,77 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         if(IntentRequestCode.CREATE_TRADE_PLAN.code() == requestCode)
         {
-            if(data.hasExtra(DataKey.EXTRA_TICKER.toString()))
-            {
-                TickerDto addedTickerDto = data.getParcelableExtra(DataKey.EXTRA_TICKER.toString());
-
-                int addedTickerIndex = this.tickerDtoList.indexOf(addedTickerDto);
-
-                // Replace ticker dto
-                if(addedTickerIndex != -1)
-                {
-                    this.tickerDtoList.remove(addedTickerDto);
-                    this.tickerDtoList.add(addedTickerIndex, addedTickerDto);
-                }
-                else
-                {
-                    this.tickerDtoList.add(addedTickerDto);
-                }
-
-                LogManager.debug(CLASS_NAME, "onActivityResult", "Extra Ticker: " + addedTickerDto);
-            }
-
-            if(data.hasExtra(DataKey.EXTRA_TRADE.toString()))
-            {
-                TradeDto addedTradeDto = data.getParcelableExtra(DataKey.EXTRA_TRADE.toString());
-
-                if(!this.tradeDtoList.contains(addedTradeDto))
-                {
-                    this.tradeDtoList.add(addedTradeDto);
-                    this.isReturningResultHomeView = true;
-                    Collections.sort(this.tradeDtoList);
-                }
-
-                LogManager.debug(CLASS_NAME, "onActivityResult", "Extra Trade: " + addedTradeDto);
-            }
+            loadCreateTradePlanResultData(data);
         }
         else if(IntentRequestCode.VIEW_TRADE_PLAN.code() == requestCode)
         {
-            if(data.hasExtra(DataKey.EXTRA_TRADE.toString()))
-            {
-                TradeDto removedTradeDto = data.getParcelableExtra(DataKey.EXTRA_TRADE.toString());
+            loadViewTradePlanResultData(data);
+        }
+    }
 
-                if(this.tradeDtoList.contains(removedTradeDto))
+    private void loadCreateTradePlanResultData(Intent data)
+    {
+        if(data.hasExtra(DataKey.EXTRA_TICKER.toString()))
+        {
+            TickerDto addedTickerDto = data.getParcelableExtra(DataKey.EXTRA_TICKER.toString());
+
+            int addedTickerIndex = this.tickerDtoList.indexOf(addedTickerDto);
+
+            // Replace ticker dto
+            if(addedTickerIndex != -1)
+            {
+                this.tickerDtoList.remove(addedTickerDto);
+                this.tickerDtoList.add(addedTickerIndex, addedTickerDto);
+            }
+            else
+            {
+                this.tickerDtoList.add(addedTickerDto);
+            }
+
+            LogManager.debug(CLASS_NAME, "onActivityResult", "Extra Ticker: " + addedTickerDto);
+        }
+
+        if(data.hasExtra(DataKey.EXTRA_TRADE.toString()))
+        {
+            TradeDto addedTradeDto = data.getParcelableExtra(DataKey.EXTRA_TRADE.toString());
+
+            if(!this.tradeDtoList.contains(addedTradeDto))
+            {
+                this.tradeDtoList.add(addedTradeDto);
+                this.isReturningResultHomeView = true;
+                Collections.sort(this.tradeDtoList);
+            }
+
+            LogManager.debug(CLASS_NAME, "onActivityResult", "Extra Trade: " + addedTradeDto);
+        }
+    }
+
+    private void loadViewTradePlanResultData(Intent data)
+    {
+        if(data.hasExtra(DataKey.EXTRA_TRADE.toString()))
+        {
+            TradeDto removedTradeDto = data.getParcelableExtra(DataKey.EXTRA_TRADE.toString());
+
+            if(this.tradeDtoList.contains(removedTradeDto))
+            {
+                this.tradeDtoList.remove(removedTradeDto);
+
+                for(TickerDto dto : this.tickerDtoList)
                 {
-                    this.tradeDtoList.remove(removedTradeDto);
-
-                    for(TickerDto dto : this.tickerDtoList)
+                    if(removedTradeDto.getSymbol().equals(dto.getSymbol()))
                     {
-                        if(removedTradeDto.getSymbol().equals(dto.getSymbol()))
-                        {
-                            dto.setHasTradePlan(false);
-                        }
+                        dto.setHasTradePlan(false);
                     }
-
-                    this.isReturningResultHomeView = true;
-                    LogManager.debug(CLASS_NAME, "onActivityResult", "Extra Trade removed: " + removedTradeDto);
                 }
+
+                this.isReturningResultHomeView = true;
+                LogManager.debug(CLASS_NAME, "onActivityResult", "Extra Trade removed: " + removedTradeDto);
             }
-            else if(data.hasExtra(DataKey.EXTRA_TRADE_LIST.toString()))
-            {
-                this.tradeDtoList = data.getParcelableArrayListExtra(DataKey.EXTRA_TRADE_LIST.toString());
-                LogManager.debug(CLASS_NAME, "onActivityResult", "Extra Trade list updated.");
-            }
+        }
+        else if(data.hasExtra(DataKey.EXTRA_TRADE_LIST.toString()))
+        {
+            this.tradeDtoList = data.getParcelableArrayListExtra(DataKey.EXTRA_TRADE_LIST.toString());
+            LogManager.debug(CLASS_NAME, "onActivityResult", "Extra Trade list updated.");
         }
     }
 
@@ -478,20 +488,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     /**
-     * Stops the rotating animation of the refresh menu.
+     * Sets the default home view, which is the trade plan list fragment.
      */
-    public void stopRefreshAnimation()
+    private void setDefaultHomeView()
     {
-        LogManager.debug(CLASS_NAME, "stopRefreshAnimation", "");
-
-        // Get our refresh item from the menu
-        MenuItem refreshMenu = this.toolbarMenu.findItem(R.id.menu_refresh);
-        if(refreshMenu.getActionView() != null)
-        {
-            // Remove the animation.
-            refreshMenu.getActionView().clearAnimation();
-            refreshMenu.setActionView(null);
-        }
+        this.selectedListFragment = TradePlanListFragment.newInstance(this.tradeDtoList);
+        updateFragmentContainer(this.selectedListFragment);
+        this.showToolbarMenuItems();
+        this.toolbar.setTitle(R.string.app_name);
     }
 
     /**
@@ -562,7 +566,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     /**
-     * Executes the UpdateTicker async task. Starts the refresh button animation then retrieves data from PSE.
+     * Starts the refresh button animation then retrieves data from PSE.
      *
      * @param item the refresh button menu item
      */
@@ -630,13 +634,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     /**
-     * Sets the default home view, which is the trade plan list fragment.
+     * Stops the rotating animation of the refresh menu.
      */
-    private void setDefaultHomeView()
+    public void stopRefreshAnimation()
     {
-        this.selectedListFragment = TradePlanListFragment.newInstance(this.tradeDtoList);
-        updateFragmentContainer(this.selectedListFragment);
-        this.showToolbarMenuItems();
-        this.toolbar.setTitle(R.string.app_name);
+        LogManager.debug(CLASS_NAME, "stopRefreshAnimation", "");
+
+        // Get our refresh item from the menu
+        MenuItem refreshMenu = this.toolbarMenu.findItem(R.id.menu_refresh);
+        if(refreshMenu.getActionView() != null)
+        {
+            // Remove the animation.
+            refreshMenu.getActionView().clearAnimation();
+            refreshMenu.setActionView(null);
+        }
     }
 }

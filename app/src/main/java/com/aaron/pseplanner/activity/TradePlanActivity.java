@@ -55,6 +55,21 @@ public class TradePlanActivity extends AppCompatActivity
         ButterKnife.bind(this);
         this.compositeDisposable = new CompositeDisposable();
 
+        initializeTradePlanAndList(savedInstanceState);
+
+        String selectedTradePlanString = this.selectedTradeDtoPlan == null ? null : this.selectedTradeDtoPlan.toString();
+        LogManager.debug(CLASS_NAME, "onCreate", "selected=" + selectedTradePlanString);
+
+        initializeToolbarAndActionBar();
+
+        this.pagerAdapter = new TradePlanPagerAdapter(getSupportFragmentManager(), this.tradeDtoPlanList, this.tradeDtoPlanList.size());
+        setUpViewPager(this.pagerAdapter);
+
+        this.tradePlanListUpdated = false;
+    }
+
+    private void initializeTradePlanAndList(Bundle savedInstanceState)
+    {
         if(savedInstanceState != null)
         {
             setSelectedTradePlanAndListFromBundle(savedInstanceState);
@@ -73,18 +88,6 @@ public class TradePlanActivity extends AppCompatActivity
                 setSelectedTradePlanAndListFromIntent(getIntent());
             }
         }
-
-        String selectedTradePlanString = this.selectedTradeDtoPlan == null ? null : this.selectedTradeDtoPlan.toString();
-        LogManager.debug(CLASS_NAME, "onCreate", "selected=" + selectedTradePlanString);
-
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        toolbar.setTitle(R.string.title_trade_plan);
-        setUpActionBar(toolbar);
-
-        this.pagerAdapter = new TradePlanPagerAdapter(getSupportFragmentManager(), this.tradeDtoPlanList, this.tradeDtoPlanList.size());
-        setUpViewPager(this.pagerAdapter);
-
-        this.tradePlanListUpdated = false;
     }
 
     private void setSelectedTradePlanAndListFromBundle(Bundle savedInstanceState)
@@ -114,8 +117,10 @@ public class TradePlanActivity extends AppCompatActivity
         this.selectedTradeDtoPlan = intent.getParcelableExtra(DataKey.EXTRA_TRADE.toString());
     }
 
-    private void setUpActionBar(Toolbar toolbar)
+    private void initializeToolbarAndActionBar()
     {
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle(R.string.title_trade_plan);
         setSupportActionBar(toolbar);
 
         ActionBar actionBar = getSupportActionBar();

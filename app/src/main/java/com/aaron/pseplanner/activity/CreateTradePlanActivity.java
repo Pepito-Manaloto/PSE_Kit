@@ -1,9 +1,7 @@
 package com.aaron.pseplanner.activity;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
 
 import com.aaron.pseplanner.R;
 import com.aaron.pseplanner.bean.TickerDto;
@@ -33,32 +31,27 @@ public class CreateTradePlanActivity extends SaveTradePlanActivity
 
         LogManager.debug(CLASS_NAME, "onCreate", "");
 
+        initializeSelectedStock(savedInstanceState);
+
+        LogManager.debug(CLASS_NAME, "onCreate", selectedStock == null ? null : selectedStock.toString());
+
+        stockLabel.setText(selectedStock.getSymbol());
+    }
+
+    private void initializeSelectedStock(Bundle savedInstanceState)
+    {
         if(savedInstanceState != null)
         {
-            this.selectedStock = savedInstanceState.getParcelable(DataKey.EXTRA_TICKER.toString());
+            selectedStock = savedInstanceState.getParcelable(DataKey.EXTRA_TICKER.toString());
         }
         else
         {
             Bundle bundle = getIntent().getExtras();
             if(bundle != null)
             {
-                this.selectedStock = bundle.getParcelable(DataKey.EXTRA_TICKER.toString());
+                selectedStock = bundle.getParcelable(DataKey.EXTRA_TICKER.toString());
             }
         }
-
-        LogManager.debug(CLASS_NAME, "onCreate", this.selectedStock == null ? null : this.selectedStock.toString());
-
-        this.toolbar.setTitle(R.string.title_create_trade_plan);
-        setSupportActionBar(this.toolbar);
-
-        ActionBar actionBar = getSupportActionBar();
-        if(actionBar != null)
-        {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
-        }
-
-        this.stockLabel.setText(this.selectedStock.getSymbol());
     }
 
     /**
@@ -77,44 +70,30 @@ public class CreateTradePlanActivity extends SaveTradePlanActivity
     }
 
     /**
-     * Sets the stock of the created trade plan if created, then sends it to the main activity.
+     * Sets the stock of the created trade plan if created.
      *
-     * @param resultCode the result of the user's action
+     * @param intent the intent to put the extra data
      */
     @Override
-    protected void setActivityResultHome(int resultCode)
+    protected void setIntentExtraOnResultHome(Intent intent)
     {
-        Intent data = new Intent();
-
-        LogManager.debug(CLASS_NAME, "setActivityResultHome", "Result code: " + resultCode + " Ticker: " + this.selectedStock);
-
-        if(resultCode == Activity.RESULT_OK)
-        {
-            this.selectedStock.setHasTradePlan(true);
-            data.putExtra(DataKey.EXTRA_TICKER.toString(), this.selectedStock);
-        }
-
-        setResult(resultCode, data);
-        finish();
+        LogManager.debug(CLASS_NAME, "setIntentExtraOnResultHome", "Intent extra is Ticker: " + selectedStock);
+        selectedStock.setHasTradePlan(true);
+        intent.putExtra(DataKey.EXTRA_TICKER.toString(), selectedStock);
     }
 
     /**
-     * Sets the saved ticker dto and trade dto then sends it to the main activity fragment.
+     * Sets the saved ticker dto.
      *
-     * @param dto the saved trade plan
+     * @param intent the intent to put the extra data
      */
     @Override
-    protected void setActivityResultSaveClicked(TradeDto dto)
+    protected void setIntentExtraOnResultSaveClicked(Intent intent)
     {
-        Intent data = new Intent();
+        selectedStock.setHasTradePlan(true);
+        intent.putExtra(DataKey.EXTRA_TICKER.toString(), selectedStock);
 
-        this.selectedStock.setHasTradePlan(true);
-        data.putExtra(DataKey.EXTRA_TICKER.toString(), this.selectedStock);
-        data.putExtra(DataKey.EXTRA_TRADE.toString(), dto);
-        setResult(Activity.RESULT_OK, data);
-        finish();
-
-        LogManager.debug(CLASS_NAME, "setActivityResultSaveClicked", "TradeDto result: " + dto);
+        LogManager.debug(CLASS_NAME, "setIntentExtraOnResultSaveClicked", "Intent extra is Ticker: " + selectedStock);
     }
 
     /**
@@ -136,5 +115,11 @@ public class CreateTradePlanActivity extends SaveTradePlanActivity
     protected BigDecimal getSelectedSymbolCurrentPrice()
     {
         return this.selectedStock.getCurrentPrice();
+    }
+
+    @Override
+    protected int getToolbarTitle()
+    {
+        return R.string.title_create_trade_plan;
     }
 }

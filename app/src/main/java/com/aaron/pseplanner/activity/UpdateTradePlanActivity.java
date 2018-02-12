@@ -1,9 +1,7 @@
 package com.aaron.pseplanner.activity;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -41,6 +39,17 @@ public class UpdateTradePlanActivity extends SaveTradePlanActivity
 
         LogManager.debug(CLASS_NAME, "onCreate", "");
 
+        initializeTradeDto(savedInstanceState);
+
+        initializeEditTextValues();
+        LogManager.debug(CLASS_NAME, "onCreate", this.tradeDtoPlanToUpdate == null ? null : this.tradeDtoPlanToUpdate.toString());
+
+        this.stockLabel.setText(this.tradeDtoPlanToUpdate.getSymbol());
+        this.saveButton.setText(R.string.button_update_trade_plan);
+    }
+
+    private void initializeTradeDto(Bundle savedInstanceState)
+    {
         if(savedInstanceState != null)
         {
             this.tradeDtoPlanToUpdate = savedInstanceState.getParcelable(DataKey.EXTRA_TRADE.toString());
@@ -53,7 +62,10 @@ public class UpdateTradePlanActivity extends SaveTradePlanActivity
                 this.tradeDtoPlanToUpdate = bundle.getParcelable(DataKey.EXTRA_TRADE.toString());
             }
         }
+    }
 
+    private void initializeEditTextValues()
+    {
         this.sharesEditText.setText(String.valueOf(tradeDtoPlanToUpdate != null ? tradeDtoPlanToUpdate.getTotalShares() : 0));
         this.entryDateEditText.setText(DatePickerFragment.DATE_FORMATTER.format(tradeDtoPlanToUpdate.getEntryDate()));
         this.stopDateEditText.setText(DatePickerFragment.DATE_FORMATTER.format(tradeDtoPlanToUpdate.getStopDate()));
@@ -62,21 +74,6 @@ public class UpdateTradePlanActivity extends SaveTradePlanActivity
         this.capitalEditText.setText(String.valueOf(tradeDtoPlanToUpdate.getCapital()));
 
         this.setEntryTranchesValues(this.layoutInflater, this.entryTranchesLayout, this.tradeDtoPlanToUpdate.getTradeEntries());
-
-        LogManager.debug(CLASS_NAME, "onCreate", this.tradeDtoPlanToUpdate == null ? null : this.tradeDtoPlanToUpdate.toString());
-
-        this.toolbar.setTitle(R.string.title_update_trade_plan);
-        setSupportActionBar(this.toolbar);
-
-        ActionBar actionBar = getSupportActionBar();
-        if(actionBar != null)
-        {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
-        }
-
-        this.stockLabel.setText(this.tradeDtoPlanToUpdate.getSymbol());
-        this.saveButton.setText(R.string.button_update_trade_plan);
     }
 
     /**
@@ -88,13 +85,7 @@ public class UpdateTradePlanActivity extends SaveTradePlanActivity
 
         for(int i = 0; i < entriesSize; i++)
         {
-            this.addTranche(layoutInflater, entryTranchesLayout);
-        }
-
-        int numOfTranches = entryTranchesLayout.getChildCount();
-        for(int i = 0; i < numOfTranches; i++)
-        {
-            View entryTrancheContainer = entryTranchesLayout.getChildAt(i);
+            View entryTrancheContainer = addTranche(layoutInflater, entryTranchesLayout);
 
             TextView labelTranche = entryTrancheContainer.findViewById(R.id.label_tranche);
             labelTranche.setText(getString(R.string.label_tranche, ViewUtils.getOrdinalNumber(i)));
@@ -123,41 +114,25 @@ public class UpdateTradePlanActivity extends SaveTradePlanActivity
     }
 
     /**
-     * Sets the stock of the created trade plan if created, then sends it to the main activity.
+     * Sets the stock of the created trade plan if created.
      *
-     * @param resultCode the result of the user's action
+     * @param intent the intent to put the extra data
      */
     @Override
-    protected void setActivityResultHome(int resultCode)
+    protected void setIntentExtraOnResultHome(Intent intent)
     {
-        Intent data = new Intent();
-
-        LogManager.debug(CLASS_NAME, "setActivityResultHome", "Result code: " + resultCode + " Trade Plan: " + this.tradeDtoPlanToUpdate);
-
-        if(resultCode == Activity.RESULT_OK)
-        {
-            data.putExtra(DataKey.EXTRA_TRADE.toString(), this.tradeDtoPlanToUpdate);
-        }
-
-        setResult(resultCode, data);
-        finish();
+        LogManager.debug(CLASS_NAME, "setIntentExtraOnResultHome", "Intent extra is Trade Plan: " + this.tradeDtoPlanToUpdate);
+        intent.putExtra(DataKey.EXTRA_TRADE.toString(), this.tradeDtoPlanToUpdate);
     }
 
     /**
-     * Sets the saved trade dto then sends it to the main activity fragment.
+     * Nothing to add to the intent.
      *
-     * @param dto the saved trade plan
+     * @param intent the intent to put the extra data
      */
     @Override
-    protected void setActivityResultSaveClicked(TradeDto dto)
+    protected void setIntentExtraOnResultSaveClicked(Intent intent)
     {
-        Intent data = new Intent();
-
-        data.putExtra(DataKey.EXTRA_TRADE.toString(), dto);
-        setResult(Activity.RESULT_OK, data);
-        finish();
-
-        LogManager.debug(CLASS_NAME, "setActivityResultHome", "TradeDto result: " + dto);
     }
 
     /**
@@ -179,5 +154,11 @@ public class UpdateTradePlanActivity extends SaveTradePlanActivity
     protected BigDecimal getSelectedSymbolCurrentPrice()
     {
         return this.tradeDtoPlanToUpdate.getCurrentPrice();
+    }
+
+    @Override
+    protected int getToolbarTitle()
+    {
+        return R.string.title_update_trade_plan;
     }
 }

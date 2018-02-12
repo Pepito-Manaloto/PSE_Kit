@@ -2,9 +2,11 @@ package com.aaron.pseplanner.activity;
 
 import android.app.Activity;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -24,6 +26,7 @@ import com.aaron.pseplanner.R;
 import com.aaron.pseplanner.bean.BoardLot;
 import com.aaron.pseplanner.bean.TradeDto;
 import com.aaron.pseplanner.bean.TradeEntryDto;
+import com.aaron.pseplanner.constant.DataKey;
 import com.aaron.pseplanner.fragment.DatePickerFragment;
 import com.aaron.pseplanner.listener.EditTextOnFocusChangeHideKeyboard;
 import com.aaron.pseplanner.listener.EditTextOnTextChangeAddComma;
@@ -50,6 +53,7 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.aaron.pseplanner.service.CalculatorService.MAX_WEIGHT;
 import static com.aaron.pseplanner.service.CalculatorService.ONE_HUNDRED;
 
 /**
@@ -58,6 +62,7 @@ import static com.aaron.pseplanner.service.CalculatorService.ONE_HUNDRED;
 public abstract class SaveTradePlanActivity extends AppCompatActivity
 {
     public static final String CLASS_NAME = SaveTradePlanActivity.class.getSimpleName();
+
     protected CalculatorService calculator;
     protected PSEPlannerService pseService;
 
@@ -138,8 +143,7 @@ public abstract class SaveTradePlanActivity extends AppCompatActivity
                 String entryDateStr = entryDateEditText.getText().toString();
                 String stopDateStr = stopDateEditText.getText().toString();
 
-                // Validate inputs if blank
-                if(isEditTextInputValid(sharesStr, "shares", sharesEditText) && isEditTextInputValid(stopLossStr, "stop loss", stopLossEditText) && isEditTextInputValid(targetStr, "target", targetEditText) && isEditTextInputValid(entryDateStr, "entry date", entryDateEditText) && isEditTextInputValid(stopDateStr, "stop date", stopDateEditText) && isEditTextInputValid(capitalStr, "capital", capitalEditText))
+                if(areAllEditTextInputNotBlank(sharesStr, stopLossStr, targetStr, capitalStr, entryDateStr, stopDateStr))
                 {
                     long shares = Long.parseLong(sharesStr.replace(",", ""));
                     BigDecimal stopLoss = new BigDecimal(stopLossStr.replace(",", ""));
@@ -148,38 +152,14 @@ public abstract class SaveTradePlanActivity extends AppCompatActivity
 
                     Map<Pair<EditText, EditText>, Pair<String, String>> priceWeightMap = getTranchePriceAndWeight(entryTranchesLayout);
                     // Also validates if prices and weights are not blank
-                    Pair<BigDecimal, BigDecimal> averagePriceTotalWeight = getAveragePriceTotalWeight(priceWeightMap);
+                    Pair<BigDecimal, BigDecimal> averagePriceTotalWeight = getAndValidateAveragePriceTotalWeight(priceWeightMap);
 
-                    if(averagePriceTotalWeight != null && validateTradePlanInput(shares, stopLoss, target, entryDateStr, stopDateStr, capital, priceWeightMap, averagePriceTotalWeight))
+                    Date entryDate = getFormattedDate(entryDateStr);
+                    Date stopDate = getFormattedDate(stopDateStr);
+
+                    if(areAllEditTextInputValid(averagePriceTotalWeight, shares, stopLoss, target, entryDate, stopDate, capital, priceWeightMap))
                     {
-                        BigDecimal riskReward = calculator.getRiskRewardRatio(averagePriceTotalWeight.first, target, stopLoss);
-
-                        Date entryDate;
-                        Date stopDate;
-                        try
-                        {
-                            entryDate = DatePickerFragment.DATE_FORMATTER.parse(entryDateStr);
-                            stopDate = DatePickerFragment.DATE_FORMATTER.parse(stopDateStr);
-                        }
-                        catch(ParseException e)
-                        {
-                            LogManager.error(CLASS_NAME, "onClick(save button)", "Error parsing date, will use current date instead.", e);
-                            entryDate = new Date();
-                            stopDate = entryDate;
-                        }
-
-                        TradeDto dto = getTradeToSave(shares, stopLoss, target, capital, entryDate, stopDate, riskReward, averagePriceTotalWeight.first, priceWeightMap.values());
-                        if(riskReward.doubleValue() < 2)
-                        {
-                            createAndShowAlertDialog(dto);
-                        }
-                        else
-                        {
-                            saveTradePlan(dto);
-                            setActivityResultSaveClicked(dto);
-                        }
-
-                        LogManager.debug(CLASS_NAME, "onCreate(saveButton)", "Saved TradePlan: " + dto);
+                        evaluateRiskRewardAndSave(shares, stopLoss, target, entryDate, stopDate, capital, priceWeightMap, averagePriceTotalWeight);
                     }
                 }
             }
@@ -187,106 +167,62 @@ public abstract class SaveTradePlanActivity extends AppCompatActivity
 
         this.calculator = new DefaultCalculatorService();
         this.pseService = new FacadePSEPlannerService(this);
+
+        initializeToolbarAndActionBar();
     }
 
     /**
-     * Adds a new tranche.
-     *
-     * @param inflater            the LayoutInflater that creates the create_entry_tranche
-     * @param entryTranchesLayout the layout containing the tranche list
+     * Sets the on focus change listener for edit texts. Will hide keyboard on focus change.
      */
-    protected void addTranche(LayoutInflater inflater, LinearLayout entryTranchesLayout)
+    private void setEditTextOnFocusChangeListener(EditText... editTexts)
     {
-        // Create initial tranche
-        View inflatedLayout = inflater.inflate(R.layout.create_entry_tranche, null, false);
-        setEntryTrancheViewsProperties(entryTranchesLayout, inflatedLayout);
+        for(EditText editText : editTexts)
+        {
+            editText.setOnFocusChangeListener(new EditTextOnFocusChangeHideKeyboard(this));
+        }
     }
 
     /**
-     * Validates all edit text inputs if not blank.
-     * Validate if share and entry prices of the selected stock is a valid boardlot.
-     * Validate if total weight is equal to 100.
-     * Validate target, stop loss, date entry & stop, and capital.
-     *
-     * @param shares                  the number of shares to allot for the trade
-     * @param stopLoss                the stop loss of the trade
-     * @param target                  the target price of the trade
-     * @param entryDate               the date where the first tranche is executed
-     * @param stopDate                the time stop of the trade
-     * @param capital                 the capital to allot for the trade
-     * @param priceWeightMap          the entry entry_price-weight map
-     * @param averagePriceTotalWeight the average price and total weight
-     * @return true if all inputs are valid, else false
+     * Sets the text change listener for edit texts. Will format the input (adds commas and round off decimal to 4 places).
      */
-    private boolean validateTradePlanInput(long shares, BigDecimal stopLoss, BigDecimal target, String entryDate, String stopDate, long capital, Map<Pair<EditText, EditText>, Pair<String, String>> priceWeightMap, Pair<BigDecimal, BigDecimal> averagePriceTotalWeight)
+    private void setEditTextTextChangeListener(EditText... editTexts)
     {
-        // Validate per tranche entry
-        for(Map.Entry<Pair<EditText, EditText>, Pair<String, String>> entry : priceWeightMap.entrySet())
+        for(EditText editText : editTexts)
         {
-            Pair<EditText, EditText> editTextPair = entry.getKey();
-            EditText priceEditText = editTextPair.first;
+            editText.addTextChangedListener(new EditTextOnTextChangeWrapper(editText,
+                    new EditTextOnTextChangeAddComma(editText, ViewUtils.getEditTextMaxLength(editText.getFilters(), CLASS_NAME))));
+        }
+    }
 
-            Pair<String, String> valuesPair = entry.getValue();
-            String price = valuesPair.first;
-
-            // Check if boardlot valid
-            if(!BoardLot.isValidBoardLot(new BigDecimal(price), shares))
+    /**
+     * Sets the EditText date picker listener.
+     */
+    private void setDateEditTextOnClickListener(EditText... editTexts)
+    {
+        for(final EditText editText : editTexts)
+        {
+            editText.setOnClickListener(new View.OnClickListener()
             {
-                Toast.makeText(this, getString(R.string.boardlot_invalid), Toast.LENGTH_SHORT).show();
-                priceEditText.requestFocus();
-                return false;
-            }
-        }
+                @Override
+                public void onClick(View view)
+                {
+                    // Initialize a new date picker dialog fragment
+                    DialogFragment dialogFragment = DatePickerFragment.newInstance(editText.getId());
 
-        // Validate weight
-        if(averagePriceTotalWeight.second.intValue() != 100)
-        {
-            Toast.makeText(this, getString(R.string.tranche_weight_invalid), Toast.LENGTH_SHORT).show();
-            return false;
+                    // Show the date picker dialog fragment
+                    dialogFragment.show(SaveTradePlanActivity.this.getSupportFragmentManager(), DatePickerFragment.CLASS_NAME);
+                }
+            });
         }
+    }
 
-        BigDecimal averagePrice = averagePriceTotalWeight.first;
-        // Check if total buy is greater than capital
-        if(capital < (shares * averagePrice.doubleValue()))
-        {
-            Toast.makeText(this, getString(R.string.buy_greater_than_capital), Toast.LENGTH_SHORT).show();
-            return false;
-        }
-
-        // Check if entry date is greater than stop date
-        try
-        {
-            Date entry = DatePickerFragment.DATE_FORMATTER.parse(entryDate);
-            Date stop = DatePickerFragment.DATE_FORMATTER.parse(stopDate);
-
-            if(entry.getTime() == stop.getTime() || entry.after(stop))
-            {
-                Toast.makeText(this, getString(R.string.entry_greater_than_stop_date), Toast.LENGTH_SHORT).show();
-                return false;
-            }
-        }
-        catch(ParseException e)
-        {
-            LogManager.error(CLASS_NAME, "validateTradePlanInput", "Failed checking entry and stop date.", e);
-        }
-
-        // Check if stop loss is greater than average price
-        double stopLossNum = stopLoss.doubleValue();
-        if(stopLossNum >= averagePrice.doubleValue())
-        {
-            Toast.makeText(this, getString(R.string.stoploss_invalid, averagePrice), Toast.LENGTH_SHORT).show();
-            return false;
-        }
-
-        // Check if target is less than average price
-        double targetNum = target.doubleValue();
-        if(averagePrice.doubleValue() >= targetNum)
-        {
-            Toast.makeText(this, getString(R.string.target_invalid, averagePrice), Toast.LENGTH_SHORT).show();
-            return false;
-        }
-
-        return true;
+    private boolean areAllEditTextInputNotBlank(String sharesStr, String stopLossStr, String targetStr, String capitalStr, String entryDateStr,
+            String stopDateStr)
+    {
+        return isEditTextNotBlank(sharesStr, "shares", sharesEditText)
+                && isEditTextNotBlank(stopLossStr, "stop loss", stopLossEditText)
+                && isEditTextNotBlank(targetStr, "target", targetEditText) && isEditTextNotBlank(entryDateStr, "entry date", entryDateEditText)
+                && isEditTextNotBlank(stopDateStr, "stop date", stopDateEditText) && isEditTextNotBlank(capitalStr, "capital", capitalEditText);
     }
 
     /**
@@ -297,7 +233,7 @@ public abstract class SaveTradePlanActivity extends AppCompatActivity
      * @param editText the edit text
      * @return true if valid else false
      */
-    private boolean isEditTextInputValid(String input, String label, EditText editText)
+    private boolean isEditTextNotBlank(String input, String label, EditText editText)
     {
         if(StringUtils.isBlank(input))
         {
@@ -340,7 +276,7 @@ public abstract class SaveTradePlanActivity extends AppCompatActivity
      * @return the average price and total weight pair if inputs are valid, else null
      */
     @Nullable
-    private Pair<BigDecimal, BigDecimal> getAveragePriceTotalWeight(Map<Pair<EditText, EditText>, Pair<String, String>> priceWeightMap)
+    private Pair<BigDecimal, BigDecimal> getAndValidateAveragePriceTotalWeight(Map<Pair<EditText, EditText>, Pair<String, String>> priceWeightMap)
     {
         BigDecimal averagePrice = BigDecimal.ZERO;
         BigDecimal totalWeight = BigDecimal.ZERO;
@@ -360,7 +296,8 @@ public abstract class SaveTradePlanActivity extends AppCompatActivity
             trancheNum++;
 
             // Validate inputs if blank
-            if(isEditTextInputValid(price, "price at tranche " + trancheNum, priceEditText) && isEditTextInputValid(weight, "weight at tranche " + trancheNum, weightEditText))
+            if(isEditTextNotBlank(price, "price at tranche " + trancheNum, priceEditText)
+                    && isEditTextNotBlank(weight, "weight at tranche " + trancheNum, weightEditText))
             {
                 BigDecimal priceNum = new BigDecimal(price.replace(",", ""));
                 BigDecimal weightNum = new BigDecimal(weight);
@@ -375,86 +312,128 @@ public abstract class SaveTradePlanActivity extends AppCompatActivity
             }
         }
 
-        LogManager.debug(CLASS_NAME, "getAveragePriceTotalWeight", "averagePrice = " + averagePrice + " totalWeight = " + totalWeight);
+        LogManager.debug(CLASS_NAME, "getAndValidateAveragePriceTotalWeight", "averagePrice = " + averagePrice + " totalWeight = " + totalWeight);
 
         return new Pair<>(averagePrice, totalWeight);
     }
 
-    /**
-     * This method is called when a user selects an item in the menu bar. Home button.
-     */
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item)
+    private Date getFormattedDate(String dateStr)
     {
-        switch(item.getItemId())
+        Date date;
+        try
         {
-            case android.R.id.home:
-            {
-                this.setActivityResultHome(Activity.RESULT_CANCELED);
-                return true;
-            }
-            default:
-            {
-                return super.onOptionsItemSelected(item);
-            }
+            date = DatePickerFragment.DATE_FORMATTER.parse(dateStr);
         }
+        catch(ParseException e)
+        {
+            LogManager.error(CLASS_NAME, "onClick(evaluateRiskRewardAndSave button)", "Error parsing date, will use current date instead.", e);
+            date = new Date();
+        }
+
+        return date;
+    }
+
+    private boolean areAllEditTextInputValid(Pair<BigDecimal, BigDecimal> averagePriceTotalWeight, long shares, BigDecimal stopLoss, BigDecimal target,
+            Date entryDate, Date stopDate, long capital, Map<Pair<EditText, EditText>, Pair<String, String>> priceWeightMap)
+    {
+        return averagePriceTotalWeight != null
+                && areTradePlanInputsValid(shares, stopLoss, target, entryDate, stopDate, capital, priceWeightMap, averagePriceTotalWeight);
     }
 
     /**
-     * Sets the entry tranche properties and listeners. See create_entry_tranche.xmlche.xml for the views to set.
+     * Validates all edit text inputs if not blank.
+     * Validate if share and entry prices of the selected stock is a valid boardlot.
+     * Validate if total weight is equal to 100.
+     * Validate target, stop loss, date entry & stop, and capital.
      *
-     * @param entryTranchesLayout   the container/layout of the list of entryTrancheContainers
-     * @param entryTrancheContainer the container/layout of the views to set
+     * @param shares                  the number of shares to allot for the trade
+     * @param stopLoss                the stop loss of the trade
+     * @param target                  the target price of the trade
+     * @param entryDate               the date where the first tranche is executed
+     * @param stopDate                the time stop of the trade
+     * @param capital                 the capital to allot for the trade
+     * @param priceWeightMap          the entry entry_price-weight map
+     * @param averagePriceTotalWeight the average price and total weight
+     * @return true if all inputs are valid, else false
      */
-    private void setEntryTrancheViewsProperties(final LinearLayout entryTranchesLayout, final View entryTrancheContainer)
+    private boolean areTradePlanInputsValid(long shares, BigDecimal stopLoss, BigDecimal target, Date entryDate, Date stopDate, long capital,
+            Map<Pair<EditText, EditText>, Pair<String, String>> priceWeightMap, Pair<BigDecimal, BigDecimal> averagePriceTotalWeight)
     {
-        // This serves as the index of the added view
-        final int numOfEntryTranche = entryTranchesLayout.getChildCount();
-        entryTrancheContainer.setTag(numOfEntryTranche);
-        TextView labelTranche = entryTrancheContainer.findViewById(R.id.label_tranche);
-        labelTranche.setText(getString(R.string.label_tranche, ViewUtils.getOrdinalNumber(numOfEntryTranche)));
-
-        ImageView removeTranche = entryTrancheContainer.findViewById(R.id.imageview_remove_tranche);
-        removeTranche.setOnClickListener(new View.OnClickListener()
+        // Validate per tranche entry
+        for(Map.Entry<Pair<EditText, EditText>, Pair<String, String>> entry : priceWeightMap.entrySet())
         {
-            /**
-             * Removes this entry tranche from the view container.
-             */
-            @Override
-            public void onClick(View v)
+            Pair<EditText, EditText> editTextPair = entry.getKey();
+            EditText priceEditText = editTextPair.first;
+
+            Pair<String, String> valuesPair = entry.getValue();
+            String price = valuesPair.first;
+
+            if(!BoardLot.isValidBoardLot(new BigDecimal(price), shares))
             {
-                // We are sure of its type
-                int index = (int) entryTrancheContainer.getTag();
-                entryTranchesLayout.removeView(entryTrancheContainer);
-
-                // Gets the current child count
-                int childCount = entryTranchesLayout.getChildCount();
-                for(int i = index; i < childCount; i++)
-                {
-                    // Update the succeeding entry tranche tag/index and title
-                    View nextEntryTrancheContainer = entryTranchesLayout.getChildAt(i);
-                    nextEntryTrancheContainer.setTag(i);
-                    TextView labelTranche = entryTrancheContainer.findViewById(R.id.label_tranche);
-
-                    labelTranche.setText(getString(R.string.label_tranche, ViewUtils.getOrdinalNumber(i)));
-                    // TODO: update tranche weight?
-                }
+                Toast.makeText(this, getString(R.string.boardlot_invalid), Toast.LENGTH_SHORT).show();
+                priceEditText.requestFocus();
+                return false;
             }
-        });
+        }
 
-        EditText entryPrice = entryTrancheContainer.findViewById(R.id.edittext_entry_price);
-        setEditTextTextChangeListener(entryPrice);
-        EditText trancheWeight = entryTrancheContainer.findViewById(R.id.edittext_tranche_weight);
-        if(numOfEntryTranche == 0)
+        boolean isWeightExceedsMaxWeight = averagePriceTotalWeight.second.intValue() != MAX_WEIGHT;
+        if(isWeightExceedsMaxWeight)
         {
-            trancheWeight.setText(R.string.one_hundred_value);
+            Toast.makeText(this, getString(R.string.tranche_weight_invalid), Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        BigDecimal averagePrice = averagePriceTotalWeight.first;
+        boolean isTotalBuyExceedsCapital = capital < (shares * averagePrice.doubleValue());
+        if(isTotalBuyExceedsCapital)
+        {
+            Toast.makeText(this, getString(R.string.buy_greater_than_capital), Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        boolean isEntryDateEqualOrAfterStopDate = entryDate.getTime() == stopDate.getTime() || entryDate.after(stopDate);
+        if(isEntryDateEqualOrAfterStopDate)
+        {
+            Toast.makeText(this, getString(R.string.entry_greater_than_stop_date), Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        boolean isStopLossSameOrHigherThanAveragePrice = stopLoss.doubleValue() >= averagePrice.doubleValue();
+        if(isStopLossSameOrHigherThanAveragePrice)
+        {
+            Toast.makeText(this, getString(R.string.stoploss_invalid, averagePrice), Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        boolean isTargetPriceSameOrLowerThanAveragePrice = target.doubleValue() <= averagePrice.doubleValue();
+        if(isTargetPriceSameOrLowerThanAveragePrice)
+        {
+            Toast.makeText(this, getString(R.string.target_invalid, averagePrice), Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        return true;
+    }
+
+    private void evaluateRiskRewardAndSave(long shares, BigDecimal stopLoss, BigDecimal target, Date entryDate, Date stopDate, long capital,
+            Map<Pair<EditText, EditText>, Pair<String, String>> priceWeightMap, Pair<BigDecimal, BigDecimal> averagePriceTotalWeight)
+    {
+        BigDecimal riskReward = calculator.getRiskRewardRatio(averagePriceTotalWeight.first, target, stopLoss);
+
+        TradeDto dto = getTradeToSave(shares, stopLoss, target, capital, entryDate, stopDate, riskReward, averagePriceTotalWeight.first,
+                priceWeightMap.values());
+        boolean isRiskRewardNotAttractive = riskReward.doubleValue() < 2;
+        if(isRiskRewardNotAttractive)
+        {
+            createAndShowAlertDialog(dto);
         }
         else
         {
-            trancheWeight.setText(R.string.default_value);
+            saveTradePlan(dto);
+            setActivityResultSaveClicked(dto);
         }
 
-        entryTranchesLayout.addView(entryTrancheContainer);
+        LogManager.debug(CLASS_NAME, "onCreate(saveButton)", "Saved TradePlan: " + dto);
     }
 
     /**
@@ -471,36 +450,47 @@ public abstract class SaveTradePlanActivity extends AppCompatActivity
      * @param priceWeightList the price weight list of all tranches
      * @return TradeDto
      */
-    protected TradeDto getTradeToSave(long shares, BigDecimal stopLoss, BigDecimal target, long capital, Date entryDate, Date stopDate, BigDecimal riskReward, BigDecimal averagePrice, Collection<Pair<String, String>> priceWeightList)
+    protected TradeDto getTradeToSave(long shares, BigDecimal stopLoss, BigDecimal target, long capital, Date entryDate, Date stopDate, BigDecimal riskReward,
+            BigDecimal averagePrice, Collection<Pair<String, String>> priceWeightList)
     {
-        TradeDto tradeDto = new TradeDto();
-
-        BigDecimal averagePriceAfterBuy = this.calculator.getAveragePriceAfterBuy(averagePrice);
+        String symbol = getSelectedSymbol();
+        BigDecimal averagePriceAfterBuy = calculator.getAveragePriceAfterBuy(averagePrice);
         BigDecimal totalAmount = averagePriceAfterBuy.multiply(new BigDecimal(shares));
-        BigDecimal targetTotalAmount = this.calculator.getSellNetAmount(target, shares);
-        BigDecimal stopLossTotalAmount = this.calculator.getSellNetAmount(stopLoss, shares);
+        BigDecimal priceToBreakEven = calculator.getPriceToBreakEven(averagePrice);
 
-        String symbol = this.getSelectedSymbol();
-        BigDecimal currentPrice = this.getSelectedSymbolCurrentPrice();
+        BigDecimal stopLossTotalAmount = calculator.getSellNetAmount(stopLoss, shares);
+        BigDecimal lossToStopLoss = stopLossTotalAmount.subtract(totalAmount);
 
-        tradeDto.setSymbol(symbol);
-        tradeDto.setCurrentPrice(currentPrice);
-        tradeDto.setAveragePrice(averagePriceAfterBuy);
-        tradeDto.setTotalAmount(totalAmount);
-        tradeDto.setTotalShares(shares);
-        tradeDto.setPriceToBreakEven(this.calculator.getPriceToBreakEven(averagePrice));
-        tradeDto.setStopLoss(stopLoss);
-        tradeDto.setLossToStopLoss(stopLossTotalAmount.subtract(totalAmount));
-        tradeDto.setTargetPrice(target);
-        tradeDto.setGainToTarget(targetTotalAmount.subtract(totalAmount));
-        tradeDto.setGainLoss(this.calculator.getGainLossAmount(averagePrice, shares, currentPrice));
-        tradeDto.setGainLossPercent(this.calculator.getPercentGainLoss(averagePrice, shares, currentPrice));
-        tradeDto.setCapital(capital);
-        tradeDto.setPercentCapital(totalAmount.divide(new BigDecimal(capital), MathContext.DECIMAL64).multiply(ONE_HUNDRED).setScale(2, BigDecimal.ROUND_CEILING));
-        tradeDto.setEntryDate(entryDate);
-        tradeDto.setStopDate(stopDate);
-        tradeDto.setHoldingPeriod(this.calculator.getDaysBetween(new Date(), entryDate));
-        tradeDto.setRiskReward(riskReward);
+        BigDecimal targetTotalAmount = calculator.getSellNetAmount(target, shares);
+        BigDecimal gainToTarget = targetTotalAmount.subtract(totalAmount);
+
+        BigDecimal currentPrice = getSelectedSymbolCurrentPrice();
+        BigDecimal gainLoss = calculator.getGainLossAmount(averagePrice, shares, currentPrice);
+        BigDecimal gainLossPercent = calculator.getPercentGainLoss(averagePrice, shares, currentPrice);
+
+        BigDecimal percentCapital = totalAmount.divide(new BigDecimal(capital), MathContext.DECIMAL64)
+                .multiply(ONE_HUNDRED).setScale(2, BigDecimal.ROUND_CEILING);
+
+        int holdingPeriod = calculator.getDaysBetween(new Date(), entryDate);
+
+        TradeDto tradeDto = new TradeDto()
+                .setCurrentPrice(currentPrice)
+                .setAveragePrice(averagePriceAfterBuy)
+                .setTotalAmount(totalAmount)
+                .setTotalShares(shares)
+                .setPriceToBreakEven(priceToBreakEven)
+                .setStopLoss(stopLoss)
+                .setLossToStopLoss(lossToStopLoss)
+                .setTargetPrice(target)
+                .setGainToTarget(gainToTarget)
+                .setGainLoss(gainLoss)
+                .setGainLossPercent(gainLossPercent)
+                .setCapital(capital)
+                .setPercentCapital(percentCapital)
+                .setEntryDate(entryDate)
+                .setStopDate(stopDate)
+                .setHoldingPeriod(holdingPeriod)
+                .setRiskReward(riskReward);
 
         List<TradeEntryDto> list = priceWeightListToTradeEntryList(symbol, shares, priceWeightList);
         tradeDto.setTradeEntries(list);
@@ -508,6 +498,21 @@ public abstract class SaveTradePlanActivity extends AppCompatActivity
         return tradeDto;
     }
 
+    protected List<TradeEntryDto> priceWeightListToTradeEntryList(String stock, long shares, Collection<Pair<String, String>> priceWeightList)
+    {
+        List<TradeEntryDto> dtos = new ArrayList<>(priceWeightList.size());
+
+        for(Pair<String, String> priceWeight : priceWeightList)
+        {
+            String weightStr = priceWeight.second;
+            double weightMultiplier = Double.parseDouble(weightStr) / 100;
+            long partialShares = Math.round(shares * weightMultiplier);
+
+            dtos.add(new TradeEntryDto(stock, priceWeight.first, partialShares, weightStr));
+        }
+
+        return dtos;
+    }
 
     /**
      * Creates and show the prompt dialog if the risk-reward is less than 2.
@@ -534,6 +539,11 @@ public abstract class SaveTradePlanActivity extends AppCompatActivity
             }
         });
 
+        showDialogWithMessageInCenter(builder);
+    }
+
+    private void showDialogWithMessageInCenter(AlertDialog.Builder builder)
+    {
         AlertDialog dialog = builder.create();
         dialog.show();
 
@@ -545,69 +555,164 @@ public abstract class SaveTradePlanActivity extends AppCompatActivity
         }
     }
 
-    /**
-     * Sets the on focus change listener for edit texts. Will hide keyboard on focus change.
-     */
-    private void setEditTextOnFocusChangeListener(EditText... editTexts)
+    private void initializeToolbarAndActionBar()
     {
-        for(EditText editText : editTexts)
+        toolbar.setTitle(getToolbarTitle());
+        setSupportActionBar(toolbar);
+
+        ActionBar actionBar = getSupportActionBar();
+        if(actionBar != null)
         {
-            editText.setOnFocusChangeListener(new EditTextOnFocusChangeHideKeyboard(this));
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
     }
 
     /**
-     * Sets the text change listener for edit texts. Will format the input (adds commas and round off decimal to 4 places).
+     * Adds a new tranche.
+     *
+     * @param inflater            the LayoutInflater that creates the create_entry_tranche
+     * @param entryTranchesLayout the layout containing the tranche list
+     *                            
+     * @return entryTrancheContainer the created entry tranche container
      */
-    private void setEditTextTextChangeListener(EditText... editTexts)
+    protected View addTranche(LayoutInflater inflater, LinearLayout entryTranchesLayout)
     {
-        for(EditText editText : editTexts)
-        {
-            editText.addTextChangedListener(new EditTextOnTextChangeWrapper(editText, new EditTextOnTextChangeAddComma(editText, ViewUtils.getEditTextMaxLength(editText.getFilters(), CLASS_NAME))));
-        }
+        // Create initial tranche
+        View entryTrancheContainer = inflater.inflate(R.layout.create_entry_tranche, null, false);
+        setEntryTrancheViewsProperties(entryTranchesLayout, entryTrancheContainer);
+
+        return entryTrancheContainer;
     }
 
     /**
-     * Sets the EditText date picker listener.
+     * Sets the entry tranche properties and listeners. See create_entry_tranche.xml for the views to set.
+     *
+     * @param entryTranchesLayout   the container/layout of the list of entryTrancheContainers
+     * @param entryTrancheContainer the container/layout of the views to set
      */
-    private void setDateEditTextOnClickListener(EditText... editTexts)
+    private void setEntryTrancheViewsProperties(final LinearLayout entryTranchesLayout, final View entryTrancheContainer)
     {
-        for(final EditText editText : editTexts)
+        // This serves as the index of the added view
+        final int numOfEntryTranche = entryTranchesLayout.getChildCount();
+        entryTrancheContainer.setTag(numOfEntryTranche);
+
+        TextView labelTranche = entryTrancheContainer.findViewById(R.id.label_tranche);
+        labelTranche.setText(getString(R.string.label_tranche, ViewUtils.getOrdinalNumber(numOfEntryTranche)));
+
+        ImageView removeTranche = entryTrancheContainer.findViewById(R.id.imageview_remove_tranche);
+        removeTranche.setOnClickListener(new View.OnClickListener()
         {
-            editText.setOnClickListener(new View.OnClickListener()
+            /**
+             * Removes this entry tranche from the view container.
+             */
+            @Override
+            public void onClick(View v)
             {
-                @Override
-                public void onClick(View view)
-                {
-                    // Initialize a new date picker dialog fragment
-                    DialogFragment dialogFragment = DatePickerFragment.newInstance(editText.getId());
+                int removedIndex = removeEntryTrancheContainer(entryTrancheContainer);
+                updateAllEntryTrancheTagAndLabel(removedIndex);
+            }
+        });
 
-                    // Show the date picker dialog fragment
-                    dialogFragment.show(SaveTradePlanActivity.this.getSupportFragmentManager(), DatePickerFragment.CLASS_NAME);
-                }
-            });
-        }
-    }
+        EditText entryPrice = entryTrancheContainer.findViewById(R.id.edittext_entry_price);
+        setEditTextTextChangeListener(entryPrice);
 
-    protected List<TradeEntryDto> priceWeightListToTradeEntryList(String stock, long shares, Collection<Pair<String, String>> priceWeightList)
-    {
-        List<TradeEntryDto> dtos = new ArrayList<>(priceWeightList.size());
-
-        for(Pair<String, String> priceWeight : priceWeightList)
+        EditText trancheWeight = entryTrancheContainer.findViewById(R.id.edittext_tranche_weight);
+        if(numOfEntryTranche == 0)
         {
-            String weightStr = priceWeight.second;
-            double weightMultiplier = Double.parseDouble(weightStr) / 100;
-            long partialShares = Math.round(shares * weightMultiplier);
-
-            dtos.add(new TradeEntryDto(stock, priceWeight.first, partialShares, weightStr));
+            trancheWeight.setText(R.string.one_hundred_value);
+        }
+        else
+        {
+            trancheWeight.setText(R.string.default_value);
         }
 
-        return dtos;
+        entryTranchesLayout.addView(entryTrancheContainer);
     }
 
-    protected abstract void setActivityResultSaveClicked(TradeDto dto);
+    private int removeEntryTrancheContainer(View entryTrancheContainer)
+    {
+        // We are sure of its type
+        int index = (int) entryTrancheContainer.getTag();
+        entryTranchesLayout.removeView(entryTrancheContainer);
 
-    protected abstract void setActivityResultHome(int resultCode);
+        return index;
+    }
+
+    private void updateAllEntryTrancheTagAndLabel(int index)
+    {
+        // Gets the current child count
+        int childCount = entryTranchesLayout.getChildCount();
+        for(int i = index; i < childCount; i++)
+        {
+            // Update the succeeding entry tranche tag/index and title
+            View nextEntryTrancheContainer = entryTranchesLayout.getChildAt(i);
+            nextEntryTrancheContainer.setTag(i);
+            TextView labelTranche = nextEntryTrancheContainer.findViewById(R.id.label_tranche);
+
+            labelTranche.setText(getString(R.string.label_tranche, ViewUtils.getOrdinalNumber(i)));
+            // TODO: update tranche weight?
+        }
+    }
+
+    /**
+     * This method is called when a user selects an item in the menu bar. Home button.
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch(item.getItemId())
+        {
+            case android.R.id.home:
+            {
+                this.setActivityResultHome(Activity.RESULT_CANCELED);
+                return true;
+            }
+            default:
+            {
+                return super.onOptionsItemSelected(item);
+            }
+        }
+    }
+
+    /**
+     * Sends the result back to MainActivity.
+     */
+    private void setActivityResultHome(int resultCode)
+    {
+        Intent data = new Intent();
+
+        LogManager.debug(CLASS_NAME, "setActivityResultHome", "Result code: " + resultCode);
+
+        if(resultCode == Activity.RESULT_OK)
+        {
+            setIntentExtraOnResultHome(data);
+        }
+
+        setResult(resultCode, data);
+        finish();
+    }
+
+    /**
+     * Sends the result back to MainActivity.
+     */
+    private void setActivityResultSaveClicked(TradeDto dto)
+    {
+        Intent data = new Intent();
+        data.putExtra(DataKey.EXTRA_TRADE.toString(), dto);
+
+        setIntentExtraOnResultSaveClicked(data);
+        setResult(Activity.RESULT_OK, data);
+        finish();
+
+        LogManager.debug(CLASS_NAME, "setActivityResultSaveClicked", "TradeDto result: " + dto);
+    }
+
+    protected abstract int getToolbarTitle();
+
+    protected abstract void setIntentExtraOnResultHome(Intent intent);
+
+    protected abstract void setIntentExtraOnResultSaveClicked(Intent intent);
 
     protected abstract void saveTradePlan(TradeDto dto);
 
