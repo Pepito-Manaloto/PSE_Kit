@@ -67,7 +67,7 @@ public class EditTextOnTextChangeAddCommaTest extends RobolectricTest
         int cursorPosition = 3;
         int maxLength = 16;
         String oldInput = "123,456,789,012";
-        String input = "7094276921";
+        String input = "709,427,692,1";
         EditText editText = createEditText(input, cursorPosition);
 
         givenListenerAndMaxLength(editText, maxLength);

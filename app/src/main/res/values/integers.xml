@@ -2,7 +2,7 @@
 <resources>
     <item name="percent_max_length" type="integer">5</item>
     <item name="dividend_cash_max_length" type="integer">6</item>
-    <item name="price_max_length" type="integer">8</item>
+    <item name="price_max_length" type="integer">9</item>
     <item name="date_max_length" type="integer">10</item>
     <item name="shares_max_length" type="integer">15</item>
 </resources>

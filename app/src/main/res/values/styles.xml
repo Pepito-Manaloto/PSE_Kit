@@ -126,7 +126,7 @@
 </style>
 
 <style name="TextViewLabel.EditText.Price" parent="TextViewLabel.EditText">
-    <item name="android:width">80dp</item>
+    <item name="android:width">90dp</item>
     <item name="android:inputType">numberDecimal</item>
     <item name="android:maxLength">@integer/price_max_length</item>
 </style>
@@ -140,7 +140,7 @@
 </style>
 
 <style name="TextViewLabel.EditText.Shares" parent="TextViewLabel.EditText">
-    <item name="android:width">135dp</item>
+    <item name="android:width">145dp</item>
     <item name="android:inputType">number</item>
     <item name="android:maxLength">@integer/shares_max_length</item>
 </style>

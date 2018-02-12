@@ -146,7 +146,7 @@ public class EditTextOnTextChangeAddComma implements TextWatcher
             // place the cursor at the end of text
             this.editText.setSelection(editTextLength);
         }
-        else // TODO: Some scenarios not covered, like what?
+        else
         {
             // retain cursor position, if this is not present the cursor will move to 0th position
             this.editText.setSelection(cursorPosition);
@@ -187,12 +187,13 @@ public class EditTextOnTextChangeAddComma implements TextWatcher
     private String formatNumber(String input)
     {
         String formattedInput = input;
+        String inputWithoutCommas = removeAllCommas(input);
         try
         {
             // Stop formatting if period or 0 decimal value is inputted.
             if(!input.matches(DECIMAL_NUMBER_WITH_ONLY_ZERO_DECIMAL_POINT_PATTERN))
             {
-                double number = Double.parseDouble(input);
+                double number = Double.parseDouble(inputWithoutCommas);
                 formattedInput = this.formatter.format(number);
             }
         }
