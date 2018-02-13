@@ -24,6 +24,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.Unbinder;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.functions.Action;
 
 /**
  * Created by Aaron on 2/17/2017.
@@ -155,9 +156,10 @@ public abstract class AbstractListFragment<T extends Stock & Parcelable> extends
     /**
      * Updates the list of this fragment list by getting the latest data through http request.
      *
+     * @param doAfterSubscribe the action that will be executed after executing this observable
      * @throws HttpRequestException http request failed
      */
-    public abstract void updateListFromWeb() throws HttpRequestException;
+    public abstract void updateListFromWeb(Action doAfterSubscribe) throws HttpRequestException;
 
     /**
      * Updates the list of this fragment list by getting the latest data from the database.

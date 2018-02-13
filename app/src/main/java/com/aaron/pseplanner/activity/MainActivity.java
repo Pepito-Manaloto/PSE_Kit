@@ -21,7 +21,6 @@ import android.view.MenuItem;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.aaron.pseplanner.R;
 import com.aaron.pseplanner.bean.TickerDto;
@@ -54,9 +53,9 @@ import io.reactivex.SingleSource;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Action;
 import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
-import io.reactivex.observers.DisposableCompletableObserver;
 import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
 
@@ -574,10 +573,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     {
         startRefreshAnimation(item);
 
-        Disposable subscription = Completable.fromCallable(updateFragmentListFromWebObservable())
+        Action updateFragmentListFromWebAfterSubscribe = updateFragmentListFromWebAfterSubscribe();
+        Disposable subscription = Completable.fromCallable(updateFragmentListFromWebObservable(updateFragmentListFromWebAfterSubscribe))
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(updateFragmentListFromWebObserver());
+                .subscribe();
 
         isUpdating.set(true);
         LogManager.debug(CLASS_NAME, "executeRefreshTicker", "Executed!");
@@ -588,16 +587,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     /**
      * Returns a callable that updates the list of the selected fragment list.
      *
+     * @param doAfterSubscribe the action that will be executed after executing this observable
      * @return {@code Callable<Void>}
      */
-    private Callable<Void> updateFragmentListFromWebObservable()
+    private Callable<Void> updateFragmentListFromWebObservable(final Action doAfterSubscribe)
     {
         return new Callable<Void>()
         {
             @Override
             public Void call() throws Exception
             {
-                selectedListFragment.updateListFromWeb();
+                selectedListFragment.updateListFromWeb(doAfterSubscribe);
 
                 return null;
             }
@@ -605,30 +605,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     /**
-     * Returns an observer that observes updateFragmentListFromWeb observable. OnComplete: Stops refresh animation and update isUpdating flag to false OnError:
-     * Stops refresh animation and update isUpdating flag to false, then logs error and show in Toast
+     * Stops refresh animation and update isUpdating flag to false.
      *
-     * @return DisposableCompletableObserver
+     * @return Action
      */
-    private DisposableCompletableObserver updateFragmentListFromWebObserver()
+    private Action updateFragmentListFromWebAfterSubscribe()
     {
-        return new DisposableCompletableObserver()
+        return new Action()
         {
             @Override
-            public void onComplete()
+            public void run() throws Exception
             {
                 stopRefreshAnimation();
                 isUpdating.set(false);
-            }
-
-            @Override
-            public void onError(Throwable t)
-            {
-                stopRefreshAnimation();
-                isUpdating.set(false);
-
-                LogManager.error(CLASS_NAME, "doInBackground", "Error retrieving from Web API", t);
-                Toast.makeText(MainActivity.this, "Update failed: " + t.getMessage(), Toast.LENGTH_LONG).show();
             }
         };
     }

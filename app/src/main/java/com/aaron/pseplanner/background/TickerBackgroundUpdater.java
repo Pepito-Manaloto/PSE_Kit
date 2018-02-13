@@ -7,11 +7,22 @@ import com.aaron.pseplanner.fragment.AbstractListFragment;
 
 import java.util.concurrent.TimeUnit;
 
+import io.reactivex.functions.Action;
+
 /**
  * Created by Aaron on 31/10/2017.
  */
 public class TickerBackgroundUpdater implements Runnable
 {
+    private static final Action NO_ACTION = new Action()
+    {
+        @Override
+        public void run() throws Exception
+        {
+
+        }
+    };
+
     private AbstractListFragment selectedListFragment;
     private int interval;
     private final Handler handler;
@@ -31,7 +42,7 @@ public class TickerBackgroundUpdater implements Runnable
         // TODO: update
         try
         {
-            selectedListFragment.updateListFromWeb();
+            selectedListFragment.updateListFromWeb(NO_ACTION);
         }
         catch(HttpRequestException e)
         {

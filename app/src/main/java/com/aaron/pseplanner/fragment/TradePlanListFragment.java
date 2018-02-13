@@ -1,11 +1,13 @@
 package com.aaron.pseplanner.fragment;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.aaron.pseplanner.R;
 import com.aaron.pseplanner.adapter.FilterableArrayAdapter;
@@ -28,6 +30,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import butterknife.ButterKnife;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Action;
 import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
 
@@ -137,14 +140,16 @@ public class TradePlanListFragment extends AbstractListFragment<TradeDto>
     /**
      * Http request is blocking, this method MUST be called in an AsyncTask.
      *
+     * @param doAfterSubscribe the action that will be executed after executing this observable
      * @throws HttpRequestException if the http request failed, does not update the list
      */
     @Override
-    public void updateListFromWeb() throws HttpRequestException
+    public void updateListFromWeb(Action doAfterSubscribe) throws HttpRequestException
     {
         Disposable disposable = this.pseService.getTickerList(this.tradesMap.keySet())
                                                .subscribeOn(Schedulers.io())
                                                .observeOn(AndroidSchedulers.mainThread())
+                                               .doAfterTerminate(doAfterSubscribe)
                                                .subscribeWith(updateListFromWebObserver());
 
         this.compositeDisposable.add(disposable);
@@ -166,6 +171,7 @@ public class TradePlanListFragment extends AbstractListFragment<TradeDto>
 
     private DisposableSingleObserver<Pair<List<TickerDto>, Date>> updateListFromWebObserver()
     {
+        final Activity activity = getActivity();
         return new DisposableSingleObserver<Pair<List<TickerDto>, Date>>()
         {
             @Override
@@ -199,6 +205,7 @@ public class TradePlanListFragment extends AbstractListFragment<TradeDto>
             public void onError(Throwable e)
             {
                 LogManager.debug(CLASS_NAME, "updateListFromWeb", "Error retrieving Ticker list from web.");
+                Toast.makeText(activity, "Update failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
             }
         };
     }

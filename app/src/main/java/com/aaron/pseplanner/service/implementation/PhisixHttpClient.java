@@ -116,7 +116,15 @@ public class PhisixHttpClient extends BaseHttpClient
 
                 for(ResponsePhisixStock phisixStock : responseList)
                 {
-                    tickerDtoList.add(convertResponsePhisixStockToTicker(phisixStock));
+                    try
+                    {
+                        TickerDto dto = convertResponsePhisixStockToTicker(phisixStock);
+                        tickerDtoList.add(dto);
+                    }
+                    catch(IllegalArgumentException e)
+                    {
+                        LogManager.warn(CLASS_NAME, "getAllTickerList", "Error parsing ResponsePhisixStock. Excluding symbol=" + phisixStock.getSymbol());
+                    }
                 }
 
                 LogManager.debug(CLASS_NAME, "getAllTickerList", "TickerDtoList size: " + tickerDtoList.size());
@@ -164,7 +172,18 @@ public class PhisixHttpClient extends BaseHttpClient
                 {
                     // TODO: How to resolve this type cast?
                     ResponsePhisixStockWrapper phisixStockWrapper = (ResponsePhisixStockWrapper) object;
-                    tickerList.add(convertResponsePhisixStockToTicker(phisixStockWrapper.getResponseStock()));
+
+                    try
+                    {
+                        TickerDto dto = convertResponsePhisixStockToTicker(phisixStockWrapper.getResponseStock());
+                        tickerList.add(dto);
+                    }
+                    catch(IllegalArgumentException e)
+                    {
+                        LogManager.warn(CLASS_NAME, "getTickerList",
+                                "Error parsing ResponsePhisixStock. Excluding symbol=" + phisixStockWrapper.getResponseStock().getSymbol());
+                    }
+
                     lastUpdated = phisixStockWrapper.getDateUpdated();
                 }
 
