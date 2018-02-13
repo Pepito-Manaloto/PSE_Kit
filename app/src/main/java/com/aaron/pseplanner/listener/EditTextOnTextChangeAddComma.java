@@ -109,9 +109,10 @@ public class EditTextOnTextChangeAddComma implements TextWatcher
         if(StringUtils.isNotBlank(input))
         {
             int cursorPosition = this.editText.getSelectionStart();
+            int oldLength = input.length();
 
             updateEditText(input);
-            updateEditTextCursor(cursorPosition);
+            updateEditTextCursor(cursorPosition, oldLength);
         }
     }
 
@@ -136,15 +137,24 @@ public class EditTextOnTextChangeAddComma implements TextWatcher
         }
     }
 
-    private void updateEditTextCursor(int cursorPosition)
+    private void updateEditTextCursor(int cursorPosition, int oldLength)
     {
         int editTextLength = this.editText.getText().length();
         boolean cursorPositionExceedsInputLength = cursorPosition >= (editTextLength - 1);
+        int oldInputNewInputLengthDifference = editTextLength - oldLength;
 
         if(cursorPositionExceedsInputLength)
         {
             // place the cursor at the end of text
             this.editText.setSelection(editTextLength);
+        }
+        else if(oldInputNewInputLengthDifference > 0)
+        {
+            this.editText.setSelection(cursorPosition + 1);
+        }
+        else if(oldInputNewInputLengthDifference < 0)
+        {
+            this.editText.setSelection(cursorPosition - 1);
         }
         else
         {
