@@ -48,9 +48,8 @@ public class PSEPlannerApplication extends Application implements DaoSessionCrea
         // Normal app init code...
         initDaoSession();
 
-        /*
-         * uncomment for debugging purposes only debugOn();
-         */
+        // Uncomment for debugging purposes only
+        //debugOn();
     }
 
     private void initDaoSession()

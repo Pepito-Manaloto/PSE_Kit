@@ -1,5 +1,6 @@
 package com.aaron.pseplanner.adapter;
 
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -46,7 +47,7 @@ public class TradePlanPagerAdapter extends FragmentStatePagerAdapter
     }
 
     @Override
-    public int getItemPosition(Object object)
+    public int getItemPosition(@NonNull Object object)
     {
         return POSITION_NONE;
     }

@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <HorizontalScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-                      android:id="@+id/horizontalscroll_list_row"
-                      android:clickable="true"
-                      android:layout_width="match_parent"
-                      android:layout_height="match_parent">
+    android:id="@+id/trade_horizontalscroll_list_row"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clickable="true"
+    android:focusable="true">
 
     <LinearLayout
-        android:id="@+id/list_row_layout"
+        android:id="@+id/trade_list_row_layout"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:orientation="horizontal">
@@ -15,70 +16,69 @@
             android:id="@+id/textview_stock"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginLeft="5dp"
             android:layout_marginStart="5dp"
             android:layout_weight="1"
             android:gravity="center"
             android:text="@android:string/unknownName"
             android:textColor="@color/black"
-            android:textSize="21sp"/>
+            android:textSize="21sp" />
 
         <GridLayout
             style="@style/GridLayoutLabelValuePair"
-            android:clickable="false"
             android:layout_marginBottom="5dp"
             android:layout_marginTop="5dp"
-            android:layout_weight="4">
+            android:layout_weight="4"
+            android:clickable="false">
 
             <TextView
                 style="@style/TextViewLabel"
                 android:text="@string/label_current_price"
-                android:textSize="15sp"/>
+                android:textSize="15sp" />
 
             <TextView
                 android:id="@+id/textview_current_price"
                 style="@style/TextViewLabel"
-                android:textSize="15sp"/>
+                android:textSize="15sp" />
 
             <TextView
                 style="@style/TextViewLabel"
                 android:text="@string/label_average_price"
-                android:textSize="15sp"/>
+                android:textSize="15sp" />
 
             <TextView
                 android:id="@+id/textview_average_price"
                 style="@style/TextViewLabel"
-                android:textSize="15sp"/>
+                android:textSize="15sp" />
 
             <TextView
                 style="@style/TextViewLabel"
                 android:text="@string/label_gain_loss"
-                android:textSize="15sp"/>
+                android:textSize="15sp" />
 
             <TextView
                 android:id="@+id/textview_gain_loss"
                 style="@style/TextViewLabel"
-                android:textSize="15sp"/>
+                android:textSize="15sp" />
 
             <TextView
                 style="@style/TextViewLabel"
                 android:text="@string/label_shares"
-                android:textSize="15sp"/>
+                android:textSize="15sp" />
 
             <TextView
                 android:id="@+id/textview_shares"
                 style="@style/TextViewLabel"
-                android:textSize="15sp"/>
+                android:textSize="15sp" />
 
             <TextView
                 style="@style/TextViewLabel"
                 android:text="@string/label_stop_loss"
-                android:textSize="15sp"/>
+                android:textSize="15sp" />
 
             <TextView
                 android:id="@+id/textview_stop_loss"
                 style="@style/TextViewLabel"
-                android:textSize="15sp"/>
+                android:textSize="15sp" />
 
         </GridLayout>
 
@@ -86,9 +86,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
-            android:layout_marginTop="5dp"
             android:layout_marginEnd="10dp"
-            android:layout_marginRight="10dp"
+            android:layout_marginTop="5dp"
             android:layout_weight="3"
             android:orientation="vertical">
 
@@ -96,43 +95,40 @@
                 style="@style/TextViewLabel"
                 android:layout_marginBottom="5dp"
                 android:text="@string/label_entry_date"
-                android:textSize="15sp"/>
+                android:textSize="15sp" />
 
             <TextView
                 android:id="@+id/textview_entry_date"
                 style="@style/TextViewLabel"
                 android:layout_marginBottom="5dp"
-                android:layout_marginLeft="20dp"
                 android:layout_marginStart="20dp"
-                android:textSize="15sp"/>
+                android:textSize="15sp" />
 
             <TextView
                 style="@style/TextViewLabel"
                 android:layout_marginBottom="5dp"
                 android:text="@string/label_stop_date"
-                android:textSize="15sp"/>
+                android:textSize="15sp" />
 
             <TextView
                 android:id="@+id/textview_stop_date"
                 style="@style/TextViewLabel"
                 android:layout_marginBottom="5dp"
-                android:layout_marginLeft="20dp"
                 android:layout_marginStart="20dp"
-                android:textSize="15sp"/>
+                android:textSize="15sp" />
 
             <TextView
                 style="@style/TextViewLabel"
                 android:layout_marginBottom="5dp"
                 android:text="@string/label_holding_period"
-                android:textSize="15sp"/>
+                android:textSize="15sp" />
 
             <TextView
                 android:id="@+id/textview_holding_period"
                 style="@style/TextViewLabel"
                 android:layout_marginBottom="5dp"
-                android:layout_marginLeft="20dp"
                 android:layout_marginStart="20dp"
-                android:textSize="15sp"/>
+                android:textSize="15sp" />
 
         </LinearLayout>
 

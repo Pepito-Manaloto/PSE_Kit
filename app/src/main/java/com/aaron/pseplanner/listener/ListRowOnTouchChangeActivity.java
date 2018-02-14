@@ -29,6 +29,7 @@ public class ListRowOnTouchChangeActivity implements View.OnTouchListener
     private IntentRequestCode intentRequestCode;
     private View view;
     private int highlightedColor;
+    private double historicTouchXPosition;
 
     /**
      * Default constructor.
@@ -40,7 +41,8 @@ public class ListRowOnTouchChangeActivity implements View.OnTouchListener
      * @param intentRequestCode the request code of the new activity
      * @param view              the view of the listener
      */
-    public ListRowOnTouchChangeActivity(final Activity activity, final Class<? extends Activity> activityClass, final DataKey extraKey, final Parcelable parcelableData, final IntentRequestCode intentRequestCode, final View view)
+    public ListRowOnTouchChangeActivity(final Activity activity, final Class<? extends Activity> activityClass, final DataKey extraKey,
+            final Parcelable parcelableData, final IntentRequestCode intentRequestCode, final View view)
     {
         this.activity = activity;
         this.activityClass = activityClass;
@@ -63,7 +65,9 @@ public class ListRowOnTouchChangeActivity implements View.OnTouchListener
      * @param intentRequestCode  the request code of the new activity
      * @param view               the view of the listener
      */
-    public ListRowOnTouchChangeActivity(final Activity activity, final Class<? extends Activity> activityClass, final DataKey parcelableKey, final Parcelable parcelableData, final DataKey parcelableListKey, final ArrayList<? extends Parcelable> parcelableListData, final IntentRequestCode intentRequestCode, final View view)
+    public ListRowOnTouchChangeActivity(final Activity activity, final Class<? extends Activity> activityClass, final DataKey parcelableKey,
+            final Parcelable parcelableData, final DataKey parcelableListKey, final ArrayList<? extends Parcelable> parcelableListData,
+            final IntentRequestCode intentRequestCode, final View view)
     {
         this(activity, activityClass, parcelableKey, parcelableData, intentRequestCode, view);
 
@@ -78,20 +82,18 @@ public class ListRowOnTouchChangeActivity implements View.OnTouchListener
     @Override
     public boolean onTouch(View v, MotionEvent event)
     {
-        double historicX = 0;
-
         switch(event.getAction())
         {
             case MotionEvent.ACTION_DOWN:
             {
                 this.view.setBackgroundColor(this.highlightedColor);
-                historicX = event.getX();
+                historicTouchXPosition = event.getX();
                 break;
             }
             case MotionEvent.ACTION_UP:
             {
                 this.view.setBackgroundColor(Color.WHITE);
-                boolean touchMovedLessThan15Pixels = Math.abs(historicX - event.getX()) < 15;
+                boolean touchMovedLessThan15Pixels = Math.abs(historicTouchXPosition - event.getX()) < 15;
 
                 if(touchMovedLessThan15Pixels)
                 {

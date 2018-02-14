@@ -36,7 +36,6 @@ public class TickerListAdapter extends FilterableArrayAdapter<TickerDto>
     private ArrayList<TickerDto> tickerDtoList;
     private ArrayList<TickerDto> tickerDtoListTemp;
 
-
     public TickerListAdapter(Activity activity, List<TickerDto> tickerDtoList)
     {
         super(activity, 0, tickerDtoList);
@@ -109,7 +108,7 @@ public class TickerListAdapter extends FilterableArrayAdapter<TickerDto>
         @BindView(R.id.ticker_icon_row)
         ImageView icon;
 
-        @BindView(R.id.list_row_layout)
+        @BindView(R.id.ticker_list_row_layout)
         LinearLayout layout;
 
         private ViewHolder(View view)
@@ -121,14 +120,16 @@ public class TickerListAdapter extends FilterableArrayAdapter<TickerDto>
         {
             if(tickerDto.isHasTradePlan())
             {
-                View.OnTouchListener listener = new ListRowOnTouchChangeActivity(activity, TradePlanActivity.class, DataKey.EXTRA_TICKER, tickerDto, IntentRequestCode.VIEW_TRADE_PLAN, this.layout);
+                View.OnTouchListener listener = new ListRowOnTouchChangeActivity(activity, TradePlanActivity.class, DataKey.EXTRA_TICKER, tickerDto,
+                        IntentRequestCode.VIEW_TRADE_PLAN, this.layout);
                 layout.setOnTouchListener(listener);
 
                 icon.setImageResource(R.mipmap.check_icon);
             }
             else
             {
-                View.OnTouchListener listener = new ListRowOnTouchChangeActivity(activity, CreateTradePlanActivity.class, DataKey.EXTRA_TICKER, tickerDto, IntentRequestCode.CREATE_TRADE_PLAN, this.layout);
+                View.OnTouchListener listener = new ListRowOnTouchChangeActivity(activity, CreateTradePlanActivity.class, DataKey.EXTRA_TICKER, tickerDto,
+                        IntentRequestCode.CREATE_TRADE_PLAN, this.layout);
                 layout.setOnTouchListener(listener);
 
                 // Why is it when this code is not present, some tickers', with hasTradePlan = false, icon is check_icon?
@@ -138,6 +139,7 @@ public class TickerListAdapter extends FilterableArrayAdapter<TickerDto>
             stock.setText(tickerDto.getSymbol());
             price.setText(service.formatStockPrice(tickerDto.getCurrentPrice().doubleValue()));
             change.setText(service.formatStockPrice(tickerDto.getChange().doubleValue()));
+
             String percentChangeText = service.formatStockPrice(tickerDto.getPercentChange().doubleValue()) + "%";
             percentChange.setText(percentChangeText);
 

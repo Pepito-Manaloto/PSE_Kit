@@ -96,6 +96,7 @@
     <string name="add_button">add</string>
     <string name="remove_button">remove</string>
     <string name="check_button">check</string>
+    <string name="ticker_add_icon">add or added</string>
 
     <!-- Ticker Header -->
     <string name="ticker_stock">Stock</string>

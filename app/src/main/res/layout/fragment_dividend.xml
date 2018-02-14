@@ -1,102 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true">
 
-    <GridLayout
-        style="@style/GridLayoutLabelValuePair">
+    <GridLayout style="@style/GridLayoutLabelValuePair">
 
         <TextView
             android:id="@+id/label_price"
             style="@style/TextViewLabel"
             android:layout_marginBottom="14dp"
-            android:text="@string/label_price"/>
+            android:labelFor="@id/edittext_price"
+            android:text="@string/label_price" />
 
         <EditText
             android:id="@+id/edittext_price"
-            style="@style/TextViewLabel.EditText.Price"/>
+            style="@style/TextViewLabel.EditText.Price" />
 
         <View
             style="@style/Divider2"
-            android:layout_columnSpan="2"
-            />
+            android:layout_columnSpan="2" />
 
         <TextView
             android:id="@+id/label_shares"
             style="@style/TextViewLabel"
             android:layout_marginBottom="14dp"
-            android:text="@string/label_shares"/>
+            android:labelFor="@id/edittext_shares"
+            android:text="@string/label_shares" />
 
         <EditText
             android:id="@+id/edittext_shares"
-            style="@style/TextViewLabel.EditText.Shares"/>
+            style="@style/TextViewLabel.EditText.Shares" />
 
         <View
             style="@style/Divider2"
-            android:layout_columnSpan="2"
-            />
+            android:layout_columnSpan="2" />
 
         <TextView
             android:id="@+id/label_cash_dividend"
             style="@style/TextViewLabel"
             android:layout_marginBottom="14dp"
-            android:text="@string/label_cash_dividend"/>
+            android:text="@string/label_cash_dividend" />
 
         <EditText
             android:id="@+id/edittext_cash_dividend"
-            style="@style/TextViewLabel.EditText.CashDividend"/>
+            style="@style/TextViewLabel.EditText.CashDividend" />
 
         <View
             style="@style/Divider2"
-            android:layout_columnSpan="2"
-            />
+            android:layout_columnSpan="2" />
 
         <TextView
             android:id="@+id/label_yield"
             style="@style/TextViewLabel"
-            android:text="@string/label_yield"/>
+            android:text="@string/label_yield" />
 
         <TextView
             android:id="@+id/textview_yield"
             style="@style/TextViewLabel"
-            android:text="@string/default_value"/>
+            android:text="@string/default_value" />
 
         <View
             style="@style/Divider2"
-            android:layout_columnSpan="2"
-            />
+            android:layout_columnSpan="2" />
 
         <TextView
             android:id="@+id/label_yield_percent"
             style="@style/TextViewLabel"
-            android:text="@string/label_yield_percent"/>
+            android:text="@string/label_yield_percent" />
 
         <TextView
             android:id="@+id/textview_dividend_percent"
             style="@style/TextViewLabel"
-            android:text="@string/default_value_percent"/>
+            android:text="@string/default_value_percent" />
 
         <View
             style="@style/Divider2"
-            android:layout_columnSpan="2"
-            />
+            android:layout_columnSpan="2" />
 
         <TextView
             android:id="@+id/label_total_amount"
             style="@style/TextViewLabel"
-            android:text="@string/label_total_amount"/>
+            android:text="@string/label_total_amount" />
 
         <TextView
             android:id="@+id/textview_total_amount"
             style="@style/TextViewLabel"
-            android:text="@string/default_value"/>
+            android:text="@string/default_value" />
 
         <View
             style="@style/Divider2"
-            android:layout_columnSpan="2"
-            />
+            android:layout_columnSpan="2" />
     </GridLayout>
 
 </ScrollView>

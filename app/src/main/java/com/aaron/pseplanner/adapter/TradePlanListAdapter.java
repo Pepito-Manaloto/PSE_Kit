@@ -70,7 +70,8 @@ public class TradePlanListAdapter extends FilterableArrayAdapter<TradeDto>
         }
 
         TradeDto tradeDto = getItem(position);
-        holder.setTickerView(tradeDto, this.formatService, new ListRowOnTouchChangeActivity(this.activity, TradePlanActivity.class, DataKey.EXTRA_TRADE, tradeDto, DataKey.EXTRA_TRADE_LIST, this.tradeDtoList, IntentRequestCode.VIEW_TRADE_PLAN, holder.scroll));
+        holder.setTickerView(tradeDto, this.formatService, new ListRowOnTouchChangeActivity(this.activity, TradePlanActivity.class, DataKey.EXTRA_TRADE,
+                tradeDto, DataKey.EXTRA_TRADE_LIST, this.tradeDtoList, IntentRequestCode.VIEW_TRADE_PLAN, holder.scroll));
 
         return listRowView;
     }
@@ -120,7 +121,7 @@ public class TradePlanListAdapter extends FilterableArrayAdapter<TradeDto>
         @BindView(R.id.textview_holding_period)
         TextView holdingPeriod;
 
-        @BindView(R.id.horizontalscroll_list_row)
+        @BindView(R.id.trade_horizontalscroll_list_row)
         HorizontalScrollView scroll;
 
         private ViewHolder(View view)
@@ -134,13 +135,17 @@ public class TradePlanListAdapter extends FilterableArrayAdapter<TradeDto>
             stock.setText(tradeDto.getSymbol());
             currentPrice.setText(service.formatStockPrice(tradeDto.getCurrentPrice().doubleValue()));
             averagePrice.setText(service.formatStockPrice(tradeDto.getAveragePrice().doubleValue()));
+
             String gainLossValue = ViewUtils.addPositiveSign(tradeDto.getGainLoss().doubleValue(), service.formatPrice(tradeDto.getGainLoss().doubleValue()));
-            String gainLossPercentValue = ViewUtils.addPositiveSign(tradeDto.getGainLossPercent().doubleValue(), service.formatPercent(tradeDto.getGainLossPercent().doubleValue()));
+            String gainLossPercentValue = ViewUtils.addPositiveSign(tradeDto.getGainLossPercent().doubleValue(),
+                    service.formatPercent(tradeDto.getGainLossPercent().doubleValue()));
             gainLoss.setText(String.format("%s (%s)", gainLossValue, gainLossPercentValue));
+
             shares.setText(service.formatShares(tradeDto.getTotalShares()));
             stopLoss.setText(service.formatPrice(tradeDto.getStopLoss().doubleValue()));
             entryDate.setText(service.formatDate(tradeDto.getEntryDate()));
             stopDate.setText(service.formatDate(tradeDto.getStopDate()));
+
             String holdingPeriodLabel = tradeDto.getHoldingPeriod() > 1 ? "days" : "day";
             holdingPeriod.setText(String.format("%s %s", tradeDto.getHoldingPeriod(), holdingPeriodLabel));
 
