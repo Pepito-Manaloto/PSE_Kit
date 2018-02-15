@@ -1,5 +1,6 @@
 package com.aaron.pseplanner.fragment;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
@@ -31,15 +32,19 @@ public class CalculatorTabsFragment extends Fragment
 
         viewPager.setAdapter(new CalculatorTabPagerAdapter(getChildFragmentManager()));
 
-        // The setupWithViewPager() does not work without the runnable. Maybe a support library bug.
-        getActivity().runOnUiThread(new Runnable()
+        Activity activity = getActivity();
+        if(activity != null)
         {
-            @Override
-            public void run()
+            // The setupWithViewPager() does not work without the runnable. Maybe a support library bug.
+            activity.runOnUiThread(new Runnable()
             {
-                tabLayout.setupWithViewPager(viewPager);
-            }
-        });
+                @Override
+                public void run()
+                {
+                    tabLayout.setupWithViewPager(viewPager);
+                }
+            });
+        }
 
         LogManager.debug(CLASS_NAME, "onCreateView", "");
 

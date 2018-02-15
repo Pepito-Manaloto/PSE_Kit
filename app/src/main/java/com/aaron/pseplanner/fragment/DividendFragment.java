@@ -42,7 +42,7 @@ public class DividendFragment extends AbstractCalculatorFragment
     @BindView(R.id.edittext_cash_dividend)
     EditText dividendEditText;
 
-    @BindViews({R.id.edittext_price, R.id.edittext_shares, R.id.edittext_cash_dividend})
+    @BindViews({ R.id.edittext_price, R.id.edittext_shares, R.id.edittext_cash_dividend })
     List<EditText> editTexts;
 
     @BindView(R.id.textview_yield)
@@ -54,7 +54,7 @@ public class DividendFragment extends AbstractCalculatorFragment
     @BindView(R.id.textview_total_amount)
     TextView totalAmountTextView;
 
-    @BindViews({R.id.textview_yield, R.id.textview_dividend_percent, R.id.textview_total_amount})
+    @BindViews({ R.id.textview_yield, R.id.textview_dividend_percent, R.id.textview_total_amount })
     List<TextView> textViews;
 
     /**
@@ -93,26 +93,28 @@ public class DividendFragment extends AbstractCalculatorFragment
         String sharesStr = this.sharesEditText.getText().toString();
         String cashDividendStr = this.dividendEditText.getText().toString();
 
-        if(StringUtils.isNotBlank(priceStr) && StringUtils.isNotBlank(sharesStr) && StringUtils.isNotBlank(cashDividendStr))
+        boolean inputFieldsAreNotEmpty = StringUtils.isNotBlank(priceStr) && StringUtils.isNotBlank(sharesStr) && StringUtils.isNotBlank(cashDividendStr);
+        if(inputFieldsAreNotEmpty)
         {
             try
             {
                 NumberFormat formatter = NumberFormat.getInstance(Locale.US);
                 BigDecimal price = BigDecimal.valueOf(formatter.parse(priceStr).doubleValue());
                 long shares = formatter.parse(sharesStr).longValue();
-                BigDecimal cashDividend = BigDecimal.valueOf(formatter.parse(cashDividendStr).doubleValue());
 
                 if(!BoardLot.isValidBoardLot(price, shares))
                 {
                     Toast.makeText(getContext(), R.string.boardlot_invalid, Toast.LENGTH_SHORT).show();
                 }
 
-                BigDecimal yield = calculatorService.getDividendYield(shares, cashDividend);
-                BigDecimal percentYield = calculatorService.getPercentDividendYield(price, shares, cashDividend);
+                BigDecimal cashDividend = BigDecimal.valueOf(formatter.parse(cashDividendStr).doubleValue());
 
+                BigDecimal yield = calculatorService.getDividendYield(shares, cashDividend);
                 this.yieldTextView.setText(formatService.formatPrice(yield.doubleValue()));
-                this.percentYieldTextView.setText(formatService.formatPercent(percentYield.doubleValue()));
                 this.formatService.formatTextColor(yield.doubleValue(), yieldTextView);
+
+                BigDecimal percentYield = calculatorService.getPercentDividendYield(price, shares, cashDividend);
+                this.percentYieldTextView.setText(formatService.formatPercent(percentYield.doubleValue()));
                 this.formatService.formatTextColor(percentYield.doubleValue(), percentYieldTextView);
 
                 BigDecimal totalAmount = calculatorService.getBuyGrossAmount(price, shares);

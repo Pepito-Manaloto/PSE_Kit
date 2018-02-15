@@ -9,7 +9,6 @@ import com.aaron.pseplanner.R;
 import com.aaron.pseplanner.adapter.FilterableArrayAdapter;
 import com.aaron.pseplanner.bean.Stock;
 import com.aaron.pseplanner.bean.TradeDto;
-import com.aaron.pseplanner.exception.HttpRequestException;
 import com.aaron.pseplanner.listener.OnScrollShowHideFastScroll;
 import com.aaron.pseplanner.listener.SearchOnQueryTextListener;
 import com.aaron.pseplanner.service.FormatService;
@@ -88,11 +87,7 @@ public abstract class AbstractListFragment<T extends Stock & Parcelable> extends
         if(list != null && !list.isEmpty())
         {
             getArrayAdapter().update(list);
-            if(lastUpdatedTextView != null)
-            {
-                lastUpdatedTextView.setText(getActivity().getString(R.string.last_updated, lastUpdated));
-            }
-
+            lastUpdatedTextView.setText(getActivity().getString(R.string.last_updated, lastUpdated));
             searchListener.setSearchListAdapater(getListAdapter());
         }
     }
@@ -157,9 +152,8 @@ public abstract class AbstractListFragment<T extends Stock & Parcelable> extends
      * Updates the list of this fragment list by getting the latest data through http request.
      *
      * @param doAfterSubscribe the action that will be executed after executing this observable
-     * @throws HttpRequestException http request failed
      */
-    public abstract void updateListFromWeb(Action doAfterSubscribe) throws HttpRequestException;
+    public abstract void updateListFromWeb(Action doAfterSubscribe);
 
     /**
      * Updates the list of this fragment list by getting the latest data from the database.

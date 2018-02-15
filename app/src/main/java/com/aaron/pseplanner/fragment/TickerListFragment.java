@@ -16,7 +16,6 @@ import com.aaron.pseplanner.bean.TickerDto;
 import com.aaron.pseplanner.bean.TradeDto;
 import com.aaron.pseplanner.constant.DataKey;
 import com.aaron.pseplanner.constant.PSEPlannerPreference;
-import com.aaron.pseplanner.exception.HttpRequestException;
 import com.aaron.pseplanner.service.LogManager;
 
 import java.util.ArrayList;
@@ -81,6 +80,15 @@ public class TickerListFragment extends AbstractListFragment<TickerDto>
 
         LogManager.debug(CLASS_NAME, "onCreate", "");
 
+        initializeTradeDtoList(savedInstanceState);
+
+        this.tradeDtoSymbols = this.pseService.getTradeSymbolsFromTradeDtos(this.tradeDtoList);
+
+        initializeTickerDtoList(savedInstanceState);
+    }
+
+    private void initializeTradeDtoList(Bundle savedInstanceState)
+    {
         if(getArguments() != null && getArguments().containsKey(DataKey.EXTRA_TRADE_LIST.toString()))
         {
             this.tradeDtoList = getArguments().getParcelableArrayList(DataKey.EXTRA_TRADE_LIST.toString());
@@ -93,9 +101,10 @@ public class TickerListFragment extends AbstractListFragment<TickerDto>
         {
             this.tradeDtoList = initTradePlanListFromDatabase();
         }
+    }
 
-        this.tradeDtoSymbols = this.pseService.getTradeSymbolsFromTradeDtos(this.tradeDtoList);
-
+    private void initializeTickerDtoList(Bundle savedInstanceState)
+    {
         if(getArguments() != null && getArguments().containsKey(DataKey.EXTRA_TICKER_LIST.toString()))
         {
             this.tickerDtoList = getArguments().getParcelableArrayList(DataKey.EXTRA_TICKER_LIST.toString());
@@ -109,11 +118,17 @@ public class TickerListFragment extends AbstractListFragment<TickerDto>
         else
         {
             Disposable disposable = this.pseService.getTickerListFromDatabase()
-                                                   .subscribeOn(AndroidSchedulers.mainThread())
-                                                   .subscribeWith(onCreateTickerListObserver());
+                    .subscribeOn(AndroidSchedulers.mainThread())
+                    .subscribeWith(onCreateTickerListObserver());
 
             this.compositeDisposable.add(disposable);
         }
+    }
+
+    private void setTickerListAdapter()
+    {
+        this.tickerListAdapter = new TickerListAdapter(getActivity(), this.tickerDtoList);
+        this.setListAdapter(this.tickerListAdapter);
     }
 
     /**
@@ -163,16 +178,15 @@ public class TickerListFragment extends AbstractListFragment<TickerDto>
      * Updates the ticker list from web server.
      *
      * @param doAfterSubscribe the action that will be executed after executing this observable
-     * @throws HttpRequestException if the http request failed, does not update the list
      */
     @Override
-    public void updateListFromWeb(Action doAfterSubscribe) throws HttpRequestException
+    public void updateListFromWeb(Action doAfterSubscribe)
     {
         Disposable disposable = this.pseService.getAllTickerList()
-                                               .subscribeOn(Schedulers.io())
-                                               .observeOn(AndroidSchedulers.mainThread())
-                                               .doAfterTerminate(doAfterSubscribe)
-                                               .subscribeWith(updateListFromWebObserver());
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doAfterTerminate(doAfterSubscribe)
+                .subscribeWith(updateListFromWebObserver());
 
         this.compositeDisposable.add(disposable);
     }
@@ -184,17 +198,11 @@ public class TickerListFragment extends AbstractListFragment<TickerDto>
     public void updateListFromDatabase()
     {
         Disposable disposable = this.pseService.getTickerListFromDatabase()
-                                               .subscribeOn(Schedulers.io())
-                                               .observeOn(AndroidSchedulers.mainThread())
-                                               .subscribeWith(updateListFromDatabaseObserver());
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(updateListFromDatabaseObserver());
 
         this.compositeDisposable.add(disposable);
-    }
-
-    private void setTickerListAdapter()
-    {
-        this.tickerListAdapter = new TickerListAdapter(getActivity(), this.tickerDtoList);
-        this.setListAdapter(this.tickerListAdapter);
     }
 
     private DisposableSingleObserver<ArrayList<TickerDto>> onCreateTickerListObserver()

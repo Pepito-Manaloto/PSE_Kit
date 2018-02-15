@@ -60,8 +60,18 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
         this.editText = getActivity().findViewById(editTextId);
 
         String selectedDate = this.editText.getText().toString();
+        final Calendar calendar = createFormattedCalendar(selectedDate);
 
-        final Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        return new DatePickerDialog(getActivity(), android.R.style.Theme_Holo_Light_Dialog, this, year, month, day);
+    }
+
+    private Calendar createFormattedCalendar(String selectedDate)
+    {
+        Calendar calendar = Calendar.getInstance();
 
         try
         {
@@ -75,11 +85,7 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
             LogManager.error(CLASS_NAME, "onCreateDialog", "Error parsing date, will use current date instead.", e);
         }
 
-        int year = calendar.get(Calendar.YEAR);
-        int month = calendar.get(Calendar.MONTH);
-        int day = calendar.get(Calendar.DAY_OF_MONTH);
-
-        return new DatePickerDialog(getActivity(), android.R.style.Theme_Holo_Light_Dialog, this, year, month, day);
+        return calendar;
     }
 
     /**

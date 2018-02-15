@@ -81,6 +81,13 @@ public class SettingsFragment extends Fragment
 
         this.service = new DefaultSettingsService(getActivity());
 
+        initializeSettingsDto(savedInstanceState);
+
+        LogManager.debug(CLASS_NAME, "onCreate", "");
+    }
+
+    private void initializeSettingsDto(Bundle savedInstanceState)
+    {
         if(savedInstanceState != null && savedInstanceState.containsKey(DataKey.EXTRA_SETTINGS.toString()))
         {
             this.settingsDto = savedInstanceState.getParcelable(DataKey.EXTRA_SETTINGS.toString());
@@ -89,8 +96,6 @@ public class SettingsFragment extends Fragment
         {
             this.settingsDto = this.service.getSettings();
         }
-
-        LogManager.debug(CLASS_NAME, "onCreate", "");
     }
 
     /**
@@ -102,9 +107,21 @@ public class SettingsFragment extends Fragment
         View view = inflater.inflate(R.layout.fragment_settings, parent, false);
         this.unbinder = ButterKnife.bind(this, view);
 
+        initializeRefreshInterval(view);
+        setCheckboxChecked();
+        initializeProxy(view);
+
+        LogManager.debug(CLASS_NAME, "onCreateView", "");
+
+        return view;
+    }
+
+    private void initializeRefreshInterval(View view)
+    {
         LinearLayout refreshIntervalLayout = view.findViewById(R.id.layout_refresh_interval);
 
-        String refreshInterval = this.settingsDto.getRefreshInterval() == 0 ? this.refreshIntervalItems[0] : String.valueOf(this.settingsDto.getRefreshInterval());
+        String refreshInterval = this.settingsDto.getRefreshInterval() == 0 ? this.refreshIntervalItems[0]
+                : String.valueOf(this.settingsDto.getRefreshInterval());
         this.refreshIntervalText.setText(refreshInterval);
         refreshIntervalLayout.setOnClickListener(new View.OnClickListener()
         {
@@ -114,13 +131,19 @@ public class SettingsFragment extends Fragment
                 showIntervalOptionsAlertDialog(refreshIntervalText);
             }
         });
+    }
 
+    private void setCheckboxChecked()
+    {
         this.autoRefreshCheck.setChecked(this.settingsDto.isAutoRefresh());
         this.notifyStopLossCheck.setChecked(this.settingsDto.isNotifyStopLoss());
         this.notifyTargetPriceCheck.setChecked(this.settingsDto.isNotifyTargetPrice());
         this.notiftyTimeStopCheck.setChecked(this.settingsDto.isNotiftyTimeStop());
         this.notifySoundEffectCheck.setChecked(this.settingsDto.isNotifySoundEffect());
+    }
 
+    private void initializeProxy(View view)
+    {
         LinearLayout proxyLayout = view.findViewById(R.id.layout_proxy);
         proxyLayout.setOnClickListener(new View.OnClickListener()
         {
@@ -132,10 +155,19 @@ public class SettingsFragment extends Fragment
         });
 
         updateProxyText();
+    }
 
-        LogManager.debug(CLASS_NAME, "onCreateView", "");
-
-        return view;
+    private void updateProxyText()
+    {
+        if(StringUtils.isNotBlank(this.settingsDto.getProxyHost()) && this.settingsDto.getProxyPort() > 0)
+        {
+            String proxyUrl = this.settingsDto.getProxyHost() + ":" + this.settingsDto.getProxyPort();
+            this.proxyText.setText(proxyUrl);
+        }
+        else
+        {
+            this.proxyText.setText(R.string.label_no_proxy);
+        }
     }
 
     /**
@@ -149,13 +181,39 @@ public class SettingsFragment extends Fragment
 
         LogManager.debug(CLASS_NAME, "onStop", "Saved: " + this.settingsDto);
 
+        closeIntervalDialog();
+
+        super.onStop();
+    }
+
+    private void closeIntervalDialog()
+    {
         if(this.intervalDialog != null)
         {
             this.intervalDialog.dismiss();
             this.intervalDialog = null;
         }
+    }
 
-        super.onStop();
+    /**
+     * Updates the settings dto with the current values of the settings.
+     *
+     * @param dto the settings to update
+     */
+    private void updateSettingsDto(SettingsDto dto)
+    {
+        dto.setAutoRefresh(this.autoRefreshCheck.isChecked());
+
+        String interval = this.refreshIntervalText.getText().toString();
+        if(StringUtils.isNumeric(interval))
+        {
+            dto.setRefreshInterval(Integer.parseInt(interval));
+        }
+
+        dto.setNotifyStopLoss(this.notifyStopLossCheck.isChecked());
+        dto.setNotifyTargetPrice(this.notifyTargetPriceCheck.isChecked());
+        dto.setNotiftyTimeStop(this.notiftyTimeStopCheck.isChecked());
+        dto.setNotifySoundEffect(this.notifySoundEffectCheck.isChecked());
     }
 
     /**
@@ -189,7 +247,7 @@ public class SettingsFragment extends Fragment
             public void onClick(DialogInterface dialog, int item)
             {
                 refreshIntervalTextView.setText(refreshIntervalItems[item]);
-                intervalDialog.dismiss();
+                closeIntervalDialog();
             }
         });
 
@@ -242,39 +300,6 @@ public class SettingsFragment extends Fragment
 
         AlertDialog dialog = builder.create();
         dialog.show();
-    }
-
-    /**
-     * Updates the settings dto with the current values of the settings.
-     *
-     * @param dto the settings to update
-     */
-    private void updateSettingsDto(SettingsDto dto)
-    {
-        dto.setAutoRefresh(this.autoRefreshCheck.isChecked());
-
-        String interval = this.refreshIntervalText.getText().toString();
-        if(StringUtils.isNumeric(interval))
-        {
-            dto.setRefreshInterval(Integer.parseInt(interval));
-        }
-
-        dto.setNotifyStopLoss(this.notifyStopLossCheck.isChecked());
-        dto.setNotifyTargetPrice(this.notifyTargetPriceCheck.isChecked());
-        dto.setNotiftyTimeStop(this.notiftyTimeStopCheck.isChecked());
-        dto.setNotifySoundEffect(this.notifySoundEffectCheck.isChecked());
-    }
-
-    private void updateProxyText()
-    {
-        if(StringUtils.isNotBlank(this.settingsDto.getProxyHost()) && this.settingsDto.getProxyPort() > 0)
-        {
-            this.proxyText.setText(this.settingsDto.getProxyHost() + ":" + this.settingsDto.getProxyPort());
-        }
-        else
-        {
-            this.proxyText.setText(R.string.label_no_proxy);
-        }
     }
 
     /**

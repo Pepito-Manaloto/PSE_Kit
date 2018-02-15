@@ -82,11 +82,20 @@ public class TradePlanFragment extends Fragment
 
         LogManager.debug(CLASS_NAME, "onCreate", "");
 
-        Bundle args = getArguments();
-        this.selectedStock = args.getParcelable(DataKey.EXTRA_TRADE.toString());
-        this.formatService = new DefaultFormatService(getActivity());
-        this.pseService = new FacadePSEPlannerService(getActivity());
-        setHasOptionsMenu(true);
+        Activity activity = getActivity();
+        if(activity != null)
+        {
+            Bundle args = getArguments();
+
+            if(args != null)
+            {
+                this.selectedStock = args.getParcelable(DataKey.EXTRA_TRADE.toString());
+            }
+
+            this.formatService = new DefaultFormatService(getActivity());
+            this.pseService = new FacadePSEPlannerService(getActivity());
+            setHasOptionsMenu(true);
+        }
 
         LogManager.debug(CLASS_NAME, "onCreate", this.selectedStock == null ? null : this.selectedStock.toString());
     }
@@ -102,71 +111,73 @@ public class TradePlanFragment extends Fragment
         ScrollView view = (ScrollView) inflater.inflate(R.layout.fragment_trade_plan, container, false);
         this.unbinder = ButterKnife.bind(this, view);
 
-        TextView stock = view.findViewById( R.id.textview_stock);
+        TextView stock = view.findViewById(R.id.textview_stock);
         stock.setText(this.selectedStock.getSymbol());
 
-        TextView entryDate = view.findViewById( R.id.textview_entry_date);
+        TextView entryDate = view.findViewById(R.id.textview_entry_date);
         entryDate.setText(this.formatService.formatDate(this.selectedStock.getEntryDate()));
 
-        TextView holdingPeriod = view.findViewById( R.id.textview_holding_period);
+        TextView holdingPeriod = view.findViewById(R.id.textview_holding_period);
         String holdingPeriodLabel = this.selectedStock.getHoldingPeriod() > 1 ? "days" : "day";
         holdingPeriod.setText(String.format("%s %s", this.selectedStock.getHoldingPeriod(), holdingPeriodLabel));
 
-        TextView currentPrice = view.findViewById( R.id.textview_current_price);
+        TextView currentPrice = view.findViewById(R.id.textview_current_price);
         currentPrice.setText(this.formatService.formatStockPrice(this.selectedStock.getCurrentPrice().doubleValue()));
 
-        TextView totalShares = view.findViewById( R.id.textview_total_shares);
+        TextView totalShares = view.findViewById(R.id.textview_total_shares);
         totalShares.setText(this.formatService.formatShares(this.selectedStock.getTotalShares()));
 
-        TextView averagePrice = view.findViewById( R.id.textview_average_price);
+        TextView averagePrice = view.findViewById(R.id.textview_average_price);
         averagePrice.setText(this.formatService.formatStockPrice(this.selectedStock.getAveragePrice().doubleValue()));
 
-        TextView totalAmount = view.findViewById( R.id.textview_total_amount);
+        TextView totalAmount = view.findViewById(R.id.textview_total_amount);
         totalAmount.setText(this.formatService.formatPrice(this.selectedStock.getTotalAmount().doubleValue()));
 
-        TextView gainLoss = view.findViewById( R.id.textview_gain_loss);
-        String gainLossValue = ViewUtils.addPositiveSign(this.selectedStock.getGainLoss().doubleValue(), this.formatService.formatPrice(this.selectedStock.getGainLoss().doubleValue()));
-        String gainLossPercentValue = ViewUtils.addPositiveSign(this.selectedStock.getGainLossPercent().doubleValue(), this.formatService.formatPercent(this.selectedStock.getGainLossPercent().doubleValue()));
+        TextView gainLoss = view.findViewById(R.id.textview_gain_loss);
+        String gainLossValue = ViewUtils.addPositiveSign(this.selectedStock.getGainLoss().doubleValue(),
+                this.formatService.formatPrice(this.selectedStock.getGainLoss().doubleValue()));
+        String gainLossPercentValue = ViewUtils.addPositiveSign(this.selectedStock.getGainLossPercent().doubleValue(),
+                this.formatService.formatPercent(this.selectedStock.getGainLossPercent().doubleValue()));
         gainLoss.setText(String.format("%s (%s)", gainLossValue, gainLossPercentValue));
         this.formatService.formatTextColor(this.selectedStock.getGainLoss().doubleValue(), gainLoss);
 
-        LinearLayout entryTranchesContainer = view.findViewById( R.id.entry_tranches_container);
-        ImageView trancheImageView = view.findViewById( R.id.imageview_entry);
+        LinearLayout entryTranchesContainer = view.findViewById(R.id.entry_tranches_container);
+        ImageView trancheImageView = view.findViewById(R.id.imageview_entry);
         trancheImageView.setOnClickListener(new ImageViewOnClickHideExpand(getActivity(), trancheImageView, entryTranchesContainer));
         this.setTranchesValues(entryTranchesContainer);
 
-        TextView priceToBreakEven = view.findViewById( R.id.textview_price_to_break_even);
+        TextView priceToBreakEven = view.findViewById(R.id.textview_price_to_break_even);
         priceToBreakEven.setText(this.formatService.formatStockPrice(this.selectedStock.getPriceToBreakEven().doubleValue()));
 
-        TextView target = view.findViewById( R.id.textview_target);
+        TextView target = view.findViewById(R.id.textview_target);
         target.setText(this.formatService.formatStockPrice(this.selectedStock.getTargetPrice().doubleValue()));
 
-        TextView gainTarget = view.findViewById( R.id.textview_gain_target);
+        TextView gainTarget = view.findViewById(R.id.textview_gain_target);
         double gainToTargetValue = this.selectedStock.getGainToTarget().doubleValue();
         String gainToTarget = "+" + this.formatService.formatPrice(gainToTargetValue);
         gainTarget.setText(gainToTarget);
         this.formatService.formatTextColor(gainToTargetValue, gainTarget);
 
-        TextView stopLoss = view.findViewById( R.id.textview_stop_loss);
+        TextView stopLoss = view.findViewById(R.id.textview_stop_loss);
         stopLoss.setText(this.formatService.formatStockPrice(this.selectedStock.getStopLoss().doubleValue()));
 
-        TextView lossStopLoss = view.findViewById( R.id.textview_loss_stop_loss);
+        TextView lossStopLoss = view.findViewById(R.id.textview_loss_stop_loss);
         lossStopLoss.setText(this.formatService.formatPrice(this.selectedStock.getLossToStopLoss().doubleValue()));
         this.formatService.formatTextColor(this.selectedStock.getLossToStopLoss().doubleValue(), lossStopLoss);
 
-        TextView stopDate = view.findViewById( R.id.textview_stop_date);
+        TextView stopDate = view.findViewById(R.id.textview_stop_date);
         stopDate.setText(this.formatService.formatDate(this.selectedStock.getStopDate()));
 
-        TextView daysToStopDate = view.findViewById( R.id.textview_days_to_stop_date);
+        TextView daysToStopDate = view.findViewById(R.id.textview_days_to_stop_date);
         daysToStopDate.setText(String.valueOf(this.selectedStock.getDaysToStopDate()));
 
-        TextView riskReward = view.findViewById( R.id.textview_risk_reward);
+        TextView riskReward = view.findViewById(R.id.textview_risk_reward);
         riskReward.setText(this.formatService.formatStockPrice(this.selectedStock.getRiskReward().doubleValue()));
 
-        TextView capital = view.findViewById( R.id.textview_capital);
+        TextView capital = view.findViewById(R.id.textview_capital);
         capital.setText(this.formatService.formatPrice(this.selectedStock.getCapital()));
 
-        TextView percentOfCapital = view.findViewById( R.id.textview_percent_of_capital);
+        TextView percentOfCapital = view.findViewById(R.id.textview_percent_of_capital);
         percentOfCapital.setText(this.formatService.formatPercent(this.selectedStock.getPercentCapital().doubleValue()));
 
         return view;
@@ -217,32 +228,38 @@ public class TradePlanFragment extends Fragment
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
-        switch(item.getItemId())
+        Activity activity = getActivity();
+        if(activity != null)
         {
-            case android.R.id.home:
+            switch(item.getItemId())
             {
-                // Finish activity with no result to send back to home
-                getActivity().finish();
-                return true;
-            }
-            case R.id.menu_update:
-            {
-                Intent intent = new Intent(getActivity(), UpdateTradePlanActivity.class);
-                intent.putExtra(DataKey.EXTRA_TRADE.toString(), this.selectedStock);
-                getActivity().startActivityForResult(intent, IntentRequestCode.UPDATE_TRADE_PLAN.code());
+                case android.R.id.home:
+                {
+                    // Finish activity with no result to send back to home
+                    getActivity().finish();
+                    return true;
+                }
+                case R.id.menu_update:
+                {
+                    Intent intent = new Intent(getActivity(), UpdateTradePlanActivity.class);
+                    intent.putExtra(DataKey.EXTRA_TRADE.toString(), this.selectedStock);
+                    getActivity().startActivityForResult(intent, IntentRequestCode.UPDATE_TRADE_PLAN.code());
 
-                return true;
-            }
-            case R.id.menu_delete:
-            {
-                createAndShowAlertDialog(this.selectedStock.getSymbol());
-                return true;
-            }
-            default:
-            {
-                return super.onOptionsItemSelected(item);
+                    return true;
+                }
+                case R.id.menu_delete:
+                {
+                    createAndShowAlertDialog(this.selectedStock.getSymbol());
+                    return true;
+                }
+                default:
+                {
+                    return super.onOptionsItemSelected(item);
+                }
             }
         }
+
+        return super.onOptionsItemSelected(item);
     }
 
     /**
@@ -250,33 +267,37 @@ public class TradePlanFragment extends Fragment
      */
     private void createAndShowAlertDialog(String stock)
     {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage(getString(R.string.delete_trade_plan_prompt, stock));
-
-        builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener()
+        Activity activity = getActivity();
+        if(activity != null)
         {
-            public void onClick(DialogInterface dialog, int id)
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setMessage(getString(R.string.delete_trade_plan_prompt, stock));
+
+            builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener()
             {
-                deleteTradePlan();
-                dialog.dismiss();
-            }
-        });
-        builder.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener()
-        {
-            public void onClick(DialogInterface dialog, int id)
+                public void onClick(DialogInterface dialog, int id)
+                {
+                    deleteTradePlan();
+                    dialog.dismiss();
+                }
+            });
+            builder.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener()
             {
-                dialog.dismiss();
+                public void onClick(DialogInterface dialog, int id)
+                {
+                    dialog.dismiss();
+                }
+            });
+
+            AlertDialog dialog = builder.create();
+            dialog.show();
+
+            // Align message to center.
+            TextView messageView = dialog.findViewById(android.R.id.message);
+            if(messageView != null)
+            {
+                messageView.setGravity(Gravity.CENTER);
             }
-        });
-
-        AlertDialog dialog = builder.create();
-        dialog.show();
-
-        // Align message to center.
-        TextView messageView = dialog.findViewById(android.R.id.message);
-        if(messageView != null)
-        {
-            messageView.setGravity(Gravity.CENTER);
         }
     }
 
@@ -291,8 +312,11 @@ public class TradePlanFragment extends Fragment
         data.putExtra(DataKey.EXTRA_TRADE.toString(), this.selectedStock);
 
         Activity activity = getActivity();
-        activity.setResult(Activity.RESULT_OK, data);
-        activity.finish();
+        if(activity != null)
+        {
+            activity.setResult(Activity.RESULT_OK, data);
+            activity.finish();
+        }
 
         LogManager.debug(CLASS_NAME, "deleteTradePlan", "Deleted: " + this.selectedStock);
     }

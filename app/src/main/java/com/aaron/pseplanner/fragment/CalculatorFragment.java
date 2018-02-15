@@ -43,9 +43,6 @@ public class CalculatorFragment extends AbstractCalculatorFragment
     @BindView(R.id.edittext_sell_price)
     EditText sellPriceEditText;
 
-    @BindViews({R.id.edittext_buy_price, R.id.edittext_shares, R.id.edittext_sell_price})
-    List<EditText> editTexts;
-
     @BindView(R.id.textview_average_price)
     TextView averagePriceText;
 
@@ -103,10 +100,14 @@ public class CalculatorFragment extends AbstractCalculatorFragment
     @BindView(R.id.textview_gain_loss_percent)
     TextView gainLossPercentText;
 
-    @BindViews({R.id.textview_average_price, R.id.textview_break_even_price, R.id.textview_buy_gross_amount, R.id.textview_buy_net_amount, R.id.textview_addt_brokers_commission, R.id.textview_addt_brokers_commission_vat, R.id.textview_addt_clearing_fee, R.id.textview_addt_transaction_fee, R.id.textview_addt_total})
+    @BindViews({ R.id.textview_average_price, R.id.textview_break_even_price, R.id.textview_buy_gross_amount, R.id.textview_buy_net_amount,
+            R.id.textview_addt_brokers_commission, R.id.textview_addt_brokers_commission_vat, R.id.textview_addt_clearing_fee,
+            R.id.textview_addt_transaction_fee, R.id.textview_addt_total })
     List<TextView> buyTextViews;
 
-    @BindViews({R.id.textview_sell_gross_amount, R.id.textview_sell_net_amount, R.id.textview_deduct_brokers_commission, R.id.textview_deduct_brokers_commission_vat, R.id.textview_deduct_clearing_fee, R.id.textview_deduct_transaction_fee, R.id.textview_deduct_sales_tax, R.id.textview_deduct_total, R.id.textview_gain_loss_amount, R.id.textview_gain_loss_percent})
+    @BindViews({ R.id.textview_sell_gross_amount, R.id.textview_sell_net_amount, R.id.textview_deduct_brokers_commission,
+            R.id.textview_deduct_brokers_commission_vat, R.id.textview_deduct_clearing_fee, R.id.textview_deduct_transaction_fee,
+            R.id.textview_deduct_sales_tax, R.id.textview_deduct_total, R.id.textview_gain_loss_amount, R.id.textview_gain_loss_percent })
     List<TextView> sellTextViews;
 
     private String buyPriceStrPrevious;
@@ -125,15 +126,32 @@ public class CalculatorFragment extends AbstractCalculatorFragment
         setEditTextOnFocusChangeListener(this.buyPriceEditText, this.sharesEditText, this.sellPriceEditText);
         setEditTextTextChangeListener(this.buyPriceEditText, this.sharesEditText, this.sellPriceEditText);
 
-        ImageView buyNetAmountImageView = view.findViewById(R.id.imageview_buy_net_amount);
-        ImageView sellNetAmountImageView = view.findViewById(R.id.imageview_sell_net_amount);
-        GridLayout additionalFeesLayout = view.findViewById(R.id.additional_fees_layout);
-        GridLayout deductionFeesLayout = view.findViewById(R.id.deduction_fees_layout);
-        this.setImageViewOnClickListener(buyNetAmountImageView, additionalFeesLayout, sellNetAmountImageView, deductionFeesLayout);
+        initializeBuyAndSellNetAmountExpandCollapseImageView(view);
 
         LogManager.debug(CLASS_NAME, "onCreateView", "");
 
         return view;
+    }
+
+    private void initializeBuyAndSellNetAmountExpandCollapseImageView(View view)
+    {
+        ImageView buyNetAmountImageView = view.findViewById(R.id.imageview_buy_net_amount);
+        GridLayout additionalFeesLayout = view.findViewById(R.id.additional_fees_layout);
+
+        ImageView sellNetAmountImageView = view.findViewById(R.id.imageview_sell_net_amount);
+        GridLayout deductionFeesLayout = view.findViewById(R.id.deduction_fees_layout);
+
+        this.setImageViewOnClickListener(buyNetAmountImageView, additionalFeesLayout, sellNetAmountImageView, deductionFeesLayout);
+    }
+
+    /**
+     * Sets the on click listener for image views. Will toggle update the image on click.
+     */
+    private void setImageViewOnClickListener(ImageView buyNetImageView, GridLayout additionalLayoutContainer, ImageView sellNetImageView,
+            GridLayout deductionsLayoutContainer)
+    {
+        buyNetImageView.setOnClickListener(new ImageViewOnClickHideExpand(this.getActivity(), buyNetImageView, additionalLayoutContainer));
+        sellNetImageView.setOnClickListener(new ImageViewOnClickHideExpand(this.getActivity(), sellNetImageView, deductionsLayoutContainer));
     }
 
     @Override
@@ -158,13 +176,12 @@ public class CalculatorFragment extends AbstractCalculatorFragment
         {
             try
             {
-                boolean buyPriceAndSharesChanged = !buyPriceStr.equals(this.buyPriceStrPrevious) || !sharesStr.equals(this.sharesStrPrevious);
+                boolean buyPriceOrSharesChanged = !buyPriceStr.equals(this.buyPriceStrPrevious) || !sharesStr.equals(this.sharesStrPrevious);
                 NumberFormat formatter = null;
                 BigDecimal buyPrice = BigDecimal.ZERO;
                 long shares = 0;
 
-                // If at least one changed, then proceed calculating. Do not change if only sell price changed.
-                if(buyPriceAndSharesChanged)
+                if(buyPriceOrSharesChanged)
                 {
                     formatter = NumberFormat.getInstance(Locale.US);
                     buyPrice = BigDecimal.valueOf(formatter.parse(buyPriceStr).doubleValue());
@@ -180,26 +197,28 @@ public class CalculatorFragment extends AbstractCalculatorFragment
                 String sellPriceStr = this.sellPriceEditText.getText().toString();
                 if(StringUtils.isNotBlank(sellPriceStr))
                 {
-                    // If either changed, proceed calculating
-                    if(buyPriceAndSharesChanged || !sellPriceStr.equals(this.sellPriceStrPrevious))
+                    boolean sellPriceChanged = !sellPriceStr.equals(this.sellPriceStrPrevious);
+                    boolean eitherBuyPriceAndSharesOrSellPriceChanged = buyPriceOrSharesChanged || sellPriceChanged;
+                    if(eitherBuyPriceAndSharesOrSellPriceChanged)
                     {
                         if(formatter == null)
                         {
                             formatter = NumberFormat.getInstance(Locale.US);
                         }
 
+                        // Set if not yet set in buy/shares update in the code above
                         if(buyPrice.doubleValue() == 0.0)
                         {
                             buyPrice = BigDecimal.valueOf(formatter.parse(buyPriceStr).doubleValue());
                         }
 
+                        // Set if not yet set in buy/shares update in the code above
                         if(shares == 0)
                         {
                             shares = formatter.parse(sharesStr).longValue();
                         }
 
                         BigDecimal sellPrice = BigDecimal.valueOf(formatter.parse(sellPriceStr).doubleValue());
-
                         if(sellPrice.doubleValue() != 0.0)
                         {
                             calculateAndUpdateViewOnSell(buyPrice, sellPrice, shares);
@@ -225,7 +244,6 @@ public class CalculatorFragment extends AbstractCalculatorFragment
             // Either buyPriceEditText or sharesEditText is empty, reset to 0.
             resetAllValues();
         }
-
     }
 
     /**
@@ -309,15 +327,6 @@ public class CalculatorFragment extends AbstractCalculatorFragment
         double defaultValue = Double.parseDouble(getActivity().getString(R.string.default_value));
         formatService.formatTextColor(defaultValue, gainLossAmountText);
         formatService.formatTextColor(defaultValue, gainLossPercentText);
-    }
-
-    /**
-     * Sets the on click listener for image views. Will toggle update the image on click.
-     */
-    private void setImageViewOnClickListener(ImageView buyNetImageView, GridLayout additionalLayoutContainer, ImageView sellNetImageView, GridLayout deductionsLayoutContainer)
-    {
-        buyNetImageView.setOnClickListener(new ImageViewOnClickHideExpand(this.getActivity(), buyNetImageView, additionalLayoutContainer));
-        sellNetImageView.setOnClickListener(new ImageViewOnClickHideExpand(this.getActivity(), sellNetImageView, deductionsLayoutContainer));
     }
 
     @Override

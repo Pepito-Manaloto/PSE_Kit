@@ -16,7 +16,6 @@ import com.aaron.pseplanner.bean.TickerDto;
 import com.aaron.pseplanner.bean.TradeDto;
 import com.aaron.pseplanner.constant.DataKey;
 import com.aaron.pseplanner.constant.PSEPlannerPreference;
-import com.aaron.pseplanner.exception.HttpRequestException;
 import com.aaron.pseplanner.service.CalculatorService;
 import com.aaron.pseplanner.service.LogManager;
 import com.aaron.pseplanner.service.implementation.DefaultCalculatorService;
@@ -141,16 +140,15 @@ public class TradePlanListFragment extends AbstractListFragment<TradeDto>
      * Http request is blocking, this method MUST be called in an AsyncTask.
      *
      * @param doAfterSubscribe the action that will be executed after executing this observable
-     * @throws HttpRequestException if the http request failed, does not update the list
      */
     @Override
-    public void updateListFromWeb(Action doAfterSubscribe) throws HttpRequestException
+    public void updateListFromWeb(Action doAfterSubscribe)
     {
         Disposable disposable = this.pseService.getTickerList(this.tradesMap.keySet())
-                                               .subscribeOn(Schedulers.io())
-                                               .observeOn(AndroidSchedulers.mainThread())
-                                               .doAfterTerminate(doAfterSubscribe)
-                                               .subscribeWith(updateListFromWebObserver());
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doAfterTerminate(doAfterSubscribe)
+                .subscribeWith(updateListFromWebObserver());
 
         this.compositeDisposable.add(disposable);
     }
@@ -162,9 +160,9 @@ public class TradePlanListFragment extends AbstractListFragment<TradeDto>
     public void updateListFromDatabase()
     {
         Disposable disposable = this.pseService.getTradePlanListFromDatabase()
-                                               .subscribeOn(Schedulers.io())
-                                               .observeOn(AndroidSchedulers.mainThread())
-                                               .subscribeWith(updateListFromDatabaseObserver());
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(updateListFromDatabaseObserver());
 
         this.compositeDisposable.add(disposable);
     }
@@ -189,8 +187,10 @@ public class TradePlanListFragment extends AbstractListFragment<TradeDto>
                         tradeDto.setCurrentPrice(tickerDto.getCurrentPrice());
                         tradeDto.setDaysToStopDate(calculatorService.getDaysBetween(lastUpdated, tradeDto.getStopDate()));
                         tradeDto.setHoldingPeriod(calculatorService.getDaysBetween(lastUpdated, tradeDto.getEntryDate()));
-                        tradeDto.setGainLoss(calculatorService.getGainLossAmount(tradeDto.getAveragePrice(), tradeDto.getTotalShares(), tradeDto.getCurrentPrice()));
-                        tradeDto.setGainLossPercent(calculatorService.getPercentGainLoss(tradeDto.getAveragePrice(), tradeDto.getTotalShares(), tradeDto.getCurrentPrice()));
+                        tradeDto.setGainLoss(
+                                calculatorService.getGainLossAmount(tradeDto.getAveragePrice(), tradeDto.getTotalShares(), tradeDto.getCurrentPrice()));
+                        tradeDto.setGainLossPercent(
+                                calculatorService.getPercentGainLoss(tradeDto.getAveragePrice(), tradeDto.getTotalShares(), tradeDto.getCurrentPrice()));
                         tradeDto.setTotalAmount(calculatorService.getBuyNetAmount(tradeDto.getCurrentPrice(), tradeDto.getTotalShares()));
                     }
 

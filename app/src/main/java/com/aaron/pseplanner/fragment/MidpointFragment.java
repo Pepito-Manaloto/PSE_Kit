@@ -17,11 +17,9 @@ import org.apache.commons.lang3.StringUtils;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.text.ParseException;
-import java.util.List;
 import java.util.Locale;
 
 import butterknife.BindView;
-import butterknife.BindViews;
 import butterknife.ButterKnife;
 
 /**
@@ -40,10 +38,6 @@ public class MidpointFragment extends AbstractCalculatorFragment
 
     @BindView(R.id.textview_midpoint)
     TextView midpointTextView;
-
-    @BindViews({R.id.edittext_high, R.id.edittext_low})
-    List<EditText> editTexts;
-
 
     /**
      * Initializes the fragment's user interface.
@@ -88,7 +82,8 @@ public class MidpointFragment extends AbstractCalculatorFragment
                 BigDecimal high = BigDecimal.valueOf(formatter.parse(highStr).doubleValue());
                 BigDecimal low = BigDecimal.valueOf(formatter.parse(lowStr).doubleValue());
 
-                if(high.compareTo(low) > 0)
+                boolean highIsGreaterThanLow = high.compareTo(low) > 0;
+                if(highIsGreaterThanLow)
                 {
                     BigDecimal midpoint = calculatorService.getMidpoint(high, low);
                     this.midpointTextView.setText(formatService.formatStockPrice(midpoint.doubleValue()));
