@@ -37,15 +37,25 @@ public class ImageViewOnClickHideExpand implements View.OnClickListener
         // Arrow is hide: update icon, update content description, show container
         if(this.hide.equals(this.imageView.getContentDescription()))
         {
-            this.imageView.setImageResource(R.mipmap.expand_arrow);
-            this.imageView.setContentDescription(this.expand);
-            this.viewToShowHide.setVisibility(View.VISIBLE);
+            hide();
         }
         else // Arrow is expand: update icon, update content description, hide container
         {
-            this.imageView.setImageResource(R.mipmap.hide_arrow);
-            this.imageView.setContentDescription(this.hide);
-            this.viewToShowHide.setVisibility(View.GONE);
+            show();
         }
+    }
+
+    private void hide()
+    {
+        this.imageView.setImageResource(R.mipmap.expand_arrow);
+        this.imageView.setContentDescription(this.expand);
+        this.viewToShowHide.setVisibility(View.VISIBLE);
+    }
+
+    private void show()
+    {
+        this.imageView.setImageResource(R.mipmap.hide_arrow);
+        this.imageView.setContentDescription(this.hide);
+        this.viewToShowHide.setVisibility(View.GONE);
     }
 }

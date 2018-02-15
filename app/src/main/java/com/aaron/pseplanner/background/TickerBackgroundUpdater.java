@@ -2,7 +2,6 @@ package com.aaron.pseplanner.background;
 
 import android.os.Handler;
 
-import com.aaron.pseplanner.exception.HttpRequestException;
 import com.aaron.pseplanner.fragment.AbstractListFragment;
 
 import java.util.concurrent.TimeUnit;
@@ -19,7 +18,7 @@ public class TickerBackgroundUpdater implements Runnable
         @Override
         public void run() throws Exception
         {
-
+            // Do nothing
         }
     };
 
@@ -40,14 +39,7 @@ public class TickerBackgroundUpdater implements Runnable
     public void run()
     {
         // TODO: update
-        try
-        {
-            selectedListFragment.updateListFromWeb(NO_ACTION);
-        }
-        catch(HttpRequestException e)
-        {
-            e.printStackTrace();
-        }
+        selectedListFragment.updateListFromWeb(NO_ACTION);
 
         this.handler.postDelayed(this, TimeUnit.SECONDS.toMillis(this.interval));
     }

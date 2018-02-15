@@ -6,9 +6,9 @@ import android.widget.EditText;
 
 /**
  * Created by aaron.asuncion on 1/24/2017.
- * Wrapper for any EditTextOnTextChange listeners. Removes and adds back textChange listener on afterTextChanged() to prevent recursive infinite loop.
+ * Wrapper for any EditTextOnTextChange listeners.
+ * Removes and adds back textChange listener on afterTextChanged() to prevent recursive infinite loop.
  */
-
 public class EditTextOnTextChangeWrapper implements TextWatcher
 {
     private EditText editText;

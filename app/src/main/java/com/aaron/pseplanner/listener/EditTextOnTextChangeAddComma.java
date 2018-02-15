@@ -108,10 +108,10 @@ public class EditTextOnTextChangeAddComma implements TextWatcher
 
         if(StringUtils.isNotBlank(input))
         {
+            updateEditText(input);
+
             int cursorPosition = this.editText.getSelectionStart();
             int oldLength = input.length();
-
-            updateEditText(input);
             updateEditTextCursor(cursorPosition, oldLength);
         }
     }

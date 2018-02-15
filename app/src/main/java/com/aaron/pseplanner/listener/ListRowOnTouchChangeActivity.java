@@ -97,15 +97,7 @@ public class ListRowOnTouchChangeActivity implements View.OnTouchListener
 
                 if(touchMovedLessThan15Pixels)
                 {
-                    Intent intent = new Intent(this.activity, this.activityClass);
-                    intent.putExtra(this.extraKey.toString(), this.parcelableData);
-
-                    if(this.extraListKey != null && this.parcelableListData != null)
-                    {
-                        intent.putParcelableArrayListExtra(this.extraListKey.toString(), this.parcelableListData);
-                    }
-
-                    this.activity.startActivityForResult(intent, this.intentRequestCode.code());
+                    addExtraDataToIntentAndStartNextActivity();
                 }
 
                 break;
@@ -124,5 +116,18 @@ public class ListRowOnTouchChangeActivity implements View.OnTouchListener
         v.performClick();
 
         return true;
+    }
+
+    private void addExtraDataToIntentAndStartNextActivity()
+    {
+        Intent intent = new Intent(this.activity, this.activityClass);
+        intent.putExtra(this.extraKey.toString(), this.parcelableData);
+
+        if(this.extraListKey != null && this.parcelableListData != null)
+        {
+            intent.putParcelableArrayListExtra(this.extraListKey.toString(), this.parcelableListData);
+        }
+
+        this.activity.startActivityForResult(intent, this.intentRequestCode.code());
     }
 }
