@@ -11,6 +11,7 @@ import com.aaron.pseplanner.response.phisix.ResponsePhisixStock;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -133,5 +134,92 @@ public final class BeanEntityUtils
                 .setVolume(phisixStock.getVolume())
                 .setChange(change)
                 .setPercentChange(BigDecimal.valueOf(phisixStock.getPercentChange()));
+    }
+
+    public static Trade fromTradeDtoToTrade(TradeDto tradeDto)
+    {
+        if(tradeDto == null)
+        {
+            return new Trade();
+        }
+
+        return new Trade()
+                .setId(tradeDto.getId())
+                .setSymbol(tradeDto.getSymbol())
+                .setCurrentPrice(tradeDto.getCurrentPrice().toPlainString())
+                .setAveragePrice(tradeDto.getAveragePrice().toPlainString())
+                .setPercentCapital(tradeDto.getPercentCapital().toPlainString())
+                .setCapital(tradeDto.getCapital())
+                .setTotalAmount(tradeDto.getTotalAmount().toPlainString())
+                .setTotalShares(tradeDto.getTotalShares())
+                .setEntryDate(tradeDto.getEntryDate())
+                .setDaysToStopDate(tradeDto.getDaysToStopDate())
+                .setHoldingPeriod(tradeDto.getHoldingPeriod())
+                .setTargetPrice(tradeDto.getTargetPrice().toPlainString())
+                .setGainToTarget(tradeDto.getGainToTarget().toPlainString())
+                .setGainLoss(tradeDto.getGainLoss().toPlainString())
+                .setGainLossPercent(tradeDto.getGainLossPercent().toPlainString())
+                .setLossToStopLoss(tradeDto.getLossToStopLoss().toPlainString())
+                .setStopLoss(tradeDto.getStopLoss().toPlainString())
+                .setStopDate(tradeDto.getStopDate())
+                .setPriceToBreakEven(tradeDto.getPriceToBreakEven().toPlainString())
+                .setRiskReward(tradeDto.getRiskReward().toPlainString());
+    }
+
+    public static List<TradeEntry> fromTradeEntryDtoListToTradeEntryList(List<TradeEntryDto> tradeEntries)
+    {
+        if(tradeEntries == null || tradeEntries.isEmpty())
+        {
+            return Collections.emptyList();
+        }
+
+        List<TradeEntry> tradeEntryList = new ArrayList<>(tradeEntries.size());
+
+        int order = 0;
+        for(TradeEntryDto dto : tradeEntries)
+        {
+            TradeEntry entry = new TradeEntry()
+                    .setTradeSymbol(dto.getSymbol())
+                    .setShares(dto.getShares())
+                    .setEntryPrice(dto.getEntryPrice().toPlainString())
+                    .setPercentWeight(dto.getPercentWeight().toPlainString())
+                    .setOrder(order);
+            order++;
+
+            tradeEntryList.add(entry);
+        }
+
+        return tradeEntryList;
+    }
+
+    /**
+     * Converts TickerDto to Ticker entity.
+     *
+     * @param dto the dto to convert
+     * @param now the current datetime
+     * @return Ticker the converted entity
+     */
+    public static Ticker fromTickerDtoToTicker(TickerDto dto, Date now)
+    {
+        if(dto == null)
+        {
+            return new Ticker();
+        }
+
+        Date dateUpdate = now;
+        if(dateUpdate == null)
+        {
+            dateUpdate = new Date();
+        }
+
+        return new Ticker()
+                .setId(dto.getId())
+                .setSymbol(dto.getSymbol())
+                .setName(dto.getName())
+                .setVolume(dto.getVolume())
+                .setCurrentPrice(dto.getCurrentPrice().toPlainString())
+                .setChange(dto.getChange().toPlainString())
+                .setPercentChange(dto.getPercentChange().toPlainString())
+                .setDateUpdate(dateUpdate);
     }
 }

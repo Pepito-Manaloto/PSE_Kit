@@ -67,7 +67,7 @@ public final class BeanEntityBuilderTestUtils
         return tradePlanList;
     }
 
-    public static List<TradeEntry> givenTradeEntry(String symbol)
+    public static List<TradeEntry> givenTradeEntryList(String symbol)
     {
         int size = RandomUtils.nextInt(1, 10);
         List<TradeEntry> list = new ArrayList<>(size);
@@ -91,7 +91,7 @@ public final class BeanEntityBuilderTestUtils
 
         for(String symbol : symbolList)
         {
-            List<TradeEntry> list = givenTradeEntry(symbol);
+            List<TradeEntry> list = givenTradeEntryList(symbol);
             listOfList.add(list);
         }
 

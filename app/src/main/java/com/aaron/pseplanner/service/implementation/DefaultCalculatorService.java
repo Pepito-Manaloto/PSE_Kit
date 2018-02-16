@@ -12,7 +12,6 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by aaron.asuncion on 12/19/2016.
  */
-
 public class DefaultCalculatorService implements CalculatorService
 {
     /**

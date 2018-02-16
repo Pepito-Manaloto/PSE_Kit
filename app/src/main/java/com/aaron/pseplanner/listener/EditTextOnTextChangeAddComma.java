@@ -152,7 +152,7 @@ public class EditTextOnTextChangeAddComma implements TextWatcher
         {
             this.editText.setSelection(cursorPosition + 1);
         }
-        else if(oldInputNewInputLengthDifference < 0)
+        else if(cursorPosition > 0 && oldInputNewInputLengthDifference < 0)
         {
             this.editText.setSelection(cursorPosition - 1);
         }

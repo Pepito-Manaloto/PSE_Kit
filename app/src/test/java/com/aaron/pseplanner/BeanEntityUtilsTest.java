@@ -9,6 +9,7 @@ import com.aaron.pseplanner.entity.TradeEntry;
 import com.aaron.pseplanner.response.phisix.ResponsePhisixStock;
 import com.aaron.pseplanner.response.phisix.ResponsePrice;
 import com.aaron.pseplanner.service.BeanEntityUtils;
+import com.aaron.pseplanner.test.utils.BeanEntityBuilderTestUtils;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.RandomUtils;
@@ -17,12 +18,14 @@ import org.junit.Test;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import static com.aaron.pseplanner.test.utils.BeanEntityBuilderTestUtils.givenTicker;
+import static com.aaron.pseplanner.test.utils.BeanEntityBuilderTestUtils.givenTickerDto;
 import static com.aaron.pseplanner.test.utils.BeanEntityBuilderTestUtils.givenTickerList;
 import static com.aaron.pseplanner.test.utils.BeanEntityBuilderTestUtils.givenTrade;
-import static com.aaron.pseplanner.test.utils.BeanEntityBuilderTestUtils.givenTradeEntry;
+import static com.aaron.pseplanner.test.utils.BeanEntityBuilderTestUtils.givenTradeEntryDto;
 import static com.aaron.pseplanner.test.utils.BeanEntityBuilderTestUtils.givenTradeEntryList;
 import static com.aaron.pseplanner.test.utils.BeanEntityBuilderTestUtils.givenTradeList;
 import static org.junit.Assert.assertEquals;
@@ -38,7 +41,7 @@ public class BeanEntityUtilsTest
     public void givenTrade_whenFromTradeToTradeDto_thenTradeIsConvertedToTradeDto()
     {
         String symbol = "TEL";
-        Trade trade = givenTrade(symbol, givenTradeEntry(symbol));
+        Trade trade = givenTrade(symbol, BeanEntityBuilderTestUtils.givenTradeEntryList(symbol));
 
         TradeDto tradeDto = BeanEntityUtils.fromTradeToTradeDto(trade);
 
@@ -48,11 +51,11 @@ public class BeanEntityUtilsTest
     @Test
     public void givenTradeEntryList_whenFromTradeEntryListToTradeEntryDtoList_thenTradeEntryListIsConvertedToTradeEntryDtoList()
     {
-        List<TradeEntry> tradeEntryList = givenTradeEntry("IS");
+        List<TradeEntry> tradeEntry = BeanEntityBuilderTestUtils.givenTradeEntryList("IS");
 
-        List<TradeEntryDto> tradeEntryDtoList = BeanEntityUtils.fromTradeEntryListToTradeEntryDtoList(tradeEntryList);
+        List<TradeEntryDto> tradeEntryDtoList = BeanEntityUtils.fromTradeEntryListToTradeEntryDtoList(tradeEntry);
 
-        thenTradeEntryListIsConvertedToTradeEntryDtoList(tradeEntryList, tradeEntryDtoList);
+        thenTradeEntryListIsConvertedToTradeEntryDtoList(tradeEntry, tradeEntryDtoList);
     }
 
     @Test
@@ -98,6 +101,26 @@ public class BeanEntityUtilsTest
     }
 
     @Test
+    public void givenTradeEntryDtoList_whenFromTradeEntryDtoListToTradeEntryList_thenTradeEntryDtoListIsConvertedToTradeEntryList()
+    {
+        List<TradeEntryDto> tradeEntryDto = givenTradeEntryDto("IS");
+
+        List<TradeEntry> tradeEntryList = BeanEntityUtils.fromTradeEntryDtoListToTradeEntryList(tradeEntryDto);
+
+        thenTradeEntryDtoListIsConvertedToTradeEntryList(tradeEntryDto, tradeEntryList);
+    }
+
+    @Test
+    public void givenTickerDto_whenFromTickerDtoToTicker_thenTickerDtoIsConvertedToTicker()
+    {
+        TickerDto tickerDto = givenTickerDto();
+
+        Ticker ticker = BeanEntityUtils.fromTickerDtoToTicker(tickerDto, new Date());
+
+        thenTickerDtoIsConvertedToTicker(tickerDto, ticker);
+    }
+
+    @Test
     public void givenNull_whenFromTradeToTradeDto_thenEmptyTradeDtoShouldBeReturned()
     {
         TradeDto tradeDto = BeanEntityUtils.fromTradeToTradeDto(null);
@@ -108,9 +131,9 @@ public class BeanEntityUtilsTest
     @Test
     public void givenNull_whenFromTradeEntryListToTradeEntryDtoList_thenEmptyTradeEntryDtoListShouldBeReturned()
     {
-        List<TradeEntryDto> tradeEntryList = BeanEntityUtils.fromTradeEntryListToTradeEntryDtoList(null);
+        List<TradeEntryDto> tradeEntryDtoList = BeanEntityUtils.fromTradeEntryListToTradeEntryDtoList(null);
 
-        assertEquals(0, tradeEntryList.size());
+        assertEquals(0, tradeEntryDtoList.size());
     }
 
     @Test
@@ -143,6 +166,30 @@ public class BeanEntityUtilsTest
         TickerDto tickerDto = BeanEntityUtils.fromResponsePhisixStockToTickerDto(null, null);
 
         thenEmptyTickerDtoShouldBeReturned(tickerDto);
+    }
+
+    @Test
+    public void givenNull_whenFromTradeDtoToTrade_thenEmptyTradeShouldBeReturned()
+    {
+        Trade trade = BeanEntityUtils.fromTradeDtoToTrade(null);
+
+        thenEmptyTradeShouldBeReturned(trade);
+    }
+
+    @Test
+    public void givenNull_whenFromTradeEntryDtoListToTradeEntryList_thenEmptyTradeEntryListShouldBeReturned()
+    {
+        List<TradeEntry> tradeEntryList = BeanEntityUtils.fromTradeEntryDtoListToTradeEntryList(null);
+
+        assertEquals(0, tradeEntryList.size());
+    }
+
+    @Test
+    public void givenNull_whenFromTickerDtoToTicker_thenEmptyTickerShouldBeReturned()
+    {
+        Ticker ticker = BeanEntityUtils.fromTickerDtoToTicker(null, null);
+
+        thenEmptyTickerShouldBeReturned(ticker);
     }
 
     private ResponsePhisixStock givenResponsePhisixStockAndChange()
@@ -207,6 +254,11 @@ public class BeanEntityUtilsTest
         }
     }
 
+    private void thenTradeEntryDtoListIsConvertedToTradeEntryList(List<TradeEntryDto> tradeEntryDtos, List<TradeEntry> tradeEntries)
+    {
+        thenTradeEntryListIsConvertedToTradeEntryDtoList(tradeEntries, tradeEntryDtos);
+    }
+
     private void thenTradeListIsConvertedToTradeDtoList(List<Trade> tradeList, List<TradeDto> tradeDtoList)
     {
         int expectedSize = tradeList.size();
@@ -229,6 +281,11 @@ public class BeanEntityUtilsTest
         assertEquals(ticker.getVolume(), tickerDto.getVolume());
     }
 
+    private void thenTickerDtoIsConvertedToTicker(TickerDto tickerDto, Ticker ticker)
+    {
+        thenTickerIsConvertedToTickerDto(ticker, tickerDto);
+    }
+
     private void thenTickerListIsConvertedToTickerDtoList(ArrayList<Ticker> tickerList, List<TickerDto> tickerDtoList)
     {
         int expectedSize = tickerList.size();
@@ -249,6 +306,18 @@ public class BeanEntityUtilsTest
         assertNull(tickerDto.getChange());
         assertNull(tickerDto.getPercentChange());
         assertEquals(0, tickerDto.getVolume());
+    }
+
+    private void thenEmptyTickerShouldBeReturned(Ticker ticker)
+    {
+        assertNull(ticker.getId());
+        assertNull(ticker.getSymbol());
+        assertNull(ticker.getName());
+        assertNull(ticker.getCurrentPrice());
+        assertNull(ticker.getChange());
+        assertNull(ticker.getPercentChange());
+        assertNull(ticker.getDateUpdate());
+        assertEquals(0, ticker.getVolume());
     }
 
     private void thenEmptyTradeDtoShouldBeReturned(TradeDto tradeDto)
@@ -276,5 +345,31 @@ public class BeanEntityUtilsTest
         assertEquals(0, tradeDto.getCapital());
         assertNull(tradeDto.getPercentCapital());
         assertNull(tradeDto.getTradeEntries());
+    }
+
+    private void thenEmptyTradeShouldBeReturned(Trade trade)
+    {
+        assertNull(trade.getId());
+        assertNull(trade.getSymbol());
+        assertNull(trade.getEntryDate());
+        assertEquals(0, trade.getHoldingPeriod());
+        assertNull(trade.getCurrentPrice());
+        assertNull(trade.getAveragePrice());
+        assertEquals(0, trade.getTotalShares());
+        assertNull(trade.getTotalAmount());
+        assertNull(trade.getPriceToBreakEven());
+        assertNull(trade.getTargetPrice());
+        assertNull(trade.getPriceToBreakEven());
+        assertNull(trade.getTargetPrice());
+        assertNull(trade.getGainLoss());
+        assertNull(trade.getGainLossPercent());
+        assertNull(trade.getGainToTarget());
+        assertNull(trade.getLossToStopLoss());
+        assertNull(trade.getStopLoss());
+        assertNull(trade.getStopDate());
+        assertEquals(0, trade.getDaysToStopDate());
+        assertNull(trade.getRiskReward());
+        assertEquals(0, trade.getCapital());
+        assertNull(trade.getPercentCapital());
     }
 }

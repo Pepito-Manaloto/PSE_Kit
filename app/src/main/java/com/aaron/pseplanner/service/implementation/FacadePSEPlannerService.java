@@ -10,7 +10,6 @@ import com.aaron.pseplanner.app.DaoSessionCreator;
 import com.aaron.pseplanner.bean.SettingsDto;
 import com.aaron.pseplanner.bean.TickerDto;
 import com.aaron.pseplanner.bean.TradeDto;
-import com.aaron.pseplanner.bean.TradeEntryDto;
 import com.aaron.pseplanner.constant.PSEPlannerPreference;
 import com.aaron.pseplanner.entity.DaoSession;
 import com.aaron.pseplanner.entity.Ticker;
@@ -41,7 +40,10 @@ import java.util.concurrent.Callable;
 import io.reactivex.Single;
 import io.reactivex.functions.Function;
 
+import static com.aaron.pseplanner.service.BeanEntityUtils.fromTickerDtoToTicker;
 import static com.aaron.pseplanner.service.BeanEntityUtils.fromTickerListToTickerDtoList;
+import static com.aaron.pseplanner.service.BeanEntityUtils.fromTradeDtoToTrade;
+import static com.aaron.pseplanner.service.BeanEntityUtils.fromTradeEntryDtoListToTradeEntryList;
 import static com.aaron.pseplanner.service.BeanEntityUtils.fromTradeListToTradeDtoList;
 
 /**
@@ -226,7 +228,7 @@ public class FacadePSEPlannerService implements PSEPlannerService
         Set<Ticker> tickerList = new HashSet<>(tickerDtoList.size());
         for(TickerDto dto : tickerDtoList)
         {
-            Ticker ticker = this.fromTickerDtoToStock(dto, lastUpdated);
+            Ticker ticker = fromTickerDtoToTicker(dto, lastUpdated);
             tickerList.add(ticker);
         }
 
@@ -355,7 +357,7 @@ public class FacadePSEPlannerService implements PSEPlannerService
         updateLastUpdatedSharedPreferenceNow(PSEPlannerPreference.LAST_UPDATED_TRADE_PLAN);
 
         final Trade trade = this.tradeDao.queryBuilder().where(TradeDao.Properties.Symbol.eq(tradeDto.getSymbol())).unique();
-        final List<TradeEntry> tradeEntries = this.fromTradeEntryDtoListToTradeEntryList(tradeDto.getTradeEntries());
+        final List<TradeEntry> tradeEntries = fromTradeEntryDtoListToTradeEntryList(tradeDto.getTradeEntries());
 
         // Execute delete and update/insert in one transaction
         this.tradeDao.getSession().runInTx(new Runnable()
@@ -373,27 +375,6 @@ public class FacadePSEPlannerService implements PSEPlannerService
 
         LogManager.debug(CLASS_NAME, "updateTradePlan", "Updated: " + trade);
         return trade;
-    }
-
-    private List<TradeEntry> fromTradeEntryDtoListToTradeEntryList(List<TradeEntryDto> tradeEntries)
-    {
-        List<TradeEntry> updatedTradeEntryList = new ArrayList<>(tradeEntries.size());
-
-        int order = 0;
-        for(TradeEntryDto dto : tradeEntries)
-        {
-            TradeEntry entry = new TradeEntry();
-            entry.setTradeSymbol(dto.getSymbol());
-            entry.setShares(dto.getShares());
-            entry.setEntryPrice(dto.getEntryPrice().toPlainString());
-            entry.setPercentWeight(dto.getPercentWeight().toPlainString());
-            entry.setOrder(order);
-            order++;
-
-            updatedTradeEntryList.add(entry);
-        }
-
-        return updatedTradeEntryList;
     }
 
     /**
@@ -425,33 +406,6 @@ public class FacadePSEPlannerService implements PSEPlannerService
         return symbol;
     }
 
-    private Trade fromTradeDtoToTrade(TradeDto tradeDto)
-    {
-        Trade trade = new Trade();
-        trade.setId(tradeDto.getId());
-        trade.setSymbol(tradeDto.getSymbol());
-        trade.setCurrentPrice(tradeDto.getCurrentPrice().toPlainString());
-        trade.setAveragePrice(tradeDto.getAveragePrice().toPlainString());
-        trade.setPercentCapital(tradeDto.getPercentCapital().toPlainString());
-        trade.setCapital(tradeDto.getCapital());
-        trade.setTotalAmount(tradeDto.getTotalAmount().toPlainString());
-        trade.setTotalShares(tradeDto.getTotalShares());
-        trade.setEntryDate(tradeDto.getEntryDate());
-        trade.setDaysToStopDate(tradeDto.getDaysToStopDate());
-        trade.setHoldingPeriod(tradeDto.getHoldingPeriod());
-        trade.setTargetPrice(tradeDto.getTargetPrice().toPlainString());
-        trade.setGainToTarget(tradeDto.getGainToTarget().toPlainString());
-        trade.setGainLoss(tradeDto.getGainLoss().toPlainString());
-        trade.setGainLossPercent(tradeDto.getGainLossPercent().toPlainString());
-        trade.setLossToStopLoss(tradeDto.getLossToStopLoss().toPlainString());
-        trade.setStopLoss(tradeDto.getStopLoss().toPlainString());
-        trade.setStopDate(tradeDto.getStopDate());
-        trade.setPriceToBreakEven(tradeDto.getPriceToBreakEven().toPlainString());
-        trade.setRiskReward(tradeDto.getRiskReward().toPlainString());
-
-        return trade;
-    }
-
     @Override
     public Single<ArrayList<TradeDto>> getTradePlanListFromDatabase()
     {
@@ -463,18 +417,18 @@ public class FacadePSEPlannerService implements PSEPlannerService
                 return tradeDao.loadAll();
             }
         })
-                .map(new Function<List<Trade>, ArrayList<TradeDto>>()
-                {
-                    @Override
-                    public ArrayList<TradeDto> apply(List<Trade> tradePlanList) throws Exception
-                    {
-                        ArrayList<TradeDto> tradePlanDtoList = fromTradeListToTradeDtoList(tradePlanList);
+        .map(new Function<List<Trade>, ArrayList<TradeDto>>()
+        {
+            @Override
+            public ArrayList<TradeDto> apply(List<Trade> tradePlanList) throws Exception
+            {
+                ArrayList<TradeDto> tradePlanDtoList = fromTradeListToTradeDtoList(tradePlanList);
 
-                        LogManager.debug(CLASS_NAME, "getTradePlanListFromDatabase", "Retrieved: count = " + tradePlanDtoList.size());
+                LogManager.debug(CLASS_NAME, "getTradePlanListFromDatabase", "Retrieved: count = " + tradePlanDtoList.size());
 
-                        return tradePlanDtoList;
-                    }
-                });
+                return tradePlanDtoList;
+            }
+        });
     }
 
     /**
@@ -603,28 +557,6 @@ public class FacadePSEPlannerService implements PSEPlannerService
                 return pair;
             }
         });
-    }
-
-    /**
-     * Converts TickerDto to Ticker entity.
-     *
-     * @param dto the dto to convert
-     * @param now the current datetime
-     * @return Ticker the converted entity
-     */
-    private Ticker fromTickerDtoToStock(TickerDto dto, Date now)
-    {
-        Ticker ticker = new Ticker();
-        ticker.setId(dto.getId());
-        ticker.setSymbol(dto.getSymbol());
-        ticker.setName(dto.getName());
-        ticker.setVolume(dto.getVolume());
-        ticker.setCurrentPrice(dto.getCurrentPrice().toPlainString());
-        ticker.setChange(dto.getChange().toPlainString());
-        ticker.setPercentChange(dto.getPercentChange().toPlainString());
-        ticker.setDateUpdate(now);
-
-        return ticker;
     }
 
     /**

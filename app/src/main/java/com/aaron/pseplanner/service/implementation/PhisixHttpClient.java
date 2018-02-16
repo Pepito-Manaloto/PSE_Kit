@@ -150,14 +150,7 @@ public class PhisixHttpClient extends BaseHttpClient
         }
 
         final int size = symbols.size();
-
-        Set<Single<ResponsePhisixStockWrapper>> singleSet = new HashSet<>(size);
-        for(String symbol : symbols)
-        {
-            // Each observable will run in parallel
-            Single<ResponsePhisixStockWrapper> singleObservable = this.service.getStock(symbol).subscribeOn(Schedulers.io());
-            singleSet.add(singleObservable);
-        }
+        Set<Single<ResponsePhisixStockWrapper>> singleSet = createSingleObservableSetOnGetStock(symbols, size);
 
         LogManager.debug(CLASS_NAME, "getTickerList", "Start " + size + " async calls.");
         return Single.zip(singleSet, new Function<Object[], Pair<List<TickerDto>, Date>>()
@@ -191,6 +184,19 @@ public class PhisixHttpClient extends BaseHttpClient
                 return Pair.create(tickerList, lastUpdated);
             }
         });
+    }
+
+    private Set<Single<ResponsePhisixStockWrapper>> createSingleObservableSetOnGetStock(Collection<String> symbols, int size)
+    {
+        Set<Single<ResponsePhisixStockWrapper>> singleSet = new HashSet<>(size);
+        for(String symbol : symbols)
+        {
+            // Each observable will run in parallel
+            Single<ResponsePhisixStockWrapper> singleObservable = this.service.getStock(symbol).subscribeOn(Schedulers.io());
+            singleSet.add(singleObservable);
+        }
+
+        return singleSet;
     }
 
     private TickerDto convertResponsePhisixStockToTicker(ResponsePhisixStock phisixStock)

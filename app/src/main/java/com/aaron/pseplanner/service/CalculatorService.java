@@ -217,5 +217,4 @@ public interface CalculatorService
      * @return int the number of days between the two dates
      */
     int getDaysBetween(Date date1, Date date2);
-
 }

@@ -39,6 +39,10 @@ android {
             includeAndroidResources = true
         }
     }
+
+    lintOptions {
+        abortOnError false
+    }
 }
 
 def LEAKCANARY_VERSION = "1.5.4"
