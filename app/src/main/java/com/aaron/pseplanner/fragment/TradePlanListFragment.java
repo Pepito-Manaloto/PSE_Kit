@@ -78,6 +78,20 @@ public class TradePlanListFragment extends AbstractListFragment<TradeDto>
 
         this.calculatorService = new DefaultCalculatorService();
 
+        initializeTradePlanList(savedInstanceState);
+        initializeTradesMap();
+
+        setTradePlanListAdapter();
+    }
+
+    private void setTradePlanListAdapter()
+    {
+        this.tradePlanListAdapter = new TradePlanListAdapter(getActivity(), this.tradeDtoList);
+        this.setListAdapter(this.tradePlanListAdapter);
+    }
+
+    private void initializeTradePlanList(Bundle savedInstanceState)
+    {
         if(getArguments() != null && getArguments().containsKey(DataKey.EXTRA_TRADE_LIST.toString()))
         {
             this.tradeDtoList = getArguments().getParcelableArrayList(DataKey.EXTRA_TRADE_LIST.toString());
@@ -91,14 +105,16 @@ public class TradePlanListFragment extends AbstractListFragment<TradeDto>
             this.tradeDtoList = initTradePlanListFromDatabase();
         }
 
+        LogManager.debug(CLASS_NAME, "initializeTradePlanList", "TradeDto list count = " + (tradeDtoList != null ? tradeDtoList.size() : 0));
+    }
+
+    private void initializeTradesMap()
+    {
         this.tradesMap = new ConcurrentHashMap<>();
         for(TradeDto dto : this.tradeDtoList)
         {
             this.tradesMap.put(dto.getSymbol(), dto);
         }
-
-        this.tradePlanListAdapter = new TradePlanListAdapter(getActivity(), this.tradeDtoList);
-        this.setListAdapter(this.tradePlanListAdapter);
     }
 
     /**

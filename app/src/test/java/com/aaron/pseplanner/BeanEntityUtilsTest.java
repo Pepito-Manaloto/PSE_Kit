@@ -9,7 +9,6 @@ import com.aaron.pseplanner.entity.TradeEntry;
 import com.aaron.pseplanner.response.phisix.ResponsePhisixStock;
 import com.aaron.pseplanner.response.phisix.ResponsePrice;
 import com.aaron.pseplanner.service.BeanEntityUtils;
-import com.aaron.pseplanner.test.utils.BeanEntityBuilderTestUtils;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.RandomUtils;
@@ -41,7 +40,7 @@ public class BeanEntityUtilsTest
     public void givenTrade_whenFromTradeToTradeDto_thenTradeIsConvertedToTradeDto()
     {
         String symbol = "TEL";
-        Trade trade = givenTrade(symbol, BeanEntityBuilderTestUtils.givenTradeEntryList(symbol));
+        Trade trade = givenTrade(symbol, givenTradeEntryList(symbol));
 
         TradeDto tradeDto = BeanEntityUtils.fromTradeToTradeDto(trade);
 
@@ -51,7 +50,7 @@ public class BeanEntityUtilsTest
     @Test
     public void givenTradeEntryList_whenFromTradeEntryListToTradeEntryDtoList_thenTradeEntryListIsConvertedToTradeEntryDtoList()
     {
-        List<TradeEntry> tradeEntry = BeanEntityBuilderTestUtils.givenTradeEntryList("IS");
+        List<TradeEntry> tradeEntry = givenTradeEntryList("IS");
 
         List<TradeEntryDto> tradeEntryDtoList = BeanEntityUtils.fromTradeEntryListToTradeEntryDtoList(tradeEntry);
 
@@ -216,6 +215,8 @@ public class BeanEntityUtilsTest
     {
         assertEquals(trade.getId(), tradeDto.getId());
         assertEquals(trade.getSymbol(), tradeDto.getSymbol());
+        assertEquals(trade.getDatePlanned(), tradeDto.getDatePlanned());
+        assertEquals(trade.getDaysSincePlanned(), tradeDto.getDaysSincePlanned());
         assertEquals(trade.getEntryDate(), tradeDto.getEntryDate());
         assertEquals(trade.getHoldingPeriod(), tradeDto.getHoldingPeriod());
         assertEquals(trade.getCurrentPrice(), tradeDto.getCurrentPrice().toPlainString());
@@ -324,6 +325,8 @@ public class BeanEntityUtilsTest
     {
         assertNull(tradeDto.getId());
         assertNull(tradeDto.getSymbol());
+        assertNull(tradeDto.getDatePlanned());
+        assertEquals(0, tradeDto.getDaysSincePlanned());
         assertNull(tradeDto.getEntryDate());
         assertEquals(0, tradeDto.getHoldingPeriod());
         assertNull(tradeDto.getCurrentPrice());
@@ -351,6 +354,8 @@ public class BeanEntityUtilsTest
     {
         assertNull(trade.getId());
         assertNull(trade.getSymbol());
+        assertNull(trade.getDatePlanned());
+        assertEquals(0, trade.getDaysSincePlanned());
         assertNull(trade.getEntryDate());
         assertEquals(0, trade.getHoldingPeriod());
         assertNull(trade.getCurrentPrice());

@@ -1,7 +1,9 @@
 package com.aaron.pseplanner.fragment;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
@@ -9,6 +11,7 @@ import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
 
+import com.aaron.pseplanner.R;
 import com.aaron.pseplanner.constant.DataKey;
 import com.aaron.pseplanner.service.LogManager;
 
@@ -56,17 +59,38 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
     {
         LogManager.debug(CLASS_NAME, "onCreateDialog", "");
 
-        int editTextId = getArguments().getInt(DataKey.EXTRA_ID.toString());
-        this.editText = getActivity().findViewById(editTextId);
+        Bundle args = getArguments();
+        Activity activity = getActivity();
+        if(args != null)
+        {
+            int editTextId = args.getInt(DataKey.EXTRA_ID.toString());
 
-        String selectedDate = this.editText.getText().toString();
-        final Calendar calendar = createFormattedCalendar(selectedDate);
+            if(activity != null)
+            {
+                this.editText = activity.findViewById(editTextId);
 
-        int year = calendar.get(Calendar.YEAR);
-        int month = calendar.get(Calendar.MONTH);
-        int day = calendar.get(Calendar.DAY_OF_MONTH);
+                String selectedDate = this.editText.getText().toString();
+                final Calendar calendar = createFormattedCalendar(selectedDate);
 
-        return new DatePickerDialog(getActivity(), android.R.style.Theme_Holo_Light_Dialog, this, year, month, day);
+                int year = calendar.get(Calendar.YEAR);
+                int month = calendar.get(Calendar.MONTH);
+                int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+                DatePickerDialog dialog = new DatePickerDialog(activity, android.R.style.Theme_Holo_Light_Dialog, this, year, month, day);
+                // Add none button for clearing out current selected date
+                dialog.setButton(DialogInterface.BUTTON_NEUTRAL, activity.getText(R.string.none_button), new DialogInterface.OnClickListener()
+                {
+                    public void onClick(DialogInterface dialog, int id)
+                    {
+                        editText.setText("");
+                    }
+                });
+
+                return dialog;
+            }
+        }
+
+        throw new RuntimeException("Current activity is null");
     }
 
     private Calendar createFormattedCalendar(String selectedDate)
@@ -102,11 +126,15 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
 
         LogManager.debug(CLASS_NAME, "onDateSet", "Date: " + selectedDate);
 
-        // Clear focus, because Date EditText is not focusable it is awkward for the focus to be on a different View
-        View focusedView = getActivity().getCurrentFocus();
-        if(focusedView != null)
+        Activity activity = getActivity();
+        if(activity != null)
         {
-            focusedView.clearFocus();
+            // Clear focus, because Date EditText is not focusable it is awkward for the focus to be on a different View
+            View focusedView = activity.getCurrentFocus();
+            if(focusedView != null)
+            {
+                focusedView.clearFocus();
+            }
         }
     }
 }

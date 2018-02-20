@@ -1,5 +1,6 @@
 package com.aaron.pseplanner.fragment;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.app.ListFragment;
@@ -55,10 +56,14 @@ public abstract class AbstractListFragment<T extends Stock & Parcelable> extends
     {
         super.onCreate(savedInstanceState);
 
-        this.pseService = new FacadePSEPlannerService(getActivity());
-        this.formatService = new DefaultFormatService(getActivity());
-        this.searchListener = new SearchOnQueryTextListener();
-        this.compositeDisposable = new CompositeDisposable();
+        Activity activity = getActivity();
+        if(activity != null)
+        {
+            this.pseService = new FacadePSEPlannerService(activity);
+            this.formatService = new DefaultFormatService(activity);
+            this.searchListener = new SearchOnQueryTextListener();
+            this.compositeDisposable = new CompositeDisposable();
+        }
 
         LogManager.debug(CLASS_NAME, "onCreateView", "");
     }
@@ -84,10 +89,11 @@ public abstract class AbstractListFragment<T extends Stock & Parcelable> extends
      */
     protected void updateListView(final List<T> list, final String lastUpdated)
     {
-        if(list != null && !list.isEmpty())
+        Activity activity = getActivity();
+        if(list != null && !list.isEmpty() && activity != null)
         {
             getArrayAdapter().update(list);
-            lastUpdatedTextView.setText(getActivity().getString(R.string.last_updated, lastUpdated));
+            lastUpdatedTextView.setText(activity.getString(R.string.last_updated, lastUpdated));
             searchListener.setSearchListAdapater(getListAdapter());
         }
     }

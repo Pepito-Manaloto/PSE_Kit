@@ -33,6 +33,8 @@ public final class BeanEntityBuilderTestUtils
     {
         return new Trade().setId(RandomUtils.nextLong())
                 .setSymbol(symbol)
+                .setDatePlanned(randomDate())
+                .setDaysSincePlanned(RandomUtils.nextInt())
                 .setEntryDate(randomDate())
                 .setHoldingPeriod(RandomUtils.nextInt())
                 .setCurrentPrice(randomNumericString(3000))
@@ -101,6 +103,8 @@ public final class BeanEntityBuilderTestUtils
     public static TradeDto givenTradeDto(String symbol, List<TradeEntryDto> tradeEntries)
     {
         return new TradeDto(symbol).setId(RandomUtils.nextLong())
+                .setDatePlanned(randomDate())
+                .setDaysSincePlanned(RandomUtils.nextInt())
                 .setEntryDate(randomDate())
                 .setHoldingPeriod(RandomUtils.nextInt())
                 .setCurrentPrice(new BigDecimal(randomNumericString(3000)))

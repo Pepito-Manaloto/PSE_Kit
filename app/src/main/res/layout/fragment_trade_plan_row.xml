@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <HorizontalScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/trade_horizontalscroll_list_row"
+    android:id="@+id/trade_horizontal_scroll_list_row"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clickable="true"
@@ -93,41 +93,41 @@
 
             <TextView
                 style="@style/TextViewLabel"
-                android:layout_marginBottom="5dp"
-                android:text="@string/label_entry_date"
+                android:text="@string/label_date_planned"
+                android:layout_marginBottom="3dp"
                 android:textSize="15sp" />
 
             <TextView
-                android:id="@+id/textview_entry_date"
+                android:id="@+id/textview_date_planned"
                 style="@style/TextViewLabel"
-                android:layout_marginBottom="5dp"
-                android:layout_marginStart="20dp"
+                android:layout_marginStart="25dp"
+                android:layout_marginBottom="7dp"
                 android:textSize="15sp" />
 
             <TextView
                 style="@style/TextViewLabel"
-                android:layout_marginBottom="5dp"
+                android:text="@string/label_days_since_planned"
+                android:layout_marginBottom="3dp"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/textview_days_since_planned"
+                style="@style/TextViewLabel"
+                android:layout_marginStart="25dp"
+                android:layout_marginBottom="7dp"
+                android:textSize="15sp" />
+
+            <TextView
+                style="@style/TextViewLabel"
                 android:text="@string/label_stop_date"
+                android:layout_marginBottom="3dp"
                 android:textSize="15sp" />
 
             <TextView
                 android:id="@+id/textview_stop_date"
                 style="@style/TextViewLabel"
-                android:layout_marginBottom="5dp"
-                android:layout_marginStart="20dp"
-                android:textSize="15sp" />
-
-            <TextView
-                style="@style/TextViewLabel"
-                android:layout_marginBottom="5dp"
-                android:text="@string/label_holding_period"
-                android:textSize="15sp" />
-
-            <TextView
-                android:id="@+id/textview_holding_period"
-                style="@style/TextViewLabel"
-                android:layout_marginBottom="5dp"
-                android:layout_marginStart="20dp"
+                android:layout_marginStart="25dp"
+                android:layout_marginBottom="7dp"
                 android:textSize="15sp" />
 
         </LinearLayout>

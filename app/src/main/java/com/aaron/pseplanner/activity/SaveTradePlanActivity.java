@@ -140,10 +140,9 @@ public abstract class SaveTradePlanActivity extends AppCompatActivity
                 String stopLossStr = stopLossEditText.getText().toString();
                 String targetStr = targetEditText.getText().toString();
                 String capitalStr = capitalEditText.getText().toString();
-                String entryDateStr = entryDateEditText.getText().toString();
                 String stopDateStr = stopDateEditText.getText().toString();
 
-                if(areAllEditTextInputNotBlank(sharesStr, stopLossStr, targetStr, capitalStr, entryDateStr, stopDateStr))
+                if(areAllEditTextInputNotBlank(sharesStr, stopLossStr, targetStr, capitalStr, stopDateStr))
                 {
                     long shares = Long.parseLong(sharesStr.replace(",", ""));
                     BigDecimal stopLoss = new BigDecimal(stopLossStr.replace(",", ""));
@@ -154,7 +153,13 @@ public abstract class SaveTradePlanActivity extends AppCompatActivity
                     // Also validates if prices and weights are not blank
                     Pair<BigDecimal, BigDecimal> averagePriceTotalWeight = getAndValidateAveragePriceTotalWeight(priceWeightMap);
 
-                    Date entryDate = getFormattedDate(entryDateStr);
+                    String entryDateStr = entryDateEditText.getText().toString();
+
+                    Date entryDate = null;
+                    if(StringUtils.isNotBlank(entryDateStr))
+                    {
+                        entryDate = getFormattedDate(entryDateStr);
+                    }
                     Date stopDate = getFormattedDate(stopDateStr);
 
                     if(areAllEditTextInputValid(averagePriceTotalWeight, shares, stopLoss, target, entryDate, stopDate, capital, priceWeightMap))
@@ -216,13 +221,13 @@ public abstract class SaveTradePlanActivity extends AppCompatActivity
         }
     }
 
-    private boolean areAllEditTextInputNotBlank(String sharesStr, String stopLossStr, String targetStr, String capitalStr, String entryDateStr,
-            String stopDateStr)
+    private boolean areAllEditTextInputNotBlank(String sharesStr, String stopLossStr, String targetStr, String capitalStr, String stopDateStr)
     {
         return isEditTextNotBlank(sharesStr, "shares", sharesEditText)
                 && isEditTextNotBlank(stopLossStr, "stop loss", stopLossEditText)
-                && isEditTextNotBlank(targetStr, "target", targetEditText) && isEditTextNotBlank(entryDateStr, "entry date", entryDateEditText)
-                && isEditTextNotBlank(stopDateStr, "stop date", stopDateEditText) && isEditTextNotBlank(capitalStr, "capital", capitalEditText);
+                && isEditTextNotBlank(targetStr, "target", targetEditText)
+                && isEditTextNotBlank(stopDateStr, "stop date", stopDateEditText)
+                && isEditTextNotBlank(capitalStr, "capital", capitalEditText);
     }
 
     /**
@@ -391,11 +396,15 @@ public abstract class SaveTradePlanActivity extends AppCompatActivity
             return false;
         }
 
-        boolean isEntryDateEqualOrAfterStopDate = entryDate.getTime() == stopDate.getTime() || entryDate.after(stopDate);
-        if(isEntryDateEqualOrAfterStopDate)
+        boolean isEntryDateGiven = entryDate != null;
+        if(isEntryDateGiven)
         {
-            Toast.makeText(this, getString(R.string.entry_greater_than_stop_date), Toast.LENGTH_SHORT).show();
-            return false;
+            boolean isEntryDateEqualOrAfterStopDate = entryDate.getTime() == stopDate.getTime() || entryDate.after(stopDate);
+            if(isEntryDateEqualOrAfterStopDate)
+            {
+                Toast.makeText(this, getString(R.string.entry_greater_than_stop_date), Toast.LENGTH_SHORT).show();
+                return false;
+            }
         }
 
         boolean isStopLossSameOrHigherThanAveragePrice = stopLoss.doubleValue() >= averagePrice.doubleValue();
@@ -422,6 +431,8 @@ public abstract class SaveTradePlanActivity extends AppCompatActivity
 
         TradeDto dto = getTradeToSave(shares, stopLoss, target, capital, entryDate, stopDate, riskReward, averagePriceTotalWeight.first,
                 priceWeightMap.values());
+        LogManager.debug(CLASS_NAME, "evaluateRiskRewardAndSave", "tradeDto = " + dto);
+
         boolean isRiskRewardNotAttractive = riskReward.doubleValue() < 2;
         if(isRiskRewardNotAttractive)
         {
@@ -471,9 +482,16 @@ public abstract class SaveTradePlanActivity extends AppCompatActivity
         BigDecimal percentCapital = totalAmount.divide(new BigDecimal(capital), MathContext.DECIMAL64)
                 .multiply(ONE_HUNDRED).setScale(2, BigDecimal.ROUND_CEILING);
 
-        int holdingPeriod = calculator.getDaysBetween(new Date(), entryDate);
+        Date now = new Date();
+        int holdingPeriod = 0;
+        if(entryDate != null)
+        {
+            holdingPeriod = calculator.getDaysBetween(now, entryDate);
+        }
 
         TradeDto tradeDto = new TradeDto()
+                .setSymbol(symbol)
+                .setDatePlanned(now)
                 .setCurrentPrice(currentPrice)
                 .setAveragePrice(averagePriceAfterBuy)
                 .setTotalAmount(totalAmount)

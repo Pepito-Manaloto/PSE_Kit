@@ -66,36 +66,47 @@ public class UpdateTradePlanActivity extends SaveTradePlanActivity
 
     private void initializeEditTextValues()
     {
-        this.sharesEditText.setText(String.valueOf(tradeDtoPlanToUpdate != null ? tradeDtoPlanToUpdate.getTotalShares() : 0));
-        this.entryDateEditText.setText(DatePickerFragment.DATE_FORMATTER.format(tradeDtoPlanToUpdate.getEntryDate()));
-        this.stopDateEditText.setText(DatePickerFragment.DATE_FORMATTER.format(tradeDtoPlanToUpdate.getStopDate()));
-        this.stopLossEditText.setText(tradeDtoPlanToUpdate.getStopLoss().toPlainString());
-        this.targetEditText.setText(tradeDtoPlanToUpdate.getTargetPrice().toPlainString());
-        this.capitalEditText.setText(String.valueOf(tradeDtoPlanToUpdate.getCapital()));
+        sharesEditText.setText(String.valueOf(tradeDtoPlanToUpdate != null ? tradeDtoPlanToUpdate.getTotalShares() : 0));
 
-        this.setEntryTranchesValues(this.layoutInflater, this.entryTranchesLayout, this.tradeDtoPlanToUpdate.getTradeEntries());
+        if(tradeDtoPlanToUpdate.getEntryDate() != null)
+        {
+            entryDateEditText.setText(DatePickerFragment.DATE_FORMATTER.format(tradeDtoPlanToUpdate.getEntryDate()));
+        }
+
+        stopDateEditText.setText(DatePickerFragment.DATE_FORMATTER.format(tradeDtoPlanToUpdate.getStopDate()));
+        stopLossEditText.setText(tradeDtoPlanToUpdate.getStopLoss().toPlainString());
+        targetEditText.setText(tradeDtoPlanToUpdate.getTargetPrice().toPlainString());
+        capitalEditText.setText(String.valueOf(tradeDtoPlanToUpdate.getCapital()));
+
+        // Set values on the created entry tranche of the super class
+        setEntryTranchesValues(0, entryTranchesLayout.getChildAt(0), tradeDtoPlanToUpdate.getTradeEntries());
+        int entriesSize = tradeDtoPlanToUpdate.getTradeEntries().size();
+        for(int i = 1; i < entriesSize; i++)
+        {
+            createAndSetEntryTranchesValues(i, layoutInflater, entryTranchesLayout, tradeDtoPlanToUpdate.getTradeEntries());
+        }
     }
 
     /**
      * Sets each entry tranche to the view.
      */
-    private void setEntryTranchesValues(LayoutInflater layoutInflater, LinearLayout entryTranchesLayout, List<TradeEntryDto> tradeEntries)
+    private void setEntryTranchesValues(int index, View entryTrancheContainer, List<TradeEntryDto> tradeEntries)
     {
-        int entriesSize = tradeEntries.size() - 1; // Subtract one, because one tranche is already created
+        TextView labelTranche = entryTrancheContainer.findViewById(R.id.label_tranche);
+        labelTranche.setText(getString(R.string.label_tranche, ViewUtils.getOrdinalNumber(index)));
 
-        for(int i = 0; i < entriesSize; i++)
-        {
-            View entryTrancheContainer = addTranche(layoutInflater, entryTranchesLayout);
+        EditText entryPrice = entryTrancheContainer.findViewById(R.id.edittext_entry_price);
+        entryPrice.setText(String.valueOf(tradeEntries.get(index).getEntryPrice()));
 
-            TextView labelTranche = entryTrancheContainer.findViewById(R.id.label_tranche);
-            labelTranche.setText(getString(R.string.label_tranche, ViewUtils.getOrdinalNumber(i)));
+        EditText trancheWeight = entryTrancheContainer.findViewById(R.id.edittext_tranche_weight);
+        trancheWeight.setText(String.valueOf(tradeEntries.get(index).getPercentWeight()));
+    }
 
-            EditText entryPrice = entryTrancheContainer.findViewById(R.id.edittext_entry_price);
-            entryPrice.setText(String.valueOf(tradeEntries.get(i).getEntryPrice()));
+    private void createAndSetEntryTranchesValues(int index, LayoutInflater layoutInflater, LinearLayout entryTranchesLayout, List<TradeEntryDto> tradeEntries)
+    {
+        View entryTrancheContainer = addTranche(layoutInflater, entryTranchesLayout);
 
-            EditText trancheWeight = entryTrancheContainer.findViewById(R.id.edittext_tranche_weight);
-            trancheWeight.setText(String.valueOf(tradeEntries.get(i).getPercentWeight()));
-        }
+        setEntryTranchesValues(index, entryTrancheContainer, tradeEntries);
     }
 
     /**

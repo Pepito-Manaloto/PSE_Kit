@@ -34,6 +34,8 @@ public final class BeanEntityUtils
         List<TradeEntryDto> tradeEntryDtos = fromTradeEntryListToTradeEntryDtoList(trade.getTradeEntries());
 
         return new TradeDto(trade.getSymbol()).setId(trade.getId())
+                .setDatePlanned(trade.getDatePlanned())
+                .setDaysSincePlanned(trade.getDaysSincePlanned())
                 .setEntryDate(trade.getEntryDate())
                 .setHoldingPeriod(trade.getHoldingPeriod())
                 .setCurrentPrice(new BigDecimal(trade.getCurrentPrice()))
@@ -152,8 +154,9 @@ public final class BeanEntityUtils
                 .setCapital(tradeDto.getCapital())
                 .setTotalAmount(tradeDto.getTotalAmount().toPlainString())
                 .setTotalShares(tradeDto.getTotalShares())
+                .setDatePlanned(tradeDto.getDatePlanned())
+                .setDaysSincePlanned(tradeDto.getDaysSincePlanned())
                 .setEntryDate(tradeDto.getEntryDate())
-                .setDaysToStopDate(tradeDto.getDaysToStopDate())
                 .setHoldingPeriod(tradeDto.getHoldingPeriod())
                 .setTargetPrice(tradeDto.getTargetPrice().toPlainString())
                 .setGainToTarget(tradeDto.getGainToTarget().toPlainString())
@@ -162,6 +165,7 @@ public final class BeanEntityUtils
                 .setLossToStopLoss(tradeDto.getLossToStopLoss().toPlainString())
                 .setStopLoss(tradeDto.getStopLoss().toPlainString())
                 .setStopDate(tradeDto.getStopDate())
+                .setDaysToStopDate(tradeDto.getDaysToStopDate())
                 .setPriceToBreakEven(tradeDto.getPriceToBreakEven().toPlainString())
                 .setRiskReward(tradeDto.getRiskReward().toPlainString());
     }

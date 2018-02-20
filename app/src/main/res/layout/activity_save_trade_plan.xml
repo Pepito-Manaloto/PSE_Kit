@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:fitsSystemWindows="true"
     android:orientation="vertical">
 
-    <include layout="@layout/toolbar_main"/>
+    <include layout="@layout/toolbar_main" />
 
     <ScrollView
         android:id="@+id/scrollview"
@@ -18,49 +17,47 @@
 
         <GridLayout
             style="@style/GridLayoutLabelValuePair"
-            android:layout_marginBottom="15dp"
-            >
+            android:layout_marginBottom="15dp">
 
             <TextView
                 android:id="@+id/label_stock"
                 style="@style/TextViewLabel"
                 android:layout_marginTop="10dp"
-                android:text="@string/label_stock"/>
+                android:text="@string/label_stock" />
 
             <TextView
                 android:id="@+id/textview_stock"
                 style="@style/TextViewLabel"
                 android:layout_marginTop="10dp"
                 android:text="@android:string/unknownName"
-                android:textStyle="bold"/>
+                android:textStyle="bold" />
 
             <View
                 style="@style/Divider"
                 android:layout_columnSpan="2"
-                android:layout_marginBottom="10dp"
-                />
+                android:layout_marginBottom="10dp" />
 
             <TextView
                 android:id="@+id/label_shares"
                 style="@style/TextViewLabel"
                 android:layout_marginBottom="14dp"
-                android:text="@string/label_shares"/>
+                android:labelFor="@id/edittext_shares"
+                android:text="@string/label_shares" />
 
             <EditText
                 android:id="@+id/edittext_shares"
-                style="@style/TextViewLabel.EditText.Shares"/>
+                style="@style/TextViewLabel.EditText.Shares" />
 
             <View
                 style="@style/Divider2"
-                android:layout_columnSpan="2"
-                />
+                android:layout_columnSpan="2" />
 
             <TextView
                 android:id="@+id/label_entry"
                 style="@style/TextViewLabel"
                 android:layout_columnSpan="2"
                 android:layout_marginBottom="0dp"
-                android:text="@string/label_entry"/>
+                android:text="@string/label_entry" />
 
             <LinearLayout
                 android:id="@+id/entry_tranches_container"
@@ -79,90 +76,88 @@
                 android:layout_columnSpan="2"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="10dp"
-                android:layout_marginLeft="20dp"
                 android:layout_marginStart="20dp"
-                android:drawableLeft="@mipmap/add_button"
                 android:drawablePadding="10dp"
                 android:drawableStart="@mipmap/add_button"
                 android:paddingEnd="20dp"
-                android:paddingRight="20dp"
+                android:paddingStart="10dp"
                 android:text="@string/button_add_tranche"
-                android:textSize="18sp"/>
+                android:textSize="18sp" />
 
             <View
                 style="@style/Divider2"
-                android:layout_columnSpan="2"
-                />
+                android:layout_columnSpan="2" />
 
             <TextView
                 android:id="@+id/label_entry_date"
                 style="@style/TextViewLabel"
                 android:layout_marginBottom="14dp"
-                android:text="@string/label_entry_date"/>
+                android:text="@string/label_entry_date" />
 
             <EditText
                 android:id="@+id/edittext_entry_date"
-                style="@style/TextViewLabel.EditText.Date"/>
+                android:labelFor="@id/edittext_entry_date"
+                style="@style/TextViewLabel.EditText.Date" />
 
             <View
                 style="@style/Divider2"
-                android:layout_columnSpan="2"
-                />
+                android:layout_columnSpan="2" />
 
             <TextView
                 android:id="@+id/label_stop_date"
                 style="@style/TextViewLabel"
                 android:layout_marginBottom="14dp"
-                android:text="@string/label_stop_date"/>
+                android:labelFor="@id/edittext_stop_date"
+                android:text="@string/label_stop_date" />
 
             <EditText
                 android:id="@+id/edittext_stop_date"
-                style="@style/TextViewLabel.EditText.Date"/>
+                style="@style/TextViewLabel.EditText.Date" />
 
             <View
                 style="@style/Divider2"
-                android:layout_columnSpan="2"
-                />
+                android:layout_columnSpan="2" />
 
             <TextView
                 android:id="@+id/label_stop_loss"
                 style="@style/TextViewLabel"
                 android:layout_marginBottom="14dp"
-                android:text="@string/label_stop_loss"/>
+                android:labelFor="@id/edittext_stop_loss"
+                android:text="@string/label_stop_loss" />
 
             <EditText
                 android:id="@+id/edittext_stop_loss"
-                style="@style/TextViewLabel.EditText.Price"/>
+                style="@style/TextViewLabel.EditText.Price" />
 
             <View
                 style="@style/Divider2"
-                android:layout_columnSpan="2"
-                />
+                android:layout_columnSpan="2" />
 
             <TextView
                 android:id="@+id/label_target"
                 style="@style/TextViewLabel"
                 android:layout_marginBottom="14dp"
-                android:text="@string/label_target"/>
+                android:labelFor="@id/edittext_target"
+                android:text="@string/label_target" />
 
             <EditText
                 android:id="@+id/edittext_target"
-                style="@style/TextViewLabel.EditText.Price"/>
+                style="@style/TextViewLabel.EditText.Price" />
 
             <View
                 style="@style/Divider2"
-                android:layout_columnSpan="2"
-                />
+                android:layout_columnSpan="2" />
 
             <TextView
                 android:id="@+id/label_capital"
                 style="@style/TextViewLabel"
                 android:layout_marginBottom="14dp"
-                android:text="@string/label_capital"/>
+                android:labelFor="@id/edittext_capital"
+                android:text="@string/label_capital" />
 
             <EditText
                 android:id="@+id/edittext_capital"
-                style="@style/TextViewLabel.EditText.Shares"/>
+                style="@style/TextViewLabel.EditText.Shares" />
 
             <Button
                 android:id="@+id/button_save_trade_plan"
@@ -170,11 +165,10 @@
                 android:layout_height="wrap_content"
                 android:layout_columnSpan="2"
                 android:layout_gravity="center_horizontal"
-                android:padding="20dp"
                 android:layout_marginBottom="5dp"
+                android:padding="20dp"
                 android:text="@string/button_add_trade_plan"
-                android:textSize="18sp"
-                />
+                android:textSize="18sp" />
         </GridLayout>
 
     </ScrollView>

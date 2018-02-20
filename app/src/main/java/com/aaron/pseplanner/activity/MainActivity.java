@@ -335,7 +335,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 this.tickerDtoList.add(addedTickerDto);
             }
 
-            LogManager.debug(CLASS_NAME, "onActivityResult", "Extra Ticker: " + addedTickerDto);
+            LogManager.debug(CLASS_NAME, "loadCreateTradePlanResultData", "Extra Ticker: " + addedTickerDto);
         }
 
         if(data.hasExtra(DataKey.EXTRA_TRADE.toString()))
@@ -349,7 +349,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 Collections.sort(this.tradeDtoList);
             }
 
-            LogManager.debug(CLASS_NAME, "onActivityResult", "Extra Trade: " + addedTradeDto);
+            LogManager.debug(CLASS_NAME, "loadCreateTradePlanResultData", "Extra Trade: " + addedTradeDto);
         }
     }
 

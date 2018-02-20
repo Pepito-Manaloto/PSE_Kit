@@ -16,6 +16,8 @@ public class TradeDto implements Stock, Parcelable, Comparable<TradeDto>
 {
     private Long id;
 
+    private Date datePlanned;
+    private int daysSincePlanned;
     private Date entryDate;
     private int holdingPeriod;
     private String symbol;
@@ -66,14 +68,22 @@ public class TradeDto implements Stock, Parcelable, Comparable<TradeDto>
                 && gainLoss.equals(tradeDto.gainLoss) && gainLossPercent.equals(tradeDto.gainLossPercent) && gainToTarget.equals(tradeDto.gainToTarget)
                 && stopLoss.equals(tradeDto.stopLoss) && lossToStopLoss.equals(tradeDto.lossToStopLoss) && daysToStopDate == tradeDto.daysToStopDate
                 && riskReward.equals(tradeDto.riskReward) && capital == tradeDto.capital && percentCapital.equals(tradeDto.percentCapital)
-                && entryDate.equals(tradeDto.entryDate) && holdingPeriod == tradeDto.holdingPeriod && symbol.equals(tradeDto.symbol)
-                && stopDate.equals(tradeDto.stopDate) && tradeEntries.equals(tradeDto.tradeEntries);
+                && datePlanned.equals(tradeDto.datePlanned) && daysSincePlanned == tradeDto.daysSincePlanned && symbol.equals(tradeDto.symbol)
+                && ((entryDate == null && tradeDto.entryDate == null) || (entryDate != null && entryDate.equals(tradeDto.entryDate)))
+                && holdingPeriod == tradeDto.holdingPeriod && stopDate.equals(tradeDto.stopDate) && tradeEntries.equals(tradeDto.tradeEntries);
     }
 
     @Override
     public int hashCode()
     {
-        int result = getEntryDate().hashCode();
+        int result = getDatePlanned().hashCode();
+        result = 31 * result + getDaysSincePlanned();
+
+        if(getEntryDate() != null)
+        {
+            result = 31 * result + getEntryDate().hashCode();
+        }
+
         result = 31 * result + getHoldingPeriod();
         result = 31 * result + getSymbol().hashCode();
         result = 31 * result + getCurrentPrice().hashCode();
@@ -99,11 +109,31 @@ public class TradeDto implements Stock, Parcelable, Comparable<TradeDto>
     @Override
     public String toString()
     {
-        return "TradeDto{" + "entryDate=" + entryDate + ", holdingPeriod=" + holdingPeriod + ", symbol='" + symbol + '\'' + ", currentPrice=" + currentPrice
-                + ", averagePrice=" + averagePrice + ", totalShares=" + totalShares + ", totalAmount=" + totalAmount + ", priceToBreakEven=" + priceToBreakEven
-                + ", targetPrice=" + targetPrice + ", gainLoss=" + gainLoss + ", gainLossPercent=" + gainLossPercent + ", gainToTarget=" + gainToTarget
-                + ", stopLoss=" + stopLoss + ", lossToStopLoss=" + lossToStopLoss + ", stopDate=" + stopDate + ", daysToStopDate=" + daysToStopDate
-                + ", riskReward=" + riskReward + ", capital=" + capital + ", percentCapital=" + percentCapital + ", tradeEntries=" + tradeEntries + '}';
+        return "TradeDto{" +
+                "id=" + id +
+                ", datePlanned=" + datePlanned +
+                ", daysSincePlanned=" + daysSincePlanned +
+                ", entryDate=" + entryDate +
+                ", holdingPeriod=" + holdingPeriod +
+                ", symbol='" + symbol + '\'' +
+                ", currentPrice=" + currentPrice +
+                ", averagePrice=" + averagePrice +
+                ", totalShares=" + totalShares +
+                ", totalAmount=" + totalAmount +
+                ", priceToBreakEven=" + priceToBreakEven +
+                ", targetPrice=" + targetPrice +
+                ", gainLoss=" + gainLoss +
+                ", gainLossPercent=" + gainLossPercent +
+                ", gainToTarget=" + gainToTarget +
+                ", lossToStopLoss=" + lossToStopLoss +
+                ", stopLoss=" + stopLoss +
+                ", stopDate=" + stopDate +
+                ", daysToStopDate=" + daysToStopDate +
+                ", riskReward=" + riskReward +
+                ", capital=" + capital +
+                ", percentCapital=" + percentCapital +
+                ", tradeEntries=" + tradeEntries +
+                '}';
     }
 
     public Long getId()
@@ -114,6 +144,28 @@ public class TradeDto implements Stock, Parcelable, Comparable<TradeDto>
     public TradeDto setId(Long id)
     {
         this.id = id;
+        return this;
+    }
+
+    public Date getDatePlanned()
+    {
+        return datePlanned;
+    }
+
+    public TradeDto setDatePlanned(Date datePlanned)
+    {
+        this.datePlanned = datePlanned;
+        return this;
+    }
+
+    public int getDaysSincePlanned()
+    {
+        return daysSincePlanned;
+    }
+
+    public TradeDto setDaysSincePlanned(int daysSincePlanned)
+    {
+        this.daysSincePlanned = daysSincePlanned;
         return this;
     }
 
@@ -354,6 +406,8 @@ public class TradeDto implements Stock, Parcelable, Comparable<TradeDto>
     @Override
     public void writeToParcel(Parcel dest, int flags)
     {
+        dest.writeLong(this.datePlanned != null ? this.datePlanned.getTime() : -1);
+        dest.writeInt(this.daysSincePlanned);
         dest.writeLong(this.entryDate != null ? this.entryDate.getTime() : -1);
         dest.writeInt(this.holdingPeriod);
         dest.writeString(this.symbol);
@@ -382,6 +436,9 @@ public class TradeDto implements Stock, Parcelable, Comparable<TradeDto>
      */
     private TradeDto(Parcel in)
     {
+        long tmpDatePlanned = in.readLong();
+        this.datePlanned = tmpDatePlanned == -1 ? null : new Date(tmpDatePlanned);
+        this.daysSincePlanned = in.readInt();
         long tmpEntryDate = in.readLong();
         this.entryDate = tmpEntryDate == -1 ? null : new Date(tmpEntryDate);
         this.holdingPeriod = in.readInt();

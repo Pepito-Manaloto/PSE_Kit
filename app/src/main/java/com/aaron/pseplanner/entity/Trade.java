@@ -24,9 +24,12 @@ public class Trade
     private Long id;
 
     @NotNull
+    private Date datePlanned;
+
+    private int daysSincePlanned;
+
     private Date entryDate;
 
-    @NotNull
     private int holdingPeriod;
 
     @Unique
@@ -90,17 +93,18 @@ public class Trade
     @Generated(hash = 295783675)
     private transient TradeDao myDao;
 
-    @Generated(hash = 1506989549)
-    public Trade(Long id, @NotNull Date entryDate, int holdingPeriod, @NotNull String symbol,
-            @NotNull String currentPrice, @NotNull String averagePrice, long totalShares,
-            @NotNull String totalAmount, @NotNull String priceToBreakEven,
-            @NotNull String targetPrice, @NotNull String gainLoss,
+    @Generated(hash = 574929520)
+    public Trade(Long id, @NotNull Date datePlanned, int daysSincePlanned, Date entryDate,
+            int holdingPeriod, @NotNull String symbol, @NotNull String currentPrice,
+            @NotNull String averagePrice, long totalShares, @NotNull String totalAmount,
+            @NotNull String priceToBreakEven, @NotNull String targetPrice, @NotNull String gainLoss,
             @NotNull String gainLossPercent, @NotNull String gainToTarget,
             @NotNull String lossToStopLoss, @NotNull String stopLoss, @NotNull Date stopDate,
             int daysToStopDate, @NotNull String riskReward, long capital,
-            @NotNull String percentCapital)
-    {
+            @NotNull String percentCapital) {
         this.id = id;
+        this.datePlanned = datePlanned;
+        this.daysSincePlanned = daysSincePlanned;
         this.entryDate = entryDate;
         this.holdingPeriod = holdingPeriod;
         this.symbol = symbol;
@@ -135,6 +139,28 @@ public class Trade
     public Trade setId(Long id)
     {
         this.id = id;
+        return this;
+    }
+
+    public Date getDatePlanned()
+    {
+        return this.datePlanned;
+    }
+
+    public Trade setDatePlanned(@NotNull Date datePlanned)
+    {
+        this.datePlanned = datePlanned;
+        return this;
+    }
+
+    public int getDaysSincePlanned()
+    {
+        return this.daysSincePlanned;
+    }
+
+    public Trade setDaysSincePlanned(int daysSincePlanned)
+    {
+        this.daysSincePlanned = daysSincePlanned;
         return this;
     }
 

@@ -193,7 +193,7 @@ public class TradePlanActivity extends AppCompatActivity
 
     private int getIndexOfTradeDtoInTradeDtoList(TradeDto tradeDto)
     {
-        return this.tradeDtoPlanList.indexOf(tradeDto);
+        return tradeDtoPlanList.indexOf(tradeDto);
     }
 
     private void updateSelectedTradeDtoPlanAndList(TradeDto newlySelectedTradeDtoPlan, int index)

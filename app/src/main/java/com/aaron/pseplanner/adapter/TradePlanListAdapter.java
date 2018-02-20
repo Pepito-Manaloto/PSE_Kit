@@ -42,7 +42,7 @@ public class TradePlanListAdapter extends FilterableArrayAdapter<TradeDto>
         this.activity = activity;
         this.formatService = new DefaultFormatService(activity);
         // ArrayList is used because this will be added in an intent
-        this.tradeDtoList = (ArrayList<TradeDto>) tradeDtoList;
+        this.tradeDtoList = new ArrayList<>(tradeDtoList);
         this.tradeDtoListTemp = new ArrayList<>(tradeDtoList);
     }
 
@@ -94,6 +94,12 @@ public class TradePlanListAdapter extends FilterableArrayAdapter<TradeDto>
      */
     static class ViewHolder
     {
+        @BindView(R.id.textview_date_planned)
+        TextView datePlanned;
+
+        @BindView(R.id.textview_days_since_planned)
+        TextView daysSincePlanned;
+
         @BindView(R.id.textview_stock)
         TextView stock;
 
@@ -112,16 +118,10 @@ public class TradePlanListAdapter extends FilterableArrayAdapter<TradeDto>
         @BindView(R.id.textview_stop_loss)
         TextView stopLoss;
 
-        @BindView(R.id.textview_entry_date)
-        TextView entryDate;
-
         @BindView(R.id.textview_stop_date)
         TextView stopDate;
 
-        @BindView(R.id.textview_holding_period)
-        TextView holdingPeriod;
-
-        @BindView(R.id.trade_horizontalscroll_list_row)
+        @BindView(R.id.trade_horizontal_scroll_list_row)
         HorizontalScrollView scroll;
 
         private ViewHolder(View view)
@@ -132,6 +132,11 @@ public class TradePlanListAdapter extends FilterableArrayAdapter<TradeDto>
         private void setTickerView(TradeDto tradeDto, FormatService service, View.OnTouchListener listener)
         {
             scroll.setOnTouchListener(listener);
+
+            datePlanned.setText(service.formatDate(tradeDto.getDatePlanned()));
+            String daysSincePlannedLabel = getDaysLabel(tradeDto.getDaysSincePlanned());
+            daysSincePlanned.setText(String.format("%s %s", tradeDto.getHoldingPeriod(), daysSincePlannedLabel));
+
             stock.setText(tradeDto.getSymbol());
             currentPrice.setText(service.formatStockPrice(tradeDto.getCurrentPrice().doubleValue()));
             averagePrice.setText(service.formatStockPrice(tradeDto.getAveragePrice().doubleValue()));
@@ -143,13 +148,14 @@ public class TradePlanListAdapter extends FilterableArrayAdapter<TradeDto>
 
             shares.setText(service.formatShares(tradeDto.getTotalShares()));
             stopLoss.setText(service.formatPrice(tradeDto.getStopLoss().doubleValue()));
-            entryDate.setText(service.formatDate(tradeDto.getEntryDate()));
             stopDate.setText(service.formatDate(tradeDto.getStopDate()));
 
-            String holdingPeriodLabel = tradeDto.getHoldingPeriod() > 1 ? "days" : "day";
-            holdingPeriod.setText(String.format("%s %s", tradeDto.getHoldingPeriod(), holdingPeriodLabel));
-
             service.formatTextColor(tradeDto.getGainLoss().doubleValue(), gainLoss);
+        }
+
+        private String getDaysLabel(int days)
+        {
+            return days > 1 ? "days" : "day";
         }
     }
 }

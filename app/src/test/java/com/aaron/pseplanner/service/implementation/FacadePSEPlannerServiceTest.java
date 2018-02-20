@@ -1011,6 +1011,8 @@ public class FacadePSEPlannerServiceTest extends AbstractHttpClientTest
     {
         assertEquals(tradeDto.getId(), trade.getId());
         assertEquals(tradeDto.getSymbol(), trade.getSymbol());
+        assertEquals(tradeDto.getDatePlanned(), trade.getDatePlanned());
+        assertEquals(tradeDto.getDaysSincePlanned(), trade.getDaysSincePlanned());
         assertEquals(tradeDto.getEntryDate(), trade.getEntryDate());
         assertEquals(tradeDto.getHoldingPeriod(), trade.getHoldingPeriod());
         assertEquals(tradeDto.getCurrentPrice().toPlainString(), trade.getCurrentPrice());

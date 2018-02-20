@@ -5,6 +5,7 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="cancel_button">Cancel</string>
+    <string name="none_button">None</string>
 
     <string name="title_create_trade_plan">Create Trade Plan</string>
     <string name="title_update_trade_plan">Update Trade Plan</string>
@@ -33,6 +34,9 @@
     <string name="settings_notify_with_sound_effect">Notfiy With Sound Effect</string>
 
     <!-- Labels -->
+    <string name="label_date_planned">Date Planned : </string>
+    <string name="label_days_since_planned">Days Since Planned : </string>
+
     <string name="label_buy_price">Buy Price : </string>
     <string name="label_shares">Shares : </string>
     <string name="label_price_to_break_even">Price To Break-Even : </string>

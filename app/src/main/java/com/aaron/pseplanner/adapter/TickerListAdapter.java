@@ -42,7 +42,7 @@ public class TickerListAdapter extends FilterableArrayAdapter<TickerDto>
 
         this.activity = activity;
         this.formatService = new DefaultFormatService(activity);
-        this.tickerDtoList = (ArrayList<TickerDto>) tickerDtoList;
+        this.tickerDtoList = new ArrayList<>(tickerDtoList);
         this.tickerDtoListTemp = new ArrayList<>(tickerDtoList);
     }
 

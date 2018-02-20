@@ -34,8 +34,11 @@ import com.aaron.pseplanner.service.ViewUtils;
 import com.aaron.pseplanner.service.implementation.DefaultFormatService;
 import com.aaron.pseplanner.service.implementation.FacadePSEPlannerService;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.List;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
@@ -51,6 +54,72 @@ public class TradePlanFragment extends Fragment
     private FormatService formatService;
     private PSEPlannerService pseService;
     private Unbinder unbinder;
+
+    @BindView(R.id.textview_stock)
+    TextView stock;
+
+    @BindView(R.id.textview_date_planned)
+    TextView datePlanned;
+
+    @BindView(R.id.textview_days_since_planned)
+    TextView daysSincePlanned;
+
+    @BindView(R.id.textview_entry_date)
+    TextView entryDate;
+
+    @BindView(R.id.textview_holding_period)
+    TextView holdingPeriod;
+
+    @BindView(R.id.textview_current_price)
+    TextView currentPrice;
+
+    @BindView(R.id.textview_total_shares)
+    TextView totalShares;
+
+    @BindView(R.id.textview_average_price)
+    TextView averagePrice;
+
+    @BindView(R.id.textview_total_amount)
+    TextView totalAmount;
+
+    @BindView(R.id.textview_gain_loss)
+    TextView gainLoss;
+
+    @BindView(R.id.entry_tranches_container)
+    LinearLayout entryTranchesContainer;
+
+    @BindView(R.id.imageview_entry)
+    ImageView trancheImageView;
+
+    @BindView(R.id.textview_price_to_break_even)
+    TextView priceToBreakEven;
+
+    @BindView(R.id.textview_target)
+    TextView target;
+
+    @BindView(R.id.textview_gain_target)
+    TextView gainTarget;
+
+    @BindView(R.id.textview_stop_loss)
+    TextView stopLoss;
+
+    @BindView(R.id.textview_loss_stop_loss)
+    TextView lossStopLoss;
+
+    @BindView(R.id.textview_stop_date)
+    TextView stopDate;
+
+    @BindView(R.id.textview_days_to_stop_date)
+    TextView daysToStopDate;
+
+    @BindView(R.id.textview_risk_reward)
+    TextView riskReward;
+
+    @BindView(R.id.textview_capital)
+    TextView capital;
+
+    @BindView(R.id.textview_percent_of_capital)
+    TextView percentOfCapital;
 
     /**
      * Creates a new TradePlanFragment instance and stores the passed TradeDto data as argument.
@@ -111,29 +180,28 @@ public class TradePlanFragment extends Fragment
         ScrollView view = (ScrollView) inflater.inflate(R.layout.fragment_trade_plan, container, false);
         this.unbinder = ButterKnife.bind(this, view);
 
-        TextView stock = view.findViewById(R.id.textview_stock);
         stock.setText(this.selectedStock.getSymbol());
 
-        TextView entryDate = view.findViewById(R.id.textview_entry_date);
-        entryDate.setText(this.formatService.formatDate(this.selectedStock.getEntryDate()));
+        String datePlannedStr = this.formatService.formatDate(this.selectedStock.getDatePlanned());
+        datePlanned.setText(datePlannedStr);
 
-        TextView holdingPeriod = view.findViewById(R.id.textview_holding_period);
+        String daysSincePlannedLabel = this.selectedStock.getDaysSincePlanned() > 1 ? "days" : "day";
+        daysSincePlanned.setText(String.format("%s %s", this.selectedStock.getDaysSincePlanned(), daysSincePlannedLabel));
+
+        String entryDateStr = this.formatService.formatDate(this.selectedStock.getEntryDate());
+        entryDate.setText(StringUtils.isBlank(entryDateStr) ? "None" : entryDateStr);
+
         String holdingPeriodLabel = this.selectedStock.getHoldingPeriod() > 1 ? "days" : "day";
         holdingPeriod.setText(String.format("%s %s", this.selectedStock.getHoldingPeriod(), holdingPeriodLabel));
 
-        TextView currentPrice = view.findViewById(R.id.textview_current_price);
         currentPrice.setText(this.formatService.formatStockPrice(this.selectedStock.getCurrentPrice().doubleValue()));
 
-        TextView totalShares = view.findViewById(R.id.textview_total_shares);
         totalShares.setText(this.formatService.formatShares(this.selectedStock.getTotalShares()));
 
-        TextView averagePrice = view.findViewById(R.id.textview_average_price);
         averagePrice.setText(this.formatService.formatStockPrice(this.selectedStock.getAveragePrice().doubleValue()));
 
-        TextView totalAmount = view.findViewById(R.id.textview_total_amount);
         totalAmount.setText(this.formatService.formatPrice(this.selectedStock.getTotalAmount().doubleValue()));
 
-        TextView gainLoss = view.findViewById(R.id.textview_gain_loss);
         String gainLossValue = ViewUtils.addPositiveSign(this.selectedStock.getGainLoss().doubleValue(),
                 this.formatService.formatPrice(this.selectedStock.getGainLoss().doubleValue()));
         String gainLossPercentValue = ViewUtils.addPositiveSign(this.selectedStock.getGainLossPercent().doubleValue(),
@@ -141,43 +209,31 @@ public class TradePlanFragment extends Fragment
         gainLoss.setText(String.format("%s (%s)", gainLossValue, gainLossPercentValue));
         this.formatService.formatTextColor(this.selectedStock.getGainLoss().doubleValue(), gainLoss);
 
-        LinearLayout entryTranchesContainer = view.findViewById(R.id.entry_tranches_container);
-        ImageView trancheImageView = view.findViewById(R.id.imageview_entry);
         trancheImageView.setOnClickListener(new ImageViewOnClickHideExpand(getActivity(), trancheImageView, entryTranchesContainer));
         this.setTranchesValues(entryTranchesContainer);
 
-        TextView priceToBreakEven = view.findViewById(R.id.textview_price_to_break_even);
         priceToBreakEven.setText(this.formatService.formatStockPrice(this.selectedStock.getPriceToBreakEven().doubleValue()));
 
-        TextView target = view.findViewById(R.id.textview_target);
         target.setText(this.formatService.formatStockPrice(this.selectedStock.getTargetPrice().doubleValue()));
 
-        TextView gainTarget = view.findViewById(R.id.textview_gain_target);
         double gainToTargetValue = this.selectedStock.getGainToTarget().doubleValue();
         String gainToTarget = "+" + this.formatService.formatPrice(gainToTargetValue);
         gainTarget.setText(gainToTarget);
         this.formatService.formatTextColor(gainToTargetValue, gainTarget);
 
-        TextView stopLoss = view.findViewById(R.id.textview_stop_loss);
         stopLoss.setText(this.formatService.formatStockPrice(this.selectedStock.getStopLoss().doubleValue()));
 
-        TextView lossStopLoss = view.findViewById(R.id.textview_loss_stop_loss);
         lossStopLoss.setText(this.formatService.formatPrice(this.selectedStock.getLossToStopLoss().doubleValue()));
         this.formatService.formatTextColor(this.selectedStock.getLossToStopLoss().doubleValue(), lossStopLoss);
 
-        TextView stopDate = view.findViewById(R.id.textview_stop_date);
         stopDate.setText(this.formatService.formatDate(this.selectedStock.getStopDate()));
 
-        TextView daysToStopDate = view.findViewById(R.id.textview_days_to_stop_date);
         daysToStopDate.setText(String.valueOf(this.selectedStock.getDaysToStopDate()));
 
-        TextView riskReward = view.findViewById(R.id.textview_risk_reward);
         riskReward.setText(this.formatService.formatStockPrice(this.selectedStock.getRiskReward().doubleValue()));
 
-        TextView capital = view.findViewById(R.id.textview_capital);
         capital.setText(this.formatService.formatPrice(this.selectedStock.getCapital()));
 
-        TextView percentOfCapital = view.findViewById(R.id.textview_percent_of_capital);
         percentOfCapital.setText(this.formatService.formatPercent(this.selectedStock.getPercentCapital().doubleValue()));
 
         return view;
