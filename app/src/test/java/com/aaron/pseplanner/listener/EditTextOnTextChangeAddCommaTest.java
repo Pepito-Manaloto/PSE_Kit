@@ -20,7 +20,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 /**
  * Created by Aaron on 06/01/2018.
@@ -219,8 +218,6 @@ public class EditTextOnTextChangeAddCommaTest extends RobolectricTest
 
         EditText editText = spy(new EditText(getContext(), attributeSet));
         editText.setSelection(cursorPosition);
-
-        when(editText.getSelectionStart()).thenReturn(cursorPosition);
 
         return editText;
     }
