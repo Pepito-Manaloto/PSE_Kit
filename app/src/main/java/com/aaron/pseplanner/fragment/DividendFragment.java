@@ -109,16 +109,20 @@ public class DividendFragment extends AbstractCalculatorFragment
 
                 BigDecimal cashDividend = BigDecimal.valueOf(formatter.parse(cashDividendStr).doubleValue());
 
-                BigDecimal yield = calculatorService.getDividendYield(shares, cashDividend);
-                this.yieldTextView.setText(formatService.formatPrice(yield.doubleValue()));
-                this.formatService.formatTextColor(yield.doubleValue(), yieldTextView);
+                boolean inputFieldsAreNotZero = price.signum() > 0 && shares > 0 && cashDividend.signum() > 0;
+                if(inputFieldsAreNotZero)
+                {
+                    BigDecimal yield = calculatorService.getDividendYield(shares, cashDividend);
+                    this.yieldTextView.setText(formatService.formatPrice(yield.doubleValue()));
+                    this.formatService.formatTextColor(yield.doubleValue(), yieldTextView);
 
-                BigDecimal percentYield = calculatorService.getPercentDividendYield(price, shares, cashDividend);
-                this.percentYieldTextView.setText(formatService.formatPercent(percentYield.doubleValue()));
-                this.formatService.formatTextColor(percentYield.doubleValue(), percentYieldTextView);
+                    BigDecimal percentYield = calculatorService.getPercentDividendYield(price, shares, cashDividend);
+                    this.percentYieldTextView.setText(formatService.formatPercent(percentYield.doubleValue()));
+                    this.formatService.formatTextColor(percentYield.doubleValue(), percentYieldTextView);
 
-                BigDecimal totalAmount = calculatorService.getBuyGrossAmount(price, shares);
-                this.totalAmountTextView.setText(formatService.formatPrice(totalAmount.doubleValue()));
+                    BigDecimal totalAmount = calculatorService.getBuyGrossAmount(price, shares);
+                    this.totalAmountTextView.setText(formatService.formatPrice(totalAmount.doubleValue()));
+                }
             }
             catch(ParseException ex)
             {

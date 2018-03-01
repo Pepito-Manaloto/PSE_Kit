@@ -187,7 +187,11 @@ public class CalculatorFragment extends AbstractCalculatorFragment
                     buyPrice = BigDecimal.valueOf(formatter.parse(buyPriceStr).doubleValue());
                     shares = formatter.parse(sharesStr).longValue();
 
-                    calculateAndUpdateViewOnBuy(buyPrice, shares);
+                    boolean buyPriceAndSharesGreaterThanZero = buyPrice.signum() > 0 && shares > 0;
+                    if(buyPriceAndSharesGreaterThanZero)
+                    {
+                        calculateAndUpdateViewOnBuy(buyPrice, shares);
+                    }
 
                     // Set previous value to be compared on the next text change, to skip calculation if both are unchanged.
                     this.buyPriceStrPrevious = buyPriceStr;
@@ -219,7 +223,8 @@ public class CalculatorFragment extends AbstractCalculatorFragment
                         }
 
                         BigDecimal sellPrice = BigDecimal.valueOf(formatter.parse(sellPriceStr).doubleValue());
-                        if(sellPrice.doubleValue() != 0.0)
+                        boolean buyPriceSellPriceSharesGreaterThanZero = buyPrice.signum() > 0 && sellPrice.signum() > 0 && shares > 0;
+                        if(buyPriceSellPriceSharesGreaterThanZero)
                         {
                             calculateAndUpdateViewOnSell(buyPrice, sellPrice, shares);
                         }

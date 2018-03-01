@@ -20,12 +20,10 @@ public class DefaultCalculatorService implements CalculatorService
      * @param buyPrice the price the stock to buy
      * @param shares the number of shares to buy
      * @return BigDecimal
-     * @throws IllegalArgumentException if the parameters are not positive
      */
     @Override
     public BigDecimal getBuyGrossAmount(BigDecimal buyPrice, long shares)
     {
-        validateUserInput(shares, buyPrice);
         return buyPrice.multiply(BigDecimal.valueOf(shares));
     }
 
@@ -35,12 +33,10 @@ public class DefaultCalculatorService implements CalculatorService
      * @param buyPrice the price the stock to buy
      * @param shares the number of shares to buy
      * @return BigDecimal
-     * @throws IllegalArgumentException if the parameters are not positive
      */
     @Override
     public BigDecimal getBuyNetAmount(BigDecimal buyPrice, long shares)
     {
-        validateUserInput(shares, buyPrice);
         BigDecimal grossAmount = getBuyGrossAmount(buyPrice, shares);
 
         return grossAmount.add(grossAmount.multiply(TOTAL_BUY_FEE));
@@ -51,13 +47,10 @@ public class DefaultCalculatorService implements CalculatorService
      *
      * @param buyPrice the price the stock to buy
      * @return BigDecimal
-     * @throws IllegalArgumentException if the parameter is not positive
      */
     @Override
     public BigDecimal getAveragePriceAfterBuy(BigDecimal buyPrice)
     {
-        validateUserInput(buyPrice);
-
         BigDecimal buyPriceWithFees = buyPrice.multiply(TOTAL_BUY_FEE);
         return buyPrice.add(buyPriceWithFees);
     }
@@ -67,13 +60,10 @@ public class DefaultCalculatorService implements CalculatorService
      *
      * @param buyPrice the price the stock to buy
      * @return BigDecimal
-     * @throws IllegalArgumentException if the parameter is not positive
      */
     @Override
     public BigDecimal getPriceToBreakEven(BigDecimal buyPrice)
     {
-        validateUserInput(buyPrice);
-
         BigDecimal buyPriceWithFees = buyPrice.multiply(TOTAL_BUY_SELL_FEE);
         return buyPrice.add(buyPriceWithFees);
     }
@@ -84,13 +74,10 @@ public class DefaultCalculatorService implements CalculatorService
      * @param sellPrice the price the stock to sell
      * @param shares the number of shares to sell
      * @return BigDecimal
-     * @throws IllegalArgumentException if the parameters are not positive
      */
     @Override
     public BigDecimal getSellGrossAmount(BigDecimal sellPrice, long shares)
     {
-        validateUserInput(shares, sellPrice);
-
         return sellPrice.multiply(BigDecimal.valueOf(shares));
     }
 
@@ -100,13 +87,10 @@ public class DefaultCalculatorService implements CalculatorService
      * @param sellPrice the price the stock to sell
      * @param shares the number of shares to sell
      * @return BigDecimal
-     * @throws IllegalArgumentException if the parameters are not positive
      */
     @Override
     public BigDecimal getSellNetAmount(BigDecimal sellPrice, long shares)
     {
-        validateUserInput(sellPrice);
-
         BigDecimal sellGrossAmount = getSellGrossAmount(sellPrice, shares);
         return sellGrossAmount.subtract(sellGrossAmount.multiply(TOTAL_SELL_FEE));
     }
@@ -118,13 +102,10 @@ public class DefaultCalculatorService implements CalculatorService
      * @param sellPrice the price the stock to sell
      * @param shares the number of shares in the trade
      * @return BigDecimal
-     * @throws IllegalArgumentException if the parameters are not positive
      */
     @Override
     public BigDecimal getGainLossAmount(BigDecimal buyPrice, long shares, BigDecimal sellPrice)
     {
-        validateUserInput(shares, buyPrice, sellPrice);
-
         BigDecimal buyNetAmount = getBuyNetAmount(buyPrice, shares);
         BigDecimal sellNetAmount = getSellNetAmount(sellPrice, shares);
 
@@ -138,13 +119,10 @@ public class DefaultCalculatorService implements CalculatorService
      * @param sellPrice the price the stock to sell
      * @param shares the number of shares in the trade
      * @return BigDecimal
-     * @throws IllegalArgumentException if the parameters are not positive
      */
     @Override
     public BigDecimal getPercentGainLoss(BigDecimal buyPrice, long shares, BigDecimal sellPrice)
     {
-        validateUserInput(shares, buyPrice, sellPrice);
-
         BigDecimal gainLossAmount = getGainLossAmount(buyPrice, shares, sellPrice);
         BigDecimal buyNetAmount = getBuyNetAmount(buyPrice, shares);
 
@@ -158,13 +136,10 @@ public class DefaultCalculatorService implements CalculatorService
      * @param targetPrice the planned target price of a stock
      * @param cutlossPrice the planned cutloss price of a stock
      * @return BigDecimal
-     * @throws IllegalArgumentException if the parameters are not positive
      */
     @Override
     public BigDecimal getRiskRewardRatio(BigDecimal entryPrice, BigDecimal targetPrice, BigDecimal cutlossPrice)
     {
-        validateUserInput(entryPrice, targetPrice, cutlossPrice);
-
         BigDecimal gain = getGainLossAmount(entryPrice, NumberUtils.LONG_ONE, targetPrice);
         BigDecimal loss = getGainLossAmount(entryPrice, NumberUtils.LONG_ONE, cutlossPrice);
 
@@ -177,13 +152,10 @@ public class DefaultCalculatorService implements CalculatorService
      * @param shares the number of shares to buy
      * @param cashDividend the dividend amount per share
      * @return BigDecimal
-     * @throws IllegalArgumentException if the parameters are not positive
      */
     @Override
     public BigDecimal getDividendYield(long shares, BigDecimal cashDividend)
     {
-        validateUserInput(shares, cashDividend);
-
         return cashDividend.multiply(BigDecimal.valueOf(shares));
     }
 
@@ -194,13 +166,10 @@ public class DefaultCalculatorService implements CalculatorService
      * @param shares the number of shares to buy
      * @param cashDividend the dividend amount per share
      * @return BigDecimal
-     * @throws IllegalArgumentException if the parameters are not positive
      */
     @Override
     public BigDecimal getPercentDividendYield(BigDecimal price, long shares, BigDecimal cashDividend)
     {
-        validateUserInput(shares, price, cashDividend);
-
         BigDecimal dividendYield = getDividendYield(shares, cashDividend);
         BigDecimal totalAmount = getBuyGrossAmount(price, shares);
         return ONE_HUNDRED.multiply(dividendYield.divide(totalAmount, MathContext.DECIMAL64));
@@ -212,13 +181,10 @@ public class DefaultCalculatorService implements CalculatorService
      * @param high highest price
      * @param low lowest price
      * @return BigDecimal
-     * @throws IllegalArgumentException if the parameters are not positive
      */
     @Override
     public BigDecimal getMidpoint(BigDecimal high, BigDecimal low)
     {
-        validateUserInput(high, low);
-
         return high.subtract(high.subtract(low).divide(TWO, MathContext.DECIMAL64));
     }
 
@@ -227,13 +193,10 @@ public class DefaultCalculatorService implements CalculatorService
      *
      * @param grossAmount the stock trade's gross amount
      * @return BigDecimal
-     * @throws IllegalArgumentException if the parameter is not positive
      */
     @Override
     public BigDecimal getStockbrokersCommission(BigDecimal grossAmount)
     {
-        validateUserInput(grossAmount);
-
         BigDecimal commission = grossAmount.multiply(STOCK_BROKERS_COMMISSION);
         return commission.compareTo(MINIMUM_COMMISSION) < 0 ? MINIMUM_COMMISSION : commission;
     }
@@ -243,13 +206,10 @@ public class DefaultCalculatorService implements CalculatorService
      *
      * @param stockbrokersCommission the stock trade's commission
      * @return BigDecimal
-     * @throws IllegalArgumentException if the parameter is not positive
      */
     @Override
     public BigDecimal getVatOfCommission(BigDecimal stockbrokersCommission)
     {
-        validateUserInput(stockbrokersCommission);
-
         return stockbrokersCommission.multiply(VAT);
     }
 
@@ -258,13 +218,10 @@ public class DefaultCalculatorService implements CalculatorService
      *
      * @param grossAmount the stock trade's gross amount
      * @return BigDecimal
-     * @throws IllegalArgumentException if the parameter is not positive
      */
     @Override
     public BigDecimal getClearingFee(BigDecimal grossAmount)
     {
-        validateUserInput(grossAmount);
-
         return grossAmount.multiply(CLEARING_FEE);
     }
 
@@ -273,13 +230,10 @@ public class DefaultCalculatorService implements CalculatorService
      *
      * @param grossAmount the stock trade's gross amount
      * @return BigDecimal
-     * @throws IllegalArgumentException if the parameter is not positive
      */
     @Override
     public BigDecimal getTransactionFee(BigDecimal grossAmount)
     {
-        validateUserInput(grossAmount);
-
         return grossAmount.multiply(PSE_TRANSACTION_FEE);
     }
 
@@ -288,13 +242,10 @@ public class DefaultCalculatorService implements CalculatorService
      *
      * @param grossAmount the stock trade's gross amount
      * @return BigDecimal
-     * @throws IllegalArgumentException if the parameter is not positive
      */
     @Override
     public BigDecimal getSalesTax(BigDecimal grossAmount)
     {
-        validateUserInput(grossAmount);
-
         return grossAmount.multiply(SALES_TAX);
     }
 
@@ -304,7 +255,6 @@ public class DefaultCalculatorService implements CalculatorService
      * @param currentPrice the current price
      * @param percentChange the percent change
      * @return BigDecimal the amount change from the previous price
-     * @throws IllegalArgumentException if the parameters are not positive
      */
     @Override
     public BigDecimal getChangeBetweenCurrentAndPreviousPrice(double currentPrice, double percentChange)
@@ -331,7 +281,6 @@ public class DefaultCalculatorService implements CalculatorService
      * @param currentPrice the current amount
      * @param percentChange the percent change
      * @return BigDecimal the previous price
-     * @throws IllegalArgumentException if the parameters are not positive
      */
     @Override
     public BigDecimal getPreviousPrice(double currentPrice, double percentChange)
@@ -393,31 +342,5 @@ public class DefaultCalculatorService implements CalculatorService
         }
 
         return (int) TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
-    }
-
-    private boolean isNonPositiveBigDecimal(BigDecimal bigDecimal)
-    {
-        return bigDecimal == null || bigDecimal.signum() < 1;
-    }
-
-    private void validateUserInput(BigDecimal... bigDecimals)
-    {
-        validateUserInput(1, bigDecimals);
-    }
-
-    private void validateUserInput(long shares, BigDecimal... bigDecimals)
-    {
-        if(shares < 1)
-        {
-            throw new IllegalArgumentException("Shares must be greater than zero");
-        }
-
-        for(BigDecimal bd : bigDecimals)
-        {
-            if(isNonPositiveBigDecimal(bd))
-            {
-                throw new IllegalArgumentException("Inputs to be calculated must be greater than zero");
-            }
-        }
     }
 }

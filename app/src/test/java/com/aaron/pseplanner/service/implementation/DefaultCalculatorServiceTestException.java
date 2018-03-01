@@ -3,6 +3,7 @@ package com.aaron.pseplanner.service.implementation;
 import com.aaron.pseplanner.service.CalculatorService;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -13,6 +14,8 @@ import java.util.Date;
 /**
  * Test for CalculatorService.
  */
+@Deprecated
+@Ignore
 public class DefaultCalculatorServiceTestException
 {
     @Rule

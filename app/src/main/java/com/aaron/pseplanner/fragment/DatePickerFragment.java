@@ -90,7 +90,8 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
             }
         }
 
-        throw new NullPointerException("Current activity is null");
+        // Return some dialog, this should never happen
+        return getDialog();
     }
 
     private Calendar createFormattedCalendar(String selectedDate)
