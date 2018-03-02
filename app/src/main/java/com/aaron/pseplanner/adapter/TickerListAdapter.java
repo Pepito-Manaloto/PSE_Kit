@@ -33,7 +33,6 @@ public class TickerListAdapter extends FilterableArrayAdapter<TickerDto>
     public static final String CLASS_NAME = TickerListAdapter.class.getSimpleName();
     private Activity activity;
     private FormatService formatService;
-    private ArrayList<TickerDto> tickerDtoList;
     private ArrayList<TickerDto> tickerDtoListTemp;
 
     public TickerListAdapter(Activity activity, List<TickerDto> tickerDtoList)
@@ -42,7 +41,6 @@ public class TickerListAdapter extends FilterableArrayAdapter<TickerDto>
 
         this.activity = activity;
         this.formatService = new DefaultFormatService(activity);
-        this.tickerDtoList = new ArrayList<>(tickerDtoList);
         this.tickerDtoListTemp = new ArrayList<>(tickerDtoList);
     }
 
@@ -73,12 +71,6 @@ public class TickerListAdapter extends FilterableArrayAdapter<TickerDto>
         holder.setTickerView(tickerDto, this.formatService, this.activity);
 
         return listRowView;
-    }
-
-    @Override
-    protected ArrayList<TickerDto> getActualList()
-    {
-        return this.tickerDtoList;
     }
 
     @Override

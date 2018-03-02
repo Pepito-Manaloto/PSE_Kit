@@ -117,11 +117,9 @@ public class TickerListFragment extends AbstractListFragment<TickerDto>
         }
         else
         {
-            Disposable disposable = this.pseService.getTickerListFromDatabase()
-                    .subscribeOn(AndroidSchedulers.mainThread())
-                    .subscribeWith(onCreateTickerListObserver());
-
-            this.compositeDisposable.add(disposable);
+            tickerDtoList = pseService.getTickerListFromDatabase().blockingGet();
+            pseService.setTickerDtoListHasTradePlan(tickerDtoList, tradeDtoSymbols);
+            setTickerListAdapter();
         }
     }
 
@@ -203,26 +201,6 @@ public class TickerListFragment extends AbstractListFragment<TickerDto>
                 .subscribeWith(updateListFromDatabaseObserver());
 
         this.compositeDisposable.add(disposable);
-    }
-
-    private DisposableSingleObserver<ArrayList<TickerDto>> onCreateTickerListObserver()
-    {
-        return new DisposableSingleObserver<ArrayList<TickerDto>>()
-        {
-            @Override
-            public void onSuccess(ArrayList<TickerDto> tickerDtos)
-            {
-                tickerDtoList = tickerDtos;
-                pseService.setTickerDtoListHasTradePlan(tickerDtoList, tradeDtoSymbols);
-                setTickerListAdapter();
-            }
-
-            @Override
-            public void onError(Throwable e)
-            {
-                LogManager.debug(CLASS_NAME, "onCreate", "Error retrieving Ticker list from database.");
-            }
-        };
     }
 
     private DisposableSingleObserver<ArrayList<TickerDto>> updateListFromDatabaseObserver()

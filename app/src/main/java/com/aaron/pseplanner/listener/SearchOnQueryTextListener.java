@@ -31,12 +31,11 @@ public class SearchOnQueryTextListener implements SearchView.OnQueryTextListener
         }
 
         this.listAdapter.filter(newText);
-        this.listAdapter.notifyDataSetChanged();
 
         return true;
     }
 
-    public void setSearchListAdapater(FilterableArrayAdapter listAdapter)
+    public void setListAdapater(FilterableArrayAdapter listAdapter)
     {
         this.listAdapter = listAdapter;
     }

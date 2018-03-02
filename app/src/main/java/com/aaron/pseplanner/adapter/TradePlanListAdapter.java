@@ -32,7 +32,6 @@ public class TradePlanListAdapter extends FilterableArrayAdapter<TradeDto>
     public static final String CLASS_NAME = TradePlanListAdapter.class.getSimpleName();
     private Activity activity;
     private FormatService formatService;
-    private ArrayList<TradeDto> tradeDtoList;
     private ArrayList<TradeDto> tradeDtoListTemp;
 
     public TradePlanListAdapter(Activity activity, List<TradeDto> tradeDtoList)
@@ -41,8 +40,6 @@ public class TradePlanListAdapter extends FilterableArrayAdapter<TradeDto>
 
         this.activity = activity;
         this.formatService = new DefaultFormatService(activity);
-        // ArrayList is used because this will be added in an intent
-        this.tradeDtoList = new ArrayList<>(tradeDtoList);
         this.tradeDtoListTemp = new ArrayList<>(tradeDtoList);
     }
 
@@ -71,15 +68,9 @@ public class TradePlanListAdapter extends FilterableArrayAdapter<TradeDto>
 
         TradeDto tradeDto = getItem(position);
         holder.setTickerView(tradeDto, this.formatService, new ListRowOnTouchChangeActivity(this.activity, TradePlanActivity.class, DataKey.EXTRA_TRADE,
-                tradeDto, DataKey.EXTRA_TRADE_LIST, this.tradeDtoList, IntentRequestCode.VIEW_TRADE_PLAN, holder.scroll));
+                tradeDto, DataKey.EXTRA_TRADE_LIST, this.tradeDtoListTemp, IntentRequestCode.VIEW_TRADE_PLAN, holder.scroll));
 
         return listRowView;
-    }
-
-    @Override
-    protected ArrayList<TradeDto> getActualList()
-    {
-        return this.tradeDtoList;
     }
 
     @Override

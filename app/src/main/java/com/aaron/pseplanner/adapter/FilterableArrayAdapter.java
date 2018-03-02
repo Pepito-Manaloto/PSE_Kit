@@ -34,19 +34,18 @@ public abstract class FilterableArrayAdapter<T extends Stock> extends ArrayAdapt
     {
         String searched = searchQuery.trim().toLowerCase();
 
-        this.getActualList().clear();
+        clear();
 
         if(searched.length() == 0)
         {
-            this.getActualList().addAll(this.getTempList());
+            addAll(this.getTempList());
         }
         else
         {
             addFilteredStockToActualList(searched);
         }
 
-        notifyDataSetChanged();
-        LogManager.debug(this.className, "filter", "New list size -> " + this.getActualList().size());
+        LogManager.debug(this.className, "filter", "New list size -> " + getCount());
     }
 
     private void addFilteredStockToActualList(String searched)
@@ -59,7 +58,7 @@ public abstract class FilterableArrayAdapter<T extends Stock> extends ArrayAdapt
 
             if(symbol.startsWith(searched))
             {
-                this.getActualList().add(dto);
+                add(dto);
             }
         }
     }
@@ -71,19 +70,13 @@ public abstract class FilterableArrayAdapter<T extends Stock> extends ArrayAdapt
      */
     public void update(@NonNull List<T> list)
     {
-        ArrayList<T> actualList = getActualList();
-        actualList.clear();
-        actualList.addAll(list);
+        // Store this new list into temp, because the list parameter shares the same reference as the Adapter's list.
+        // Thus, calling clear() will clear out both the adapter's list and the new list.
+        ArrayList<T> tmpList = new ArrayList<>(list);
 
-        notifyDataSetChanged();
+        clear();
+        addAll(tmpList);
     }
-
-    /**
-     * Returns the actual list of the adapter.
-     *
-     * @return ArrayList<T> the list adapter
-     */
-    protected abstract ArrayList<T> getActualList();
 
     /**
      * Returns the temporary list that is used in filtering the actual list of the adapter.

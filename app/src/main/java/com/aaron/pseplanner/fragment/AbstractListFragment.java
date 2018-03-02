@@ -61,7 +61,6 @@ public abstract class AbstractListFragment<T extends Stock & Parcelable> extends
         {
             this.pseService = new FacadePSEPlannerService(activity);
             this.formatService = new DefaultFormatService(activity);
-            this.searchListener = new SearchOnQueryTextListener();
             this.compositeDisposable = new CompositeDisposable();
         }
 
@@ -94,7 +93,7 @@ public abstract class AbstractListFragment<T extends Stock & Parcelable> extends
         {
             getArrayAdapter().update(list);
             lastUpdatedTextView.setText(activity.getString(R.string.last_updated, lastUpdated));
-            searchListener.setSearchListAdapater(getListAdapter());
+            searchListener.setListAdapater(getListAdapter());
         }
     }
 
@@ -145,6 +144,12 @@ public abstract class AbstractListFragment<T extends Stock & Parcelable> extends
     public FilterableArrayAdapter<T> getListAdapter()
     {
         return (FilterableArrayAdapter<T>) super.getListAdapter();
+    }
+
+    public AbstractListFragment<T> setSearchListener(SearchOnQueryTextListener searchListener)
+    {
+        this.searchListener = searchListener;
+        return this;
     }
 
     /**

@@ -33,6 +33,7 @@ import com.aaron.pseplanner.fragment.CalculatorTabsFragment;
 import com.aaron.pseplanner.fragment.SettingsFragment;
 import com.aaron.pseplanner.fragment.TickerListFragment;
 import com.aaron.pseplanner.fragment.TradePlanListFragment;
+import com.aaron.pseplanner.listener.SearchOnQueryTextListener;
 import com.aaron.pseplanner.service.LogManager;
 import com.aaron.pseplanner.service.PSEPlannerService;
 import com.aaron.pseplanner.service.implementation.FacadePSEPlannerService;
@@ -83,6 +84,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private PSEPlannerService pseService;
     private boolean isReturningResultHomeView;
     private CompositeDisposable compositeDisposable;
+    private SearchOnQueryTextListener searchListener;
 
     // TODO: https://www.youtube.com/watch?v=ZWYOy8E4jWo
     // https://stackoverflow.com/questions/38605090/rxjava-timer-that-repeats-forever-and-can-be-restarted-and-stopped-at-anytime/38607323
@@ -108,6 +110,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         this.navigationView.setNavigationItemSelectedListener(this);
 
         this.pseService = new FacadePSEPlannerService(this);
+        this.searchListener = new SearchOnQueryTextListener();
         this.tickerDtoList = new ArrayList<>();
 
         this.compositeDisposable = new CompositeDisposable();
@@ -136,7 +139,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         if(fragment == null)
         {
-            this.selectedListFragment = TradePlanListFragment.newInstance(this.tradeDtoList);
+            this.selectedListFragment = TradePlanListFragment.newInstance(this.tradeDtoList).setSearchListener(searchListener);
             fm.beginTransaction().add(R.id.fragment_container, this.selectedListFragment).commit();
         }
 
@@ -395,6 +398,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         MenuItem myActionMenuItem = menu.findItem(R.id.menu_search);
         SearchView searchView = (SearchView) myActionMenuItem.getActionView();
         searchView.setQueryHint(getResources().getString(R.string.search_hint));
+        searchView.setOnQueryTextListener(searchListener);
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -460,7 +464,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
             case R.id.nav_ticker:
             {
-                this.selectedListFragment = TickerListFragment.newInstance(this.tickerDtoList, this.tradeDtoList);
+                this.selectedListFragment = TickerListFragment.newInstance(this.tickerDtoList, this.tradeDtoList).setSearchListener(searchListener);
                 updateFragmentContainer(this.selectedListFragment);
                 this.showToolbarMenuItems();
                 this.toolbar.setTitle(R.string.nav_ticker);
@@ -491,7 +495,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      */
     private void setDefaultHomeView()
     {
-        this.selectedListFragment = TradePlanListFragment.newInstance(this.tradeDtoList);
+        this.selectedListFragment = TradePlanListFragment.newInstance(this.tradeDtoList).setSearchListener(searchListener);
         updateFragmentContainer(this.selectedListFragment);
         this.showToolbarMenuItems();
         this.toolbar.setTitle(R.string.app_name);

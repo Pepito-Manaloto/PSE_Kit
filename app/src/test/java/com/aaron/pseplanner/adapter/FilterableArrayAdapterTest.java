@@ -6,7 +6,6 @@ import com.aaron.pseplanner.bean.TickerDto;
 import com.aaron.pseplanner.bean.TradeDto;
 
 import org.apache.commons.lang3.RandomUtils;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -14,8 +13,6 @@ import java.util.Arrays;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 
 /**
  * Created by Aaron on 06/01/2018.
@@ -27,43 +24,21 @@ public class FilterableArrayAdapterTest extends RobolectricTest
     private ArrayList<Stock> actualList;
     private ArrayList<Stock> tempList;
 
-    @Before
-    public void beforeTest()
-    {
-        FilterableArrayAdapter realAdapter = new FilterableArrayAdapter<Stock>(getContext(), 0, actualList)
-        {
-            @Override
-            protected ArrayList<Stock> getActualList()
-            {
-                return actualList;
-            }
-
-            @Override
-            protected ArrayList<Stock> getTempList()
-            {
-                return tempList;
-            }
-        };
-
-        // Spy to be able to verify some method calls
-        adapter = spy(realAdapter);
-    }
-
     @Test
-    public void givenAListOfStocksAndASearchQuery_whenFilter_thenTheListOfStocksShouldOnlyIncludeStocksMatchingTheSearchQuery()
+    public void givenAListOfStocksAndASearchQuery_whenFilter_thenTheListOfStocksShouldOnlyIncludeStocksMatchingTheSearchQuery() throws Exception
     {
         givenAListOfStocks("ACR", "APX", "BCOR", "ECP", "FGEN", "JOH", "NI", "NIKL", "PIP", "PHA", "PHEN", "PHES", "PNB", "SLI", "SM", "X");
-        String searchQuery = "ph";
+        givenAdapterToTest();
 
+        String searchQuery = "ph";
         whenFilter(searchQuery);
 
         ArrayList<String> stocksFiltered = new ArrayList<>(Arrays.asList("PHA", "PHEN", "PHES"));
         thenTheListOfStocksShouldOnlyContainStocksMatchingTheSearchQuery(stocksFiltered);
-        verify(adapter, times(1)).notifyDataSetChanged();
     }
 
     @Test
-    public void givenAListOfStocksAndEmptySearchQuery_whenFilter_thenTheListOfStocksShouldIncludeAllStocks()
+    public void givenAListOfStocksAndEmptySearchQuery_whenFilter_thenTheListOfStocksShouldIncludeAllStocks() throws Exception
     {
         ArrayList<String> stocks = new ArrayList<>(
                 Arrays.asList("ACR", "APX", "BCOR", "ECP", "FGEN", "JOH", "NI", "NIKL", "PIP", "PHA", "PHEN", "PHES", "PNB", "SLI", "SM", "X"));
@@ -72,15 +47,15 @@ public class FilterableArrayAdapterTest extends RobolectricTest
         stocksArray = stocks.toArray(stocksArray);
 
         givenAListOfStocks(stocksArray);
-        String searchQuery = "";
+        givenAdapterToTest();
 
+        String searchQuery = "";
         whenFilter(searchQuery);
 
         thenTheListOfStocksShouldOnlyContainStocksMatchingTheSearchQuery(stocks);
-        verify(adapter, times(1)).notifyDataSetChanged();
     }
 
-    private void givenAListOfStocks(String... listOfStockSymbols)
+    private void givenAListOfStocks(String... listOfStockSymbols) throws Exception
     {
         actualList = new ArrayList<>();
         tempList = new ArrayList<>();
@@ -92,6 +67,21 @@ public class FilterableArrayAdapterTest extends RobolectricTest
             actualList.add(stock);
             tempList.add(stock);
         }
+    }
+
+    public void givenAdapterToTest()
+    {
+        FilterableArrayAdapter realAdapter = new FilterableArrayAdapter<Stock>(getContext(), 0, actualList)
+        {
+            @Override
+            protected ArrayList<Stock> getTempList()
+            {
+                return tempList;
+            }
+        };
+
+        // Spy to be able to verify some method calls
+        adapter = spy(realAdapter);
     }
 
     private Stock createStockTypeRandomly(String symbol)

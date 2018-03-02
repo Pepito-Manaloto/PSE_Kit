@@ -141,9 +141,11 @@ public class TradePlanListFragment extends AbstractListFragment<TradeDto>
     {
         super.onSaveInstanceState(outState);
 
-        outState.putParcelableArrayList(DataKey.EXTRA_TRADE_LIST.toString(), this.tradeDtoList);
-
-        LogManager.debug(CLASS_NAME, "onSaveInstanceState", "Trade plan list count: " + this.tradeDtoList.size());
+        if(this.tradeDtoList != null && !this.tradeDtoList.isEmpty())
+        {
+            outState.putParcelableArrayList(DataKey.EXTRA_TRADE_LIST.toString(), this.tradeDtoList);
+            LogManager.debug(CLASS_NAME, "onSaveInstanceState", "Trade plan list count: " + this.tradeDtoList.size());
+        }
     }
 
     @Override
@@ -153,7 +155,7 @@ public class TradePlanListFragment extends AbstractListFragment<TradeDto>
     }
 
     /**
-     * Http request is blocking, this method MUST be called in an AsyncTask.
+     * Retrieves ticker list from web api.
      *
      * @param doAfterSubscribe the action that will be executed after executing this observable
      */
