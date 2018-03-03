@@ -76,6 +76,9 @@ public abstract class FilterableArrayAdapter<T extends Stock> extends ArrayAdapt
 
         clear();
         addAll(tmpList);
+
+        getTempList().clear();
+        getTempList().addAll(tmpList);
     }
 
     /**
