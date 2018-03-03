@@ -195,34 +195,50 @@ public class TradePlanListFragment extends AbstractListFragment<TradeDto>
             {
                 List<TickerDto> tickerDtoList = response.first;
                 Date lastUpdated = response.second;
+
+                LogManager.debug(CLASS_NAME, "updateListFromWebObserver.onSuccess", "TickerDto list count: " + tickerDtoList.size());
+
                 if(!tickerDtoList.isEmpty())
                 {
                     // Update current price of each trade plan based on ticker
                     for(TickerDto tickerDto : tickerDtoList)
                     {
-                        // TODO: should consider weekend in days difference??? lastupdated will always be friday 3:20PM before market open
-                        TradeDto tradeDto = tradesMap.get(tickerDto.getSymbol());
-                        tradeDto.setCurrentPrice(tickerDto.getCurrentPrice());
-                        tradeDto.setDaysToStopDate(calculatorService.getDaysBetween(lastUpdated, tradeDto.getStopDate()));
-                        tradeDto.setHoldingPeriod(calculatorService.getDaysBetween(lastUpdated, tradeDto.getEntryDate()));
-                        tradeDto.setGainLoss(
-                                calculatorService.getGainLossAmount(tradeDto.getAveragePrice(), tradeDto.getTotalShares(), tradeDto.getCurrentPrice()));
-                        tradeDto.setGainLossPercent(
-                                calculatorService.getPercentGainLoss(tradeDto.getAveragePrice(), tradeDto.getTotalShares(), tradeDto.getCurrentPrice()));
-                        tradeDto.setTotalAmount(calculatorService.getBuyNetAmount(tradeDto.getCurrentPrice(), tradeDto.getTotalShares()));
+                        updateTradeDtoListInTradesMap(tickerDto, lastUpdated);
                     }
 
                     tradeDtoList = new ArrayList<>(tradesMap.values());
                     Collections.sort(tradeDtoList);
-
+                    LogManager.debug(CLASS_NAME, "TAETAE", "" + tradeDtoList);
                     updateListView(tradeDtoList, formatService.formatLastUpdated(lastUpdated));
                 }
+            }
+
+            private void updateTradeDtoListInTradesMap(TickerDto tickerDto, Date lastUpdated)
+            {
+                // TODO: should consider weekend in days difference??? lastupdated will always be friday 3:20PM before market open
+                TradeDto tradeDto = tradesMap.get(tickerDto.getSymbol());
+                tradeDto.setCurrentPrice(tickerDto.getCurrentPrice());
+                tradeDto.setDaysToStopDate(calculatorService.getDaysBetween(lastUpdated, tradeDto.getStopDate()));
+                if(tradeDto.getEntryDate() != null)
+                {
+                    tradeDto.setHoldingPeriod(calculatorService.getDaysBetween(lastUpdated, tradeDto.getEntryDate()));
+                }
+                else
+                {
+                    tradeDto.setHoldingPeriod(0);
+                }
+                tradeDto.setDaysSincePlanned(calculatorService.getDaysBetween(lastUpdated, tradeDto.getDatePlanned()));
+                tradeDto.setGainLoss(
+                        calculatorService.getGainLossAmount(tradeDto.getAveragePrice(), tradeDto.getTotalShares(), tradeDto.getCurrentPrice()));
+                tradeDto.setGainLossPercent(
+                        calculatorService.getPercentGainLoss(tradeDto.getAveragePrice(), tradeDto.getTotalShares(), tradeDto.getCurrentPrice()));
+                tradeDto.setTotalAmount(calculatorService.getBuyNetAmount(tradeDto.getCurrentPrice(), tradeDto.getTotalShares()));
             }
 
             @Override
             public void onError(Throwable e)
             {
-                LogManager.debug(CLASS_NAME, "updateListFromWeb", "Error retrieving Ticker list from web.");
+                LogManager.error(CLASS_NAME, "updateListFromWeb", "Error retrieving Ticker list from web.", e);
                 Toast.makeText(activity, "Update failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
             }
         };
@@ -245,7 +261,7 @@ public class TradePlanListFragment extends AbstractListFragment<TradeDto>
             @Override
             public void onError(Throwable e)
             {
-                LogManager.debug(CLASS_NAME, "updateListFromDatabase", "Error retrieving Ticker list from database.");
+                LogManager.error(CLASS_NAME, "updateListFromDatabase", "Error retrieving Ticker list from database.", e);
             }
         };
     }

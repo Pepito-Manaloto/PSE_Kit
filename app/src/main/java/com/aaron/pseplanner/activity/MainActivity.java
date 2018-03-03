@@ -123,12 +123,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     @Override
                     public void onSuccess(ArrayList<TradeDto> tradeDtos)
                     {
+                        LogManager.debug(CLASS_NAME, "getTradePlanListFromDatabase.onSuccess", "TradeDto list size: " + tradeDtos.size());
                         tradeDtoList = tradeDtos;
                     }
 
                     @Override
                     public void onError(Throwable e)
                     {
+                        LogManager.error(CLASS_NAME, "getTradePlanListFromDatabase.onError", "Error retrieving from database.", e);
                         tradeDtoList = new ArrayList<>();
                     }
                 });
@@ -247,16 +249,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     // Update ticker view if it is the current selected fragment
                     if(selectedListFragment instanceof TickerListFragment)
                     {
-                        LogManager.debug(CLASS_NAME, "initTickerDtoList", "Updating TickerListFragment.");
+                        LogManager.debug(CLASS_NAME, "initTickerDtoList.onSuccess", "Updating TickerListFragment.");
                         selectedListFragment.updateListFromDatabase();
                     }
                 }
             }
 
             @Override
-            public void onError(Throwable t)
+            public void onError(Throwable e)
             {
-                LogManager.error(CLASS_NAME, "initTickerDtoList", "Failed to initialize ticker list. Error = " + t.getMessage());
+                LogManager.error(CLASS_NAME, "initTickerDtoList.onError", "Failed to initialize ticker list.", e);
             }
         };
     }

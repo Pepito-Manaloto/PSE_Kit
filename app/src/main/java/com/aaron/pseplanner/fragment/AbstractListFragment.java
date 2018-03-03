@@ -89,11 +89,15 @@ public abstract class AbstractListFragment<T extends Stock & Parcelable> extends
     protected void updateListView(final List<T> list, final String lastUpdated)
     {
         Activity activity = getActivity();
+        LogManager.debug(CLASS_NAME, "updateListView", "Updating list view. adapter = " + getArrayAdapter().getClass().getSimpleName());
+
         if(list != null && !list.isEmpty() && activity != null)
         {
             getArrayAdapter().update(list);
             lastUpdatedTextView.setText(activity.getString(R.string.last_updated, lastUpdated));
             searchListener.setListAdapater(getListAdapter());
+
+            LogManager.debug(CLASS_NAME, "updateListView", "Updating list view. list size = " + list.size());
         }
     }
 

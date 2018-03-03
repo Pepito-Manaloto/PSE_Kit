@@ -211,6 +211,8 @@ public class TickerListFragment extends AbstractListFragment<TickerDto>
             @Override
             public void onSuccess(ArrayList<TickerDto> tickerDtos)
             {
+                LogManager.debug(CLASS_NAME, "updateListFromDatabaseObserver.onSuccess", "TickerDto list count: " + tickerDtos.size());
+
                 if(!tickerDtoList.isEmpty())
                 {
                     tickerDtoList = tickerDtos;
@@ -221,7 +223,7 @@ public class TickerListFragment extends AbstractListFragment<TickerDto>
             @Override
             public void onError(Throwable e)
             {
-                LogManager.debug(CLASS_NAME, "updateListFromDatabase", "Error retrieving Ticker list from database.");
+                LogManager.error(CLASS_NAME, "updateListFromDatabase", "Error retrieving Ticker list from database.", e);
                 Toast.makeText(activity, "Update failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
             }
         };
@@ -246,7 +248,7 @@ public class TickerListFragment extends AbstractListFragment<TickerDto>
             @Override
             public void onError(Throwable e)
             {
-                LogManager.debug(CLASS_NAME, "updateListFromWeb", "Error retrieving Ticker list from web.");
+                LogManager.error(CLASS_NAME, "updateListFromWeb", "Error retrieving Ticker list from web.", e);
             }
         };
     }
