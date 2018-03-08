@@ -1,50 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<GridLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
     style="@style/GridLayoutLabelValuePair"
     android:layout_marginBottom="10dp"
-    android:layout_marginLeft="20dp"
     android:layout_marginStart="20dp">
 
     <TextView
         android:id="@+id/label_tranche"
         style="@style/TextViewLabel"
-        android:layout_marginTop="15dp"
-        android:layout_marginLeft="20dp"
         android:layout_marginStart="20dp"
-        android:text="@string/label_tranche"/>
+        android:layout_marginTop="15dp"
+        android:text="@string/label_tranche" />
 
     <ImageView
         android:id="@+id/imageview_remove_tranche"
-        android:layout_marginTop="3dp"
+        style="@style/ImageViewRemove"
         android:layout_marginBottom="5dp"
-        style="@style/ImageViewRemove"/>
+        android:layout_marginTop="3dp"
+        android:contentDescription="@string/remove_button" />
 
     <TextView
         android:id="@+id/label_entry_price"
         style="@style/TextViewLabel.SubLabel"
-        android:layout_marginLeft="40dp"
         android:layout_marginStart="40dp"
-        android:text="@string/label_price"/>
+        android:labelFor="@id/edittext_entry_price"
+        android:text="@string/label_price" />
 
     <EditText
         android:id="@+id/edittext_entry_price"
-        style="@style/TextViewLabel.EditText.Price"/>
+        style="@style/TextViewLabel.EditText.Price" />
 
     <TextView
-        android:id="@+id/label_weight"
+        android:id="@+id/label_shares"
         style="@style/TextViewLabel.SubLabel"
-        android:layout_marginLeft="40dp"
         android:layout_marginStart="40dp"
-        android:text="@string/label_weight"/>
+        android:labelFor="@id/edittext_tranche_shares"
+        android:text="@string/label_shares" />
 
     <EditText
-        android:id="@+id/edittext_tranche_weight"
-        android:selectAllOnFocus="true"
-        style="@style/TextViewLabel.EditText.Percent"/>
+        android:id="@+id/edittext_tranche_shares"
+        style="@style/TextViewLabel.EditText.Percent"
+        android:selectAllOnFocus="true" />
 
     <View
         style="@style/Divider"
-        android:layout_columnSpan="2"
-        />
+        android:layout_columnSpan="2" />
 </GridLayout>

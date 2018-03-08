@@ -99,8 +99,8 @@ public class UpdateTradePlanActivity extends SaveTradePlanActivity
         EditText entryPrice = entryTrancheContainer.findViewById(R.id.edittext_entry_price);
         entryPrice.setText(String.valueOf(tradeEntries.get(index).getEntryPrice()));
 
-        EditText trancheWeight = entryTrancheContainer.findViewById(R.id.edittext_tranche_weight);
-        trancheWeight.setText(String.valueOf(tradeEntries.get(index).getPercentWeight()));
+        EditText trancheShares = entryTrancheContainer.findViewById(R.id.edittext_tranche_shares);
+        trancheShares.setText(String.valueOf(tradeEntries.get(index).getPercentWeight()));
     }
 
     private void createAndSetEntryTranchesValues(int index, LayoutInflater layoutInflater, LinearLayout entryTranchesLayout, List<TradeEntryDto> tradeEntries)

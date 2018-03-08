@@ -17,6 +17,8 @@
 
         <GridLayout
             style="@style/GridLayoutLabelValuePair"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginBottom="15dp">
 
             <TextView
@@ -96,8 +98,8 @@
 
             <EditText
                 android:id="@+id/edittext_entry_date"
-                android:labelFor="@id/edittext_entry_date"
-                style="@style/TextViewLabel.EditText.Date" />
+                style="@style/TextViewLabel.EditText.Date"
+                android:labelFor="@id/edittext_entry_date" />
 
             <View
                 style="@style/Divider2"
