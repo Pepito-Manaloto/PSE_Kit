@@ -17,6 +17,7 @@ import com.aaron.pseplanner.service.LogManager;
 import com.aaron.pseplanner.service.ViewUtils;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -165,6 +166,13 @@ public class UpdateTradePlanActivity extends SaveTradePlanActivity
     protected BigDecimal getSelectedSymbolCurrentPrice()
     {
         return this.tradeDtoPlanToUpdate.getCurrentPrice();
+    }
+
+    @Override
+    protected Date getDatePlannedToSet()
+    {
+        // TODO: prompt user if update date planned to NOW
+        return tradeDtoPlanToUpdate.getDatePlanned();
     }
 
     @Override

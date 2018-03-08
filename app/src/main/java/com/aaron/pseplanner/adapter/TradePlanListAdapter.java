@@ -67,7 +67,7 @@ public class TradePlanListAdapter extends FilterableArrayAdapter<TradeDto>
         }
 
         TradeDto tradeDto = getItem(position);
-        holder.setTickerView(tradeDto, this.formatService, new ListRowOnTouchChangeActivity(this.activity, TradePlanActivity.class, DataKey.EXTRA_TRADE,
+        holder.setTradePlanView(tradeDto, this.formatService, new ListRowOnTouchChangeActivity(this.activity, TradePlanActivity.class, DataKey.EXTRA_TRADE,
                 tradeDto, DataKey.EXTRA_TRADE_LIST, this.tradeDtoListTemp, IntentRequestCode.VIEW_TRADE_PLAN, holder.scroll));
 
         return listRowView;
@@ -120,7 +120,7 @@ public class TradePlanListAdapter extends FilterableArrayAdapter<TradeDto>
             ButterKnife.bind(this, view);
         }
 
-        private void setTickerView(TradeDto tradeDto, FormatService service, View.OnTouchListener listener)
+        private void setTradePlanView(TradeDto tradeDto, FormatService service, View.OnTouchListener listener)
         {
             scroll.setOnTouchListener(listener);
 
@@ -132,10 +132,19 @@ public class TradePlanListAdapter extends FilterableArrayAdapter<TradeDto>
             currentPrice.setText(service.formatStockPrice(tradeDto.getCurrentPrice().doubleValue()));
             averagePrice.setText(service.formatStockPrice(tradeDto.getAveragePrice().doubleValue()));
 
-            String gainLossValue = ViewUtils.addPositiveSign(tradeDto.getGainLoss().doubleValue(), service.formatPrice(tradeDto.getGainLoss().doubleValue()));
-            String gainLossPercentValue = ViewUtils.addPositiveSign(tradeDto.getGainLossPercent().doubleValue(),
-                    service.formatPercent(tradeDto.getGainLossPercent().doubleValue()));
-            gainLoss.setText(String.format("%s (%s)", gainLossValue, gainLossPercentValue));
+            boolean isEntryDateSet = tradeDto.getEntryDate() != null;
+            if(isEntryDateSet)
+            {
+                String gainLossValue = ViewUtils.addPositiveSign(tradeDto.getGainLoss().doubleValue(),
+                        service.formatPrice(tradeDto.getGainLoss().doubleValue()));
+                String gainLossPercentValue = ViewUtils.addPositiveSign(tradeDto.getGainLossPercent().doubleValue(),
+                        service.formatPercent(tradeDto.getGainLossPercent().doubleValue()));
+                gainLoss.setText(String.format("%s (%s)", gainLossValue, gainLossPercentValue));
+            }
+            else
+            {
+                gainLoss.setText("-");
+            }
 
             shares.setText(service.formatShares(tradeDto.getTotalShares()));
             stopLoss.setText(service.formatPrice(tradeDto.getStopLoss().doubleValue()));

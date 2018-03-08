@@ -189,7 +189,8 @@ public class TradePlanFragment extends Fragment
         daysSincePlanned.setText(String.format("%s %s", this.selectedStock.getDaysSincePlanned(), daysSincePlannedLabel));
 
         String entryDateStr = this.formatService.formatDate(this.selectedStock.getEntryDate());
-        entryDate.setText(StringUtils.isBlank(entryDateStr) ? "None" : entryDateStr);
+        boolean isEntryDateSet = StringUtils.isNotBlank(entryDateStr);
+        entryDate.setText(isEntryDateSet ? entryDateStr : "None");
 
         String holdingPeriodLabel = this.selectedStock.getHoldingPeriod() > 1 ? "days" : "day";
         holdingPeriod.setText(String.format("%s %s", this.selectedStock.getHoldingPeriod(), holdingPeriodLabel));
@@ -202,12 +203,19 @@ public class TradePlanFragment extends Fragment
 
         totalAmount.setText(this.formatService.formatPrice(this.selectedStock.getTotalAmount().doubleValue()));
 
-        String gainLossValue = ViewUtils.addPositiveSign(this.selectedStock.getGainLoss().doubleValue(),
-                this.formatService.formatPrice(this.selectedStock.getGainLoss().doubleValue()));
-        String gainLossPercentValue = ViewUtils.addPositiveSign(this.selectedStock.getGainLossPercent().doubleValue(),
-                this.formatService.formatPercent(this.selectedStock.getGainLossPercent().doubleValue()));
-        gainLoss.setText(String.format("%s (%s)", gainLossValue, gainLossPercentValue));
-        this.formatService.formatTextColor(this.selectedStock.getGainLoss().doubleValue(), gainLoss);
+        if(isEntryDateSet)
+        {
+            String gainLossValue = ViewUtils.addPositiveSign(this.selectedStock.getGainLoss().doubleValue(),
+                    this.formatService.formatPrice(this.selectedStock.getGainLoss().doubleValue()));
+            String gainLossPercentValue = ViewUtils.addPositiveSign(this.selectedStock.getGainLossPercent().doubleValue(),
+                    this.formatService.formatPercent(this.selectedStock.getGainLossPercent().doubleValue()));
+            gainLoss.setText(String.format("%s (%s)", gainLossValue, gainLossPercentValue));
+            this.formatService.formatTextColor(this.selectedStock.getGainLoss().doubleValue(), gainLoss);
+        }
+        else
+        {
+            gainLoss.setText("-");
+        }
 
         trancheImageView.setOnClickListener(new ImageViewOnClickHideExpand(getActivity(), trancheImageView, entryTranchesContainer));
         this.setTranchesValues(entryTranchesContainer);

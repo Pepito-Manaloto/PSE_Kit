@@ -208,7 +208,6 @@ public class TradePlanListFragment extends AbstractListFragment<TradeDto>
 
                     tradeDtoList = new ArrayList<>(tradesMap.values());
                     Collections.sort(tradeDtoList);
-                    LogManager.debug(CLASS_NAME, "TAETAE", "" + tradeDtoList);
                     updateListView(tradeDtoList, formatService.formatLastUpdated(lastUpdated));
                 }
             }

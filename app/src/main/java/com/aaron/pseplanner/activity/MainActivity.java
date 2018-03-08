@@ -314,6 +314,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if(IntentRequestCode.CREATE_TRADE_PLAN.code() == requestCode)
         {
             loadCreateTradePlanResultData(data);
+
         }
         else if(IntentRequestCode.VIEW_TRADE_PLAN.code() == requestCode)
         {
@@ -383,6 +384,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         else if(data.hasExtra(DataKey.EXTRA_TRADE_LIST.toString()))
         {
             this.tradeDtoList = data.getParcelableArrayListExtra(DataKey.EXTRA_TRADE_LIST.toString());
+            selectedListFragment.getListAdapter().update(tradeDtoList);
             LogManager.debug(CLASS_NAME, "onActivityResult", "Extra Trade list updated.");
         }
     }

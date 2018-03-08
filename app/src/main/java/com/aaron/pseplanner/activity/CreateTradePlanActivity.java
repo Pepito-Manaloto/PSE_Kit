@@ -10,6 +10,7 @@ import com.aaron.pseplanner.constant.DataKey;
 import com.aaron.pseplanner.service.LogManager;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * Create Trade Plan Activity. Does not contain navigation views or menu items.
@@ -115,6 +116,15 @@ public class CreateTradePlanActivity extends SaveTradePlanActivity
     protected BigDecimal getSelectedSymbolCurrentPrice()
     {
         return this.selectedStock.getCurrentPrice();
+    }
+
+    /**
+     * Always set date planned to today's date.
+     */
+    @Override
+    protected Date getDatePlannedToSet()
+    {
+        return new Date();
     }
 
     @Override

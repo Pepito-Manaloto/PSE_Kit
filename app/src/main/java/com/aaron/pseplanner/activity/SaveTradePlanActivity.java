@@ -461,7 +461,7 @@ public abstract class SaveTradePlanActivity extends AppCompatActivity
      * @param priceWeightList the price weight list of all tranches
      * @return TradeDto
      */
-    protected TradeDto getTradeToSave(long shares, BigDecimal stopLoss, BigDecimal target, long capital, Date entryDate, Date stopDate, BigDecimal riskReward,
+    private TradeDto getTradeToSave(long shares, BigDecimal stopLoss, BigDecimal target, long capital, Date entryDate, Date stopDate, BigDecimal riskReward,
             BigDecimal averagePrice, Collection<Pair<String, String>> priceWeightList)
     {
         String symbol = getSelectedSymbol();
@@ -482,8 +482,8 @@ public abstract class SaveTradePlanActivity extends AppCompatActivity
         BigDecimal percentCapital = totalAmount.divide(new BigDecimal(capital), MathContext.DECIMAL64)
                 .multiply(ONE_HUNDRED).setScale(2, BigDecimal.ROUND_CEILING);
 
-        Date now = new Date();
         int holdingPeriod = 0;
+        Date now = new Date();
         if(entryDate != null)
         {
             holdingPeriod = calculator.getDaysBetween(now, entryDate);
@@ -491,7 +491,6 @@ public abstract class SaveTradePlanActivity extends AppCompatActivity
 
         TradeDto tradeDto = new TradeDto()
                 .setSymbol(symbol)
-                .setDatePlanned(now)
                 .setCurrentPrice(currentPrice)
                 .setAveragePrice(averagePriceAfterBuy)
                 .setTotalAmount(totalAmount)
@@ -509,6 +508,11 @@ public abstract class SaveTradePlanActivity extends AppCompatActivity
                 .setStopDate(stopDate)
                 .setHoldingPeriod(holdingPeriod)
                 .setRiskReward(riskReward);
+
+        Date datePlanned = getDatePlannedToSet();
+        int daysSincePlanned = calculator.getDaysBetween(now, datePlanned);
+        tradeDto.setDatePlanned(datePlanned)
+                .setDaysSincePlanned(daysSincePlanned);
 
         List<TradeEntryDto> list = priceWeightListToTradeEntryList(symbol, shares, priceWeightList);
         tradeDto.setTradeEntries(list);
@@ -560,7 +564,7 @@ public abstract class SaveTradePlanActivity extends AppCompatActivity
         showDialogWithMessageInCenter(builder);
     }
 
-    private void showDialogWithMessageInCenter(AlertDialog.Builder builder)
+    protected void showDialogWithMessageInCenter(AlertDialog.Builder builder)
     {
         AlertDialog dialog = builder.create();
         dialog.show();
@@ -737,4 +741,6 @@ public abstract class SaveTradePlanActivity extends AppCompatActivity
     protected abstract String getSelectedSymbol();
 
     protected abstract BigDecimal getSelectedSymbolCurrentPrice();
+
+    protected abstract Date getDatePlannedToSet();
 }
