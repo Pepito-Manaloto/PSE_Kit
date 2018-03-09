@@ -38,7 +38,7 @@
 
     <EditText
         android:id="@+id/edittext_tranche_shares"
-        style="@style/TextViewLabel.EditText.Percent"
+        style="@style/TextViewLabel.EditText.Shares"
         android:selectAllOnFocus="true" />
 
     <View

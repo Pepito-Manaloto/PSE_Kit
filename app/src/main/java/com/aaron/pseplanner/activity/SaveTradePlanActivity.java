@@ -645,11 +645,11 @@ public abstract class SaveTradePlanActivity extends AppCompatActivity
         });
 
         EditText entryPrice = entryTrancheContainer.findViewById(R.id.edittext_entry_price);
-        setEditTextTextChangeListener(entryPrice);
 
         EditText trancheShares = entryTrancheContainer.findViewById(R.id.edittext_tranche_shares);
         trancheShares.setText(R.string.default_value);
 
+        setEditTextTextChangeListener(entryPrice, trancheShares);
         entryTranchesLayout.addView(entryTrancheContainer);
     }
 
