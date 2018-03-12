@@ -268,7 +268,7 @@ public abstract class SaveTradePlanActivity extends AppCompatActivity
             EditText entryPrice = entryTrancheContainer.findViewById(R.id.edittext_entry_price);
             EditText trancheShares = entryTrancheContainer.findViewById(R.id.edittext_tranche_shares);
             String price = entryPrice.getText().toString();
-            String shares = trancheShares.getText().toString();
+            String shares = trancheShares.getText().toString().replaceAll(",", "");
             String weight = getTrancheWeightFromShares(Double.parseDouble(shares), totalShares);
 
             map.put(new Pair<>(entryPrice, trancheShares), new Pair<>(price, weight));
@@ -279,7 +279,8 @@ public abstract class SaveTradePlanActivity extends AppCompatActivity
 
     private String getTrancheWeightFromShares(double shares, double totalShares)
     {
-        return String.valueOf((shares / totalShares) * 100);
+        double weight = (shares / totalShares) * 100;
+        return new BigDecimal(weight).setScale(2, BigDecimal.ROUND_HALF_UP).toPlainString();
     }
 
     /**
