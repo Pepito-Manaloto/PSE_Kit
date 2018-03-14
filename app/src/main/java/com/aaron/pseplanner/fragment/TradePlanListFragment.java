@@ -79,7 +79,7 @@ public class TradePlanListFragment extends AbstractListFragment<TradeDto>
         this.calculatorService = new DefaultCalculatorService();
 
         initializeTradePlanList(savedInstanceState);
-        initializeTradesMap();
+        initializeTradesMapAndSetAllTradeDtosDaysField();
 
         setTradePlanListAdapter();
     }
@@ -108,13 +108,32 @@ public class TradePlanListFragment extends AbstractListFragment<TradeDto>
         LogManager.debug(CLASS_NAME, "initializeTradePlanList", "TradeDto list count = " + (tradeDtoList != null ? tradeDtoList.size() : 0));
     }
 
-    private void initializeTradesMap()
+    private void initializeTradesMapAndSetAllTradeDtosDaysField()
     {
+        Date now = new Date();
         this.tradesMap = new ConcurrentHashMap<>();
         for(TradeDto dto : this.tradeDtoList)
         {
             this.tradesMap.put(dto.getSymbol(), dto);
+            setTradeDtoDaysField(dto, now);
         }
+    }
+
+    /**
+     * Set the daysToStopDate, holdingPeriod, and daysSincePlanned based on the current date (not last updated).
+     */
+    private void setTradeDtoDaysField(TradeDto tradeDto, Date now)
+    {
+        tradeDto.setDaysToStopDate(calculatorService.getDaysBetween(now, tradeDto.getStopDate()));
+        if(tradeDto.getEntryDate() != null)
+        {
+            tradeDto.setHoldingPeriod(calculatorService.getDaysBetween(now, tradeDto.getEntryDate()));
+        }
+        else
+        {
+            tradeDto.setHoldingPeriod(0);
+        }
+        tradeDto.setDaysSincePlanned(calculatorService.getDaysBetween(now, tradeDto.getDatePlanned()));
     }
 
     /**
@@ -214,24 +233,15 @@ public class TradePlanListFragment extends AbstractListFragment<TradeDto>
 
             private void updateTradeDtoListInTradesMap(TickerDto tickerDto, Date lastUpdated)
             {
-                // TODO: should consider weekend in days difference??? lastupdated will always be friday 3:20PM before market open
                 TradeDto tradeDto = tradesMap.get(tickerDto.getSymbol());
                 tradeDto.setCurrentPrice(tickerDto.getCurrentPrice());
-                tradeDto.setDaysToStopDate(calculatorService.getDaysBetween(lastUpdated, tradeDto.getStopDate()));
-                if(tradeDto.getEntryDate() != null)
-                {
-                    tradeDto.setHoldingPeriod(calculatorService.getDaysBetween(lastUpdated, tradeDto.getEntryDate()));
-                }
-                else
-                {
-                    tradeDto.setHoldingPeriod(0);
-                }
-                tradeDto.setDaysSincePlanned(calculatorService.getDaysBetween(lastUpdated, tradeDto.getDatePlanned()));
                 tradeDto.setGainLoss(
                         calculatorService.getGainLossAmount(tradeDto.getAveragePrice(), tradeDto.getTotalShares(), tradeDto.getCurrentPrice()));
                 tradeDto.setGainLossPercent(
                         calculatorService.getPercentGainLoss(tradeDto.getAveragePrice(), tradeDto.getTotalShares(), tradeDto.getCurrentPrice()));
                 tradeDto.setTotalAmount(calculatorService.getBuyNetAmount(tradeDto.getCurrentPrice(), tradeDto.getTotalShares()));
+
+                setTradeDtoDaysField(tradeDto, lastUpdated);
             }
 
             @Override

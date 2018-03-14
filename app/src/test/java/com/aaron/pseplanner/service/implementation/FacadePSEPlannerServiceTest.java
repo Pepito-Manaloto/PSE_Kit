@@ -1012,9 +1012,7 @@ public class FacadePSEPlannerServiceTest extends AbstractHttpClientTest
         assertEquals(tradeDto.getId(), trade.getId());
         assertEquals(tradeDto.getSymbol(), trade.getSymbol());
         assertEquals(tradeDto.getDatePlanned(), trade.getDatePlanned());
-        assertEquals(tradeDto.getDaysSincePlanned(), trade.getDaysSincePlanned());
         assertEquals(tradeDto.getEntryDate(), trade.getEntryDate());
-        assertEquals(tradeDto.getHoldingPeriod(), trade.getHoldingPeriod());
         assertEquals(tradeDto.getCurrentPrice().toPlainString(), trade.getCurrentPrice());
         assertEquals(tradeDto.getAveragePrice().toPlainString(), trade.getAveragePrice());
         assertEquals(tradeDto.getTotalShares(), trade.getTotalShares());
@@ -1029,7 +1027,6 @@ public class FacadePSEPlannerServiceTest extends AbstractHttpClientTest
         assertEquals(tradeDto.getLossToStopLoss().toPlainString(), trade.getLossToStopLoss());
         assertEquals(tradeDto.getStopLoss().toPlainString(), trade.getStopLoss());
         assertEquals(tradeDto.getStopDate(), trade.getStopDate());
-        assertEquals(tradeDto.getDaysToStopDate(), trade.getDaysToStopDate());
         assertEquals(tradeDto.getRiskReward().toPlainString(), trade.getRiskReward());
         assertEquals(tradeDto.getCapital(), trade.getCapital());
         assertEquals(tradeDto.getPercentCapital().toPlainString(), trade.getPercentCapital());

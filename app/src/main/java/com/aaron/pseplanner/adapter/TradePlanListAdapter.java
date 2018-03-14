@@ -126,7 +126,7 @@ public class TradePlanListAdapter extends FilterableArrayAdapter<TradeDto>
 
             datePlanned.setText(service.formatDate(tradeDto.getDatePlanned()));
             String daysSincePlannedLabel = getDaysLabel(tradeDto.getDaysSincePlanned());
-            daysSincePlanned.setText(String.format("%s %s", tradeDto.getHoldingPeriod(), daysSincePlannedLabel));
+            daysSincePlanned.setText(String.format("%s %s", tradeDto.getDaysSincePlanned(), daysSincePlannedLabel));
 
             stock.setText(tradeDto.getSymbol());
             currentPrice.setText(service.formatStockPrice(tradeDto.getCurrentPrice().doubleValue()));

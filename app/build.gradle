@@ -57,6 +57,7 @@ dependencies {
     implementation "com.android.support:recyclerview-v7:$ANDROID_VERSION"
 
     implementation 'org.apache.commons:commons-lang3:3.7'
+    implementation 'com.jakewharton.threetenabp:threetenabp:1.0.5'
 
     implementation "com.squareup.retrofit2:retrofit:$RETROFIT_VERSION"
     implementation "com.squareup.retrofit2:converter-jackson:$RETROFIT_VERSION"

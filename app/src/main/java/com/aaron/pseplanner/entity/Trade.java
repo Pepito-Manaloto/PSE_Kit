@@ -26,11 +26,7 @@ public class Trade
     @NotNull
     private Date datePlanned;
 
-    private int daysSincePlanned;
-
     private Date entryDate;
-
-    private int holdingPeriod;
 
     @Unique
     @NotNull
@@ -71,8 +67,6 @@ public class Trade
     @NotNull
     private Date stopDate;
 
-    private int daysToStopDate;
-
     @NotNull
     private String riskReward;
 
@@ -93,20 +87,16 @@ public class Trade
     @Generated(hash = 295783675)
     private transient TradeDao myDao;
 
-    @Generated(hash = 574929520)
-    public Trade(Long id, @NotNull Date datePlanned, int daysSincePlanned, Date entryDate,
-            int holdingPeriod, @NotNull String symbol, @NotNull String currentPrice,
-            @NotNull String averagePrice, long totalShares, @NotNull String totalAmount,
-            @NotNull String priceToBreakEven, @NotNull String targetPrice, @NotNull String gainLoss,
-            @NotNull String gainLossPercent, @NotNull String gainToTarget,
+    @Generated(hash = 1248833551)
+    public Trade(Long id, @NotNull Date datePlanned, Date entryDate, @NotNull String symbol,
+            @NotNull String currentPrice, @NotNull String averagePrice, long totalShares,
+            @NotNull String totalAmount, @NotNull String priceToBreakEven, @NotNull String targetPrice,
+            @NotNull String gainLoss, @NotNull String gainLossPercent, @NotNull String gainToTarget,
             @NotNull String lossToStopLoss, @NotNull String stopLoss, @NotNull Date stopDate,
-            int daysToStopDate, @NotNull String riskReward, long capital,
-            @NotNull String percentCapital) {
+            @NotNull String riskReward, long capital, @NotNull String percentCapital) {
         this.id = id;
         this.datePlanned = datePlanned;
-        this.daysSincePlanned = daysSincePlanned;
         this.entryDate = entryDate;
-        this.holdingPeriod = holdingPeriod;
         this.symbol = symbol;
         this.currentPrice = currentPrice;
         this.averagePrice = averagePrice;
@@ -120,16 +110,15 @@ public class Trade
         this.lossToStopLoss = lossToStopLoss;
         this.stopLoss = stopLoss;
         this.stopDate = stopDate;
-        this.daysToStopDate = daysToStopDate;
         this.riskReward = riskReward;
         this.capital = capital;
         this.percentCapital = percentCapital;
     }
 
     @Generated(hash = 1773414334)
-    public Trade()
-    {
+    public Trade() {
     }
+
 
     public Long getId()
     {
@@ -153,17 +142,6 @@ public class Trade
         return this;
     }
 
-    public int getDaysSincePlanned()
-    {
-        return this.daysSincePlanned;
-    }
-
-    public Trade setDaysSincePlanned(int daysSincePlanned)
-    {
-        this.daysSincePlanned = daysSincePlanned;
-        return this;
-    }
-
     public Date getEntryDate()
     {
         return this.entryDate;
@@ -172,17 +150,6 @@ public class Trade
     public Trade setEntryDate(@NotNull Date entryDate)
     {
         this.entryDate = entryDate;
-        return this;
-    }
-
-    public int getHoldingPeriod()
-    {
-        return this.holdingPeriod;
-    }
-
-    public Trade setHoldingPeriod(int holdingPeriod)
-    {
-        this.holdingPeriod = holdingPeriod;
         return this;
     }
 
@@ -326,17 +293,6 @@ public class Trade
     public Trade setStopDate(@NotNull Date stopDate)
     {
         this.stopDate = stopDate;
-        return this;
-    }
-
-    public int getDaysToStopDate()
-    {
-        return this.daysToStopDate;
-    }
-
-    public Trade setDaysToStopDate(int daysToStopDate)
-    {
-        this.daysToStopDate = daysToStopDate;
         return this;
     }
 

@@ -1,7 +1,6 @@
 package com.aaron.pseplanner.activity;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -114,6 +113,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         this.compositeDisposable = new CompositeDisposable();
 
         this.tradeDtoList = this.pseService.getTradePlanListFromDatabase().blockingGet();
+        Collections.sort(tradeDtoList);
 
         FragmentManager fm = getSupportFragmentManager();
         Fragment fragment = fm.findFragmentById(R.id.fragment_container);
@@ -518,9 +518,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     {
         LogManager.debug(CLASS_NAME, "startRefreshAnimation", "");
 
-        // Do animation start
-        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        ImageView refreshImage = (ImageView) inflater.inflate(R.layout.imageview_refresh, null);
+        ImageView refreshImage = (ImageView) LayoutInflater.from(this).inflate(R.layout.imageview_refresh, null);
         Animation rotation = AnimationUtils.loadAnimation(this, R.anim.rotate_refresh);
         rotation.setRepeatCount(Animation.INFINITE);
         refreshImage.startAnimation(rotation);

@@ -216,9 +216,7 @@ public class BeanEntityUtilsTest
         assertEquals(trade.getId(), tradeDto.getId());
         assertEquals(trade.getSymbol(), tradeDto.getSymbol());
         assertEquals(trade.getDatePlanned(), tradeDto.getDatePlanned());
-        assertEquals(trade.getDaysSincePlanned(), tradeDto.getDaysSincePlanned());
         assertEquals(trade.getEntryDate(), tradeDto.getEntryDate());
-        assertEquals(trade.getHoldingPeriod(), tradeDto.getHoldingPeriod());
         assertEquals(trade.getCurrentPrice(), tradeDto.getCurrentPrice().toPlainString());
         assertEquals(trade.getAveragePrice(), tradeDto.getAveragePrice().toPlainString());
         assertEquals(trade.getTotalShares(), tradeDto.getTotalShares());
@@ -233,7 +231,6 @@ public class BeanEntityUtilsTest
         assertEquals(trade.getLossToStopLoss(), tradeDto.getLossToStopLoss().toPlainString());
         assertEquals(trade.getStopLoss(), tradeDto.getStopLoss().toPlainString());
         assertEquals(trade.getStopDate(), tradeDto.getStopDate());
-        assertEquals(trade.getDaysToStopDate(), tradeDto.getDaysToStopDate());
         assertEquals(trade.getRiskReward(), tradeDto.getRiskReward().toPlainString());
         assertEquals(trade.getCapital(), tradeDto.getCapital());
         assertEquals(trade.getPercentCapital(), tradeDto.getPercentCapital().toPlainString());
@@ -355,9 +352,7 @@ public class BeanEntityUtilsTest
         assertNull(trade.getId());
         assertNull(trade.getSymbol());
         assertNull(trade.getDatePlanned());
-        assertEquals(0, trade.getDaysSincePlanned());
         assertNull(trade.getEntryDate());
-        assertEquals(0, trade.getHoldingPeriod());
         assertNull(trade.getCurrentPrice());
         assertNull(trade.getAveragePrice());
         assertEquals(0, trade.getTotalShares());
@@ -372,7 +367,6 @@ public class BeanEntityUtilsTest
         assertNull(trade.getLossToStopLoss());
         assertNull(trade.getStopLoss());
         assertNull(trade.getStopDate());
-        assertEquals(0, trade.getDaysToStopDate());
         assertNull(trade.getRiskReward());
         assertEquals(0, trade.getCapital());
         assertNull(trade.getPercentCapital());

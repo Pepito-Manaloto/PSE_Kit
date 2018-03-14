@@ -35,9 +35,7 @@ public final class BeanEntityUtils
 
         return new TradeDto(trade.getSymbol()).setId(trade.getId())
                 .setDatePlanned(trade.getDatePlanned())
-                .setDaysSincePlanned(trade.getDaysSincePlanned())
                 .setEntryDate(trade.getEntryDate())
-                .setHoldingPeriod(trade.getHoldingPeriod())
                 .setCurrentPrice(new BigDecimal(trade.getCurrentPrice()))
                 .setAveragePrice(new BigDecimal(trade.getAveragePrice()))
                 .setTotalShares(trade.getTotalShares())
@@ -50,7 +48,6 @@ public final class BeanEntityUtils
                 .setStopLoss(new BigDecimal(trade.getStopLoss()))
                 .setLossToStopLoss(new BigDecimal(trade.getLossToStopLoss()))
                 .setStopDate(trade.getStopDate())
-                .setDaysToStopDate(trade.getDaysToStopDate())
                 .setRiskReward(new BigDecimal(trade.getRiskReward()))
                 .setCapital(trade.getCapital())
                 .setPercentCapital(new BigDecimal(trade.getPercentCapital()))
@@ -155,9 +152,7 @@ public final class BeanEntityUtils
                 .setTotalAmount(tradeDto.getTotalAmount().toPlainString())
                 .setTotalShares(tradeDto.getTotalShares())
                 .setDatePlanned(tradeDto.getDatePlanned())
-                .setDaysSincePlanned(tradeDto.getDaysSincePlanned())
                 .setEntryDate(tradeDto.getEntryDate())
-                .setHoldingPeriod(tradeDto.getHoldingPeriod())
                 .setTargetPrice(tradeDto.getTargetPrice().toPlainString())
                 .setGainToTarget(tradeDto.getGainToTarget().toPlainString())
                 .setGainLoss(tradeDto.getGainLoss().toPlainString())
@@ -165,7 +160,6 @@ public final class BeanEntityUtils
                 .setLossToStopLoss(tradeDto.getLossToStopLoss().toPlainString())
                 .setStopLoss(tradeDto.getStopLoss().toPlainString())
                 .setStopDate(tradeDto.getStopDate())
-                .setDaysToStopDate(tradeDto.getDaysToStopDate())
                 .setPriceToBreakEven(tradeDto.getPriceToBreakEven().toPlainString())
                 .setRiskReward(tradeDto.getRiskReward().toPlainString());
     }
