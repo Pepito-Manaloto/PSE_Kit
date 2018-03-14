@@ -27,7 +27,6 @@ import com.aaron.pseplanner.bean.TickerDto;
 import com.aaron.pseplanner.bean.TradeDto;
 import com.aaron.pseplanner.constant.DataKey;
 import com.aaron.pseplanner.constant.IntentRequestCode;
-import com.aaron.pseplanner.constant.PSEPlannerPreference;
 import com.aaron.pseplanner.fragment.AbstractListFragment;
 import com.aaron.pseplanner.fragment.CalculatorTabsFragment;
 import com.aaron.pseplanner.fragment.SettingsFragment;
@@ -56,7 +55,6 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Action;
 import io.reactivex.functions.Function;
-import io.reactivex.functions.Predicate;
 import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
 
@@ -115,26 +113,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         this.compositeDisposable = new CompositeDisposable();
 
-        Disposable disposable = this.pseService.getTradePlanListFromDatabase()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(new DisposableSingleObserver<ArrayList<TradeDto>>()
-                {
-                    @Override
-                    public void onSuccess(ArrayList<TradeDto> tradeDtos)
-                    {
-                        LogManager.debug(CLASS_NAME, "getTradePlanListFromDatabase.onSuccess", "TradeDto list size: " + tradeDtos.size());
-                        tradeDtoList = tradeDtos;
-                    }
-
-                    @Override
-                    public void onError(Throwable e)
-                    {
-                        LogManager.error(CLASS_NAME, "getTradePlanListFromDatabase.onError", "Error retrieving from database.", e);
-                        tradeDtoList = new ArrayList<>();
-                    }
-                });
-        this.compositeDisposable.add(disposable);
+        this.tradeDtoList = this.pseService.getTradePlanListFromDatabase().blockingGet();
 
         FragmentManager fm = getSupportFragmentManager();
         Fragment fragment = fm.findFragmentById(R.id.fragment_container);
@@ -191,7 +170,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     @Override
                     public SingleSource<? extends ArrayList<TickerDto>> apply(Pair<List<TickerDto>, Date> pair) throws Exception
                     {
-                        ArrayList<TickerDto> tickerDtoList = (ArrayList<TickerDto>) pair.first;
+                        ArrayList<TickerDto> tickerDtoList = new ArrayList<>(pair.first);
                         Date lastUpdated = pair.second;
 
                         pseService.insertTickerList(tickerDtoList, lastUpdated);
@@ -201,28 +180,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 });
 
         return Single.concat(getAllTickerFromDatabase, getAllTickerFromWeb)
-                .filter(new Predicate<ArrayList<TickerDto>>()
-                {
-                    @Override
-                    public boolean test(ArrayList<TickerDto> tickerDtos) throws Exception
-                    {
-                        int size = tickerDtos.size();
-                        boolean isInDatabase = !tickerDtos.isEmpty() && pseService.isUpToDate(PSEPlannerPreference.LAST_UPDATED_TICKER);
-                        if(isInDatabase)
-                        {
-                            LogManager.debug(CLASS_NAME, "initTickerDtoList", "Retrieved from database, count: " + size);
-                        }
-
-                        if(size < pseService.getExpectedMinimumTotalStocks())
-                        {
-                            LogManager.debug(CLASS_NAME, "initTickerDtoList",
-                                    "TickerList is incomplete, getting values from web api asynchronously. size = " + size);
-                            isInDatabase = false;
-                        }
-
-                        return isInDatabase;
-                    }
-                })
                 .first(tickerDtoList);
     }
 
@@ -242,11 +199,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 if(!tickerDtos.isEmpty())
                 {
                     Set<String> tradeDtoSymbols = pseService.getTradeSymbolsFromTradeDtos(tradeDtoList);
+
+                    // Set hasTradePlan, because it is not tracked in the database.
                     tickerDtoList = pseService.setTickerDtoListHasTradePlan(tickerDtos, tradeDtoSymbols);
 
-                    // TODO: test if this works properly, hasTradePlan is updated on each ticker but here we retrieve from database which will override the
-                    // updated hasTradePlan???
-                    // Update ticker view if it is the current selected fragment
                     if(selectedListFragment instanceof TickerListFragment)
                     {
                         LogManager.debug(CLASS_NAME, "initTickerDtoList.onSuccess", "Updating TickerListFragment.");
