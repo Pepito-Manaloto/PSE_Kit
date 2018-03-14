@@ -279,8 +279,8 @@ public abstract class SaveTradePlanActivity extends AppCompatActivity
 
     private String getTrancheWeightFromShares(double shares, double totalShares)
     {
-        double weight = (shares / totalShares) * 100;
-        return new BigDecimal(weight).setScale(2, BigDecimal.ROUND_HALF_UP).toPlainString();
+        BigDecimal weight = BigDecimal.valueOf(shares).divide(BigDecimal.valueOf(totalShares), 20, BigDecimal.ROUND_UP);
+        return weight.multiply(BigDecimal.valueOf(100)).toPlainString();
     }
 
     /**
