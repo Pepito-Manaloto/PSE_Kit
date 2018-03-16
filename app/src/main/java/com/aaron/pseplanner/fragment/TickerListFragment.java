@@ -18,6 +18,7 @@ import com.aaron.pseplanner.constant.DataKey;
 import com.aaron.pseplanner.constant.PSEPlannerPreference;
 import com.aaron.pseplanner.service.LogManager;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -40,6 +41,7 @@ public class TickerListFragment extends AbstractListFragment<TickerDto>
     private ArrayList<TickerDto> tickerDtoList;
     private Set<String> tradeDtoSymbols;
     private TickerListAdapter tickerListAdapter;
+    private WeakReference<Activity> activityRef;
 
     /**
      * Gets a new instance of TickerListFragment with the TickerDto list.
@@ -85,6 +87,8 @@ public class TickerListFragment extends AbstractListFragment<TickerDto>
         this.tradeDtoSymbols = this.pseService.getTradeSymbolsFromTradeDtos(this.tradeDtoList);
 
         initializeTickerDtoList(savedInstanceState);
+
+        this.activityRef = new WeakReference<Activity>(getActivity());
     }
 
     private void initializeTradeDtoList(Bundle savedInstanceState)
@@ -205,7 +209,6 @@ public class TickerListFragment extends AbstractListFragment<TickerDto>
 
     private DisposableSingleObserver<ArrayList<TickerDto>> updateListFromDatabaseObserver()
     {
-        final Activity activity = getActivity();
         return new DisposableSingleObserver<ArrayList<TickerDto>>()
         {
             @Override
@@ -224,7 +227,12 @@ public class TickerListFragment extends AbstractListFragment<TickerDto>
             public void onError(Throwable e)
             {
                 LogManager.error(CLASS_NAME, "updateListFromDatabase", "Error retrieving Ticker list from database.", e);
-                Toast.makeText(activity, "Update failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
+
+                Activity activity = activityRef.get();
+                if(activity != null)
+                {
+                    Toast.makeText(activity, "Update failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                }
             }
         };
     }

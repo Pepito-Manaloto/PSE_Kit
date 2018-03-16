@@ -20,6 +20,7 @@ import com.aaron.pseplanner.service.CalculatorService;
 import com.aaron.pseplanner.service.LogManager;
 import com.aaron.pseplanner.service.implementation.DefaultCalculatorService;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -45,6 +46,7 @@ public class TradePlanListFragment extends AbstractListFragment<TradeDto>
     private ConcurrentHashMap<String, TradeDto> tradesMap;
     private CalculatorService calculatorService;
     private TradePlanListAdapter tradePlanListAdapter;
+    private WeakReference<Activity> activityRef;
 
     /**
      * Gets a new instance of TradePlanListFragment with the TradeDto list.
@@ -82,6 +84,8 @@ public class TradePlanListFragment extends AbstractListFragment<TradeDto>
         initializeTradesMapAndSetAllTradeDtosDaysField();
 
         setTradePlanListAdapter();
+
+        this.activityRef = new WeakReference<Activity>(getActivity());
     }
 
     private void setTradePlanListAdapter()
@@ -206,7 +210,6 @@ public class TradePlanListFragment extends AbstractListFragment<TradeDto>
 
     private DisposableSingleObserver<Pair<List<TickerDto>, Date>> updateListFromWebObserver()
     {
-        final Activity activity = getActivity();
         return new DisposableSingleObserver<Pair<List<TickerDto>, Date>>()
         {
             @Override
@@ -248,7 +251,12 @@ public class TradePlanListFragment extends AbstractListFragment<TradeDto>
             public void onError(Throwable e)
             {
                 LogManager.error(CLASS_NAME, "updateListFromWeb", "Error retrieving Ticker list from web.", e);
-                Toast.makeText(activity, "Update failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
+
+                Activity activity = activityRef.get();
+                if(activity != null)
+                {
+                    Toast.makeText(activity, "Update failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                }
             }
         };
     }
