@@ -270,7 +270,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if(IntentRequestCode.CREATE_TRADE_PLAN.code() == requestCode)
         {
             loadCreateTradePlanResultData(data);
-
         }
         else if(IntentRequestCode.VIEW_TRADE_PLAN.code() == requestCode)
         {
@@ -282,6 +281,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     {
         if(data.hasExtra(DataKey.EXTRA_TICKER.toString()))
         {
+            if(tickerDtoList == null || tickerDtoList.isEmpty())
+            {
+                tickerDtoList = pseService.getTickerListFromDatabase().blockingGet();
+            }
+
             TickerDto addedTickerDto = data.getParcelableExtra(DataKey.EXTRA_TICKER.toString());
 
             int addedTickerIndex = this.tickerDtoList.indexOf(addedTickerDto);

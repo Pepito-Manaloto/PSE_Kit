@@ -17,11 +17,14 @@ import com.aaron.pseplanner.bean.TickerDto;
 import com.aaron.pseplanner.bean.TradeDto;
 import com.aaron.pseplanner.constant.DataKey;
 import com.aaron.pseplanner.constant.IntentRequestCode;
+import com.aaron.pseplanner.service.CalculatorService;
 import com.aaron.pseplanner.service.LogManager;
 import com.aaron.pseplanner.service.PSEPlannerService;
+import com.aaron.pseplanner.service.implementation.DefaultCalculatorService;
 import com.aaron.pseplanner.service.implementation.FacadePSEPlannerService;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import butterknife.ButterKnife;
 import io.reactivex.disposables.CompositeDisposable;
@@ -36,6 +39,7 @@ public class TradePlanActivity extends AppCompatActivity
     private ArrayList<TradeDto> tradeDtoPlanList;
     private TradeDto selectedTradeDtoPlan;
     private FragmentStatePagerAdapter pagerAdapter;
+    private CalculatorService calculatorService;
     private boolean tradePlanListUpdated;
     private CompositeDisposable compositeDisposable;
 
@@ -53,6 +57,8 @@ public class TradePlanActivity extends AppCompatActivity
 
         setContentView(R.layout.activity_trade_plan);
         ButterKnife.bind(this);
+
+        this.calculatorService = new DefaultCalculatorService();
         this.compositeDisposable = new CompositeDisposable();
 
         initializeTradePlanAndList(savedInstanceState);
@@ -100,15 +106,34 @@ public class TradePlanActivity extends AppCompatActivity
     {
         PSEPlannerService pseService = new FacadePSEPlannerService(this);
 
+        Date now = new Date();
         this.tradeDtoPlanList = pseService.getTradePlanListFromDatabase().blockingGet();
         for(TradeDto dto : this.tradeDtoPlanList)
         {
+            setTradeDtoDaysField(dto, now);
             if(ticker.getSymbol().equals(dto.getSymbol()))
             {
                 this.selectedTradeDtoPlan = dto;
                 break;
             }
         }
+    }
+
+    /**
+     * Set the daysToStopDate, holdingPeriod, and daysSincePlanned based on the current date (not last updated).
+     */
+    private void setTradeDtoDaysField(TradeDto tradeDto, Date now)
+    {
+        tradeDto.setDaysToStopDate(calculatorService.getDaysBetween(now, tradeDto.getStopDate()));
+        if(tradeDto.getEntryDate() != null)
+        {
+            tradeDto.setHoldingPeriod(calculatorService.getDaysBetween(now, tradeDto.getEntryDate()));
+        }
+        else
+        {
+            tradeDto.setHoldingPeriod(0);
+        }
+        tradeDto.setDaysSincePlanned(calculatorService.getDaysBetween(now, tradeDto.getDatePlanned()));
     }
 
     private void setSelectedTradePlanAndListFromIntent(Intent intent)

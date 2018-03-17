@@ -515,6 +515,7 @@ public abstract class SaveTradePlanActivity extends AppCompatActivity
                 .setPercentCapital(percentCapital)
                 .setEntryDate(entryDate)
                 .setStopDate(stopDate)
+                .setDaysToStopDate(calculator.getDaysBetween(now, stopDate))
                 .setHoldingPeriod(holdingPeriod)
                 .setRiskReward(riskReward);
 
