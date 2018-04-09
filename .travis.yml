@@ -1,9 +1,0 @@
-language: android
-android:
-  components:
-    - build-tools-27.0.2
-    - android-27
-    - extra
-before_install:
-  - chmod +x gradlew
-  - chmod +x gradle/wrapper/gradle-wrapper.jar
