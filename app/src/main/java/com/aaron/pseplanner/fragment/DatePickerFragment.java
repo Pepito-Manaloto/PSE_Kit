@@ -37,12 +37,15 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
      * Gets a new instance of DatePickerFragment with the EditText's id.
      *
      * @param id the EditText of this date picker
+     * @param optional flag if the date picker can have no value
+     *
      * @return DatePickerFragment
      */
-    public static DatePickerFragment newInstance(int id)
+    public static DatePickerFragment newInstance(int id, boolean optional)
     {
         Bundle bundle = new Bundle();
         bundle.putInt(DataKey.EXTRA_ID.toString(), id);
+        bundle.putBoolean(DataKey.EXTRA_OPTIONAL.toString(), optional);
 
         DatePickerFragment datePickerFragment = new DatePickerFragment();
         datePickerFragment.setArguments(bundle);
@@ -64,6 +67,7 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
         if(args != null)
         {
             int editTextId = args.getInt(DataKey.EXTRA_ID.toString());
+            boolean optional = args.getBoolean(DataKey.EXTRA_OPTIONAL.toString(), false);
 
             if(activity != null)
             {
@@ -77,14 +81,17 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
                 int day = calendar.get(Calendar.DAY_OF_MONTH);
 
                 DatePickerDialog dialog = new DatePickerDialog(activity, android.R.style.Theme_Holo_Light_Dialog, this, year, month, day);
-                // Add none button for clearing out current selected date
-                dialog.setButton(DialogInterface.BUTTON_NEUTRAL, activity.getText(R.string.none_button), new DialogInterface.OnClickListener()
+                if(optional)
                 {
-                    public void onClick(DialogInterface dialog, int id)
+                    // Add none button for clearing out current selected date
+                    dialog.setButton(DialogInterface.BUTTON_NEUTRAL, activity.getText(R.string.none_button), new DialogInterface.OnClickListener()
                     {
-                        editText.setText("");
-                    }
-                });
+                        public void onClick(DialogInterface dialog, int id)
+                        {
+                            editText.setText("");
+                        }
+                    });
+                }
 
                 return dialog;
             }

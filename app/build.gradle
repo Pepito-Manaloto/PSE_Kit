@@ -5,7 +5,7 @@ def ANDROID_VERSION = "27.0.2"
 
 android {
     compileSdkVersion 27
-    buildToolsVersion "$ANDROID_VERSION"
+
     defaultConfig {
         applicationId "com.aaron.pseplanner"
         minSdkVersion 19

@@ -7,6 +7,7 @@ package com.aaron.pseplanner.constant;
 public enum DataKey
 {
     EXTRA_ID("com.aaron.pseplanner.id"),
+    EXTRA_OPTIONAL("com.aaron.pseplanner.optional"),
     EXTRA_TICKER("com.aaron.pseplanner.ticker"),
     EXTRA_TICKER_LIST("com.aaron.pseplanner.ticker_list"),
     EXTRA_TRADE("com.aaron.pseplanner.trade"),

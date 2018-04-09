@@ -115,7 +115,8 @@ public abstract class SaveTradePlanActivity extends AppCompatActivity
         setEditTextOnFocusChangeListener(sharesEditText, stopLossEditText, targetEditText, capitalEditText);
         setEditTextTextChangeListener(sharesEditText, stopLossEditText, targetEditText, capitalEditText);
 
-        setDateEditTextOnClickListener(entryDateEditText, stopDateEditText);
+        setDateEditTextOnClickListener(entryDateEditText, true);
+        setDateEditTextOnClickListener(stopDateEditText, false);
 
         final LayoutInflater inflater = LayoutInflater.from(this);
         this.layoutInflater = inflater;
@@ -202,23 +203,20 @@ public abstract class SaveTradePlanActivity extends AppCompatActivity
     /**
      * Sets the EditText date picker listener.
      */
-    private void setDateEditTextOnClickListener(EditText... editTexts)
+    private void setDateEditTextOnClickListener(final EditText editText, final boolean optional)
     {
-        for(final EditText editText : editTexts)
+        editText.setOnClickListener(new View.OnClickListener()
         {
-            editText.setOnClickListener(new View.OnClickListener()
+            @Override
+            public void onClick(View view)
             {
-                @Override
-                public void onClick(View view)
-                {
-                    // Initialize a new date picker dialog fragment
-                    DialogFragment dialogFragment = DatePickerFragment.newInstance(editText.getId());
+                // Initialize a new date picker dialog fragment
+                DialogFragment dialogFragment = DatePickerFragment.newInstance(editText.getId(), optional);
 
-                    // Show the date picker dialog fragment
-                    dialogFragment.show(SaveTradePlanActivity.this.getSupportFragmentManager(), DatePickerFragment.CLASS_NAME);
-                }
-            });
-        }
+                // Show the date picker dialog fragment
+                dialogFragment.show(SaveTradePlanActivity.this.getSupportFragmentManager(), DatePickerFragment.CLASS_NAME);
+            }
+        });
     }
 
     private boolean areAllEditTextInputNotBlank(String sharesStr, String stopLossStr, String targetStr, String capitalStr, String stopDateStr)
