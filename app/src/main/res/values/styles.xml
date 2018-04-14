@@ -84,7 +84,7 @@
         <item name="android:paddingEnd">25dp</item>
         <item name="android:textSize">20sp</item>
         <item name="android:button">@null</item>
-        <item name="android:drawableRight">?android:attr/listChoiceIndicatorMultiple</item>
+        <item name="android:drawableEnd">?android:attr/listChoiceIndicatorMultiple</item>
     </style>
 
     <style name="TextViewLabel">

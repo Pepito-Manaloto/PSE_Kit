@@ -41,6 +41,20 @@
         style="@style/TextViewLabel.EditText.Shares"
         android:selectAllOnFocus="true" />
 
+    <TextView
+        android:id="@+id/label_status"
+        style="@style/TextViewLabel.SubLabel"
+        android:layout_marginStart="40dp"
+        android:text="@string/label_status" />
+
+    <CheckBox
+        android:id="@+id/checkbox_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="3dp"
+        android:checked="true"
+        android:text="@string/empty" />
+
     <View
         style="@style/Divider"
         android:layout_columnSpan="2" />

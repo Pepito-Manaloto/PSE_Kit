@@ -94,7 +94,8 @@
                 android:id="@+id/label_entry_date"
                 style="@style/TextViewLabel"
                 android:layout_marginBottom="14dp"
-                android:text="@string/label_entry_date" />
+                android:text="@string/label_entry_date"
+                android:labelFor="@id/edittext_entry_date"/>
 
             <EditText
                 android:id="@+id/edittext_entry_date"

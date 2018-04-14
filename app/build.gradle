@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'org.greenrobot.greendao'
 
-def ANDROID_VERSION = "27.0.2"
+def ANDROID_VERSION = "27.1.1"
 
 android {
     compileSdkVersion 27
@@ -54,6 +54,7 @@ dependencies {
 
     implementation "com.android.support:appcompat-v7:$ANDROID_VERSION"
     implementation "com.android.support:design:$ANDROID_VERSION"
+    implementation "com.android.support:support-v4:$ANDROID_VERSION"
     implementation "com.android.support:recyclerview-v7:$ANDROID_VERSION"
 
     implementation 'org.apache.commons:commons-lang3:3.7'
