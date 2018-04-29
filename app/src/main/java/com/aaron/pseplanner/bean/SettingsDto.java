@@ -3,6 +3,10 @@ package com.aaron.pseplanner.bean;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+
+import java.util.Objects;
+
 /**
  * Created by aaron.asuncion on 4/12/2017.
  */
@@ -123,29 +127,30 @@ public class SettingsDto implements Parcelable
             return true;
         }
 
-        if(!(o instanceof SettingsDto))
+        if(o == null || getClass() != o.getClass())
         {
             return false;
         }
 
         SettingsDto that = (SettingsDto) o;
-        return isAutoRefresh() == that.isAutoRefresh() && getRefreshInterval() == that.getRefreshInterval() && isNotifyStopLoss() == that.isNotifyStopLoss()
-                && isNotifyTargetPrice() == that.isNotifyTargetPrice() && isNotiftyTimeStop() == that.isNotiftyTimeStop()
-                && isNotifySoundEffect() == that.isNotifySoundEffect() && getProxyPort() == that.getProxyPort() && getProxyHost().equals(that.getProxyHost());
+
+        return new EqualsBuilder()
+                .append(autoRefresh, that.autoRefresh)
+                .append(refreshInterval, that.refreshInterval)
+                .append(notifyStopLoss, that.notifyStopLoss)
+                .append(notifyTargetPrice, that.notifyTargetPrice)
+                .append(notiftyTimeStop, that.notiftyTimeStop)
+                .append(notifySoundEffect, that.notifySoundEffect)
+                .append(proxyPort, that.proxyPort)
+                .append(proxyHost, that.proxyHost)
+                .isEquals();
     }
 
     @Override
     public int hashCode()
     {
-        int result = (isAutoRefresh() ? 1 : 0);
-        result = 31 * result + getRefreshInterval();
-        result = 31 * result + (isNotifyStopLoss() ? 1 : 0);
-        result = 31 * result + (isNotifyTargetPrice() ? 1 : 0);
-        result = 31 * result + (isNotiftyTimeStop() ? 1 : 0);
-        result = 31 * result + (isNotifySoundEffect() ? 1 : 0);
-        result = 31 * result + (getProxyHost() != null ? getProxyHost().hashCode() : 0);
-        result = 31 * result + getProxyPort();
-        return result;
+
+        return Objects.hash(autoRefresh, refreshInterval, notifyStopLoss, notifyTargetPrice, notiftyTimeStop, notifySoundEffect, proxyHost, proxyPort);
     }
 
     @Override

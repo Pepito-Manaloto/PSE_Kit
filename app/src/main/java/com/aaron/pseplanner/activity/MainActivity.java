@@ -448,6 +448,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 this.toolbar.setTitle(R.string.nav_settings);
                 break;
             }
+            default:
+            {
+                LogManager.warn(CLASS_NAME, "onNavigationItemSelected", "Unknown menu item.");
+            }
         }
 
         this.drawer.closeDrawer(GravityCompat.START);

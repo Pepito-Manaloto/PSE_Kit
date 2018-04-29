@@ -149,6 +149,7 @@ public class UpdateTradePlanActivity extends SaveTradePlanActivity
     @Override
     protected void setIntentExtraOnResultSaveClicked(Intent intent)
     {
+        // Nothing to set
     }
 
     /**

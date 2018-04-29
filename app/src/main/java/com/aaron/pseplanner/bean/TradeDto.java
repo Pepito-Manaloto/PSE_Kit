@@ -4,9 +4,12 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by aaron.asuncion on 12/20/2016.
@@ -56,54 +59,46 @@ public class TradeDto implements Stock, Parcelable, Comparable<TradeDto>
             return true;
         }
 
-        if(!(o instanceof TradeDto))
+        if(o == null || getClass() != o.getClass())
         {
             return false;
         }
 
         TradeDto tradeDto = (TradeDto) o;
 
-        return currentPrice.equals(tradeDto.currentPrice) && averagePrice.equals(tradeDto.averagePrice) && totalShares == tradeDto.totalShares
-                && totalAmount.equals(tradeDto.totalAmount) && priceToBreakEven.equals(tradeDto.priceToBreakEven) && targetPrice.equals(tradeDto.targetPrice)
-                && gainLoss.equals(tradeDto.gainLoss) && gainLossPercent.equals(tradeDto.gainLossPercent) && gainToTarget.equals(tradeDto.gainToTarget)
-                && stopLoss.equals(tradeDto.stopLoss) && lossToStopLoss.equals(tradeDto.lossToStopLoss) && daysToStopDate == tradeDto.daysToStopDate
-                && riskReward.equals(tradeDto.riskReward) && capital == tradeDto.capital && percentCapital.equals(tradeDto.percentCapital)
-                && datePlanned.equals(tradeDto.datePlanned) && daysSincePlanned == tradeDto.daysSincePlanned && symbol.equals(tradeDto.symbol)
-                && ((entryDate == null && tradeDto.entryDate == null) || (entryDate != null && entryDate.equals(tradeDto.entryDate)))
-                && holdingPeriod == tradeDto.holdingPeriod && stopDate.equals(tradeDto.stopDate) && tradeEntries.equals(tradeDto.tradeEntries);
+        return new EqualsBuilder()
+                .append(daysSincePlanned, tradeDto.daysSincePlanned)
+                .append(holdingPeriod, tradeDto.holdingPeriod)
+                .append(totalShares, tradeDto.totalShares)
+                .append(daysToStopDate, tradeDto.daysToStopDate)
+                .append(capital, tradeDto.capital)
+                .append(id, tradeDto.id)
+                .append(datePlanned, tradeDto.datePlanned)
+                .append(entryDate, tradeDto.entryDate)
+                .append(symbol, tradeDto.symbol)
+                .append(currentPrice, tradeDto.currentPrice)
+                .append(averagePrice, tradeDto.averagePrice)
+                .append(totalAmount, tradeDto.totalAmount)
+                .append(priceToBreakEven, tradeDto.priceToBreakEven)
+                .append(targetPrice, tradeDto.targetPrice)
+                .append(gainLoss, tradeDto.gainLoss)
+                .append(gainLossPercent, tradeDto.gainLossPercent)
+                .append(gainToTarget, tradeDto.gainToTarget)
+                .append(lossToStopLoss, tradeDto.lossToStopLoss)
+                .append(stopLoss, tradeDto.stopLoss)
+                .append(stopDate, tradeDto.stopDate)
+                .append(riskReward, tradeDto.riskReward)
+                .append(percentCapital, tradeDto.percentCapital)
+                .append(tradeEntries, tradeDto.tradeEntries)
+                .isEquals();
     }
 
     @Override
     public int hashCode()
     {
-        int result = getDatePlanned().hashCode();
-        result = 31 * result + getDaysSincePlanned();
-
-        if(getEntryDate() != null)
-        {
-            result = 31 * result + getEntryDate().hashCode();
-        }
-
-        result = 31 * result + getHoldingPeriod();
-        result = 31 * result + getSymbol().hashCode();
-        result = 31 * result + getCurrentPrice().hashCode();
-        result = 31 * result + getAveragePrice().hashCode();
-        result = 31 * result + (int) (getTotalShares() ^ (getTotalShares() >>> 32));
-        result = 31 * result + getTotalAmount().hashCode();
-        result = 31 * result + getPriceToBreakEven().hashCode();
-        result = 31 * result + getTargetPrice().hashCode();
-        result = 31 * result + getGainLoss().hashCode();
-        result = 31 * result + getGainLossPercent().hashCode();
-        result = 31 * result + getGainToTarget().hashCode();
-        result = 31 * result + getLossToStopLoss().hashCode();
-        result = 31 * result + getStopLoss().hashCode();
-        result = 31 * result + getStopDate().hashCode();
-        result = 31 * result + getDaysToStopDate();
-        result = 31 * result + getRiskReward().hashCode();
-        result = 31 * result + (int) (getCapital() ^ (getCapital() >>> 32));
-        result = 31 * result + getPercentCapital().hashCode();
-        result = 31 * result + getTradeEntries().hashCode();
-        return result;
+        return Objects.hash(id, datePlanned, daysSincePlanned, entryDate, holdingPeriod, symbol, currentPrice, averagePrice, totalShares, totalAmount,
+                priceToBreakEven, targetPrice, gainLoss, gainLossPercent, gainToTarget, lossToStopLoss, stopLoss, stopDate, daysToStopDate, riskReward, capital,
+                percentCapital, tradeEntries);
     }
 
     @Override

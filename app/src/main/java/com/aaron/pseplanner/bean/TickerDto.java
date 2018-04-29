@@ -4,7 +4,10 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+
 import java.math.BigDecimal;
+import java.util.Objects;
 
 /**
  * Created by aaron.asuncion on 12/8/2016.
@@ -39,28 +42,29 @@ public class TickerDto implements Stock, Parcelable, Comparable<TickerDto>
             return true;
         }
 
-        if(!(o instanceof TickerDto))
+        if(o == null || getClass() != o.getClass())
         {
             return false;
         }
 
         TickerDto tickerDto = (TickerDto) o;
 
-        return getVolume() == tickerDto.getVolume() && getCurrentPrice().equals(tickerDto.getCurrentPrice()) && getChange().equals(tickerDto.getChange())
-                && getPercentChange().equals(tickerDto.getPercentChange()) && getSymbol().equals(tickerDto.getSymbol())
-                && getName().equals(tickerDto.getName());
+        return new EqualsBuilder()
+                .append(volume, tickerDto.volume)
+                .append(hasTradePlan, tickerDto.hasTradePlan)
+                .append(id, tickerDto.id)
+                .append(symbol, tickerDto.symbol)
+                .append(name, tickerDto.name)
+                .append(currentPrice, tickerDto.currentPrice)
+                .append(change, tickerDto.change)
+                .append(percentChange, tickerDto.percentChange)
+                .isEquals();
     }
 
     @Override
     public int hashCode()
     {
-        int result = getSymbol().hashCode();
-        result = 31 * result + getName().hashCode();
-        result = 31 * result + (int) (getVolume() ^ (getVolume() >>> 32));
-        result = 31 * result + getCurrentPrice().hashCode();
-        result = 31 * result + getChange().hashCode();
-        result = 31 * result + getPercentChange().hashCode();
-        return result;
+        return Objects.hash(id, symbol, name, volume, currentPrice, change, percentChange, hasTradePlan);
     }
 
     @Override

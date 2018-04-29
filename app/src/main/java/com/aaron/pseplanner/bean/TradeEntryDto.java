@@ -4,10 +4,10 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 /**
  * Created by aaron.asuncion on 12/20/2016.
@@ -79,13 +79,8 @@ public class TradeEntryDto implements Parcelable
     @Override
     public int hashCode()
     {
-        return new HashCodeBuilder(17, 37)
-                .append(symbol)
-                .append(entryPrice)
-                .append(shares)
-                .append(percentWeight)
-                .append(executed)
-                .toHashCode();
+
+        return Objects.hash(symbol, entryPrice, shares, percentWeight, executed);
     }
 
     @Override

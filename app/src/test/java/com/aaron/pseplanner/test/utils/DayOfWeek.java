@@ -1,6 +1,9 @@
 package com.aaron.pseplanner.test.utils;
 
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Created by Aaron on 30/01/2018.
@@ -16,8 +19,8 @@ public enum DayOfWeek
     SATURDAY(Calendar.SATURDAY),
     SUNDAY(Calendar.SUNDAY);
 
-    private static final DayOfWeek[] WEEK_DAYS = new DayOfWeek[]{MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY};
-    private static final DayOfWeek[] WEEK_ENDS = new DayOfWeek[]{SATURDAY, SUNDAY};
+    private static final List<DayOfWeek> WEEK_DAYS = Collections.unmodifiableList(Arrays.asList(MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY));
+    private static final List<DayOfWeek> WEEK_ENDS = Collections.unmodifiableList(Arrays.asList(SATURDAY, SUNDAY));
 
     private int value;
 
@@ -31,12 +34,12 @@ public enum DayOfWeek
         return value;
     }
 
-    public static DayOfWeek[] weekDays()
+    public static List<DayOfWeek> weekDays()
     {
         return WEEK_DAYS;
     }
 
-    public static DayOfWeek[] weekEnds()
+    public static List<DayOfWeek> weekEnds()
     {
         return WEEK_ENDS;
     }
