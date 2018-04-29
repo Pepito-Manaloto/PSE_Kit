@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -101,6 +102,9 @@ public class UpdateTradePlanActivity extends SaveTradePlanActivity
 
         EditText trancheShares = entryTrancheContainer.findViewById(R.id.edittext_tranche_shares);
         trancheShares.setText(String.valueOf(tradeEntries.get(index).getShares()));
+
+        CheckBox trancheStatus = entryTrancheContainer.findViewById(R.id.checkbox_status);
+        trancheStatus.setChecked(tradeEntries.get(index).isExecuted());
     }
 
     private void createAndSetEntryTranchesValues(int index, LayoutInflater layoutInflater, LinearLayout entryTranchesLayout, List<TradeEntryDto> tradeEntries)

@@ -25,7 +25,7 @@ import static org.mockito.Mockito.when;
 /**
  * Tests for FormatService.
  */
-public class DefaultFormatServiceTest
+public class TradePlanFormatServiceTest
 {
     private FormatService service;
     private static final int GREEN = R.color.darkGreen;
@@ -39,13 +39,13 @@ public class DefaultFormatServiceTest
         when(activity.getResources()).thenReturn(resources);
         when(resources.getColor(anyInt())).thenReturn(GREEN);
 
-        this.service = new DefaultFormatService(activity);
+        this.service = new TradePlanFormatService(activity);
     }
 
     @Test
-    public void givenZeroPrice_whenFormatPrice_thenShouldReturnZero()
+    public void givenZeroPrice_whenFormatPrice_thenShouldReturnDash()
     {
-        assertEquals("0", this.service.formatPrice(0));
+        assertEquals("-", this.service.formatPrice(0));
     }
 
     @Test
@@ -61,9 +61,9 @@ public class DefaultFormatServiceTest
     }
 
     @Test
-    public void givenZeroPrice_whenFormatStockPrice_thenShouldReturnZero()
+    public void givenZeroPrice_whenFormatStockPrice_thenShouldReturnDash()
     {
-        assertEquals("0", this.service.formatStockPrice(0));
+        assertEquals("-", this.service.formatStockPrice(0));
     }
 
     @Test
@@ -97,9 +97,9 @@ public class DefaultFormatServiceTest
     }
 
     @Test
-    public void givenZeroShares_whenFormatShares_thenShouldReturnZeroShares()
+    public void givenZeroShares_whenFormatShares_thenShouldReturnDash()
     {
-        assertEquals("0", this.service.formatShares(0));
+        assertEquals("-", this.service.formatShares(0));
     }
 
     @Test

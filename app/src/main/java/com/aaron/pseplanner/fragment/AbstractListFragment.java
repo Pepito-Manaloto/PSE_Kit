@@ -15,7 +15,7 @@ import com.aaron.pseplanner.listener.SearchOnQueryTextListener;
 import com.aaron.pseplanner.service.FormatService;
 import com.aaron.pseplanner.service.LogManager;
 import com.aaron.pseplanner.service.PSEPlannerService;
-import com.aaron.pseplanner.service.implementation.DefaultFormatService;
+import com.aaron.pseplanner.service.implementation.TradePlanFormatService;
 import com.aaron.pseplanner.service.implementation.FacadePSEPlannerService;
 
 import java.util.ArrayList;
@@ -60,7 +60,7 @@ public abstract class AbstractListFragment<T extends Stock & Parcelable> extends
         if(activity != null)
         {
             this.pseService = new FacadePSEPlannerService(activity);
-            this.formatService = new DefaultFormatService(activity);
+            this.formatService = new TradePlanFormatService(activity);
             this.compositeDisposable = new CompositeDisposable();
         }
 

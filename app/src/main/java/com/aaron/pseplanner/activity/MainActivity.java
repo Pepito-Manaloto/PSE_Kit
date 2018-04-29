@@ -168,7 +168,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .flatMap(new Function<Pair<List<TickerDto>, Date>, SingleSource<? extends ArrayList<TickerDto>>>()
                 {
                     @Override
-                    public SingleSource<? extends ArrayList<TickerDto>> apply(Pair<List<TickerDto>, Date> pair) throws Exception
+                    public SingleSource<? extends ArrayList<TickerDto>> apply(Pair<List<TickerDto>, Date> pair)
                     {
                         ArrayList<TickerDto> tickerDtoList = new ArrayList<>(pair.first);
                         Date lastUpdated = pair.second;
@@ -561,7 +561,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return new Callable<Void>()
         {
             @Override
-            public Void call() throws Exception
+            public Void call()
             {
                 selectedListFragment.updateListFromWeb(doAfterSubscribe);
 
@@ -580,7 +580,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return new Action()
         {
             @Override
-            public void run() throws Exception
+            public void run()
             {
                 stopRefreshAnimation();
                 isUpdating.set(false);

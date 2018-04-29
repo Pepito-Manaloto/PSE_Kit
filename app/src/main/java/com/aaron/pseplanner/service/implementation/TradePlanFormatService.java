@@ -13,14 +13,11 @@ import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.Date;
 
-/**
- * Created by aaron.asuncion on 12/8/2016.
- */
-public class DefaultFormatService implements FormatService
+public class TradePlanFormatService implements FormatService
 {
     private int green;
 
-    public DefaultFormatService(@NonNull Context context)
+    public TradePlanFormatService(@NonNull Context context)
     {
         green = ContextCompat.getColor(context, R.color.darkGreen);
     }
@@ -49,7 +46,15 @@ public class DefaultFormatService implements FormatService
     @Override
     public String formatPercent(double percent)
     {
-        return format(percent, PERCENT_FORMAT, RoundingMode.DOWN) + "%";
+        if(percent == 0)
+        {
+            return "0%";
+        }
+
+        DecimalFormat df = new DecimalFormat(PERCENT_FORMAT);
+        df.setRoundingMode(RoundingMode.DOWN);
+
+        return df.format(percent) + "%";
     }
 
     /**
@@ -91,7 +96,7 @@ public class DefaultFormatService implements FormatService
     {
         if(number == 0)
         {
-            return "0";
+            return "-";
         }
 
         DecimalFormat df = new DecimalFormat(format);

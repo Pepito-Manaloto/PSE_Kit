@@ -8,7 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.text.DecimalFormat;
 
-import static com.aaron.pseplanner.service.implementation.DefaultFormatService.STOCK_PRICE_FORMAT;
+import static com.aaron.pseplanner.service.implementation.TradePlanFormatService.STOCK_PRICE_FORMAT;
 
 /**
  * Created by Aaron on 12/3/2016.

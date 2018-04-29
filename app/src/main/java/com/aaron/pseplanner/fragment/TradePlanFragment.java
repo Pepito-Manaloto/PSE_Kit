@@ -26,12 +26,13 @@ import com.aaron.pseplanner.bean.TradeDto;
 import com.aaron.pseplanner.bean.TradeEntryDto;
 import com.aaron.pseplanner.constant.DataKey;
 import com.aaron.pseplanner.constant.IntentRequestCode;
+import com.aaron.pseplanner.constant.TrancheStatus;
 import com.aaron.pseplanner.listener.ImageViewOnClickHideExpand;
 import com.aaron.pseplanner.service.FormatService;
 import com.aaron.pseplanner.service.LogManager;
 import com.aaron.pseplanner.service.PSEPlannerService;
 import com.aaron.pseplanner.service.ViewUtils;
-import com.aaron.pseplanner.service.implementation.DefaultFormatService;
+import com.aaron.pseplanner.service.implementation.TradePlanFormatService;
 import com.aaron.pseplanner.service.implementation.FacadePSEPlannerService;
 
 import org.apache.commons.lang3.StringUtils;
@@ -161,7 +162,7 @@ public class TradePlanFragment extends Fragment
                 this.selectedStock = args.getParcelable(DataKey.EXTRA_TRADE.toString());
             }
 
-            this.formatService = new DefaultFormatService(getActivity());
+            this.formatService = new TradePlanFormatService(getActivity());
             this.pseService = new FacadePSEPlannerService(getActivity());
             setHasOptionsMenu(true);
         }
@@ -217,7 +218,7 @@ public class TradePlanFragment extends Fragment
             gainLoss.setText("-");
         }
 
-        trancheImageView.setOnClickListener(new ImageViewOnClickHideExpand(getActivity(), trancheImageView, entryTranchesContainer));
+        trancheImageView.setOnClickListener(new ImageViewOnClickHideExpand(getContext(), trancheImageView, entryTranchesContainer));
         this.setTranchesValues(entryTranchesContainer);
 
         priceToBreakEven.setText(this.formatService.formatStockPrice(this.selectedStock.getPriceToBreakEven().doubleValue()));
@@ -225,9 +226,16 @@ public class TradePlanFragment extends Fragment
         target.setText(this.formatService.formatStockPrice(this.selectedStock.getTargetPrice().doubleValue()));
 
         double gainToTargetValue = this.selectedStock.getGainToTarget().doubleValue();
-        String gainToTarget = "+" + this.formatService.formatPrice(gainToTargetValue);
-        gainTarget.setText(gainToTarget);
-        this.formatService.formatTextColor(gainToTargetValue, gainTarget);
+        if(gainToTargetValue == 0)
+        {
+            gainTarget.setText("-");
+        }
+        else
+        {
+            String gainToTarget = "+" + this.formatService.formatPrice(gainToTargetValue);
+            gainTarget.setText(gainToTarget);
+            this.formatService.formatTextColor(gainToTargetValue, gainTarget);
+        }
 
         stopLoss.setText(this.formatService.formatStockPrice(this.selectedStock.getStopLoss().doubleValue()));
 
@@ -269,6 +277,9 @@ public class TradePlanFragment extends Fragment
 
             TextView weight = entryTrancheLayout.findViewById(R.id.textview_tranche_weight);
             weight.setText(this.formatService.formatPercent(entry.getPercentWeight().doubleValue()));
+
+            TextView status = entryTrancheLayout.findViewById(R.id.textview_tranche_status);
+            status.setText(TrancheStatus.getTrancheStatus(entry.isExecuted()));
 
             entryTrancheNum++;
             entryTranchesContainer.addView(entryTrancheLayout);

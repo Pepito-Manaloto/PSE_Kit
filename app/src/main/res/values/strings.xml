@@ -129,6 +129,8 @@
     <string name="stoploss_invalid">Stop Loss cannot be greater than or equal the average price %1$.2f</string>
     <string name="target_invalid">Target price cannot be less than or equal the average price %1$.2f</string>
     <string name="entry_greater_than_stop_date">Entry date must not be greater than or equal to stop date</string>
+    <string name="entry_date_given_no_tranche_executed">Entry date is set, there must be at least one tranche executed.</string>
+    <string name="entry_date_not_given_tranche_executed">Entry date is not set, there must be no tranche executed.</string>
 
     <string-array name="refresh_intervals">
         <item>15</item>

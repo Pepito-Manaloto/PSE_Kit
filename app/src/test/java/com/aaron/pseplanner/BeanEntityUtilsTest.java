@@ -249,6 +249,7 @@ public class BeanEntityUtilsTest
             assertEquals(tradeEntries.get(i).getEntryPrice(), tradeEntryDtos.get(i).getEntryPrice().toPlainString());
             assertEquals(tradeEntries.get(i).getShares(), tradeEntryDtos.get(i).getShares());
             assertEquals(tradeEntries.get(i).getPercentWeight(), tradeEntryDtos.get(i).getPercentWeight().toPlainString());
+            assertEquals(tradeEntries.get(i).isExecuted(), tradeEntryDtos.get(i).isExecuted());
         }
     }
 

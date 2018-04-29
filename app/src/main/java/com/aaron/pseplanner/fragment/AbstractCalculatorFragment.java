@@ -18,7 +18,7 @@ import com.aaron.pseplanner.service.CalculatorService;
 import com.aaron.pseplanner.service.FormatService;
 import com.aaron.pseplanner.service.ViewUtils;
 import com.aaron.pseplanner.service.implementation.DefaultCalculatorService;
-import com.aaron.pseplanner.service.implementation.DefaultFormatService;
+import com.aaron.pseplanner.service.implementation.TradePlanFormatService;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -58,7 +58,7 @@ public abstract class AbstractCalculatorFragment extends Fragment implements Inp
         View view = inflater.inflate(resId, parent, false);
 
         this.calculatorService = new DefaultCalculatorService();
-        this.formatService = new DefaultFormatService(getActivity());
+        this.formatService = new TradePlanFormatService(getActivity());
 
         return view;
     }

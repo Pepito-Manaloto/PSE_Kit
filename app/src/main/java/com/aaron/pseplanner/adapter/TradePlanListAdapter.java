@@ -15,7 +15,7 @@ import com.aaron.pseplanner.constant.IntentRequestCode;
 import com.aaron.pseplanner.listener.ListRowOnTouchChangeActivity;
 import com.aaron.pseplanner.service.FormatService;
 import com.aaron.pseplanner.service.ViewUtils;
-import com.aaron.pseplanner.service.implementation.DefaultFormatService;
+import com.aaron.pseplanner.service.implementation.TradePlanFormatService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +39,7 @@ public class TradePlanListAdapter extends FilterableArrayAdapter<TradeDto>
         super(activity, 0, tradeDtoList);
 
         this.activity = activity;
-        this.formatService = new DefaultFormatService(activity);
+        this.formatService = new TradePlanFormatService(activity);
         this.tradeDtoListTemp = new ArrayList<>(tradeDtoList);
     }
 

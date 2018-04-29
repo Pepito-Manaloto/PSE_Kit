@@ -65,7 +65,7 @@ public final class BeanEntityUtils
         for(TradeEntry tradeEntry : tradeEntryList)
         {
             tradeEntryDtos.add(new TradeEntryDto(tradeEntry.getTradeSymbol(), tradeEntry.getEntryPrice(),
-                    tradeEntry.getShares(), tradeEntry.getPercentWeight()));
+                    tradeEntry.getShares(), tradeEntry.getPercentWeight(), tradeEntry.isExecuted()));
         }
 
         return tradeEntryDtos;
@@ -181,7 +181,8 @@ public final class BeanEntityUtils
                     .setShares(dto.getShares())
                     .setEntryPrice(dto.getEntryPrice().toPlainString())
                     .setPercentWeight(dto.getPercentWeight().toPlainString())
-                    .setOrder(order);
+                    .setOrder(order)
+                    .setExecuted(dto.isExecuted());
             order++;
 
             tradeEntryList.add(entry);

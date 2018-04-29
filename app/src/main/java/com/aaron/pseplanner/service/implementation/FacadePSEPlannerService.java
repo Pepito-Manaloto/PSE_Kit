@@ -81,7 +81,7 @@ public class FacadePSEPlannerService implements PSEPlannerService
         SettingsDto settings = this.settingsService.getSettings();
         initHttpClient(settings);
 
-        this.formatService = new DefaultFormatService(context);
+        this.formatService = new TradePlanFormatService(context);
         this.sharedPreferences = context.getSharedPreferences(PSEPlannerPreference.class.getSimpleName(), Context.MODE_PRIVATE);
         this.calculatorService = new DefaultCalculatorService();
         this.calendarWrapper = CalendarWrapper.newInstance();
@@ -95,7 +95,7 @@ public class FacadePSEPlannerService implements PSEPlannerService
         SettingsDto settings = this.settingsService.getSettings();
         initHttpClient(connectionTimeout, readTimeout, pingInterval, settings.getProxyHost(), settings.getProxyPort());
 
-        this.formatService = new DefaultFormatService(activity);
+        this.formatService = new TradePlanFormatService(activity);
         this.sharedPreferences = activity.getSharedPreferences(PSEPlannerPreference.class.getSimpleName(), Context.MODE_PRIVATE);
         this.calendarWrapper = CalendarWrapper.newInstance();
 

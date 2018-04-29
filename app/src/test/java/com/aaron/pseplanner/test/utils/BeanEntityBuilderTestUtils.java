@@ -77,7 +77,8 @@ public final class BeanEntityBuilderTestUtils
                     .setEntryPrice(randomNumericString(3000))
                     .setShares(RandomUtils.nextLong())
                     .setPercentWeight(randomNumericString(100))
-                    .setOrder(i));
+                    .setOrder(i)
+                    .setExecuted(true));
         }
 
         return list;
@@ -148,7 +149,8 @@ public final class BeanEntityBuilderTestUtils
             list.add(new TradeEntryDto().setSymbol(symbol)
                     .setEntryPrice(new BigDecimal(randomNumericString(3000)))
                     .setShares(RandomUtils.nextLong())
-                    .setPercentWeight(new BigDecimal(randomNumericString(100))));
+                    .setPercentWeight(new BigDecimal(randomNumericString(100)))
+                    .setExecuted(true));
         }
 
         return list;

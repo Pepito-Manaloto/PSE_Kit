@@ -4,18 +4,17 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Pair;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -26,6 +25,8 @@ import com.aaron.pseplanner.R;
 import com.aaron.pseplanner.bean.BoardLot;
 import com.aaron.pseplanner.bean.TradeDto;
 import com.aaron.pseplanner.bean.TradeEntryDto;
+import com.aaron.pseplanner.bean.Tranche;
+import com.aaron.pseplanner.bean.TrancheAggregate;
 import com.aaron.pseplanner.constant.DataKey;
 import com.aaron.pseplanner.fragment.DatePickerFragment;
 import com.aaron.pseplanner.listener.EditTextOnFocusChangeHideKeyboard;
@@ -44,11 +45,9 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -150,22 +149,25 @@ public abstract class SaveTradePlanActivity extends AppCompatActivity
                     BigDecimal target = new BigDecimal(targetStr.replace(",", ""));
                     long capital = Long.parseLong(capitalStr.replace(",", ""));
 
-                    Map<Pair<EditText, EditText>, Pair<String, String>> priceWeightMap = getTranchePriceAndWeight(entryTranchesLayout, shares);
-                    // Also validates if prices and weights are not blank
-                    Pair<BigDecimal, BigDecimal> averagePriceTotalWeight = getAndValidateAveragePriceTotalWeight(priceWeightMap);
-
-                    String entryDateStr = entryDateEditText.getText().toString();
-
-                    Date entryDate = null;
-                    if(StringUtils.isNotBlank(entryDateStr))
+                    List<Tranche> trancheList = validateAndGetEachTranche(entryTranchesLayout, shares);
+                    if(!trancheList.isEmpty())
                     {
-                        entryDate = getFormattedDate(entryDateStr);
-                    }
-                    Date stopDate = getFormattedDate(stopDateStr);
+                        long realTotalShares = getRealTotalShares(trancheList);
+                        TrancheAggregate trancheAggregate = aggregatedTrancheList(trancheList, realTotalShares, shares);
+                        String entryDateStr = entryDateEditText.getText().toString();
 
-                    if(areAllEditTextInputValid(averagePriceTotalWeight, shares, stopLoss, target, entryDate, stopDate, capital, priceWeightMap))
-                    {
-                        evaluateRiskRewardAndSave(shares, stopLoss, target, entryDate, stopDate, capital, priceWeightMap, averagePriceTotalWeight);
+                        Date entryDate = null;
+                        if(StringUtils.isNotBlank(entryDateStr))
+                        {
+                            entryDate = getFormattedDate(entryDateStr);
+                        }
+
+                        Date stopDate = getFormattedDate(stopDateStr);
+
+                        if(areTradePlanInputsValid(shares, stopLoss, target, entryDate, stopDate, capital, trancheAggregate))
+                        {
+                            evaluateRiskRewardAndSave(realTotalShares, shares, stopLoss, target, entryDate, stopDate, capital, trancheList, trancheAggregate);
+                        }
                     }
                 }
             }
@@ -249,84 +251,130 @@ public abstract class SaveTradePlanActivity extends AppCompatActivity
     }
 
     /**
-     * Gets the price-weight of each entry traches.
+     * Gets the price-weight-status of each entry traches.
      *
      * @param entryTranchesLayout the entry tranches
      * @param totalShares the total shares used to compute the percent weight on each tranche shares.
      *
-     * @return {@code Map<Pair<EditText, EditText>, Pair<String, String>>} list of price-weight edittext and values
+     * @return {@code List<Tranche} list of tranches or empty list if some inputs are missing
      */
-    private Map<Pair<EditText, EditText>, Pair<String, String>> getTranchePriceAndWeight(LinearLayout entryTranchesLayout, long totalShares)
+    private List<Tranche> validateAndGetEachTranche(LinearLayout entryTranchesLayout, long totalShares)
     {
         int numOfTranches = entryTranchesLayout.getChildCount();
-        Map<Pair<EditText, EditText>, Pair<String, String>> map = new LinkedHashMap<>(numOfTranches);
-        for(int i = 0; i < numOfTranches; i++)
+        List<Tranche> trancheList = new ArrayList<>(numOfTranches);
+        for(int i = 0, trancheNum = 1; i < numOfTranches; i++, trancheNum++)
         {
             View entryTrancheContainer = entryTranchesLayout.getChildAt(i);
             EditText entryPrice = entryTrancheContainer.findViewById(R.id.edittext_entry_price);
             EditText trancheShares = entryTrancheContainer.findViewById(R.id.edittext_tranche_shares);
+            CheckBox trancheStatus = entryTrancheContainer.findViewById(R.id.checkbox_status);
+
             String price = entryPrice.getText().toString();
-            String shares = trancheShares.getText().toString().replaceAll(",", "");
-            String weight = getTrancheWeightFromShares(Double.parseDouble(shares), totalShares);
-
-            map.put(new Pair<>(entryPrice, trancheShares), new Pair<>(price, weight));
-        }
-
-        return map;
-    }
-
-    private String getTrancheWeightFromShares(double shares, double totalShares)
-    {
-        BigDecimal weight = BigDecimal.valueOf(shares).divide(BigDecimal.valueOf(totalShares), 20, BigDecimal.ROUND_UP);
-        return weight.multiply(BigDecimal.valueOf(100)).toPlainString();
-    }
-
-    /**
-     * Gets the average price and total weight.
-     *
-     * @param priceWeightMap the price-weight map
-     * @return the average price and total weight pair if inputs are valid, else null
-     */
-    @Nullable
-    private Pair<BigDecimal, BigDecimal> getAndValidateAveragePriceTotalWeight(Map<Pair<EditText, EditText>, Pair<String, String>> priceWeightMap)
-    {
-        BigDecimal averagePrice = BigDecimal.ZERO;
-        BigDecimal totalWeight = BigDecimal.ZERO;
-
-        int trancheNum = 0;
-        for(Map.Entry<Pair<EditText, EditText>, Pair<String, String>> entry : priceWeightMap.entrySet())
-        {
-            Pair<EditText, EditText> editTextPair = entry.getKey();
-            EditText priceEditText = editTextPair.first;
-            EditText weightEditText = editTextPair.second;
-
-            Pair<String, String> valuesPair = entry.getValue();
-            String price = valuesPair.first;
-            String weight = valuesPair.second;
-
-            // Increment tranche number
-            trancheNum++;
+            BigDecimal priceNum = new BigDecimal(price.replace(",", ""));
+            String shares = trancheShares.getText().toString();
+            long sharesNum = Long.parseLong(shares.replaceAll(",", ""));
 
             // Validate inputs if blank
-            if(isEditTextNotBlank(price, "price at tranche " + trancheNum, priceEditText)
-                    && isEditTextNotBlank(weight, "weight at tranche " + trancheNum, weightEditText))
+            if(isEditTextNotBlank(price, "price at tranche " + trancheNum, entryPrice) &&
+                    isEditTextNotBlank(shares, "share at tranche " + trancheNum, trancheShares) &&
+                    isEntryPriceValidBoardLot(entryPrice, trancheNum, priceNum, sharesNum))
             {
-                BigDecimal priceNum = new BigDecimal(price.replace(",", ""));
-                BigDecimal weightNum = new BigDecimal(weight);
-
-                BigDecimal weightNumPercent = weightNum.movePointLeft(2);
-                averagePrice = averagePrice.add(priceNum.multiply(weightNumPercent));
-                totalWeight = totalWeight.add(weightNum);
+                BigDecimal weight = getTrancheWeightFromShares(sharesNum, totalShares);
+                Tranche tranche = new Tranche()
+                        .setOrder(trancheNum)
+                        .setExecuted(trancheStatus.isChecked())
+                        .setPrice(priceNum)
+                        .setShares(sharesNum)
+                        .setWeight(weight);
+                trancheList.add(tranche);
             }
             else
             {
-                return null;
+                return Collections.emptyList();
             }
         }
 
-        LogManager.debug(CLASS_NAME, "getAndValidateAveragePriceTotalWeight", "averagePrice = " + averagePrice + " totalWeight = " + totalWeight);
+        return trancheList;
+    }
 
-        return new Pair<>(averagePrice, totalWeight);
+    private boolean isEntryPriceValidBoardLot(EditText entryPrice, int trancheNum, BigDecimal price, long shares)
+    {
+        if(!BoardLot.isValidBoardLot(price, shares))
+        {
+            Toast.makeText(this, getString(R.string.boardlot_invalid) + " at tranche " + trancheNum, Toast.LENGTH_SHORT).show();
+            entryPrice.requestFocus();
+            return false;
+        }
+
+        return true;
+    }
+
+    private BigDecimal getTrancheWeightFromShares(long shares, double totalShares)
+    {
+        BigDecimal weight = BigDecimal.valueOf(shares).divide(BigDecimal.valueOf(totalShares), 20, BigDecimal.ROUND_UP);
+        return weight.multiply(BigDecimal.valueOf(100));
+    }
+
+    /**
+     * Computes the real price and shares based on executed tranche, as well as the total price and shares of all tranches.
+     *
+     * @param trancheList     the tranche list
+     * @param realTotalShares the real total shares based on executed tranche/s
+     * @param totalShares     the total shares of the trade
+     *
+     * @return the aggregated tranche list
+     */
+    private TrancheAggregate aggregatedTrancheList(List<Tranche> trancheList, final long realTotalShares, final long totalShares)
+    {
+        BigDecimal realAveragePrice = BigDecimal.ZERO;
+        BigDecimal averagePrice = BigDecimal.ZERO;
+        BigDecimal totalWeight = BigDecimal.ZERO;
+        boolean atLeastOneExecuted = false;
+        for(Tranche entry : trancheList)
+        {
+            BigDecimal weight = entry.getWeight();
+            BigDecimal weightPercent = weight.movePointLeft(2);
+            totalWeight = totalWeight.add(weight);
+            BigDecimal priceNum = entry.getPrice();
+            averagePrice = averagePrice.add(priceNum.multiply(weightPercent));
+            if(entry.isExecuted())
+            {
+                atLeastOneExecuted = true;
+                BigDecimal realWeight = getTrancheWeightFromShares(entry.getShares(), realTotalShares);
+                BigDecimal realWeightPercent = realWeight.movePointLeft(2);
+
+                realAveragePrice = realAveragePrice.add(priceNum.multiply(realWeightPercent));
+            }
+        }
+
+        TrancheAggregate trancheAggregate = new TrancheAggregate()
+                .setAtLeastOneExecuted(atLeastOneExecuted)
+                .setAveragePrice(averagePrice)
+                .setTotalShares(totalShares)
+                .setRealAveragePrice(realAveragePrice)
+                .setRealTotalShares(realTotalShares)
+                .setTotalWeight(totalWeight);
+
+        LogManager.debug(CLASS_NAME, "getAveragePriceTotalWeight", "trancheAggregate = " + trancheAggregate);
+
+        return trancheAggregate;
+    }
+
+    /**
+     * Gets the total shares of all executed tranches.
+     */
+    private long getRealTotalShares(List<Tranche> trancheList)
+    {
+        long realTotalShares = 0;
+        for(Tranche tranche : trancheList)
+        {
+            if(tranche.isExecuted())
+            {
+                realTotalShares += tranche.getShares();
+            }
+        }
+
+        return realTotalShares;
     }
 
     private Date getFormattedDate(String dateStr)
@@ -345,57 +393,36 @@ public abstract class SaveTradePlanActivity extends AppCompatActivity
         return date;
     }
 
-    private boolean areAllEditTextInputValid(Pair<BigDecimal, BigDecimal> averagePriceTotalWeight, long shares, BigDecimal stopLoss, BigDecimal target,
-            Date entryDate, Date stopDate, long capital, Map<Pair<EditText, EditText>, Pair<String, String>> priceWeightMap)
-    {
-        return averagePriceTotalWeight != null
-                && areTradePlanInputsValid(shares, stopLoss, target, entryDate, stopDate, capital, priceWeightMap, averagePriceTotalWeight);
-    }
-
     /**
      * Validates all edit text inputs if not blank.
      * Validate if share and entry prices of the selected stock is a valid boardlot.
      * Validate if total weight is equal to 100.
      * Validate target, stop loss, date entry & stop, and capital.
      *
-     * @param shares                  the number of shares to allot for the trade
-     * @param stopLoss                the stop loss of the trade
-     * @param target                  the target price of the trade
-     * @param entryDate               the date where the first tranche is executed
-     * @param stopDate                the time stop of the trade
-     * @param capital                 the capital to allot for the trade
-     * @param priceWeightMap          the entry entry_price-weight map
-     * @param averagePriceTotalWeight the average price and total weight
+     * @param shares             the number of shares to allot for the trade
+     * @param stopLoss           the stop loss of the trade
+     * @param target             the target price of the trade
+     * @param entryDate          the date where the first tranche is executed
+     * @param stopDate           the time stop of the trade
+     * @param capital            the capital to allot for the trade
+     * @param trancheAggregate   the details of all tranches combined
+     *
      * @return true if all inputs are valid, else false
      */
     private boolean areTradePlanInputsValid(long shares, BigDecimal stopLoss, BigDecimal target, Date entryDate, Date stopDate, long capital,
-            Map<Pair<EditText, EditText>, Pair<String, String>> priceWeightMap, Pair<BigDecimal, BigDecimal> averagePriceTotalWeight)
+            TrancheAggregate trancheAggregate)
     {
-        // Validate per tranche entry
-        for(Map.Entry<Pair<EditText, EditText>, Pair<String, String>> entry : priceWeightMap.entrySet())
-        {
-            Pair<EditText, EditText> editTextPair = entry.getKey();
-            EditText priceEditText = editTextPair.first;
+        BigDecimal averagePrice = trancheAggregate.getAveragePrice();
+        BigDecimal totalWeight = trancheAggregate.getTotalWeight();
+        boolean atLeastOneExecuted = trancheAggregate.isAtLeastOneExecuted();
 
-            Pair<String, String> valuesPair = entry.getValue();
-            String price = valuesPair.first;
-
-            if(!BoardLot.isValidBoardLot(new BigDecimal(price), shares))
-            {
-                Toast.makeText(this, getString(R.string.boardlot_invalid), Toast.LENGTH_SHORT).show();
-                priceEditText.requestFocus();
-                return false;
-            }
-        }
-
-        boolean isWeightExceedsMaxWeight = averagePriceTotalWeight.second.intValue() != MAX_WEIGHT;
+        boolean isWeightExceedsMaxWeight = totalWeight.intValue() != MAX_WEIGHT;
         if(isWeightExceedsMaxWeight)
         {
             Toast.makeText(this, getString(R.string.tranche_weight_invalid), Toast.LENGTH_SHORT).show();
             return false;
         }
 
-        BigDecimal averagePrice = averagePriceTotalWeight.first;
         boolean isTotalBuyExceedsCapital = capital < (shares * averagePrice.doubleValue());
         if(isTotalBuyExceedsCapital)
         {
@@ -410,6 +437,20 @@ public abstract class SaveTradePlanActivity extends AppCompatActivity
             if(isEntryDateEqualOrAfterStopDate)
             {
                 Toast.makeText(this, getString(R.string.entry_greater_than_stop_date), Toast.LENGTH_SHORT).show();
+                return false;
+            }
+
+            if(!atLeastOneExecuted)
+            {
+                Toast.makeText(this, getString(R.string.entry_date_given_no_tranche_executed), Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        }
+        else
+        {
+            if(atLeastOneExecuted)
+            {
+                Toast.makeText(this, getString(R.string.entry_date_not_given_tranche_executed), Toast.LENGTH_SHORT).show();
                 return false;
             }
         }
@@ -431,13 +472,12 @@ public abstract class SaveTradePlanActivity extends AppCompatActivity
         return true;
     }
 
-    private void evaluateRiskRewardAndSave(long shares, BigDecimal stopLoss, BigDecimal target, Date entryDate, Date stopDate, long capital,
-            Map<Pair<EditText, EditText>, Pair<String, String>> priceWeightMap, Pair<BigDecimal, BigDecimal> averagePriceTotalWeight)
+    private void evaluateRiskRewardAndSave(long realTotalShares, long shares, BigDecimal stopLoss, BigDecimal target, Date entryDate, Date stopDate, long capital,
+            List<Tranche> trancheList, TrancheAggregate trancheAggregate)
     {
-        BigDecimal riskReward = calculator.getRiskRewardRatio(averagePriceTotalWeight.first, target, stopLoss);
+        BigDecimal riskReward = calculator.getRiskRewardRatio(trancheAggregate.getAveragePrice(), target, stopLoss);
 
-        TradeDto dto = getTradeToSave(shares, stopLoss, target, capital, entryDate, stopDate, riskReward, averagePriceTotalWeight.first,
-                priceWeightMap.values());
+        TradeDto dto = getTradeToSave(realTotalShares, shares, stopLoss, target, capital, entryDate, stopDate, riskReward, trancheAggregate.getRealAveragePrice(), trancheList);
         LogManager.debug(CLASS_NAME, "evaluateRiskRewardAndSave", "tradeDto = " + dto);
 
         boolean isRiskRewardNotAttractive = riskReward.doubleValue() < 2;
@@ -457,37 +497,52 @@ public abstract class SaveTradePlanActivity extends AppCompatActivity
     /**
      * Creates a TradeDto from the trade parameters.
      *
-     * @param shares          the total shares
-     * @param stopLoss        the stop loss
-     * @param target          the target price
-     * @param capital         the total capital
-     * @param entryDate       the entry date
-     * @param stopDate        the time stop date
-     * @param riskReward      the risk reward ratio
-     * @param averagePrice    the average price of all tranches
-     * @param priceWeightList the price weight list of all tranches
+     * @param realTotalShares  the total shares based on executed tranche/s
+     * @param shares           the total shares
+     * @param stopLoss         the stop loss
+     * @param target           the target price
+     * @param capital          the total capital
+     * @param entryDate        the entry date
+     * @param stopDate         the time stop date
+     * @param riskReward       the risk reward ratio
+     * @param realAveragePrice the real average price of all tranches that is executed
+     * @param trancheList      the list of all tranches
      * @return TradeDto
      */
-    private TradeDto getTradeToSave(long shares, BigDecimal stopLoss, BigDecimal target, long capital, Date entryDate, Date stopDate, BigDecimal riskReward,
-            BigDecimal averagePrice, Collection<Pair<String, String>> priceWeightList)
+    private TradeDto getTradeToSave(long realTotalShares, long shares, BigDecimal stopLoss, BigDecimal target, long capital, Date entryDate, Date stopDate, BigDecimal riskReward,
+            BigDecimal realAveragePrice, List<Tranche> trancheList)
     {
         String symbol = getSelectedSymbol();
-        BigDecimal averagePriceAfterBuy = calculator.getAveragePriceAfterBuy(averagePrice);
-        BigDecimal totalAmount = averagePriceAfterBuy.multiply(new BigDecimal(shares));
-        BigDecimal priceToBreakEven = calculator.getPriceToBreakEven(averagePrice);
 
-        BigDecimal stopLossTotalAmount = calculator.getSellNetAmount(stopLoss, shares);
-        BigDecimal lossToStopLoss = stopLossTotalAmount.subtract(totalAmount);
-
-        BigDecimal targetTotalAmount = calculator.getSellNetAmount(target, shares);
-        BigDecimal gainToTarget = targetTotalAmount.subtract(totalAmount);
-
+        BigDecimal averagePriceAfterBuy = BigDecimal.ZERO;
+        BigDecimal totalAmount = BigDecimal.ZERO;
         BigDecimal currentPrice = getSelectedSymbolCurrentPrice();
-        BigDecimal gainLoss = calculator.getGainLossAmount(averagePrice, shares, currentPrice);
-        BigDecimal gainLossPercent = calculator.getPercentGainLoss(averagePrice, shares, currentPrice);
+        BigDecimal priceToBreakEven = BigDecimal.ZERO;
+        BigDecimal lossToStopLoss = BigDecimal.ZERO;
+        BigDecimal gainToTarget = BigDecimal.ZERO;
+        BigDecimal gainLoss = BigDecimal.ZERO;
+        BigDecimal gainLossPercent = BigDecimal.ZERO;
+        BigDecimal percentCapital = BigDecimal.ZERO;
 
-        BigDecimal percentCapital = totalAmount.divide(new BigDecimal(capital), MathContext.DECIMAL64)
-                .multiply(ONE_HUNDRED).setScale(2, BigDecimal.ROUND_CEILING);
+        if(!BigDecimal.ZERO.equals(realAveragePrice))
+        {
+            averagePriceAfterBuy = calculator.getAveragePriceAfterBuy(realAveragePrice);
+
+            totalAmount = averagePriceAfterBuy.multiply(new BigDecimal(realTotalShares));
+            priceToBreakEven = calculator.getPriceToBreakEven(realAveragePrice);
+
+            BigDecimal stopLossTotalAmount = calculator.getSellNetAmount(stopLoss, realTotalShares);
+            lossToStopLoss = stopLossTotalAmount.subtract(totalAmount);
+
+            BigDecimal targetTotalAmount = calculator.getSellNetAmount(target, realTotalShares);
+            gainToTarget = targetTotalAmount.subtract(totalAmount);
+
+            gainLoss = calculator.getGainLossAmount(realAveragePrice, realTotalShares, currentPrice);
+            gainLossPercent = calculator.getPercentGainLoss(realAveragePrice, realTotalShares, currentPrice);
+
+            percentCapital = totalAmount.divide(new BigDecimal(capital), MathContext.DECIMAL64)
+                    .multiply(ONE_HUNDRED).setScale(2, BigDecimal.ROUND_CEILING);
+        }
 
         int holdingPeriod = 0;
         Date now = new Date();
@@ -522,26 +577,26 @@ public abstract class SaveTradePlanActivity extends AppCompatActivity
         tradeDto.setDatePlanned(datePlanned)
                 .setDaysSincePlanned(daysSincePlanned);
 
-        List<TradeEntryDto> list = priceWeightListToTradeEntryList(symbol, shares, priceWeightList);
+        List<TradeEntryDto> list = priceWeightStatusMapToTradeEntryList(symbol, shares, trancheList);
         tradeDto.setTradeEntries(list);
 
         return tradeDto;
     }
 
-    protected List<TradeEntryDto> priceWeightListToTradeEntryList(String stock, long shares, Collection<Pair<String, String>> priceWeightList)
+    protected List<TradeEntryDto> priceWeightStatusMapToTradeEntryList(String stock, long shares, List<Tranche> trancheList)
     {
-        List<TradeEntryDto> dtos = new ArrayList<>(priceWeightList.size());
+        List<TradeEntryDto> tradeEntryDtos = new ArrayList<>(trancheList.size());
 
-        for(Pair<String, String> priceWeight : priceWeightList)
+        for(Tranche tranche : trancheList)
         {
-            String weightStr = priceWeight.second;
-            double weightMultiplier = Double.parseDouble(weightStr) / 100;
+            BigDecimal weight = tranche.getWeight();
+            double weightMultiplier = tranche.getWeight().divide(BigDecimal.valueOf(100), 20, BigDecimal.ROUND_UP).doubleValue();
             long partialShares = Math.round(shares * weightMultiplier);
 
-            dtos.add(new TradeEntryDto(stock, priceWeight.first, partialShares, weightStr));
+            tradeEntryDtos.add(new TradeEntryDto(stock, tranche.getPrice(), partialShares, weight, tranche.isExecuted()));
         }
 
-        return dtos;
+        return tradeEntryDtos;
     }
 
     /**
@@ -650,6 +705,18 @@ public abstract class SaveTradePlanActivity extends AppCompatActivity
         trancheShares.setText(R.string.default_value);
 
         setEditTextTextChangeListener(entryPrice, trancheShares);
+
+        final CheckBox checkboxStatus = entryTrancheContainer.findViewById(R.id.checkbox_status);
+        TextView labelStatus = entryTrancheContainer.findViewById(R.id.label_status);
+        labelStatus.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                checkboxStatus.toggle();
+            }
+        });
+
         entryTranchesLayout.addView(entryTrancheContainer);
     }
 

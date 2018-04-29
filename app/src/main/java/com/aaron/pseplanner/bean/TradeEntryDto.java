@@ -3,6 +3,10 @@ package com.aaron.pseplanner.bean;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 import java.math.BigDecimal;
 
 /**
@@ -15,33 +19,37 @@ public class TradeEntryDto implements Parcelable
     private BigDecimal entryPrice;
     private long shares;
     private BigDecimal percentWeight;
+    private boolean executed;
 
     public TradeEntryDto()
     {
     }
 
-    public TradeEntryDto(String symbol, BigDecimal entryPrice, long shares, BigDecimal percentWeight)
+    public TradeEntryDto(String symbol, BigDecimal entryPrice, long shares, BigDecimal percentWeight, boolean executed)
     {
         this.symbol = symbol;
         this.entryPrice = entryPrice;
         this.shares = shares;
         this.percentWeight = percentWeight;
+        this.executed = executed;
     }
 
-    public TradeEntryDto(String symbol, double entryPrice, long shares, double percentWeight)
+    public TradeEntryDto(String symbol, double entryPrice, long shares, double percentWeight, boolean executed)
     {
         this.symbol = symbol;
         this.entryPrice = BigDecimal.valueOf(entryPrice);
         this.shares = shares;
         this.percentWeight = BigDecimal.valueOf(percentWeight);
+        this.executed = executed;
     }
 
-    public TradeEntryDto(String symbol, String entryPrice, long shares, String percentWeight)
+    public TradeEntryDto(String symbol, String entryPrice, long shares, String percentWeight, boolean executed)
     {
         this.symbol = symbol;
         this.entryPrice = new BigDecimal(entryPrice);
         this.shares = shares;
         this.percentWeight = new BigDecimal(percentWeight);
+        this.executed = executed;
     }
 
     @Override
@@ -51,36 +59,45 @@ public class TradeEntryDto implements Parcelable
         {
             return true;
         }
-        if(!(o instanceof TradeEntryDto))
+
+        if(o == null || getClass() != o.getClass())
         {
             return false;
         }
 
         TradeEntryDto that = (TradeEntryDto) o;
 
-        return entryPrice.equals(that.entryPrice) && shares == that.shares &&
-                percentWeight.equals(that.percentWeight) && symbol.equals(that.symbol);
+        return new EqualsBuilder()
+                .append(shares, that.shares)
+                .append(executed, that.executed)
+                .append(symbol, that.symbol)
+                .append(entryPrice, that.entryPrice)
+                .append(percentWeight, that.percentWeight)
+                .isEquals();
     }
 
     @Override
     public int hashCode()
     {
-        int result = getSymbol().hashCode();
-        result = 31 * result + getEntryPrice().hashCode();
-        result = 31 * result + (int) (getShares() ^ (getShares() >>> 32));
-        result = 31 * result + getPercentWeight().hashCode();
-        return result;
+        return new HashCodeBuilder(17, 37)
+                .append(symbol)
+                .append(entryPrice)
+                .append(shares)
+                .append(percentWeight)
+                .append(executed)
+                .toHashCode();
     }
 
     @Override
     public String toString()
     {
-        return "TradeEntryDto{" +
-                "symbol='" + symbol + '\'' +
-                ", entryPrice=" + entryPrice +
-                ", shares=" + shares +
-                ", percentWeight=" + percentWeight +
-                '}';
+        return new ToStringBuilder(this)
+                .append("symbol", symbol)
+                .append("entryPrice", entryPrice)
+                .append("shares", shares)
+                .append("percentWeight", percentWeight)
+                .append("executed", executed)
+                .toString();
     }
 
     public BigDecimal getPercentWeight()
@@ -127,6 +144,17 @@ public class TradeEntryDto implements Parcelable
         return this;
     }
 
+    public boolean isExecuted()
+    {
+        return executed;
+    }
+
+    public TradeEntryDto setExecuted(boolean executed)
+    {
+        this.executed = executed;
+        return this;
+    }
+
     /**
      * Describe the kinds of special objects contained in this Parcelable instance's marshaled representation.
      */
@@ -146,6 +174,7 @@ public class TradeEntryDto implements Parcelable
         dest.writeString(this.entryPrice.toPlainString());
         dest.writeLong(this.shares);
         dest.writeString(this.percentWeight.toPlainString());
+        dest.writeByte((byte) (executed ? 1 : 0));
     }
 
     /**
@@ -157,6 +186,7 @@ public class TradeEntryDto implements Parcelable
         this.entryPrice = new BigDecimal(in.readString());
         this.shares = in.readLong();
         this.percentWeight = new BigDecimal(in.readString());
+        this.executed = in.readByte() == 1;
     }
 
     /**

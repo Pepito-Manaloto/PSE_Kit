@@ -27,17 +27,21 @@ public class TradeEntry
     @NotNull
     private String percentWeight;
 
+    private boolean executed;
+
     private int order;
 
-    @Generated(hash = 1533414364)
-    public TradeEntry(Long id, @NotNull String tradeSymbol, @NotNull String entryPrice, long shares,
-            @NotNull String percentWeight, int order)
+    @Generated(hash = 2072328192)
+    public TradeEntry(Long id, @NotNull String tradeSymbol,
+            @NotNull String entryPrice, long shares, @NotNull String percentWeight,
+            boolean executed, int order)
     {
         this.id = id;
         this.tradeSymbol = tradeSymbol;
         this.entryPrice = entryPrice;
         this.shares = shares;
         this.percentWeight = percentWeight;
+        this.executed = executed;
         this.order = order;
     }
 
@@ -101,6 +105,17 @@ public class TradeEntry
         return this;
     }
 
+    public boolean isExecuted()
+    {
+        return executed;
+    }
+
+    public TradeEntry setExecuted(boolean executed)
+    {
+        this.executed = executed;
+        return this;
+    }
+
     public int getOrder()
     {
         return order;
@@ -110,5 +125,9 @@ public class TradeEntry
     {
         this.order = order;
         return this;
+    }
+
+    public boolean getExecuted() {
+        return this.executed;
     }
 }
