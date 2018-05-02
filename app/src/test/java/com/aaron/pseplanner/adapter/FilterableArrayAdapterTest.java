@@ -55,7 +55,7 @@ public class FilterableArrayAdapterTest extends RobolectricTest
         thenTheListOfStocksShouldOnlyContainStocksMatchingTheSearchQuery(stocks);
     }
 
-    private void givenAListOfStocks(String... listOfStockSymbols) throws Exception
+    private void givenAListOfStocks(String... listOfStockSymbols)
     {
         actualList = new ArrayList<>();
         tempList = new ArrayList<>();

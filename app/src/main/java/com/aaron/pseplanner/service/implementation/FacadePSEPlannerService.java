@@ -49,7 +49,6 @@ import static com.aaron.pseplanner.service.BeanEntityUtils.fromTradeListToTradeD
 /**
  * Created by aaron.asuncion on 1/31/2017.
  */
-
 public class FacadePSEPlannerService implements PSEPlannerService
 {
     public static final String CLASS_NAME = FacadePSEPlannerService.class.getSimpleName();
@@ -246,7 +245,7 @@ public class FacadePSEPlannerService implements PSEPlannerService
         return Single.fromCallable(new Callable<List<Ticker>>()
         {
             @Override
-            public List<Ticker> call() throws Exception
+            public List<Ticker> call()
             {
                 return tickerDao.queryBuilder().orderAsc(TickerDao.Properties.Symbol).list();
             }
@@ -254,7 +253,7 @@ public class FacadePSEPlannerService implements PSEPlannerService
         .map(new Function<List<Ticker>, ArrayList<TickerDto>>()
         {
             @Override
-            public ArrayList<TickerDto> apply(List<Ticker> tickerList) throws Exception
+            public ArrayList<TickerDto> apply(List<Ticker> tickerList)
             {
                 ArrayList<TickerDto> tickerDtoList = fromTickerListToTickerDtoList(tickerList);
 
@@ -412,7 +411,7 @@ public class FacadePSEPlannerService implements PSEPlannerService
         return Single.fromCallable(new Callable<List<Trade>>()
         {
             @Override
-            public List<Trade> call() throws Exception
+            public List<Trade> call()
             {
                 return tradeDao.loadAll();
             }
@@ -420,7 +419,7 @@ public class FacadePSEPlannerService implements PSEPlannerService
         .map(new Function<List<Trade>, ArrayList<TradeDto>>()
         {
             @Override
-            public ArrayList<TradeDto> apply(List<Trade> tradePlanList) throws Exception
+            public ArrayList<TradeDto> apply(List<Trade> tradePlanList)
             {
                 ArrayList<TradeDto> tradePlanDtoList = fromTradeListToTradeDtoList(tradePlanList);
 
@@ -523,7 +522,7 @@ public class FacadePSEPlannerService implements PSEPlannerService
         return this.phisixHttpClient.getTicker(symbol).map(new Function<Pair<TickerDto, Date>, Pair<TickerDto, Date>>()
         {
             @Override
-            public Pair<TickerDto, Date> apply(Pair<TickerDto, Date> pair) throws Exception
+            public Pair<TickerDto, Date> apply(Pair<TickerDto, Date> pair)
             {
                 updateLastUpdatedSharedPreference(pair.second, PSEPlannerPreference.LAST_UPDATED_TICKER);
                 return pair;
@@ -537,7 +536,7 @@ public class FacadePSEPlannerService implements PSEPlannerService
         return this.phisixHttpClient.getAllTickerList().map(new Function<Pair<List<TickerDto>, Date>, Pair<List<TickerDto>, Date>>()
         {
             @Override
-            public Pair<List<TickerDto>, Date> apply(Pair<List<TickerDto>, Date> pair) throws Exception
+            public Pair<List<TickerDto>, Date> apply(Pair<List<TickerDto>, Date> pair)
             {
                 updateLastUpdatedSharedPreference(pair.second, PSEPlannerPreference.LAST_UPDATED_TICKER);
                 return pair;
@@ -551,7 +550,7 @@ public class FacadePSEPlannerService implements PSEPlannerService
         return this.phisixHttpClient.getTickerList(symbols).map(new Function<Pair<List<TickerDto>, Date>, Pair<List<TickerDto>, Date>>()
         {
             @Override
-            public Pair<List<TickerDto>, Date> apply(Pair<List<TickerDto>, Date> pair) throws Exception
+            public Pair<List<TickerDto>, Date> apply(Pair<List<TickerDto>, Date> pair)
             {
                 updateLastUpdatedSharedPreference(pair.second, PSEPlannerPreference.LAST_UPDATED_TICKER);
                 return pair;

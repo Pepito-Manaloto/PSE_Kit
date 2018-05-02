@@ -27,7 +27,7 @@ import org.greenrobot.greendao.query.QueryBuilder;
 import org.greenrobot.greendao.query.WhereCondition;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Matchers;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
@@ -47,7 +47,13 @@ import io.reactivex.Single;
 import io.reactivex.functions.Predicate;
 import io.reactivex.observers.TestObserver;
 
-import static com.aaron.pseplanner.test.utils.BeanEntityBuilderTestUtils.*;
+import static com.aaron.pseplanner.test.utils.BeanEntityBuilderTestUtils.givenTickerDtoList;
+import static com.aaron.pseplanner.test.utils.BeanEntityBuilderTestUtils.givenTickerList;
+import static com.aaron.pseplanner.test.utils.BeanEntityBuilderTestUtils.givenTradeDto;
+import static com.aaron.pseplanner.test.utils.BeanEntityBuilderTestUtils.givenTradeDtoList;
+import static com.aaron.pseplanner.test.utils.BeanEntityBuilderTestUtils.givenTradeEntryDto;
+import static com.aaron.pseplanner.test.utils.BeanEntityBuilderTestUtils.givenTradeEntryList;
+import static com.aaron.pseplanner.test.utils.BeanEntityBuilderTestUtils.givenTradeList;
 import static com.aaron.pseplanner.test.utils.UnitTestUtils.newDateTime;
 import static com.aaron.pseplanner.test.utils.UnitTestUtils.newTime;
 import static com.aaron.pseplanner.test.utils.UnitTestUtils.randomSecondOrMinute;
@@ -58,8 +64,6 @@ import static junit.framework.TestCase.assertFalse;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyCollectionOf;
-import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
@@ -641,10 +645,7 @@ public class FacadePSEPlannerServiceTest extends AbstractHttpClientTest
 
     private Set<String> givenTradeSymbols(String... symbols)
     {
-        Set<String> tradeSymbols = new HashSet<>();
-        tradeSymbols.addAll(Arrays.asList(symbols));
-
-        return tradeSymbols;
+        return new HashSet<>(Arrays.asList(symbols));
     }
 
     private Calendar createMockedCalendar(DayOfWeek day, int hour, int minute)
@@ -758,7 +759,9 @@ public class FacadePSEPlannerServiceTest extends AbstractHttpClientTest
 
     private void whenUpdateTradePlan(TradeDto tradeDto)
     {
-        mockTradeDaoWhereQuery();
+        QueryBuilder<?> tradeWhereQuery = mockTradeDaoWhereQuery();
+        when(tradeWhereQuery.unique()).thenReturn(mock(Trade.class));
+
         QueryBuilder queryBuilderWhereTradeEntry = mockTradeEntryDaoWhereQuery();
         when(queryBuilderWhereTradeEntry.buildDelete()).thenReturn(mock(DeleteQuery.class));
 
@@ -782,7 +785,7 @@ public class FacadePSEPlannerServiceTest extends AbstractHttpClientTest
     {
         Pair<List<TickerDto>, Date> pair = new Pair<>(Collections.<TickerDto> emptyList(), new Date());
         Single<Pair<List<TickerDto>, Date>> returnValue = Single.just(pair);
-        when(httpClient.getTickerList(anyCollectionOf(String.class))).thenReturn(returnValue);
+        when(httpClient.getTickerList(ArgumentMatchers.<String> anyCollection())).thenReturn(returnValue);
 
         service.getTickerList(Collections.<String> emptyList()).subscribe();
     }
@@ -802,9 +805,9 @@ public class FacadePSEPlannerServiceTest extends AbstractHttpClientTest
         doAnswer(new Answer()
         {
             @Override
-            public Object answer(InvocationOnMock invocation) throws Throwable
+            public Object answer(InvocationOnMock invocation)
             {
-                Runnable runnable = invocation.getArgumentAt(0, Runnable.class);
+                Runnable runnable = invocation.getArgument(0);
                 runnable.run();
                 return null;
             }
@@ -837,7 +840,7 @@ public class FacadePSEPlannerServiceTest extends AbstractHttpClientTest
         QueryBuilder<?> queryBuilderTrade = mock(QueryBuilder.class);
         QueryBuilder<?> queryBuilderWhereTrade = mock(QueryBuilder.class);
         Mockito.<QueryBuilder<?>> when(tradeDao.queryBuilder()).thenReturn(queryBuilderTrade);
-        Mockito.<QueryBuilder<?>> when(queryBuilderTrade.where(any(WhereCondition.class), Matchers.<WhereCondition> anyVararg()))
+        Mockito.<QueryBuilder<?>> when(queryBuilderTrade.where(any(WhereCondition.class), (WhereCondition[]) any()))
                 .thenReturn(queryBuilderWhereTrade);
 
         return queryBuilderWhereTrade;
@@ -848,7 +851,7 @@ public class FacadePSEPlannerServiceTest extends AbstractHttpClientTest
         QueryBuilder<?> queryBuilderTradeEntry = mock(QueryBuilder.class);
         QueryBuilder<?> queryBuilderWhereTradeEntry = mock(QueryBuilder.class);
         Mockito.<QueryBuilder<?>> when(tradeEntryDao.queryBuilder()).thenReturn(queryBuilderTradeEntry);
-        Mockito.<QueryBuilder<?>> when(queryBuilderTradeEntry.where(any(WhereCondition.class), Matchers.<WhereCondition> anyVararg()))
+        Mockito.<QueryBuilder<?>> when(queryBuilderTradeEntry.where(any(WhereCondition.class), (WhereCondition[]) any()))
                 .thenReturn(queryBuilderWhereTradeEntry);
 
         return queryBuilderWhereTradeEntry;
@@ -943,7 +946,7 @@ public class FacadePSEPlannerServiceTest extends AbstractHttpClientTest
     {
         assertTrue(tickerSet.isEmpty());
 
-        verify(tickerDao, times(0)).insertOrReplaceInTx(anyCollectionOf(Ticker.class));
+        verify(tickerDao, times(0)).insertOrReplaceInTx(ArgumentMatchers.<Ticker> anySet());
 
         thenLastUpdatedNotRefreshed(preference);
     }
@@ -982,7 +985,7 @@ public class FacadePSEPlannerServiceTest extends AbstractHttpClientTest
         thenTradeDtoEqualsToTrade(tradeDto, trade);
 
         verify(tradeDao, times(1)).insert(trade);
-        verify(tradeEntryDao, times(1)).insertInTx(anyListOf(TradeEntry.class));
+        verify(tradeEntryDao, times(1)).insertInTx(ArgumentMatchers.<TradeEntry> anyList());
 
         thenLastUpdatedRefreshed(preference, new Date());
     }
@@ -994,7 +997,7 @@ public class FacadePSEPlannerServiceTest extends AbstractHttpClientTest
         verify(tradeDao, times(1)).update(any(Trade.class));
         verify(tradeEntryDao.queryBuilder().where(TradeEntryDao.Properties.TradeSymbol.eq(tradeDto.getSymbol())).buildDelete(), times(1))
                 .executeDeleteWithoutDetachingEntities();
-        verify(tradeEntryDao, times(1)).insertInTx(anyCollectionOf(TradeEntry.class));
+        verify(tradeEntryDao, times(1)).insertInTx(ArgumentMatchers.<TradeEntry> anyCollection());
 
         thenLastUpdatedRefreshed(preference, new Date());
     }
@@ -1054,7 +1057,7 @@ public class FacadePSEPlannerServiceTest extends AbstractHttpClientTest
         result.assertValue(new Predicate<ArrayList<TickerDto>>()
         {
             @Override
-            public boolean test(ArrayList<TickerDto> tickerDtos) throws Exception
+            public boolean test(ArrayList<TickerDto> tickerDtos)
             {
                 int size = tickerList.size();
                 assertEquals(size, tickerDtos.size());
@@ -1080,7 +1083,7 @@ public class FacadePSEPlannerServiceTest extends AbstractHttpClientTest
         result.assertValue(new Predicate<ArrayList<TradeDto>>()
         {
             @Override
-            public boolean test(ArrayList<TradeDto> tradeDtos) throws Exception
+            public boolean test(ArrayList<TradeDto> tradeDtos)
             {
                 int size = tradeList.size();
                 assertEquals(size, tradeDtos.size());
