@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        style="@style/TextViewLabel.SubLabel"
+        android:layout_marginBottom="15dp"
+        android:text="@string/label_average_price" />
+
+    <TextView
+        android:id="@+id/textview_projected_average_price"
+        style="@style/TextViewLabel.SubLabel" />
+
+    <TextView
+        style="@style/TextViewLabel.SubLabel"
+        android:layout_marginBottom="15dp"
+        android:text="@string/label_total_amount" />
+
+    <TextView
+        android:id="@+id/textview_projected_total_amount"
+        style="@style/TextViewLabel.SubLabel" />
+
+    <TextView
+        style="@style/TextViewLabel.SubLabel"
+        android:layout_marginBottom="15dp"
+        android:text="@string/label_gain_target" />
+
+    <TextView
+        android:id="@+id/textview_projected_gain_target"
+        style="@style/TextViewLabel.SubLabel" />
+
+    <TextView
+        style="@style/TextViewLabel.SubLabel"
+        android:layout_marginBottom="15dp"
+        android:text="@string/label_loss_stop_loss" />
+
+    <TextView
+        android:id="@+id/textview_projected_loss_stop_loss"
+        style="@style/TextViewLabel.SubLabel" />
+</merge>

@@ -218,6 +218,10 @@ public class BeanEntityUtilsTest
         assertEquals(trade.getDatePlanned(), tradeDto.getDatePlanned());
         assertEquals(trade.getEntryDate(), tradeDto.getEntryDate());
         assertEquals(trade.getCurrentPrice(), tradeDto.getCurrentPrice().toPlainString());
+        assertEquals(trade.getProjectedAveragePrice(), tradeDto.getProjectedAveragePrice().toPlainString());
+        assertEquals(trade.getProjectedTotalAmount(), tradeDto.getProjectedTotalAmount().toPlainString());
+        assertEquals(trade.getProjectedGainToTarget(), tradeDto.getProjectedGainToTarget().toPlainString());
+        assertEquals(trade.getProjectedLossToStopLoss(), tradeDto.getProjectedLossToStopLoss().toPlainString());
         assertEquals(trade.getAveragePrice(), tradeDto.getAveragePrice().toPlainString());
         assertEquals(trade.getTotalShares(), tradeDto.getTotalShares());
         assertEquals(trade.getTotalAmount(), tradeDto.getTotalAmount().toPlainString());
@@ -328,6 +332,10 @@ public class BeanEntityUtilsTest
         assertNull(tradeDto.getEntryDate());
         assertEquals(0, tradeDto.getHoldingPeriod());
         assertNull(tradeDto.getCurrentPrice());
+        assertNull(tradeDto.getProjectedAveragePrice());
+        assertNull(tradeDto.getProjectedTotalAmount());
+        assertNull(tradeDto.getProjectedGainToTarget());
+        assertNull(tradeDto.getProjectedLossToStopLoss());
         assertNull(tradeDto.getAveragePrice());
         assertEquals(0, tradeDto.getTotalShares());
         assertNull(tradeDto.getTotalAmount());
@@ -355,6 +363,10 @@ public class BeanEntityUtilsTest
         assertNull(trade.getDatePlanned());
         assertNull(trade.getEntryDate());
         assertNull(trade.getCurrentPrice());
+        assertNull(trade.getProjectedAveragePrice());
+        assertNull(trade.getProjectedTotalAmount());
+        assertNull(trade.getProjectedGainToTarget());
+        assertNull(trade.getProjectedLossToStopLoss());
         assertNull(trade.getAveragePrice());
         assertEquals(0, trade.getTotalShares());
         assertNull(trade.getTotalAmount());

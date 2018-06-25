@@ -35,7 +35,7 @@ public class ImageViewOnClickHideExpand implements View.OnClickListener
     public void onClick(View v)
     {
         // Arrow is hide: update icon, update content description, show container
-        if(this.hide.equals(this.imageView.getContentDescription()))
+        if(this.hide.equals(this.imageView.getContentDescription().toString()))
         {
             hide();
         }

@@ -166,7 +166,7 @@ public abstract class SaveTradePlanActivity extends AppCompatActivity
 
                         if(areTradePlanInputsValid(shares, stopLoss, target, entryDate, stopDate, capital, trancheAggregate))
                         {
-                            evaluateRiskRewardAndSave(realTotalShares, shares, stopLoss, target, entryDate, stopDate, capital, trancheList, trancheAggregate);
+                            evaluateRiskRewardAndSave(shares, stopLoss, target, entryDate, stopDate, capital, trancheList, trancheAggregate);
                         }
                     }
                 }
@@ -472,12 +472,13 @@ public abstract class SaveTradePlanActivity extends AppCompatActivity
         return true;
     }
 
-    private void evaluateRiskRewardAndSave(long realTotalShares, long shares, BigDecimal stopLoss, BigDecimal target, Date entryDate, Date stopDate, long capital,
-            List<Tranche> trancheList, TrancheAggregate trancheAggregate)
+    private void evaluateRiskRewardAndSave(long shares, BigDecimal stopLoss, BigDecimal target, Date entryDate, Date stopDate,
+            long capital, List<Tranche> trancheList, TrancheAggregate trancheAggregate)
     {
         BigDecimal riskReward = calculator.getRiskRewardRatio(trancheAggregate.getAveragePrice(), target, stopLoss);
 
-        TradeDto dto = getTradeToSave(realTotalShares, shares, stopLoss, target, capital, entryDate, stopDate, riskReward, trancheAggregate.getRealAveragePrice(), trancheList);
+        TradeDto dto = getTradeToSave(shares, stopLoss, target, capital, entryDate, stopDate, riskReward,
+                trancheAggregate, trancheList);
         LogManager.debug(CLASS_NAME, "evaluateRiskRewardAndSave", "tradeDto = " + dto);
 
         boolean isRiskRewardNotAttractive = riskReward.doubleValue() < 2;
@@ -497,7 +498,6 @@ public abstract class SaveTradePlanActivity extends AppCompatActivity
     /**
      * Creates a TradeDto from the trade parameters.
      *
-     * @param realTotalShares  the total shares based on executed tranche/s
      * @param shares           the total shares
      * @param stopLoss         the stop loss
      * @param target           the target price
@@ -505,25 +505,32 @@ public abstract class SaveTradePlanActivity extends AppCompatActivity
      * @param entryDate        the entry date
      * @param stopDate         the time stop date
      * @param riskReward       the risk reward ratio
-     * @param realAveragePrice the real average price of all tranches that is executed
+     * @param trancheAggregate the values computed from the tranches
      * @param trancheList      the list of all tranches
      * @return TradeDto
      */
-    private TradeDto getTradeToSave(long realTotalShares, long shares, BigDecimal stopLoss, BigDecimal target, long capital, Date entryDate, Date stopDate, BigDecimal riskReward,
-            BigDecimal realAveragePrice, List<Tranche> trancheList)
+    private TradeDto getTradeToSave(long shares, BigDecimal stopLoss, BigDecimal target, long capital, Date entryDate, Date stopDate,
+            BigDecimal riskReward, TrancheAggregate trancheAggregate, List<Tranche> trancheList)
     {
         String symbol = getSelectedSymbol();
 
+        long totalShares = trancheAggregate.getTotalShares();
+        BigDecimal projectedAveragePriceAfterBuy = calculator.getAveragePriceAfterBuy(trancheAggregate.getAveragePrice());
+        BigDecimal projectedTotalAmount = projectedAveragePriceAfterBuy.multiply(new BigDecimal(totalShares));
+        BigDecimal projectedGainToTarget = calculator.getSellNetAmount(target, totalShares).subtract(projectedTotalAmount);
+        BigDecimal projectedLossToStopLoss = calculator.getSellNetAmount(stopLoss, totalShares).subtract(projectedTotalAmount);
         BigDecimal averagePriceAfterBuy = BigDecimal.ZERO;
         BigDecimal totalAmount = BigDecimal.ZERO;
         BigDecimal currentPrice = getSelectedSymbolCurrentPrice();
         BigDecimal priceToBreakEven = BigDecimal.ZERO;
-        BigDecimal lossToStopLoss = BigDecimal.ZERO;
         BigDecimal gainToTarget = BigDecimal.ZERO;
+        BigDecimal lossToStopLoss = BigDecimal.ZERO;
         BigDecimal gainLoss = BigDecimal.ZERO;
         BigDecimal gainLossPercent = BigDecimal.ZERO;
         BigDecimal percentCapital = BigDecimal.ZERO;
 
+        BigDecimal realAveragePrice = trancheAggregate.getRealAveragePrice();
+        long realTotalShares = trancheAggregate.getRealTotalShares();
         if(!BigDecimal.ZERO.equals(realAveragePrice))
         {
             averagePriceAfterBuy = calculator.getAveragePriceAfterBuy(realAveragePrice);
@@ -531,11 +538,11 @@ public abstract class SaveTradePlanActivity extends AppCompatActivity
             totalAmount = averagePriceAfterBuy.multiply(new BigDecimal(realTotalShares));
             priceToBreakEven = calculator.getPriceToBreakEven(realAveragePrice);
 
-            BigDecimal stopLossTotalAmount = calculator.getSellNetAmount(stopLoss, realTotalShares);
-            lossToStopLoss = stopLossTotalAmount.subtract(totalAmount);
-
             BigDecimal targetTotalAmount = calculator.getSellNetAmount(target, realTotalShares);
             gainToTarget = targetTotalAmount.subtract(totalAmount);
+
+            BigDecimal stopLossTotalAmount = calculator.getSellNetAmount(stopLoss, realTotalShares);
+            lossToStopLoss = stopLossTotalAmount.subtract(totalAmount);
 
             gainLoss = calculator.getGainLossAmount(realAveragePrice, realTotalShares, currentPrice);
             gainLossPercent = calculator.getPercentGainLoss(realAveragePrice, realTotalShares, currentPrice);
@@ -554,6 +561,10 @@ public abstract class SaveTradePlanActivity extends AppCompatActivity
         TradeDto tradeDto = new TradeDto()
                 .setSymbol(symbol)
                 .setCurrentPrice(currentPrice)
+                .setProjectedAveragePrice(projectedAveragePriceAfterBuy)
+                .setProjectedTotalAmount(projectedTotalAmount)
+                .setProjectedGainToTarget(projectedGainToTarget)
+                .setProjectedLossToStopLoss(projectedLossToStopLoss)
                 .setAveragePrice(averagePriceAfterBuy)
                 .setTotalAmount(totalAmount)
                 .setTotalShares(shares)

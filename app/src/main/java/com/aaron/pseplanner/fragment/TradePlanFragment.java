@@ -1,6 +1,7 @@
 package com.aaron.pseplanner.fragment;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -32,8 +34,8 @@ import com.aaron.pseplanner.service.FormatService;
 import com.aaron.pseplanner.service.LogManager;
 import com.aaron.pseplanner.service.PSEPlannerService;
 import com.aaron.pseplanner.service.ViewUtils;
-import com.aaron.pseplanner.service.implementation.TradePlanFormatService;
 import com.aaron.pseplanner.service.implementation.FacadePSEPlannerService;
+import com.aaron.pseplanner.service.implementation.TradePlanFormatService;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -76,6 +78,24 @@ public class TradePlanFragment extends Fragment
 
     @BindView(R.id.textview_total_shares)
     TextView totalShares;
+
+    @BindView(R.id.imageview_projected)
+    ImageView projectedImageView;
+
+    @BindView(R.id.projected_container)
+    GridLayout projectedContainer;
+
+    @BindView(R.id.textview_projected_average_price)
+    TextView projectedAveragePrice;
+
+    @BindView(R.id.textview_projected_total_amount)
+    TextView projectedTotalAmount;
+
+    @BindView(R.id.textview_projected_gain_target)
+    TextView projectedGainTarget;
+
+    @BindView(R.id.textview_projected_loss_stop_loss)
+    TextView projectedLossStopLoss;
 
     @BindView(R.id.textview_average_price)
     TextView averagePrice;
@@ -181,78 +201,99 @@ public class TradePlanFragment extends Fragment
         ScrollView view = (ScrollView) inflater.inflate(R.layout.fragment_trade_plan, container, false);
         this.unbinder = ButterKnife.bind(this, view);
 
-        stock.setText(this.selectedStock.getSymbol());
+        stock.setText(selectedStock.getSymbol());
 
-        String datePlannedStr = this.formatService.formatDate(this.selectedStock.getDatePlanned());
+        String datePlannedStr = formatService.formatDate(selectedStock.getDatePlanned());
         datePlanned.setText(datePlannedStr);
 
-        String daysSincePlannedLabel = this.selectedStock.getDaysSincePlanned() > 1 ? "days" : "day";
-        daysSincePlanned.setText(String.format("%s %s", this.selectedStock.getDaysSincePlanned(), daysSincePlannedLabel));
+        String daysSincePlannedLabel = selectedStock.getDaysSincePlanned() > 1 ? "days" : "day";
+        daysSincePlanned.setText(String.format("%s %s", selectedStock.getDaysSincePlanned(), daysSincePlannedLabel));
 
-        String entryDateStr = this.formatService.formatDate(this.selectedStock.getEntryDate());
+        String entryDateStr = formatService.formatDate(selectedStock.getEntryDate());
         boolean isEntryDateSet = StringUtils.isNotBlank(entryDateStr);
         entryDate.setText(isEntryDateSet ? entryDateStr : "None");
 
-        String holdingPeriodLabel = this.selectedStock.getHoldingPeriod() > 1 ? "days" : "day";
-        holdingPeriod.setText(String.format("%s %s", this.selectedStock.getHoldingPeriod(), holdingPeriodLabel));
+        String holdingPeriodLabel = selectedStock.getHoldingPeriod() > 1 ? "days" : "day";
+        holdingPeriod.setText(String.format("%s %s", selectedStock.getHoldingPeriod(), holdingPeriodLabel));
 
-        currentPrice.setText(this.formatService.formatStockPrice(this.selectedStock.getCurrentPrice().doubleValue()));
+        currentPrice.setText(formatService.formatStockPrice(selectedStock.getCurrentPrice().doubleValue()));
 
-        totalShares.setText(this.formatService.formatShares(this.selectedStock.getTotalShares()));
+        totalShares.setText(formatService.formatShares(selectedStock.getTotalShares()));
 
-        averagePrice.setText(this.formatService.formatStockPrice(this.selectedStock.getAveragePrice().doubleValue()));
+        setProjectedTradeValues(selectedStock);
 
-        totalAmount.setText(this.formatService.formatPrice(this.selectedStock.getTotalAmount().doubleValue()));
+        averagePrice.setText(formatService.formatStockPrice(selectedStock.getAveragePrice().doubleValue()));
+
+        totalAmount.setText(formatService.formatPrice(selectedStock.getTotalAmount().doubleValue()));
 
         if(isEntryDateSet)
         {
-            String gainLossValue = ViewUtils.addPositiveSign(this.selectedStock.getGainLoss().doubleValue(),
-                    this.formatService.formatPrice(this.selectedStock.getGainLoss().doubleValue()));
-            String gainLossPercentValue = ViewUtils.addPositiveSign(this.selectedStock.getGainLossPercent().doubleValue(),
-                    this.formatService.formatPercent(this.selectedStock.getGainLossPercent().doubleValue()));
+            String gainLossValue = ViewUtils.addPositiveSign(selectedStock.getGainLoss().doubleValue(),
+                    formatService.formatPrice(selectedStock.getGainLoss().doubleValue()));
+            String gainLossPercentValue = ViewUtils.addPositiveSign(selectedStock.getGainLossPercent().doubleValue(),
+                    formatService.formatPercent(selectedStock.getGainLossPercent().doubleValue()));
             gainLoss.setText(String.format("%s (%s)", gainLossValue, gainLossPercentValue));
-            this.formatService.formatTextColor(this.selectedStock.getGainLoss().doubleValue(), gainLoss);
+            formatService.formatTextColor(selectedStock.getGainLoss().doubleValue(), gainLoss);
         }
         else
         {
             gainLoss.setText("-");
         }
 
-        trancheImageView.setOnClickListener(new ImageViewOnClickHideExpand(getContext(), trancheImageView, entryTranchesContainer));
-        this.setTranchesValues(entryTranchesContainer);
+        Context context = getContext();
+        projectedImageView.setOnClickListener(new ImageViewOnClickHideExpand(context, projectedImageView, projectedContainer));
+        trancheImageView.setOnClickListener(new ImageViewOnClickHideExpand(context, trancheImageView, entryTranchesContainer));
+        setTranchesValues(entryTranchesContainer);
 
-        priceToBreakEven.setText(this.formatService.formatStockPrice(this.selectedStock.getPriceToBreakEven().doubleValue()));
+        priceToBreakEven.setText(formatService.formatStockPrice(selectedStock.getPriceToBreakEven().doubleValue()));
 
-        target.setText(this.formatService.formatStockPrice(this.selectedStock.getTargetPrice().doubleValue()));
+        target.setText(formatService.formatStockPrice(selectedStock.getTargetPrice().doubleValue()));
 
-        double gainToTargetValue = this.selectedStock.getGainToTarget().doubleValue();
-        if(gainToTargetValue == 0)
+        double gainToTargetValue = selectedStock.getGainToTarget().doubleValue();
+        String gainToTarget = formatService.formatPrice(gainToTargetValue);
+        if(gainToTargetValue != 0)
         {
-            gainTarget.setText("-");
+            gainToTarget = "+" + gainToTarget;
         }
-        else
-        {
-            String gainToTarget = "+" + this.formatService.formatPrice(gainToTargetValue);
-            gainTarget.setText(gainToTarget);
-            this.formatService.formatTextColor(gainToTargetValue, gainTarget);
-        }
+        gainTarget.setText(gainToTarget);
+        formatService.formatTextColor(gainToTargetValue, gainTarget);
 
-        stopLoss.setText(this.formatService.formatStockPrice(this.selectedStock.getStopLoss().doubleValue()));
+        stopLoss.setText(formatService.formatStockPrice(selectedStock.getStopLoss().doubleValue()));
 
-        lossStopLoss.setText(this.formatService.formatPrice(this.selectedStock.getLossToStopLoss().doubleValue()));
-        this.formatService.formatTextColor(this.selectedStock.getLossToStopLoss().doubleValue(), lossStopLoss);
+        double lossToStopLossValue = selectedStock.getLossToStopLoss().doubleValue();
+        lossStopLoss.setText(formatService.formatPrice(lossToStopLossValue));
+        formatService.formatTextColor(lossToStopLossValue, lossStopLoss);
 
-        stopDate.setText(this.formatService.formatDate(this.selectedStock.getStopDate()));
+        stopDate.setText(formatService.formatDate(selectedStock.getStopDate()));
 
-        daysToStopDate.setText(String.valueOf(this.selectedStock.getDaysToStopDate()));
+        daysToStopDate.setText(String.valueOf(selectedStock.getDaysToStopDate()));
 
-        riskReward.setText(this.formatService.formatStockPrice(this.selectedStock.getRiskReward().doubleValue()));
+        riskReward.setText(formatService.formatStockPrice(selectedStock.getRiskReward().doubleValue()));
 
-        capital.setText(this.formatService.formatPrice(this.selectedStock.getCapital()));
+        capital.setText(formatService.formatPrice(selectedStock.getCapital()));
 
-        percentOfCapital.setText(this.formatService.formatPercent(this.selectedStock.getPercentCapital().doubleValue()));
+        percentOfCapital.setText(formatService.formatPercent(selectedStock.getPercentCapital().doubleValue()));
 
         return view;
+    }
+
+    private void setProjectedTradeValues(TradeDto selectedStock)
+    {
+        projectedAveragePrice.setText(formatService.formatStockPrice(selectedStock.getProjectedAveragePrice().doubleValue()));
+        projectedTotalAmount.setText(formatService.formatPrice(selectedStock.getProjectedTotalAmount().doubleValue()));
+
+        double gainToTargetValue = selectedStock.getProjectedGainToTarget().doubleValue();
+        String gainToTarget = formatService.formatPrice(gainToTargetValue);
+        if(gainToTargetValue != 0)
+        {
+            gainToTarget = "+" + gainToTarget;
+        }
+        projectedGainTarget.setText(gainToTarget);
+        formatService.formatTextColor(gainToTargetValue, projectedGainTarget);
+
+        double lossToStopLossValue = selectedStock.getProjectedLossToStopLoss().doubleValue();
+        projectedLossStopLoss.setText(formatService.formatPrice(lossToStopLossValue));
+        formatService.formatTextColor(lossToStopLossValue, projectedLossStopLoss);
     }
 
     /**

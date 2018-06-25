@@ -65,6 +65,7 @@
     <string name="label_low">Low : </string>
     <string name="label_midpoint">Midpoint : </string>
     <string name="label_stock">Stock : </string>
+    <string name="label_projected">Projected : </string>
     <string name="label_entry">Entry : </string>
     <string name="label_tranche">%1$s Tranche : </string>
     <string name="label_weight">% Weight : </string>

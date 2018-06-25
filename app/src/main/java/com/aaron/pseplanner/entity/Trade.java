@@ -36,11 +36,21 @@ public class Trade
     private String currentPrice;
 
     @NotNull
+    private String projectedAveragePrice;
+
+    @NotNull
+    private String projectedTotalAmount;
+
+    @NotNull
+    private String projectedGainToTarget;
+
+    @NotNull
+    private String projectedLossToStopLoss;
+
     private String averagePrice;
 
     private long totalShares;
 
-    @NotNull
     private String totalAmount;
 
     @NotNull
@@ -55,10 +65,8 @@ public class Trade
     @NotNull
     private String gainLossPercent;
 
-    @NotNull
     private String gainToTarget;
 
-    @NotNull
     private String lossToStopLoss;
 
     @NotNull
@@ -87,18 +95,24 @@ public class Trade
     @Generated(hash = 295783675)
     private transient TradeDao myDao;
 
-    @Generated(hash = 1248833551)
+    @Generated(hash = 761810789)
     public Trade(Long id, @NotNull Date datePlanned, Date entryDate, @NotNull String symbol,
-            @NotNull String currentPrice, @NotNull String averagePrice, long totalShares,
-            @NotNull String totalAmount, @NotNull String priceToBreakEven, @NotNull String targetPrice,
-            @NotNull String gainLoss, @NotNull String gainLossPercent, @NotNull String gainToTarget,
-            @NotNull String lossToStopLoss, @NotNull String stopLoss, @NotNull Date stopDate,
+            @NotNull String currentPrice, @NotNull String projectedAveragePrice,
+            @NotNull String projectedTotalAmount, @NotNull String projectedGainToTarget,
+            @NotNull String projectedLossToStopLoss, String averagePrice, long totalShares,
+            String totalAmount, @NotNull String priceToBreakEven, @NotNull String targetPrice,
+            @NotNull String gainLoss, @NotNull String gainLossPercent, String gainToTarget,
+            String lossToStopLoss, @NotNull String stopLoss, @NotNull Date stopDate,
             @NotNull String riskReward, long capital, @NotNull String percentCapital) {
         this.id = id;
         this.datePlanned = datePlanned;
         this.entryDate = entryDate;
         this.symbol = symbol;
         this.currentPrice = currentPrice;
+        this.projectedAveragePrice = projectedAveragePrice;
+        this.projectedTotalAmount = projectedTotalAmount;
+        this.projectedGainToTarget = projectedGainToTarget;
+        this.projectedLossToStopLoss = projectedLossToStopLoss;
         this.averagePrice = averagePrice;
         this.totalShares = totalShares;
         this.totalAmount = totalAmount;
@@ -116,9 +130,9 @@ public class Trade
     }
 
     @Generated(hash = 1773414334)
-    public Trade() {
+    public Trade()
+    {
     }
-
 
     public Long getId()
     {
@@ -172,6 +186,50 @@ public class Trade
     public Trade setCurrentPrice(@NotNull String currentPrice)
     {
         this.currentPrice = currentPrice;
+        return this;
+    }
+
+    public String getProjectedAveragePrice()
+    {
+        return projectedAveragePrice;
+    }
+
+    public Trade setProjectedAveragePrice(@NotNull String projectedAveragePrice)
+    {
+        this.projectedAveragePrice = projectedAveragePrice;
+        return this;
+    }
+
+    public String getProjectedTotalAmount()
+    {
+        return projectedTotalAmount;
+    }
+
+    public Trade setProjectedTotalAmount(@NotNull String projectedTotalAmount)
+    {
+        this.projectedTotalAmount = projectedTotalAmount;
+        return this;
+    }
+
+    public String getProjectedGainToTarget()
+    {
+        return projectedGainToTarget;
+    }
+
+    public Trade setProjectedGainToTarget(@NotNull String projectedGainToTarget)
+    {
+        this.projectedGainToTarget = projectedGainToTarget;
+        return this;
+    }
+
+    public String getProjectedLossToStopLoss()
+    {
+        return projectedLossToStopLoss;
+    }
+
+    public Trade setProjectedLossToStopLoss(@NotNull String projectedLossToStopLoss)
+    {
+        this.projectedLossToStopLoss = projectedLossToStopLoss;
         return this;
     }
 

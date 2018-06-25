@@ -5,6 +5,7 @@ import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -25,6 +26,10 @@ public class TradeDto implements Stock, Parcelable, Comparable<TradeDto>
     private int holdingPeriod;
     private String symbol;
     private BigDecimal currentPrice;
+    private BigDecimal projectedAveragePrice;
+    private BigDecimal projectedTotalAmount;
+    private BigDecimal projectedGainToTarget;
+    private BigDecimal projectedLossToStopLoss;
     private BigDecimal averagePrice;
     private long totalShares;
     private BigDecimal totalAmount;
@@ -77,6 +82,10 @@ public class TradeDto implements Stock, Parcelable, Comparable<TradeDto>
                 .append(entryDate, tradeDto.entryDate)
                 .append(symbol, tradeDto.symbol)
                 .append(currentPrice, tradeDto.currentPrice)
+                .append(projectedAveragePrice, tradeDto.projectedAveragePrice)
+                .append(projectedTotalAmount, tradeDto.projectedTotalAmount)
+                .append(projectedGainToTarget, tradeDto.projectedGainToTarget)
+                .append(projectedLossToStopLoss, tradeDto.projectedLossToStopLoss)
                 .append(averagePrice, tradeDto.averagePrice)
                 .append(totalAmount, tradeDto.totalAmount)
                 .append(priceToBreakEven, tradeDto.priceToBreakEven)
@@ -96,39 +105,43 @@ public class TradeDto implements Stock, Parcelable, Comparable<TradeDto>
     @Override
     public int hashCode()
     {
-        return Objects.hash(id, datePlanned, daysSincePlanned, entryDate, holdingPeriod, symbol, currentPrice, averagePrice, totalShares, totalAmount,
-                priceToBreakEven, targetPrice, gainLoss, gainLossPercent, gainToTarget, lossToStopLoss, stopLoss, stopDate, daysToStopDate, riskReward, capital,
-                percentCapital, tradeEntries);
+        return Objects.hash(id, datePlanned, daysSincePlanned, entryDate, holdingPeriod, symbol, currentPrice, projectedAveragePrice, projectedTotalAmount,
+                projectedGainToTarget, projectedLossToStopLoss, averagePrice, totalShares, totalAmount, priceToBreakEven, targetPrice, gainLoss,
+                gainLossPercent, gainToTarget, lossToStopLoss, stopLoss, stopDate, daysToStopDate, riskReward, capital, percentCapital, tradeEntries);
     }
 
     @Override
     public String toString()
     {
-        return "TradeDto{" +
-                "id=" + id +
-                ", datePlanned=" + datePlanned +
-                ", daysSincePlanned=" + daysSincePlanned +
-                ", entryDate=" + entryDate +
-                ", holdingPeriod=" + holdingPeriod +
-                ", symbol='" + symbol + '\'' +
-                ", currentPrice=" + currentPrice +
-                ", averagePrice=" + averagePrice +
-                ", totalShares=" + totalShares +
-                ", totalAmount=" + totalAmount +
-                ", priceToBreakEven=" + priceToBreakEven +
-                ", targetPrice=" + targetPrice +
-                ", gainLoss=" + gainLoss +
-                ", gainLossPercent=" + gainLossPercent +
-                ", gainToTarget=" + gainToTarget +
-                ", lossToStopLoss=" + lossToStopLoss +
-                ", stopLoss=" + stopLoss +
-                ", stopDate=" + stopDate +
-                ", daysToStopDate=" + daysToStopDate +
-                ", riskReward=" + riskReward +
-                ", capital=" + capital +
-                ", percentCapital=" + percentCapital +
-                ", tradeEntries=" + tradeEntries +
-                '}';
+        return new ToStringBuilder(this)
+                .append("id", id)
+                .append("datePlanned", datePlanned)
+                .append("daysSincePlanned", daysSincePlanned)
+                .append("entryDate", entryDate)
+                .append("holdingPeriod", holdingPeriod)
+                .append("symbol", symbol)
+                .append("currentPrice", currentPrice)
+                .append("projectedAveragePrice", projectedAveragePrice)
+                .append("projectedTotalAmount", projectedTotalAmount)
+                .append("projectedGainToTarget", projectedGainToTarget)
+                .append("projectedLossToStopLoss", projectedLossToStopLoss)
+                .append("averagePrice", averagePrice)
+                .append("totalShares", totalShares)
+                .append("totalAmount", totalAmount)
+                .append("priceToBreakEven", priceToBreakEven)
+                .append("targetPrice", targetPrice)
+                .append("gainLoss", gainLoss)
+                .append("gainLossPercent", gainLossPercent)
+                .append("gainToTarget", gainToTarget)
+                .append("lossToStopLoss", lossToStopLoss)
+                .append("stopLoss", stopLoss)
+                .append("stopDate", stopDate)
+                .append("daysToStopDate", daysToStopDate)
+                .append("riskReward", riskReward)
+                .append("capital", capital)
+                .append("percentCapital", percentCapital)
+                .append("tradeEntries", tradeEntries)
+                .toString();
     }
 
     public Long getId()
@@ -207,6 +220,50 @@ public class TradeDto implements Stock, Parcelable, Comparable<TradeDto>
     public TradeDto setCurrentPrice(BigDecimal currentPrice)
     {
         this.currentPrice = currentPrice;
+        return this;
+    }
+
+    public BigDecimal getProjectedAveragePrice()
+    {
+        return projectedAveragePrice;
+    }
+
+    public TradeDto setProjectedAveragePrice(BigDecimal projectedAveragePrice)
+    {
+        this.projectedAveragePrice = projectedAveragePrice;
+        return this;
+    }
+
+    public BigDecimal getProjectedTotalAmount()
+    {
+        return projectedTotalAmount;
+    }
+
+    public TradeDto setProjectedTotalAmount(BigDecimal projectedTotalAmount)
+    {
+        this.projectedTotalAmount = projectedTotalAmount;
+        return this;
+    }
+
+    public BigDecimal getProjectedGainToTarget()
+    {
+        return projectedGainToTarget;
+    }
+
+    public TradeDto setProjectedGainToTarget(BigDecimal projectedGainToTarget)
+    {
+        this.projectedGainToTarget = projectedGainToTarget;
+        return this;
+    }
+
+    public BigDecimal getProjectedLossToStopLoss()
+    {
+        return projectedLossToStopLoss;
+    }
+
+    public TradeDto setProjectedLossToStopLoss(BigDecimal projectedLossToStopLoss)
+    {
+        this.projectedLossToStopLoss = projectedLossToStopLoss;
         return this;
     }
 
@@ -407,6 +464,10 @@ public class TradeDto implements Stock, Parcelable, Comparable<TradeDto>
         dest.writeInt(this.holdingPeriod);
         dest.writeString(this.symbol);
         dest.writeString(this.currentPrice.toPlainString());
+        dest.writeString(this.projectedAveragePrice.toPlainString());
+        dest.writeString(this.projectedTotalAmount.toPlainString());
+        dest.writeString(this.projectedGainToTarget.toPlainString());
+        dest.writeString(this.projectedLossToStopLoss.toPlainString());
         dest.writeString(this.averagePrice.toPlainString());
         dest.writeLong(this.totalShares);
         dest.writeString(this.totalAmount.toPlainString());
@@ -439,6 +500,10 @@ public class TradeDto implements Stock, Parcelable, Comparable<TradeDto>
         this.holdingPeriod = in.readInt();
         this.symbol = in.readString();
         this.currentPrice = new BigDecimal(in.readString());
+        this.projectedAveragePrice = new BigDecimal(in.readString());
+        this.projectedTotalAmount = new BigDecimal(in.readString());
+        this.projectedGainToTarget = new BigDecimal(in.readString());
+        this.projectedLossToStopLoss = new BigDecimal(in.readString());
         this.averagePrice = new BigDecimal(in.readString());
         this.totalShares = in.readLong();
         this.totalAmount = new BigDecimal(in.readString());
