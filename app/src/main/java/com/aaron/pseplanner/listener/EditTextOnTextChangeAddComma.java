@@ -17,7 +17,7 @@ import static com.aaron.pseplanner.service.implementation.TradePlanFormatService
  */
 public class EditTextOnTextChangeAddComma implements TextWatcher
 {
-    private static final String DECIMAL_NUMBER_WITH_ONLY_ZERO_DECIMAL_POINT_PATTERN = "\\d+\\.0*";
+    private static final String DECIMAL_POINT_PATTERN = "([0-9]*[1-9]+[0-9]*\\.0*|0\\.\\d*)";
     private static final String COMMA = ",";
     private static final int DECIMAL_POINT = '.';
     private static final int NUMBER_OF_DIGITS_PER_COMMA = 3;
@@ -197,12 +197,12 @@ public class EditTextOnTextChangeAddComma implements TextWatcher
     private String formatNumber(String input)
     {
         String formattedInput = input;
-        String inputWithoutCommas = removeAllCommas(input);
         try
         {
             // Stop formatting if period or 0 decimal value is inputted.
-            if(!input.matches(DECIMAL_NUMBER_WITH_ONLY_ZERO_DECIMAL_POINT_PATTERN))
+            if(!input.matches(DECIMAL_POINT_PATTERN))
             {
+                String inputWithoutCommas = removeAllCommas(input);
                 double number = Double.parseDouble(inputWithoutCommas);
                 formattedInput = this.formatter.format(number);
             }
